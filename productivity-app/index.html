@@ -282,11 +282,12 @@ function addNote(){
   const b=document.getElementById('noteBody').value.trim();
   state.notes.push({title:t,body:b,date:today()});save('notes');closeModal();toast('메모 저장됨');navigate('notes');
 }
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;')}
 function editNoteModal(i){
   const n=state.notes[i];
   openModal(`<h3 class="mb-16">메모 수정</h3>
-  <input id="noteTitle" value="${n.title}" style="width:100%;margin-bottom:12px">
-  <textarea id="noteBody" rows="6" style="width:100%;margin-bottom:16px;resize:vertical">${n.body}</textarea>
+  <input id="noteTitle" value="${esc(n.title)}" style="width:100%;margin-bottom:12px">
+  <textarea id="noteBody" rows="6" style="width:100%;margin-bottom:16px;resize:vertical">${esc(n.body)}</textarea>
   <button class="btn btn-primary" style="width:100%" onclick="updateNote(${i})">수정</button>`);
 }
 function updateNote(i){
@@ -350,7 +351,7 @@ function renderTimer(){
     </div>
   </div>`;
 }
-function initTimer(){clearInterval(timerInterval);timerMs=0;timerRunning=false}
+function initTimer(){clearInterval(timerInterval);timerRunning=false}
 function startTimer(){
   if(timerRunning){clearInterval(timerInterval);timerRunning=false;document.getElementById('timerStartBtn').textContent='계속';return}
   if(timerMode==='countdown'&&timerMs===0){const m=document.getElementById('countdownMin');timerMs=(parseInt(m.value)||5)*60000}
@@ -380,7 +381,7 @@ function renderPomodoro(){
     </div>
   </div>`;
 }
-function initPomodoro(){}
+function initPomodoro(){clearInterval(pomInterval)}
 function togglePomodoro(){
   if(pomRunning){clearInterval(pomInterval);pomRunning=false;navigate('pomodoro');return}
   pomRunning=true;
@@ -582,7 +583,7 @@ function renderConverter(){
   <div class="card" style="max-width:480px" id="converterBody">${renderConverterBody(0)}</div>`;
 }
 function renderConverterBody(ci){
-  const cats=[{name:'길이',units:['mm','cm','m','km','inch','ft'],factors:[1,10,1000,1e6,25.4,304.8]},{name:'무게',units:['mg','g','kg','lb','oz'],factors:[1,1000,1e6,453592,28349.5]},{name:'온도',units:['°C','°F','K']}];
+  const cats=[{name:'길이',units:['mm','cm','m','km','in','ft'],factors:[1,10,1000,1e6,25.4,304.8]},{name:'무게',units:['mg','g','kg','lb','oz'],factors:[1,1000,1e6,453592,28349.5]},{name:'온도',units:['°C','°F','K']}];
   const c=cats[ci];
   return `<div class="grid-2 mb-16">
     <div><label style="font-size:.8rem;color:var(--text-muted)">값</label><input type="number" id="convVal" value="1" oninput="convert(${ci})" style="width:100%;margin-top:4px"></div>
@@ -592,7 +593,7 @@ function renderConverterBody(ci){
 }
 function switchConverter(el,ci){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');document.getElementById('converterBody').innerHTML=renderConverterBody(ci);convert(ci)}
 function convert(ci){
-  const cats=[{units:['mm','cm','m','km','inch','ft'],factors:[1,10,1000,1e6,25.4,304.8]},{units:['mg','g','kg','lb','oz'],factors:[1,1000,1e6,453592,28349.5]},{units:['°C','°F','K']}];
+  const cats=[{units:['mm','cm','m','km','in','ft'],factors:[1,10,1000,1e6,25.4,304.8]},{units:['mg','g','kg','lb','oz'],factors:[1,1000,1e6,453592,28349.5]},{units:['°C','°F','K']}];
   const c=cats[ci];const v=parseFloat(document.getElementById('convVal').value)||0;const from=document.getElementById('convFrom').value;
   const results=document.getElementById('convResults');if(!results)return;
   if(ci===2){
@@ -702,7 +703,7 @@ function toggleTheme(){setTheme(state.theme==='dark'?'light':'dark')}
 
 // Export
 function exportData(){
-  const data={todos:state.todos,notes:state.notes,events:state.events,habits:state.habits,bookmarks:state.bookmarks,finance:state.finance};
+  const data={todos:state.todos,notes:state.notes,events:state.events,habits:state.habits,bookmarks:state.bookmarks,finance:state.finance,ddays:JSON.parse(localStorage.getItem('sa_ddays')||'[]')};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='superapp-backup.json';a.click();toast('데이터 내보내기 완료');
 }

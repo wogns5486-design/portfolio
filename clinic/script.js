@@ -206,6 +206,17 @@ const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
       err: () => $('#timeError'),
       validate(v) {
         if (!v) return '희망 시간을 선택해 주세요.';
+        const dateVal = $('#patientDate').value;
+        if (dateVal) {
+          const chosen = new Date(dateVal);
+          const day = chosen.getDay();
+          if (day === 6) {
+            // Saturday: operating hours 09:00–14:00 only
+            const [h, m] = v.split(':').map(Number);
+            const minutes = h * 60 + m;
+            if (minutes >= 14 * 60) return '토요일은 14:00 이후 진료가 없습니다. (토요일 진료: 09:00–14:00)';
+          }
+        }
         return '';
       }
     }

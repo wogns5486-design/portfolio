@@ -956,7 +956,7 @@ document.getElementById('input-area').addEventListener('input', function(e) {
     document.getElementById('typingCard').classList.add('active');
     document.getElementById('startHint').style.display = 'none';
     state.timerInterval = setInterval(() => {
-      state.timeLeft--;
+      state.timeLeft = Math.max(0, state.timeLeft - 1);
       if (state.timeLeft <= 0) {
         state.timeLeft = 0;
         finishGame();
@@ -994,8 +994,13 @@ document.getElementById('input-area').addEventListener('input', function(e) {
       playClick('error');
     }
   } else if (newLen < oldLen) {
-    // Backspace - recalculate
-    if (state.combo > 0) state.combo = 0;
+    // Backspace - recalculate from scratch
+    state.combo = 0;
+    state.totalTyped = newLen;
+    state.correctTyped = 0;
+    for (let i = 0; i < newLen; i++) {
+      if (val[i] === state.chars[i]) state.correctTyped++;
+    }
   }
 
   state.input = val;

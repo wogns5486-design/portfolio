@@ -1190,7 +1190,7 @@
     function toggleTable() {
       showAllRows = !showAllRows;
       document.querySelectorAll('.table-hidden').forEach(tr => {
-        tr.style.display = showAllRows ? '' : 'none';
+        tr.style.display = showAllRows ? 'table-row' : '';
       });
       document.getElementById('tableToggle').textContent = showAllRows ? '접기' : '전체 보기';
     }

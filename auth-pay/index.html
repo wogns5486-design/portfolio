@@ -1875,7 +1875,11 @@
     else { showErr('card-name-err', false); }
 
     if (!/^\d{2}\/\d{2}$/.test(exp)) { showErr('card-exp-err', true); valid = false; }
-    else { showErr('card-exp-err', false); }
+    else {
+      const month = parseInt(exp.split('/')[0]);
+      if (month < 1 || month > 12) { showErr('card-exp-err', true); valid = false; }
+      else { showErr('card-exp-err', false); }
+    }
 
     if (cvc.length < 3) { showErr('card-cvc-err', true); valid = false; }
     else { showErr('card-cvc-err', false); }
@@ -1943,6 +1947,8 @@
     ['card-name','card-exp','card-cvc','bill-name','bill-email','bill-phone'].forEach(id => {
       const el = document.getElementById(id); if(el) el.value = '';
     });
+    state.checkboxes = { 'chk-terms': false, 'chk-mkt': false, 'chk-remember': false, 'chk-save-card': false };
+    document.querySelectorAll('.custom-checkbox').forEach(c => c.classList.remove('checked'));
     switchPayTab('card');
     goToPage('signup');
   }

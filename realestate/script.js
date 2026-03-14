@@ -467,7 +467,9 @@ $('#backToTop').addEventListener('click', () => {
 /* ── Smooth anchor scroll (offset for fixed nav) ── */
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
-    const target = document.querySelector(a.getAttribute('href'));
+    const href = a.getAttribute('href');
+    if (!href || href === '#') return;
+    const target = document.querySelector(href);
     if (!target) return;
     e.preventDefault();
     const navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 80;

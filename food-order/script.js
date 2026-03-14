@@ -610,6 +610,9 @@ function initEvents() {
     if (!btn) return;
     const cat = btn.dataset.cat;
     state.activeCategory = cat;
+    state.searchQuery = '';
+    document.getElementById('searchInput').value = '';
+    document.getElementById('searchClear').hidden = true;
 
     document.querySelectorAll('.cat-btn').forEach(b => {
       const active = b.dataset.cat === cat;
