@@ -1113,7 +1113,7 @@
       <p class="cta-label">Contact</p>
       <h2>프로젝트가 필요하신가요?</h2>
       <p>기획부터 디자인, 개발, 배포까지 원스텝으로 진행합니다.<br>아이디어만 있어도 괜찮아요. 함께 만들어 드립니다.</p>
-      <a href="mailto:wogns5486@naver.com" class="cta-btn">
+      <a href="mailto:wogns5486@gmail.com" class="cta-btn">
         프로젝트 문의하기 <span>→</span>
       </a>
     </div>
@@ -1129,11 +1129,11 @@
           GitHub
         </a>
         <div class="footer-divider"></div>
-        <a href="mailto:wogns5486@naver.com" class="footer-link-item">
+        <a href="mailto:wogns5486@gmail.com" class="footer-link-item">
           <span class="footer-link-icon">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
           </span>
-          wogns5486@naver.com
+          wogns5486@gmail.com
         </a>
       </div>
       <p>&copy; 2025 Portfolio. All rights reserved.</p>
@@ -1156,6 +1156,7 @@
           const category = card.dataset.category;
           if (filter === 'all' || category === filter) {
             card.classList.remove('hidden-by-filter');
+            card.classList.add('visible');
           } else {
             card.classList.add('hidden-by-filter');
           }
