@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BLOSSOM COFFEE | 꽃처럼 피어나는 한 잔</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta property="og:title" content="BLOSSOM COFFEE | 꽃처럼 피어나는 한 잔">
+  <meta property="og:description" content="매일 로스팅한 신선한 원두로 한 잔 한 잔 정성을 담아 내리는 블로썸 커피입니다.">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=1200&h=630&fit=crop">
+  <meta property="og:type" content="website">
+  <meta name="description" content="매일 로스팅한 신선한 원두로 한 잔 한 잔 정성을 담아 내리는 블로썸 커피입니다.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">BLOSSOM COFFEE</a>
+      <button class="nav-toggle" id="navToggle" aria-label="메뉴 열기">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about">소개</a></li>
+        <li><a href="#menu">메뉴</a></li>
+        <li><a href="#gallery">공간</a></li>
+        <li><a href="#hours">영업시간</a></li>
+        <li><a href="#contact">오시는 길</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" id="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <p class="hero-sub">Since 2024</p>
+      <h1 class="hero-title">BLOSSOM<br>COFFEE</h1>
+      <p class="hero-desc">꽃처럼 피어나는 한 잔의 여유</p>
+      <a href="#menu" class="hero-btn">메뉴 보기</a>
+    </div>
+    <div class="hero-scroll">
+      <span>scroll</span>
+      <div class="hero-scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="about section" id="about">
+    <div class="container">
+      <div class="section-label">ABOUT US</div>
+      <h2 class="section-title">우리가 커피를<br>대하는 방식</h2>
+      <div class="about-grid">
+        <div class="about-image">
+          <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&h=750&fit=crop" alt="커피 한 잔" loading="lazy">
+        </div>
+        <div class="about-text">
+          <p>블로썸 커피는 매일 아침 신선하게 로스팅한 원두로 한 잔 한 잔 정성을 담아 내립니다.</p>
+          <p>바쁜 일상 속에서도 잠시 멈추어 꽃이 피어나듯 여유로운 시간을 보내실 수 있도록, 편안한 공간과 따뜻한 커피를 준비하고 있습니다.</p>
+          <div class="about-features">
+            <div class="about-feature">
+              <div class="about-feature-num">01</div>
+              <div>
+                <strong>매일 로스팅</strong>
+                <p>당일 로스팅한 신선한 원두만 사용합니다</p>
+              </div>
+            </div>
+            <div class="about-feature">
+              <div class="about-feature-num">02</div>
+              <div>
+                <strong>핸드드립</strong>
+                <p>숙련된 바리스타가 한 잔씩 정성껏 내립니다</p>
+              </div>
+            </div>
+            <div class="about-feature">
+              <div class="about-feature-num">03</div>
+              <div>
+                <strong>자가제조 디저트</strong>
+                <p>매장에서 직접 만든 건강한 디저트</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Menu -->
+  <section class="menu section" id="menu">
+    <div class="container">
+      <div class="section-label">MENU</div>
+      <h2 class="section-title">정성을 담은<br>시그니처 메뉴</h2>
+      <div class="menu-tabs">
+        <button class="menu-tab active" data-tab="coffee">COFFEE</button>
+        <button class="menu-tab" data-tab="non-coffee">NON-COFFEE</button>
+        <button class="menu-tab" data-tab="dessert">DESSERT</button>
+      </div>
+      <div class="menu-grid" id="menuGrid">
+        <!-- JS로 렌더링 -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery -->
+  <section class="gallery section" id="gallery">
+    <div class="container">
+      <div class="section-label">SPACE</div>
+      <h2 class="section-title">블로썸의 공간</h2>
+      <div class="gallery-grid">
+        <div class="gallery-item gallery-item--large">
+          <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800&h=400&fit=crop" alt="1층 홀" loading="lazy">
+        </div>
+        <div class="gallery-item">
+          <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=400&h=400&fit=crop" alt="테라스" loading="lazy">
+        </div>
+        <div class="gallery-item">
+          <img src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=400&h=400&fit=crop" alt="2층 독서 공간" loading="lazy">
+        </div>
+        <div class="gallery-item">
+          <img src="https://images.unsplash.com/photo-1558171813-4c088753af8f?w=400&h=400&fit=crop" alt="베이커리 코너" loading="lazy">
+        </div>
+        <div class="gallery-item gallery-item--large">
+          <img src="https://images.unsplash.com/photo-1510972527921-ce03766a1cf1?w=800&h=400&fit=crop" alt="가든 좌석" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hours & Info -->
+  <section class="hours section" id="hours">
+    <div class="container">
+      <div class="hours-grid">
+        <div class="hours-card">
+          <div class="section-label">HOURS</div>
+          <h2 class="section-title">영업시간</h2>
+          <div class="hours-list">
+            <div class="hours-row">
+              <span>월 - 금</span>
+              <span>08:00 - 22:00</span>
+            </div>
+            <div class="hours-row">
+              <span>토요일</span>
+              <span>09:00 - 22:00</span>
+            </div>
+            <div class="hours-row">
+              <span>일요일</span>
+              <span>09:00 - 21:00</span>
+            </div>
+            <div class="hours-row hours-row--note">
+              <span>매주 첫째 월요일 정기 휴무</span>
+            </div>
+          </div>
+        </div>
+        <div class="hours-card">
+          <div class="section-label">CONTACT</div>
+          <h2 class="section-title">연락처</h2>
+          <div class="contact-info">
+            <div class="contact-row">
+              <span class="contact-icon">📞</span>
+              <span>02-1234-5678</span>
+            </div>
+            <div class="contact-row">
+              <span class="contact-icon">📧</span>
+              <span>hello@blossomcoffee.kr</span>
+            </div>
+            <div class="contact-row">
+              <span class="contact-icon">📸</span>
+              <span>@blossom_coffee</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Location -->
+  <section class="location section" id="contact">
+    <div class="container">
+      <div class="section-label">LOCATION</div>
+      <h2 class="section-title">오시는 길</h2>
+      <div class="location-grid">
+        <div class="location-map">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3162.282!2d126.9219!3d37.5665!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzfCsDMzJzU5LjQiTiAxMjbCsDU1JzE4LjgiRQ!5e0!3m2!1sko!2skr!4v1700000000000"
+            width="100%" height="400" style="border:0; border-radius:4px;" allowfullscreen="" loading="lazy">
+          </iframe>
+        </div>
+        <div class="location-info">
+          <h3>BLOSSOM COFFEE</h3>
+          <p class="location-addr">서울특별시 마포구 연남로 12길 34, 1-2층</p>
+          <div class="location-transport">
+            <div>
+              <strong>🚇 지하철</strong>
+              <p>홍대입구역 3번 출구 도보 5분</p>
+            </div>
+            <div>
+              <strong>🚌 버스</strong>
+              <p>연남동주민센터 정류장 하차</p>
+            </div>
+            <div>
+              <strong>🅿️ 주차</strong>
+              <p>건물 내 주차 2시간 무료</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-logo">BLOSSOM COFFEE</div>
+        <p class="footer-copy">&copy; 2024 Blossom Coffee. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
