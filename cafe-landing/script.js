@@ -41,7 +41,6 @@ function renderMenu(category) {
     </div>
   `).join('');
 
-  // Re-observe new elements
   observeFadeElements();
 }
 
@@ -58,11 +57,7 @@ document.querySelectorAll('.menu-tab').forEach(tab => {
 const nav = document.getElementById('nav');
 
 window.addEventListener('scroll', () => {
-  if (window.scrollY > 80) {
-    nav.classList.add('scrolled');
-  } else {
-    nav.classList.remove('scrolled');
-  }
+  nav.classList.toggle('scrolled', window.scrollY > 80);
 });
 
 // ===== Mobile Nav Toggle =====
@@ -73,7 +68,6 @@ navToggle.addEventListener('click', () => {
   navLinks.classList.toggle('open');
 });
 
-// Close nav when link clicked
 navLinks.querySelectorAll('a').forEach(link => {
   link.addEventListener('click', () => {
     navLinks.classList.remove('open');
@@ -89,21 +83,158 @@ function observeFadeElements() {
         observer.unobserve(entry.target);
       }
     });
-  }, {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-  });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
   document.querySelectorAll('.fade-up:not(.visible)').forEach(el => {
     observer.observe(el);
   });
 }
 
-// ===== Add fade-up class to sections =====
 document.querySelectorAll('.section-label, .section-title, .about-image, .about-text, .about-feature, .gallery-item, .hours-card, .location-map, .location-info').forEach(el => {
   el.classList.add('fade-up');
 });
 
-// ===== Init =====
+// ===== Init menu =====
 renderMenu('coffee');
 observeFadeElements();
+
+// ===== Toast helper =====
+let toastTimer = null;
+function showToast(msg) {
+  const toast = document.getElementById('cafeToast');
+  if (!toast) return;
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// ===== Reservation Modal =====
+const resOverlay = document.getElementById('reservationModal');
+const resClose = document.getElementById('resClose');
+
+function openReservation() {
+  // Reset to form step
+  document.getElementById('resFormStep').style.display = 'block';
+  document.getElementById('resSuccessStep').style.display = 'none';
+  document.getElementById('resForm').reset();
+  clearResErrors();
+  // Set min date to today
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  document.getElementById('resDate').min = `${yyyy}-${mm}-${dd}`;
+
+  resOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeReservation() {
+  resOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('openReservationBtn').addEventListener('click', e => {
+  e.preventDefault();
+  openReservation();
+});
+
+resClose.addEventListener('click', closeReservation);
+
+resOverlay.addEventListener('click', e => {
+  if (e.target === resOverlay) closeReservation();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && resOverlay.classList.contains('open')) closeReservation();
+});
+
+// ===== Reservation Form Validation & Submit =====
+function clearResErrors() {
+  document.querySelectorAll('.res-error').forEach(el => el.textContent = '');
+  document.querySelectorAll('.res-form-group input, .res-form-group select').forEach(el => el.classList.remove('error'));
+}
+
+function resError(fieldId, errorId, msg) {
+  const field = document.getElementById(fieldId);
+  const error = document.getElementById(errorId);
+  if (field) field.classList.add('error');
+  if (error) error.textContent = msg;
+}
+
+function formatPhoneNumber(val) {
+  const digits = val.replace(/\D/g, '');
+  if (digits.length <= 3) return digits;
+  if (digits.length <= 7) return digits.slice(0, 3) + '-' + digits.slice(3);
+  return digits.slice(0, 3) + '-' + digits.slice(3, 7) + '-' + digits.slice(7, 11);
+}
+
+document.getElementById('resPhone').addEventListener('input', function () {
+  this.value = formatPhoneNumber(this.value);
+});
+
+document.getElementById('resForm').addEventListener('submit', e => {
+  e.preventDefault();
+  clearResErrors();
+
+  const date = document.getElementById('resDate').value;
+  const time = document.getElementById('resTime').value;
+  const guests = document.getElementById('resGuests').value;
+  const name = document.getElementById('resName').value.trim();
+  const phone = document.getElementById('resPhone').value.trim();
+
+  let valid = true;
+
+  if (!date) {
+    resError('resDate', 'resDateError', '날짜를 선택해 주세요.');
+    valid = false;
+  }
+  if (!time) {
+    resError('resTime', 'resTimeError', '시간을 선택해 주세요.');
+    valid = false;
+  }
+  if (!guests) {
+    resError('resGuests', 'resGuestsError', '인원을 선택해 주세요.');
+    valid = false;
+  }
+  if (!name) {
+    resError('resName', 'resNameError', '이름을 입력해 주세요.');
+    valid = false;
+  }
+  const phoneDigits = phone.replace(/\D/g, '');
+  if (!phone || phoneDigits.length < 10) {
+    resError('resPhone', 'resPhoneError', '올바른 연락처를 입력해 주세요.');
+    valid = false;
+  }
+
+  if (!valid) return;
+
+  // Format date for display
+  const dateObj = new Date(date + 'T00:00:00');
+  const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+  const formattedDate = `${dateObj.getFullYear()}년 ${dateObj.getMonth() + 1}월 ${dateObj.getDate()}일 (${weekdays[dateObj.getDay()]})`;
+
+  // Save to localStorage
+  const reservation = { date, time, guests, name, phone, createdAt: new Date().toISOString() };
+  const existing = JSON.parse(localStorage.getItem('blossom_reservations') || '[]');
+  existing.push(reservation);
+  localStorage.setItem('blossom_reservations', JSON.stringify(existing));
+
+  // Show success
+  document.getElementById('resSummary').innerHTML = `
+    <div class="res-summary-row"><span>날짜</span><span>${formattedDate}</span></div>
+    <div class="res-summary-row"><span>시간</span><span>${time}</span></div>
+    <div class="res-summary-row"><span>인원</span><span>${guests}</span></div>
+    <div class="res-summary-row"><span>예약자</span><span>${name}</span></div>
+    <div class="res-summary-row"><span>연락처</span><span>${phone}</span></div>
+  `;
+
+  document.getElementById('resFormStep').style.display = 'none';
+  document.getElementById('resSuccessStep').style.display = 'block';
+});
+
+document.getElementById('resSuccessClose').addEventListener('click', () => {
+  closeReservation();
+  showToast('예약이 완료되었습니다. 방문을 기다리겠습니다 🌸');
+});

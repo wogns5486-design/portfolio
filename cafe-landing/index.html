@@ -41,7 +41,10 @@
       <p class="hero-sub">Since 2024</p>
       <h1 class="hero-title">BLOSSOM<br>COFFEE</h1>
       <p class="hero-desc">꽃처럼 피어나는 한 잔의 여유</p>
-      <a href="#menu" class="hero-btn">메뉴 보기</a>
+      <div class="hero-btns">
+        <a href="#menu" class="hero-btn">메뉴 보기</a>
+        <a href="#" class="hero-btn hero-btn--outline" id="openReservationBtn">예약하기</a>
+      </div>
     </div>
     <div class="hero-scroll">
       <span>scroll</span>
@@ -220,6 +223,90 @@
       </div>
     </div>
   </footer>
+
+  <!-- ===== RESERVATION MODAL ===== -->
+  <div class="res-overlay" id="reservationModal">
+    <div class="res-modal">
+      <button class="res-close" id="resClose">✕</button>
+
+      <!-- Step 1: Form -->
+      <div id="resFormStep">
+        <div class="res-header">
+          <div class="res-logo">BLOSSOM COFFEE</div>
+          <h2 class="res-title">예약하기</h2>
+          <p class="res-subtitle">소중한 시간을 미리 예약하세요</p>
+        </div>
+        <form class="res-form" id="resForm" novalidate>
+          <div class="res-form-grid">
+            <div class="res-form-group">
+              <label for="resDate">날짜</label>
+              <input type="date" id="resDate" />
+              <span class="res-error" id="resDateError"></span>
+            </div>
+            <div class="res-form-group">
+              <label for="resTime">시간</label>
+              <select id="resTime">
+                <option value="">시간 선택</option>
+                <option>10:00</option>
+                <option>11:00</option>
+                <option>12:00</option>
+                <option>13:00</option>
+                <option>14:00</option>
+                <option>15:00</option>
+                <option>16:00</option>
+                <option>17:00</option>
+                <option>18:00</option>
+                <option>19:00</option>
+                <option>20:00</option>
+                <option>21:00</option>
+              </select>
+              <span class="res-error" id="resTimeError"></span>
+            </div>
+            <div class="res-form-group">
+              <label for="resGuests">인원</label>
+              <select id="resGuests">
+                <option value="">인원 선택</option>
+                <option>1명</option>
+                <option>2명</option>
+                <option>3명</option>
+                <option>4명</option>
+                <option>5명</option>
+                <option>6명</option>
+                <option>7명</option>
+                <option>8명</option>
+                <option>9명</option>
+                <option>10명</option>
+              </select>
+              <span class="res-error" id="resGuestsError"></span>
+            </div>
+            <div class="res-form-group">
+              <label for="resName">이름</label>
+              <input type="text" id="resName" placeholder="홍길동" />
+              <span class="res-error" id="resNameError"></span>
+            </div>
+            <div class="res-form-group res-form-group--full">
+              <label for="resPhone">연락처</label>
+              <input type="tel" id="resPhone" placeholder="010-0000-0000" />
+              <span class="res-error" id="resPhoneError"></span>
+            </div>
+          </div>
+          <button type="submit" class="res-submit-btn">예약 확인하기</button>
+        </form>
+      </div>
+
+      <!-- Step 2: Success -->
+      <div id="resSuccessStep" class="res-success" style="display:none;">
+        <div class="res-success-icon">✓</div>
+        <h3 class="res-success-title">예약이 완료되었습니다</h3>
+        <p class="res-success-msg">방문을 기다리고 있겠습니다 🌸</p>
+        <div class="res-summary" id="resSummary"></div>
+        <button class="res-submit-btn" id="resSuccessClose">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="cafe-toast" id="cafeToast"></div>
 
   <script src="script.js"></script>
 </body>

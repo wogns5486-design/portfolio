@@ -1077,6 +1077,80 @@ footer {
 }
 
 /* =========================================
+   MESSAGE DELETE BUTTON
+   ========================================= */
+.message-delete {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--text-light);
+  font-size: 0.7rem;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity var(--transition), color var(--transition);
+  line-height: 1;
+}
+
+.message-card:hover .message-delete {
+  opacity: 1;
+}
+
+.message-delete:hover {
+  color: #c0392b;
+}
+
+/* =========================================
+   SHARE SECTION
+   ========================================= */
+.share-section {
+  background: var(--ivory-dark);
+}
+
+.share-desc {
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--text-mid);
+  line-height: 1.8;
+  margin-bottom: 24px;
+}
+
+.kakao-share-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 16px 24px;
+  background: #FEE500;
+  color: #3C1E1E;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 16px rgba(254, 229, 0, 0.4);
+}
+
+.kakao-share-btn:hover {
+  background: #F5DC00;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(254, 229, 0, 0.5);
+}
+
+.kakao-share-btn:active {
+  transform: translateY(0);
+}
+
+.kakao-icon {
+  font-size: 1.2rem;
+}
+
+/* =========================================
    FOOTER
    ========================================= */
 .footer {

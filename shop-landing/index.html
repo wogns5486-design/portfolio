@@ -68,10 +68,11 @@
         </svg>
       </button>
       <!-- Wishlist -->
-      <button class="nav__icon-btn" aria-label="위시리스트">
+      <button class="nav__icon-btn wishlist-btn" aria-label="위시리스트">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
           <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
         </svg>
+        <span class="wishlist-badge" aria-label="위시리스트 상품 수" style="display:none">0</span>
       </button>
       <!-- Cart -->
       <button class="nav__icon-btn cart-btn" aria-label="장바구니">
@@ -108,14 +109,163 @@
 
 <!-- Search Overlay -->
 <div class="search-overlay" role="dialog" aria-modal="true" aria-label="상품 검색">
-  <div class="search-form">
-    <svg viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="1.8" style="width:22px;height:22px;flex-shrink:0">
-      <circle cx="11" cy="11" r="7"/>
-      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-    </svg>
-    <input class="search-input" type="search" placeholder="상품을 검색하세요..." autocomplete="off" />
-    <button class="search-close">ESC</button>
+  <div class="search-overlay__inner">
+    <div class="search-form">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="1.8" style="width:22px;height:22px;flex-shrink:0">
+        <circle cx="11" cy="11" r="7"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input class="search-input" type="search" placeholder="상품을 검색하세요..." autocomplete="off" />
+      <button class="search-close">ESC</button>
+    </div>
+    <!-- Search Results Dropdown -->
+    <div class="search-results" aria-live="polite"></div>
   </div>
+</div>
+
+
+<!-- =============================================
+     CART PANEL (Slide-in from right)
+     ============================================= -->
+<div class="cart-overlay" aria-hidden="true"></div>
+<aside class="cart-panel" role="dialog" aria-modal="true" aria-label="장바구니">
+  <div class="cart-panel__header">
+    <h2 class="cart-panel__title">장바구니</h2>
+    <button class="cart-panel__close" aria-label="장바구니 닫기">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+  <div class="cart-panel__body">
+    <ul class="cart-items" aria-label="장바구니 상품 목록"></ul>
+    <div class="cart-empty" aria-live="polite">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <path d="M16 10a4 4 0 0 1-8 0"/>
+      </svg>
+      <p>장바구니가 비어있습니다</p>
+    </div>
+  </div>
+  <div class="cart-panel__footer">
+    <div class="cart-summary">
+      <span>합계</span>
+      <span class="cart-total">0원</span>
+    </div>
+    <p class="cart-shipping-note">3만원 이상 무료배송</p>
+    <button class="cart-order-btn">주문하기</button>
+  </div>
+</aside>
+
+
+<!-- =============================================
+     QUICK VIEW MODAL
+     ============================================= -->
+<div class="modal-overlay qv-overlay" aria-hidden="true"></div>
+<div class="qv-modal" role="dialog" aria-modal="true" aria-label="상품 상세보기">
+  <button class="qv-modal__close" aria-label="닫기">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </button>
+  <div class="qv-modal__inner">
+    <div class="qv-modal__img-wrap">
+      <img class="qv-modal__img" src="" alt="" />
+      <span class="qv-modal__badge"></span>
+    </div>
+    <div class="qv-modal__info">
+      <p class="qv-modal__name"></p>
+      <p class="qv-modal__price"></p>
+      <p class="qv-modal__desc"></p>
+
+      <!-- Size -->
+      <div class="qv-option">
+        <p class="qv-option__label">SIZE</p>
+        <div class="qv-sizes">
+          <button class="qv-size-btn" data-size="S">S</button>
+          <button class="qv-size-btn" data-size="M">M</button>
+          <button class="qv-size-btn" data-size="L">L</button>
+          <button class="qv-size-btn" data-size="XL">XL</button>
+        </div>
+      </div>
+
+      <!-- Color -->
+      <div class="qv-option">
+        <p class="qv-option__label">COLOR</p>
+        <div class="qv-colors"></div>
+      </div>
+
+      <!-- Quantity -->
+      <div class="qv-option">
+        <p class="qv-option__label">수량</p>
+        <div class="qv-qty">
+          <button class="qv-qty-btn qv-qty-minus" aria-label="수량 줄이기">−</button>
+          <span class="qv-qty-num">1</span>
+          <button class="qv-qty-btn qv-qty-plus" aria-label="수량 늘리기">+</button>
+        </div>
+      </div>
+
+      <div class="qv-actions">
+        <button class="qv-wish-btn" aria-label="위시리스트에 추가">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </button>
+        <button class="qv-cart-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          장바구니 담기
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- =============================================
+     WISHLIST MODAL
+     ============================================= -->
+<div class="modal-overlay wl-overlay" aria-hidden="true"></div>
+<div class="wl-modal" role="dialog" aria-modal="true" aria-label="위시리스트">
+  <div class="wl-modal__header">
+    <h2 class="wl-modal__title">위시리스트</h2>
+    <button class="wl-modal__close" aria-label="위시리스트 닫기">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+  <div class="wl-modal__body">
+    <ul class="wl-items"></ul>
+    <div class="wl-empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+      </svg>
+      <p>위시리스트가 비어있습니다</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- =============================================
+     ORDER COMPLETE MODAL
+     ============================================= -->
+<div class="modal-overlay order-overlay" aria-hidden="true"></div>
+<div class="order-modal" role="dialog" aria-modal="true" aria-label="주문 완료">
+  <div class="order-modal__icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"/>
+      <polyline points="9 12 11 14 15 10"/>
+    </svg>
+  </div>
+  <h2 class="order-modal__title">주문이 완료되었습니다</h2>
+  <p class="order-modal__desc">감사합니다! 주문하신 상품은 영업일 기준 1~3일 내 발송됩니다.</p>
+  <p class="order-modal__num"></p>
+  <button class="order-modal__close-btn">쇼핑 계속하기</button>
 </div>
 
 
@@ -283,13 +433,34 @@
         <h2 class="section-title">New Arrivals</h2>
         <p class="section-sub">신상품</p>
       </div>
-      <a href="#" class="view-all">View All</a>
+      <div class="arrivals-controls">
+        <!-- Sort Dropdown -->
+        <div class="sort-wrap">
+          <select class="sort-select" aria-label="상품 정렬">
+            <option value="default">최신순</option>
+            <option value="price-asc">가격 낮은순</option>
+            <option value="price-desc">가격 높은순</option>
+          </select>
+          <svg class="sort-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
+        <a href="#" class="view-all">View All</a>
+      </div>
     </div>
 
     <div class="product-grid">
 
       <!-- Product 1 -->
-      <article class="product-card" data-name="오버사이즈 울 코트">
+      <article class="product-card"
+        data-id="p1"
+        data-name="오버사이즈 울 코트"
+        data-price="498000"
+        data-badge="new"
+        data-img="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=600&q=80&auto=format&fit=crop"
+        data-desc="프리미엄 울 소재로 제작된 오버사이즈 코트. 시즌리스 디자인으로 연중 착용 가능하며, 크림 베이지 컬러가 어떤 스타일에도 잘 어울립니다."
+        data-colors="#E8E0D5,#2C2C2C,#8B7355"
+      >
         <div class="product-card__img-wrap">
           <img
             src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=600&q=80&auto=format&fit=crop"
@@ -316,7 +487,15 @@
       </article>
 
       <!-- Product 2 -->
-      <article class="product-card" data-name="리넨 와이드 팬츠">
+      <article class="product-card"
+        data-id="p2"
+        data-name="리넨 와이드 팬츠"
+        data-price="198000"
+        data-badge="new"
+        data-img="https://images.unsplash.com/photo-1594938298603-c8148c4b5bdc?w=600&q=80&auto=format&fit=crop"
+        data-desc="100% 천연 리넨 소재의 와이드 팬츠. 통기성이 뛰어나 여름에도 쾌적하게 착용 가능. 오프화이트 컬러로 다양한 코디에 활용하세요."
+        data-colors="#F5F0E8,#C4A882,#4A4A4A"
+      >
         <div class="product-card__img-wrap">
           <img
             src="https://images.unsplash.com/photo-1594938298603-c8148c4b5bdc?w=600&q=80&auto=format&fit=crop"
@@ -343,7 +522,16 @@
       </article>
 
       <!-- Product 3 -->
-      <article class="product-card" data-name="실크 슬립 드레스">
+      <article class="product-card"
+        data-id="p3"
+        data-name="실크 슬립 드레스"
+        data-price="268000"
+        data-original-price="398000"
+        data-badge="sale"
+        data-img="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&q=80&auto=format&fit=crop"
+        data-desc="100% 순수 실크로 제작된 슬립 드레스. 샴페인 골드 컬러의 광택이 고급스러운 분위기를 연출합니다. 단독 착용 또는 레이어드 스타일로."
+        data-colors="#D4C5A9,#1A1A1A,#8B6F47"
+      >
         <div class="product-card__img-wrap">
           <img
             src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&q=80&auto=format&fit=crop"
@@ -373,7 +561,15 @@
       </article>
 
       <!-- Product 4 -->
-      <article class="product-card" data-name="울 터틀넥 니트">
+      <article class="product-card"
+        data-id="p4"
+        data-name="울 터틀넥 니트"
+        data-price="228000"
+        data-badge=""
+        data-img="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=600&q=80&auto=format&fit=crop"
+        data-desc="보온성이 뛰어난 울 소재의 터틀넥 니트. 차콜 그레이 컬러로 다양한 하의와 매치하기 좋으며, 타이트하지 않은 편안한 핏이 특징입니다."
+        data-colors="#5C5C5C,#1A1A1A,#E8E4DC"
+      >
         <div class="product-card__img-wrap">
           <img
             src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=600&q=80&auto=format&fit=crop"
@@ -399,7 +595,15 @@
       </article>
 
       <!-- Product 5 -->
-      <article class="product-card" data-name="스트럭처드 재킷">
+      <article class="product-card"
+        data-id="p5"
+        data-name="스트럭처드 재킷"
+        data-price="398000"
+        data-badge="new"
+        data-img="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600&q=80&auto=format&fit=crop"
+        data-desc="구조감 있는 실루엣의 재킷. 고급 울 혼방 소재로 제작되어 형태 유지력이 뛰어납니다. 블랙 컬러로 정장부터 캐주얼까지 폭넓게 활용 가능."
+        data-colors="#111111,#4A4A4A,#8B7355"
+      >
         <div class="product-card__img-wrap">
           <img
             src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600&q=80&auto=format&fit=crop"
@@ -426,7 +630,15 @@
       </article>
 
       <!-- Product 6 -->
-      <article class="product-card" data-name="크롭 캐시미어 카디건">
+      <article class="product-card"
+        data-id="p6"
+        data-name="크롭 캐시미어 카디건"
+        data-price="348000"
+        data-badge=""
+        data-img="https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?w=600&q=80&auto=format&fit=crop"
+        data-desc="최상급 캐시미어 소재의 크롭 카디건. 부드러운 촉감과 보온성을 동시에 갖춘 아이템으로, 아이보리 컬러가 여성스럽고 우아한 분위기를 연출합니다."
+        data-colors="#F0EDE5,#D4C5A9,#C8B89A"
+      >
         <div class="product-card__img-wrap">
           <img
             src="https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?w=600&q=80&auto=format&fit=crop"
@@ -452,7 +664,16 @@
       </article>
 
       <!-- Product 7 -->
-      <article class="product-card" data-name="슬림 테일러드 팬츠">
+      <article class="product-card"
+        data-id="p7"
+        data-name="슬림 테일러드 팬츠"
+        data-price="148000"
+        data-original-price="198000"
+        data-badge="sale"
+        data-img="https://images.unsplash.com/photo-1600717707850-a7d51b7bedf7?w=600&q=80&auto=format&fit=crop"
+        data-desc="정제된 라인의 슬림 테일러드 팬츠. 탄력 있는 혼방 소재로 활동성이 뛰어나며, 네이비 컬러로 비즈니스 캐주얼부터 포멀까지 다양하게 활용하세요."
+        data-colors="#1C2B4A,#111111,#5C5C5C"
+      >
         <div class="product-card__img-wrap">
           <img
             src="https://images.unsplash.com/photo-1600717707850-a7d51b7bedf7?w=600&q=80&auto=format&fit=crop"
@@ -482,7 +703,15 @@
       </article>
 
       <!-- Product 8 -->
-      <article class="product-card" data-name="미니멀 레더 토트백">
+      <article class="product-card"
+        data-id="p8"
+        data-name="미니멀 레더 토트백"
+        data-price="548000"
+        data-badge="new"
+        data-img="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80&auto=format&fit=crop"
+        data-desc="이탈리아산 풀 그레인 레더로 제작된 토트백. 군더더기 없는 미니멀한 디자인과 넉넉한 수납 공간이 특징. 블랙 컬러로 어떤 스타일에도 완벽하게 어울립니다."
+        data-colors="#111111,#8B7355,#C8B89A"
+      >
         <div class="product-card__img-wrap">
           <img
             src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80&auto=format&fit=crop"
@@ -529,7 +758,15 @@
     <div class="best-grid">
 
       <!-- Best 1 -->
-      <article class="best-card" data-name="클래식 울 코트">
+      <article class="best-card"
+        data-id="b1"
+        data-name="클래식 울 코트"
+        data-price="528000"
+        data-badge=""
+        data-img="https://images.unsplash.com/photo-1551232864-3f0890e580d9?w=600&q=80&auto=format&fit=crop"
+        data-desc="MAISON의 시그니처 울 코트. 수백 명의 고객이 선택한 베스트셀러 1위 아이템으로, 클래식한 디자인과 최고급 울 소재의 조화가 완벽합니다."
+        data-colors="#111111,#5C5C5C,#C8B89A"
+      >
         <div class="best-card__img-wrap">
           <img
             src="https://images.unsplash.com/photo-1551232864-3f0890e580d9?w=600&q=80&auto=format&fit=crop"
@@ -549,7 +786,15 @@
       </article>
 
       <!-- Best 2 -->
-      <article class="best-card" data-name="오가닉 코튼 티셔츠">
+      <article class="best-card"
+        data-id="b2"
+        data-name="오가닉 코튼 티셔츠"
+        data-price="88000"
+        data-badge=""
+        data-img="https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=600&q=80&auto=format&fit=crop"
+        data-desc="100% 오가닉 코튼으로 제작된 에센셜 티셔츠. 환경을 생각하는 지속 가능한 방식으로 생산되었으며, 화이트 컬러가 어떤 하의와도 완벽하게 매치됩니다."
+        data-colors="#FFFFFF,#E0D8CC,#111111"
+      >
         <div class="best-card__img-wrap">
           <img
             src="https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=600&q=80&auto=format&fit=crop"
@@ -569,7 +814,15 @@
       </article>
 
       <!-- Best 3 -->
-      <article class="best-card" data-name="레더 미니 크로스백">
+      <article class="best-card"
+        data-id="b3"
+        data-name="레더 미니 크로스백"
+        data-price="328000"
+        data-badge=""
+        data-img="https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&q=80&auto=format&fit=crop"
+        data-desc="콤팩트한 사이즈의 레더 크로스백. 베이지 컬러의 부드러운 레더 소재와 골드 체인이 포인트. 데일리부터 이브닝 룩까지 다양하게 활용 가능합니다."
+        data-colors="#C8B89A,#111111,#8B7355"
+      >
         <div class="best-card__img-wrap">
           <img
             src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&q=80&auto=format&fit=crop"
@@ -589,7 +842,15 @@
       </article>
 
       <!-- Best 4 -->
-      <article class="best-card" data-name="와이드 데님 팬츠">
+      <article class="best-card"
+        data-id="b4"
+        data-name="와이드 데님 팬츠"
+        data-price="178000"
+        data-badge=""
+        data-img="https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=600&q=80&auto=format&fit=crop"
+        data-desc="편안한 착용감의 와이드 데님 팬츠. 유기농 코튼 데님으로 제작되어 지속 가능성을 추구합니다. 인디고 컬러로 다양한 상의와 자연스럽게 어울립니다."
+        data-colors="#1C2B4A,#4A5568,#8B7355"
+      >
         <div class="best-card__img-wrap">
           <img
             src="https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=600&q=80&auto=format&fit=crop"
@@ -710,7 +971,7 @@
           <!-- Pinterest -->
           <a href="#" class="footer-social-btn" aria-label="핀터레스트">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M12 2C6.477 2 2 6.477 2 12c0 4.236 2.636 7.855 6.356 9.312-.088-.791-.167-2.005.035-2.868.181-.78 1.172-4.97 1.172-4.97s-.299-.598-.299-1.482c0-1.388.806-2.428 1.808-2.428.853 0 1.267.64 1.267 1.408 0 .858-.546 2.14-.828 3.33-.236.995.499 1.806 1.476 1.806 1.771 0 3.135-1.867 3.135-4.56 0-2.384-1.714-4.052-4.161-4.052-2.834 0-4.498 2.126-4.498 4.323 0 .856.33 1.773.741 2.274a.3.3 0 0 1 .069.286c-.076.315-.245 1 -.278 1.139-.044.183-.146.222-.336.134-1.249-.581-2.03-2.407-2.03-3.874 0-3.154 2.292-6.052 6.608-6.052 3.469 0 6.165 2.473 6.165 5.776 0 3.447-2.173 6.22-5.19 6.22-1.013 0-1.966-.527-2.292-1.148l-.623 2.378c-.226.869-.835 1.958-1.244 2.621.937.29 1.931.446 2.962.446 5.523 0 10-4.477 10-10S17.523 2 12 2z"/>
+              <path d="M12 2C6.477 2 2 6.477 2 12c0 4.236 2.636 7.855 6.356 9.312-.088-.791-.167-2.005.035-2.868.181-.78 1.172-4.97 1.172-4.97s-.299-.598-.299-1.482c0-1.388.806-2.428 1.808-2.428.853 0 1.267.64 1.267 1.408 0 .858-.546 2.14-.828 3.33-.236.995.499 1.806 1.476 1.806 1.771 0 3.135-1.867 3.135-4.56 0-2.384-1.714-4.052-4.161-4.052-2.834 0-4.498 2.126-4.498 4.323 0 .856.33 1.773.741 2.274a.3.3 0 0 1 .069.286c-.076.315-.245 1-.278 1.139-.044.183-.146.222-.336.134-1.249-.581-2.03-2.407-2.03-3.874 0-3.154 2.292-6.052 6.608-6.052 3.469 0 6.165 2.473 6.165 5.776 0 3.447-2.173 6.22-5.19 6.22-1.013 0-1.966-.527-2.292-1.148l-.623 2.378c-.226.869-.835 1.958-1.244 2.621.937.29 1.931.446 2.962.446 5.523 0 10-4.477 10-10S17.523 2 12 2z"/>
             </svg>
           </a>
           <!-- YouTube -->

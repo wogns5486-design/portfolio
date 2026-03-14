@@ -14,7 +14,6 @@
     if (!container) return;
 
     const PETAL_COUNT = 22;
-
     for (let i = 0; i < PETAL_COUNT; i++) {
       createPetal(container, i, PETAL_COUNT);
     }
@@ -25,11 +24,11 @@
     petal.className = 'petal';
 
     const leftPercent = (index / total) * 105 - 2;
-    const duration = 6 + Math.random() * 8;       // 6s ~ 14s
-    const delay = Math.random() * 12;              // spread start times
-    const size = 12 + Math.random() * 14;         // 12px ~ 26px
+    const duration = 6 + Math.random() * 8;
+    const delay = Math.random() * 12;
+    const size = 12 + Math.random() * 14;
     const rotation = Math.random() * 360;
-    const hue = Math.random() > 0.5;              // two petal color variants
+    const hue = Math.random() > 0.5;
 
     petal.style.cssText = `
       left: ${leftPercent}%;
@@ -66,10 +65,8 @@
         },
         { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
       );
-
       elements.forEach((el) => observer.observe(el));
     } else {
-      // Fallback for older browsers
       elements.forEach((el) => el.classList.add('visible'));
     }
   }
@@ -81,14 +78,12 @@
     const grid = document.querySelector('.calendar-grid');
     if (!grid) return;
 
-    // Clear existing static HTML
     grid.innerHTML = '';
 
     const WEDDING_DAY = 24;
-    const MONTH = 4;   // 0-indexed: May = 4
+    const MONTH = 4;
     const YEAR = 2025;
 
-    // Day name headers
     const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
     dayNames.forEach((name, i) => {
       const el = document.createElement('div');
@@ -99,18 +94,15 @@
       grid.appendChild(el);
     });
 
-    // First day of May 2025 is Thursday (index 4 in 0=Sun week)
-    const firstDay = new Date(YEAR, MONTH, 1).getDay(); // 4 = Thu
-    const daysInMonth = new Date(YEAR, MONTH + 1, 0).getDate(); // 31
+    const firstDay = new Date(YEAR, MONTH, 1).getDay();
+    const daysInMonth = new Date(YEAR, MONTH + 1, 0).getDate();
 
-    // Empty cells
     for (let i = 0; i < firstDay; i++) {
       const empty = document.createElement('div');
       empty.className = 'cal-empty';
       grid.appendChild(empty);
     }
 
-    // Day cells
     for (let day = 1; day <= daysInMonth; day++) {
       const dayOfWeek = (firstDay + day - 1) % 7;
       const el = document.createElement('div');
@@ -138,7 +130,6 @@
   ============================================================ */
   function initCountdown() {
     const weddingDate = new Date('2025-05-24T14:00:00');
-
     const daysEl    = document.getElementById('ddayDays');
     const hoursEl   = document.getElementById('ddayHours');
     const minutesEl = document.getElementById('ddayMinutes');
@@ -146,35 +137,24 @@
 
     if (!daysEl) return;
 
-    function pad(n) {
-      return String(Math.max(0, n)).padStart(2, '0');
-    }
+    function pad(n) { return String(Math.max(0, n)).padStart(2, '0'); }
 
     function update() {
       const now  = new Date();
       const diff = weddingDate - now;
 
       if (diff <= 0) {
-        daysEl.textContent    = '00';
-        hoursEl.textContent   = '00';
-        minutesEl.textContent = '00';
-        secondsEl.textContent = '00';
-
+        daysEl.textContent = hoursEl.textContent = minutesEl.textContent = secondsEl.textContent = '00';
         const label = document.querySelector('.dday-label');
         if (label) label.textContent = '행복한 결혼을 축하합니다! ♥';
         return;
       }
 
       const totalSec = Math.floor(diff / 1000);
-      const days     = Math.floor(totalSec / 86400);
-      const hours    = Math.floor((totalSec % 86400) / 3600);
-      const minutes  = Math.floor((totalSec % 3600) / 60);
-      const seconds  = totalSec % 60;
-
-      daysEl.textContent    = pad(days);
-      hoursEl.textContent   = pad(hours);
-      minutesEl.textContent = pad(minutes);
-      secondsEl.textContent = pad(seconds);
+      daysEl.textContent    = pad(Math.floor(totalSec / 86400));
+      hoursEl.textContent   = pad(Math.floor((totalSec % 86400) / 3600));
+      minutesEl.textContent = pad(Math.floor((totalSec % 3600) / 60));
+      secondsEl.textContent = pad(totalSec % 60);
     }
 
     update();
@@ -225,12 +205,11 @@
 
     document.addEventListener('keydown', (e) => {
       if (!lightbox.classList.contains('active')) return;
-      if (e.key === 'Escape')    close();
-      if (e.key === 'ArrowLeft') openAt(currentIndex - 1);
+      if (e.key === 'Escape')     close();
+      if (e.key === 'ArrowLeft')  openAt(currentIndex - 1);
       if (e.key === 'ArrowRight') openAt(currentIndex + 1);
     });
 
-    // Touch swipe
     let touchStartX = 0;
     lightbox.addEventListener('touchstart', (e) => {
       touchStartX = e.touches[0].clientX;
@@ -261,7 +240,6 @@
           if (navigator.clipboard && window.isSecureContext) {
             await navigator.clipboard.writeText(account);
           } else {
-            // Fallback
             const el = document.createElement('textarea');
             el.value = account;
             el.style.cssText = 'position:fixed;left:-9999px;top:-9999px;';
@@ -271,7 +249,6 @@
             document.body.removeChild(el);
           }
 
-          // Button feedback
           const original = btn.textContent;
           btn.textContent = '복사됨 ✓';
           btn.classList.add('copied');
@@ -280,7 +257,6 @@
             btn.classList.remove('copied');
           }, 2000);
 
-          // Toast
           showToast(`${name} 계좌번호가 복사되었습니다`);
         } catch (err) {
           showToast('복사에 실패했습니다. 직접 입력해 주세요.');
@@ -298,15 +274,112 @@
   }
 
   /* ============================================================
-     7. GUESTBOOK
+     7. GUESTBOOK — localStorage 연동
   ============================================================ */
+  const GUESTBOOK_KEY = 'wedding_guestbook_messages';
+
+  function loadMessages() {
+    try {
+      return JSON.parse(localStorage.getItem(GUESTBOOK_KEY) || '[]');
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveMessages(messages) {
+    localStorage.setItem(GUESTBOOK_KEY, JSON.stringify(messages));
+  }
+
+  function formatTime(isoString) {
+    const date = new Date(isoString);
+    const now  = new Date();
+    const diffMs  = now - date;
+    const diffMin = Math.floor(diffMs / 60000);
+    const diffHr  = Math.floor(diffMs / 3600000);
+    const diffDay = Math.floor(diffMs / 86400000);
+
+    if (diffMin < 1)  return '방금 전';
+    if (diffMin < 60) return `${diffMin}분 전`;
+    if (diffHr  < 24) return `${diffHr}시간 전`;
+    if (diffDay < 7)  return `${diffDay}일 전`;
+
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}.${m}.${d}`;
+  }
+
+  function escapeHtml(str) {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function renderMessageCard(msg, prepend) {
+    const list = document.getElementById('messagesList');
+    if (!list) return;
+
+    const card = document.createElement('div');
+    card.className = 'message-card' + (prepend ? ' new-message' : '');
+    card.dataset.id = msg.id;
+    card.innerHTML = `
+      <div class="message-header">
+        <span class="message-name">${escapeHtml(msg.name)}</span>
+        <span class="message-relation">${escapeHtml(msg.relation)}</span>
+        <span class="message-time">${formatTime(msg.createdAt)}</span>
+        <button class="message-delete" data-id="${msg.id}" aria-label="삭제">✕</button>
+      </div>
+      <p class="message-text">${escapeHtml(msg.message)}</p>
+    `;
+
+    card.querySelector('.message-delete').addEventListener('click', () => {
+      deleteMessage(msg.id);
+      card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+      card.style.opacity = '0';
+      card.style.transform = 'translateX(20px)';
+      setTimeout(() => card.remove(), 300);
+    });
+
+    if (prepend) {
+      list.insertBefore(card, list.firstChild);
+    } else {
+      list.appendChild(card);
+    }
+  }
+
+  function deleteMessage(id) {
+    const messages = loadMessages().filter(m => m.id !== id);
+    saveMessages(messages);
+  }
+
   function initGuestbook() {
-    const form       = document.getElementById('guestbookForm');
-    const textarea   = document.getElementById('guestMessage');
-    const charCount  = document.getElementById('charCount');
-    const list       = document.getElementById('messagesList');
+    const form      = document.getElementById('guestbookForm');
+    const textarea  = document.getElementById('guestMessage');
+    const charCount = document.getElementById('charCount');
+    const list      = document.getElementById('messagesList');
 
     if (!form) return;
+
+    // Clear static placeholder messages and load from localStorage
+    if (list) {
+      list.innerHTML = '';
+      const stored = loadMessages();
+      if (stored.length === 0) {
+        // Seed with initial sample messages so it doesn't look empty
+        const samples = [
+          { id: 'seed1', name: '박지현', relation: '친구', message: '민준이 서윤이 결혼 너무 축하해! 두 사람 정말 잘 어울려. 앞으로도 행복하게 살아~ ❤️', createdAt: new Date(Date.now() - 10 * 60000).toISOString() },
+          { id: 'seed2', name: '최승현', relation: '직장동료', message: '두 분의 결혼을 진심으로 축하드립니다. 언제나 건강하고 행복한 가정 이루시길 바랍니다.', createdAt: new Date(Date.now() - 5 * 60000).toISOString() },
+          { id: 'seed3', name: '김예린', relation: '친구', message: '서윤아 드디어 결혼하는구나! 꽃길만 걸어! 결혼 정말 축하해 💐', createdAt: new Date(Date.now() - 2 * 60000).toISOString() },
+        ];
+        saveMessages(samples);
+        samples.forEach(msg => renderMessageCard(msg, false));
+      } else {
+        stored.forEach(msg => renderMessageCard(msg, false));
+      }
+    }
 
     // Character counter
     if (textarea && charCount) {
@@ -334,40 +407,68 @@
         return;
       }
 
-      // Create message card
-      const card = document.createElement('div');
-      card.className = 'message-card new-message';
-      card.innerHTML = `
-        <div class="message-header">
-          <span class="message-name">${escapeHtml(name)}</span>
-          <span class="message-relation">${escapeHtml(relation)}</span>
-          <span class="message-time">방금 전</span>
-        </div>
-        <p class="message-text">${escapeHtml(message)}</p>
-      `;
+      const msg = {
+        id: Date.now().toString(),
+        name,
+        relation,
+        message,
+        createdAt: new Date().toISOString(),
+      };
 
-      list.insertBefore(card, list.firstChild);
+      const messages = loadMessages();
+      messages.unshift(msg);
+      saveMessages(messages);
 
-      // Reset
+      renderMessageCard(msg, true);
+
       form.reset();
       if (charCount) charCount.textContent = '0';
 
-      // Scroll to the new message
-      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      const firstCard = list.querySelector('.message-card');
+      if (firstCard) firstCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     });
   }
 
-  function escapeHtml(str) {
-    return str
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
+  /* ============================================================
+     8. KAKAO SHARE (클립보드 복사 + 토스트)
+  ============================================================ */
+  function initKakaoShare() {
+    const btn = document.getElementById('kakaoShareBtn');
+    if (!btn) return;
+
+    btn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const url = window.location.href;
+
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(url);
+        } else {
+          const el = document.createElement('textarea');
+          el.value = url;
+          el.style.cssText = 'position:fixed;left:-9999px;top:-9999px;';
+          document.body.appendChild(el);
+          el.select();
+          document.execCommand('copy');
+          document.body.removeChild(el);
+        }
+        showShareToast('링크가 복사되었습니다 🔗');
+      } catch (err) {
+        showShareToast('링크 복사에 실패했습니다.');
+      }
+    });
+  }
+
+  function showShareToast(message) {
+    const toast = document.getElementById('copyToast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2800);
   }
 
   /* ============================================================
-     8. SMOOTH SCROLL for anchor links
+     9. SMOOTH SCROLL for anchor links
   ============================================================ */
   function initSmoothScroll() {
     document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
@@ -394,6 +495,7 @@
     initGallery();
     initAccountCopy();
     initGuestbook();
+    initKakaoShare();
     initSmoothScroll();
   }
 
