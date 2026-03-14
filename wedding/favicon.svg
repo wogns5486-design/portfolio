@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="heartGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4A574;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C4956A;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <path d="M32 52 C32 52 8 36 8 20 C8 12 14 6 22 6 C26 6 30 8 32 12 C34 8 38 6 42 6 C50 6 56 12 56 20 C56 36 32 52 32 52Z" fill="url(#heartGrad)"/>
+  <!-- Two rings interlinked -->
+  <circle cx="26" cy="20" r="7" fill="none" stroke="#FFF9F5" stroke-width="2.5" opacity="0.8"/>
+  <circle cx="38" cy="20" r="7" fill="none" stroke="#FFF9F5" stroke-width="2.5" opacity="0.8"/>
+</svg>

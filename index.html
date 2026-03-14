@@ -180,6 +180,122 @@
       background: rgba(108,92,231,0.08);
     }
 
+    /* Dashboard thumbnail */
+    .project-thumb-dash {
+      background: #0f1117;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .mini-dash {
+      width: 100%;
+      max-width: 320px;
+      display: flex;
+      gap: 8px;
+      height: 160px;
+    }
+
+    .mini-dash-sidebar {
+      width: 48px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 6px;
+      padding: 8px 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .mini-dash-logo {
+      width: 100%;
+      height: 12px;
+      background: rgba(108,92,231,0.3);
+      border-radius: 3px;
+      margin-bottom: 4px;
+    }
+
+    .mini-dash-menu {
+      width: 100%;
+      height: 8px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 2px;
+    }
+
+    .mini-dash-menu.active {
+      background: rgba(108,92,231,0.25);
+    }
+
+    .mini-dash-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .mini-dash-cards {
+      display: flex;
+      gap: 6px;
+    }
+
+    .mini-dash-stat {
+      flex: 1;
+      height: 36px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 4px;
+    }
+
+    .mini-dash-chart {
+      flex: 1;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 4px;
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      padding: 8px 12px;
+    }
+
+    .mini-bar {
+      flex: 1;
+      background: linear-gradient(to top, rgba(108,92,231,0.4), rgba(108,92,231,0.15));
+      border-radius: 2px 2px 0 0;
+    }
+
+    /* Wedding thumbnail */
+    .project-thumb-wedding {
+      background: linear-gradient(135deg, #FFF9F5, #F5EBE0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .mini-wedding {
+      text-align: center;
+    }
+
+    .mini-wedding-flower {
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+    }
+
+    .mini-wedding-names {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #8B7355;
+      letter-spacing: 4px;
+      margin-bottom: 4px;
+    }
+
+    .mini-wedding-date {
+      font-size: 0.8rem;
+      color: #B8A08A;
+      letter-spacing: 2px;
+    }
+
     .project-info {
       padding: 24px;
     }
@@ -270,7 +386,7 @@
     <div>
       <p class="hero-label">Web Developer</p>
       <h1>Portfolio</h1>
-      <p>웹 사이트 제작 전문 · 랜딩페이지, 기업 홈페이지, 반응형 웹</p>
+      <p>웹 사이트 제작 전문 · 랜딩페이지, 쇼핑몰, 대시보드, 모바일 웹</p>
     </div>
   </section>
 
@@ -320,6 +436,72 @@
             <div class="project-tag">Cafe Landing Page</div>
             <h3>BLOSSOM COFFEE</h3>
             <p>감성 카페 랜딩페이지. 메뉴 탭 전환, 갤러리, 지도 연동, 반응형 디자인 구현.</p>
+            <div class="project-link">자세히 보기 <span>→</span></div>
+          </div>
+        </a>
+
+        <!-- Dashboard -->
+        <a href="dashboard/index.html" class="project-card">
+          <div class="project-thumb project-thumb-dash">
+            <div class="mini-dash">
+              <div class="mini-dash-sidebar">
+                <div class="mini-dash-logo"></div>
+                <div class="mini-dash-menu"></div>
+                <div class="mini-dash-menu"></div>
+                <div class="mini-dash-menu active"></div>
+                <div class="mini-dash-menu"></div>
+              </div>
+              <div class="mini-dash-main">
+                <div class="mini-dash-cards">
+                  <div class="mini-dash-stat"></div>
+                  <div class="mini-dash-stat"></div>
+                  <div class="mini-dash-stat"></div>
+                </div>
+                <div class="mini-dash-chart">
+                  <div class="mini-bar" style="height:40%"></div>
+                  <div class="mini-bar" style="height:65%"></div>
+                  <div class="mini-bar" style="height:45%"></div>
+                  <div class="mini-bar" style="height:80%"></div>
+                  <div class="mini-bar" style="height:55%"></div>
+                  <div class="mini-bar" style="height:70%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="project-info">
+            <div class="project-tag">Admin Dashboard</div>
+            <h3>FlowPanel — 관리자 대시보드</h3>
+            <p>이커머스 관리자 패널. 매출 차트, 주문 테이블, 통계 카드, 다크 테마 UI.</p>
+            <div class="project-link">자세히 보기 <span>→</span></div>
+          </div>
+        </a>
+
+        <!-- Shopping Mall -->
+        <a href="shop-landing/index.html" class="project-card">
+          <div class="project-thumb">
+            <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&h=300&fit=crop" alt="쇼핑몰 메인">
+          </div>
+          <div class="project-info">
+            <div class="project-tag">Shopping Mall</div>
+            <h3>MAISON — 패션 쇼핑몰</h3>
+            <p>미니멀 패션 브랜드 메인 페이지. 이미지 슬라이더, 상품 그리드, 장바구니 UI.</p>
+            <div class="project-link">자세히 보기 <span>→</span></div>
+          </div>
+        </a>
+
+        <!-- Wedding -->
+        <a href="wedding/index.html" class="project-card">
+          <div class="project-thumb project-thumb-wedding">
+            <div class="mini-wedding">
+              <div class="mini-wedding-flower">🌸</div>
+              <div class="mini-wedding-names">민준 ♥ 서윤</div>
+              <div class="mini-wedding-date">2025. 05. 24</div>
+            </div>
+          </div>
+          <div class="project-info">
+            <div class="project-tag">Mobile Wedding</div>
+            <h3>모바일 청첩장</h3>
+            <p>모바일 전용 웨딩 초대장. 꽃잎 애니메이션, D-day 카운트다운, 계좌 복사 기능.</p>
             <div class="project-link">자세히 보기 <span>→</span></div>
           </div>
         </a>

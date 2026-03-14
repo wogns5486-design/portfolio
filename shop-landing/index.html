@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MAISON — Minimal Fashion Brand</title>
+
+  <!-- SEO -->
+  <meta name="description" content="MAISON은 군더더기 없는 미니멀리즘 철학을 담은 프리미엄 패션 브랜드입니다. 시즌리스 디자인, 지속 가능한 소재, 정제된 실루엣으로 완성한 컬렉션을 만나보세요." />
+  <meta name="keywords" content="MAISON, 미니멀 패션, 프리미엄 패션, 여성 의류, 남성 의류, 액세서리, 미니멀리즘, 패션 브랜드" />
+  <meta name="author" content="MAISON" />
+  <link rel="canonical" href="https://maison-brand.com/" />
+
+  <!-- OG -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://maison-brand.com/" />
+  <meta property="og:title"       content="MAISON — Minimal Fashion Brand" />
+  <meta property="og:description" content="군더더기 없는 미니멀리즘. 시즌리스 프리미엄 컬렉션." />
+  <meta property="og:image"       content="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale"      content="ko_KR" />
+  <meta property="og:site_name"   content="MAISON" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="MAISON — Minimal Fashion Brand" />
+  <meta name="twitter:description" content="군더더기 없는 미니멀리즘. 시즌리스 프리미엄 컬렉션." />
+  <meta name="twitter:image"       content="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- =============================================
+     NAVIGATION
+     ============================================= -->
+<header class="nav" role="banner">
+  <div class="nav__inner">
+
+    <!-- Logo -->
+    <a href="/" class="nav__logo" aria-label="MAISON 홈으로">MAISON</a>
+
+    <!-- Center menu -->
+    <nav class="nav__menu" aria-label="주요 메뉴">
+      <a href="#">NEW</a>
+      <a href="#">WOMEN</a>
+      <a href="#">MEN</a>
+      <a href="#">ACC</a>
+      <a href="#" class="sale">SALE</a>
+    </nav>
+
+    <!-- Icons -->
+    <div class="nav__icons">
+      <!-- Search -->
+      <button class="nav__icon-btn search-btn" aria-label="검색">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="11" cy="11" r="7"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </button>
+      <!-- Wishlist -->
+      <button class="nav__icon-btn" aria-label="위시리스트">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+      </button>
+      <!-- Cart -->
+      <button class="nav__icon-btn cart-btn" aria-label="장바구니">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+        <span class="cart-badge" aria-label="장바구니 상품 수">0</span>
+      </button>
+      <!-- My page -->
+      <button class="nav__icon-btn" aria-label="마이페이지">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </button>
+      <!-- Hamburger (mobile) -->
+      <button class="nav__hamburger" aria-label="메뉴 열기" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile Drawer -->
+<nav class="nav__drawer" aria-label="모바일 메뉴">
+  <a href="#">NEW</a>
+  <a href="#">WOMEN</a>
+  <a href="#">MEN</a>
+  <a href="#">ACC</a>
+  <a href="#" class="sale">SALE</a>
+</nav>
+
+<!-- Search Overlay -->
+<div class="search-overlay" role="dialog" aria-modal="true" aria-label="상품 검색">
+  <div class="search-form">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="1.8" style="width:22px;height:22px;flex-shrink:0">
+      <circle cx="11" cy="11" r="7"/>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <input class="search-input" type="search" placeholder="상품을 검색하세요..." autocomplete="off" />
+    <button class="search-close">ESC</button>
+  </div>
+</div>
+
+
+<!-- =============================================
+     HERO SLIDER
+     ============================================= -->
+<section class="hero" aria-label="히어로 배너">
+  <div class="slider" role="list">
+
+    <!-- Slide 1 -->
+    <article class="slide" role="listitem" aria-label="슬라이드 1">
+      <img
+        src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&q=80&auto=format&fit=crop"
+        alt="MAISON 2025 SS 컬렉션 — 깔끔한 라인의 미니멀 코트"
+        loading="eager"
+        fetchpriority="high"
+      />
+      <div class="slide__content">
+        <p class="slide__eyebrow">2025 Spring / Summer</p>
+        <h1 class="slide__title">
+          The Art of<br>
+          <strong>Simplicity</strong>
+        </h1>
+        <p class="slide__desc">불필요한 것을 걷어낸 자리에<br>본질만이 남습니다.</p>
+        <a href="#" class="btn-hero">
+          Collection 보기
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+      </div>
+    </article>
+
+    <!-- Slide 2 -->
+    <article class="slide" role="listitem" aria-label="슬라이드 2">
+      <img
+        src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=1600&q=80&auto=format&fit=crop"
+        alt="MAISON 미니멀 우먼스 룩 — 화이트 블라우스와 와이드 팬츠"
+        loading="lazy"
+      />
+      <div class="slide__content">
+        <p class="slide__eyebrow">Women's Collection</p>
+        <h1 class="slide__title">
+          Effortless<br>
+          <strong>Elegance</strong>
+        </h1>
+        <p class="slide__desc">정제된 실루엣이 만들어내는<br>일상의 우아함.</p>
+        <a href="#" class="btn-hero">
+          Women 보기
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+      </div>
+    </article>
+
+    <!-- Slide 3 -->
+    <article class="slide" role="listitem" aria-label="슬라이드 3">
+      <img
+        src="https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?w=1600&q=80&auto=format&fit=crop"
+        alt="MAISON 멘즈 컬렉션 — 블랙 수트와 미니멀 액세서리"
+        loading="lazy"
+      />
+      <div class="slide__content">
+        <p class="slide__eyebrow">Men's Collection</p>
+        <h1 class="slide__title">
+          Less is<br>
+          <strong>More</strong>
+        </h1>
+        <p class="slide__desc">남성성의 새로운 정의.<br>절제와 품격의 균형.</p>
+        <a href="#" class="btn-hero">
+          Men 보기
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+      </div>
+    </article>
+  </div>
+
+  <!-- Dots -->
+  <div class="slider-controls" aria-label="슬라이드 이동">
+    <button class="slider-dot active" aria-label="슬라이드 1로 이동"></button>
+    <button class="slider-dot" aria-label="슬라이드 2로 이동"></button>
+    <button class="slider-dot" aria-label="슬라이드 3로 이동"></button>
+  </div>
+
+  <!-- Arrows -->
+  <div class="slider-arrows">
+    <button class="slider-arrow prev" aria-label="이전 슬라이드">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </button>
+    <button class="slider-arrow next" aria-label="다음 슬라이드">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </button>
+  </div>
+</section>
+
+
+<!-- =============================================
+     CATEGORY SECTION
+     ============================================= -->
+<section class="section-category">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Categories</h2>
+        <p class="section-sub">카테고리별 컬렉션</p>
+      </div>
+    </div>
+    <div class="category-grid">
+
+      <a href="#" class="category-card" aria-label="WOMEN 카테고리">
+        <img
+          src="https://images.unsplash.com/photo-1581044777550-4cfa60707c03?w=800&q=80&auto=format&fit=crop"
+          alt="WOMEN 컬렉션 — 시즌리스 우먼스웨어"
+          loading="lazy"
+        />
+        <div class="category-card__label">
+          <span class="category-card__name">Women</span>
+          <span class="category-card__link">Shop Now</span>
+        </div>
+      </a>
+
+      <a href="#" class="category-card" aria-label="MEN 카테고리">
+        <img
+          src="https://images.unsplash.com/photo-1617137968427-85924c800a22?w=800&q=80&auto=format&fit=crop"
+          alt="MEN 컬렉션 — 모던 멘즈웨어"
+          loading="lazy"
+        />
+        <div class="category-card__label">
+          <span class="category-card__name">Men</span>
+          <span class="category-card__link">Shop Now</span>
+        </div>
+      </a>
+
+      <a href="#" class="category-card" aria-label="ACC 카테고리">
+        <img
+          src="https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=800&q=80&auto=format&fit=crop"
+          alt="ACC 컬렉션 — 미니멀 액세서리"
+          loading="lazy"
+        />
+        <div class="category-card__label">
+          <span class="category-card__name">Acc</span>
+          <span class="category-card__link">Shop Now</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- =============================================
+     NEW ARRIVALS
+     ============================================= -->
+<section class="section-arrivals">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">New Arrivals</h2>
+        <p class="section-sub">신상품</p>
+      </div>
+      <a href="#" class="view-all">View All</a>
+    </div>
+
+    <div class="product-grid">
+
+      <!-- Product 1 -->
+      <article class="product-card" data-name="오버사이즈 울 코트">
+        <div class="product-card__img-wrap">
+          <img
+            src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=600&q=80&auto=format&fit=crop"
+            alt="오버사이즈 울 코트 — 크림 베이지"
+            loading="lazy"
+          />
+          <span class="product-card__badge new">NEW</span>
+          <button class="product-card__wish" aria-label="위시리스트에 추가">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+          <button class="product-card__cart">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            장바구니 담기
+          </button>
+        </div>
+        <p class="product-card__name">오버사이즈 울 코트</p>
+        <p class="product-card__price">498,000원</p>
+      </article>
+
+      <!-- Product 2 -->
+      <article class="product-card" data-name="리넨 와이드 팬츠">
+        <div class="product-card__img-wrap">
+          <img
+            src="https://images.unsplash.com/photo-1594938298603-c8148c4b5bdc?w=600&q=80&auto=format&fit=crop"
+            alt="리넨 와이드 팬츠 — 오프화이트"
+            loading="lazy"
+          />
+          <span class="product-card__badge new">NEW</span>
+          <button class="product-card__wish" aria-label="위시리스트에 추가">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+          <button class="product-card__cart">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            장바구니 담기
+          </button>
+        </div>
+        <p class="product-card__name">리넨 와이드 팬츠</p>
+        <p class="product-card__price">198,000원</p>
+      </article>
+
+      <!-- Product 3 -->
+      <article class="product-card" data-name="실크 슬립 드레스">
+        <div class="product-card__img-wrap">
+          <img
+            src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&q=80&auto=format&fit=crop"
+            alt="실크 슬립 드레스 — 샴페인 골드"
+            loading="lazy"
+          />
+          <span class="product-card__badge sale">SALE</span>
+          <button class="product-card__wish" aria-label="위시리스트에 추가">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+          <button class="product-card__cart">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            장바구니 담기
+          </button>
+        </div>
+        <p class="product-card__name">실크 슬립 드레스</p>
+        <p class="product-card__price">
+          <span class="discount">268,000원</span>
+          <span class="original">398,000원</span>
+        </p>
+      </article>
+
+      <!-- Product 4 -->
+      <article class="product-card" data-name="울 터틀넥 니트">
+        <div class="product-card__img-wrap">
+          <img
+            src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=600&q=80&auto=format&fit=crop"
+            alt="울 터틀넥 니트 — 차콜 그레이"
+            loading="lazy"
+          />
+          <button class="product-card__wish" aria-label="위시리스트에 추가">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+          <button class="product-card__cart">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            장바구니 담기
+          </button>
+        </div>
+        <p class="product-card__name">울 터틀넥 니트</p>
+        <p class="product-card__price">228,000원</p>
+      </article>
+
+      <!-- Product 5 -->
+      <article class="product-card" data-name="스트럭처드 재킷">
+        <div class="product-card__img-wrap">
+          <img
+            src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600&q=80&auto=format&fit=crop"
+            alt="스트럭처드 재킷 — 블랙"
+            loading="lazy"
+          />
+          <span class="product-card__badge new">NEW</span>
+          <button class="product-card__wish" aria-label="위시리스트에 추가">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+          <button class="product-card__cart">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            장바구니 담기
+          </button>
+        </div>
+        <p class="product-card__name">스트럭처드 재킷</p>
+        <p class="product-card__price">398,000원</p>
+      </article>
+
+      <!-- Product 6 -->
+      <article class="product-card" data-name="크롭 캐시미어 카디건">
+        <div class="product-card__img-wrap">
+          <img
+            src="https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?w=600&q=80&auto=format&fit=crop"
+            alt="크롭 캐시미어 카디건 — 아이보리"
+            loading="lazy"
+          />
+          <button class="product-card__wish" aria-label="위시리스트에 추가">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+          <button class="product-card__cart">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            장바구니 담기
+          </button>
+        </div>
+        <p class="product-card__name">크롭 캐시미어 카디건</p>
+        <p class="product-card__price">348,000원</p>
+      </article>
+
+      <!-- Product 7 -->
+      <article class="product-card" data-name="슬림 테일러드 팬츠">
+        <div class="product-card__img-wrap">
+          <img
+            src="https://images.unsplash.com/photo-1600717707850-a7d51b7bedf7?w=600&q=80&auto=format&fit=crop"
+            alt="슬림 테일러드 팬츠 — 네이비"
+            loading="lazy"
+          />
+          <span class="product-card__badge sale">SALE</span>
+          <button class="product-card__wish" aria-label="위시리스트에 추가">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+          <button class="product-card__cart">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            장바구니 담기
+          </button>
+        </div>
+        <p class="product-card__name">슬림 테일러드 팬츠</p>
+        <p class="product-card__price">
+          <span class="discount">148,000원</span>
+          <span class="original">198,000원</span>
+        </p>
+      </article>
+
+      <!-- Product 8 -->
+      <article class="product-card" data-name="미니멀 레더 토트백">
+        <div class="product-card__img-wrap">
+          <img
+            src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80&auto=format&fit=crop"
+            alt="미니멀 레더 토트백 — 블랙"
+            loading="lazy"
+          />
+          <span class="product-card__badge new">NEW</span>
+          <button class="product-card__wish" aria-label="위시리스트에 추가">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+          <button class="product-card__cart">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            장바구니 담기
+          </button>
+        </div>
+        <p class="product-card__name">미니멀 레더 토트백</p>
+        <p class="product-card__price">548,000원</p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- =============================================
+     BEST SELLERS
+     ============================================= -->
+<section class="section-best">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Best Sellers</h2>
+        <p class="section-sub">베스트 셀러</p>
+      </div>
+      <a href="#" class="view-all">View All</a>
+    </div>
+
+    <div class="best-grid">
+
+      <!-- Best 1 -->
+      <article class="best-card" data-name="클래식 울 코트">
+        <div class="best-card__img-wrap">
+          <img
+            src="https://images.unsplash.com/photo-1551232864-3f0890e580d9?w=600&q=80&auto=format&fit=crop"
+            alt="클래식 울 코트 — 블랙 베스트셀러 1위"
+            loading="lazy"
+          />
+          <span class="rank-badge rank-1">1</span>
+          <button class="product-card__wish" aria-label="위시리스트에 추가">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+        </div>
+        <p class="best-card__name">클래식 울 코트</p>
+        <p class="best-card__price">528,000원</p>
+        <p class="best-card__review"><span class="stars">★★★★★</span> 4.9 (312)</p>
+      </article>
+
+      <!-- Best 2 -->
+      <article class="best-card" data-name="오가닉 코튼 티셔츠">
+        <div class="best-card__img-wrap">
+          <img
+            src="https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=600&q=80&auto=format&fit=crop"
+            alt="오가닉 코튼 티셔츠 — 화이트 베스트셀러 2위"
+            loading="lazy"
+          />
+          <span class="rank-badge rank-2">2</span>
+          <button class="product-card__wish" aria-label="위시리스트에 추가">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+        </div>
+        <p class="best-card__name">오가닉 코튼 티셔츠</p>
+        <p class="best-card__price">88,000원</p>
+        <p class="best-card__review"><span class="stars">★★★★★</span> 4.8 (561)</p>
+      </article>
+
+      <!-- Best 3 -->
+      <article class="best-card" data-name="레더 미니 크로스백">
+        <div class="best-card__img-wrap">
+          <img
+            src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&q=80&auto=format&fit=crop"
+            alt="레더 미니 크로스백 — 베이지 베스트셀러 3위"
+            loading="lazy"
+          />
+          <span class="rank-badge rank-3">3</span>
+          <button class="product-card__wish" aria-label="위시리스트에 추가">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+        </div>
+        <p class="best-card__name">레더 미니 크로스백</p>
+        <p class="best-card__price">328,000원</p>
+        <p class="best-card__review"><span class="stars">★★★★☆</span> 4.7 (248)</p>
+      </article>
+
+      <!-- Best 4 -->
+      <article class="best-card" data-name="와이드 데님 팬츠">
+        <div class="best-card__img-wrap">
+          <img
+            src="https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=600&q=80&auto=format&fit=crop"
+            alt="와이드 데님 팬츠 — 인디고 베스트셀러 4위"
+            loading="lazy"
+          />
+          <span class="rank-badge">4</span>
+          <button class="product-card__wish" aria-label="위시리스트에 추가">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+        </div>
+        <p class="best-card__name">와이드 데님 팬츠</p>
+        <p class="best-card__price">178,000원</p>
+        <p class="best-card__review"><span class="stars">★★★★☆</span> 4.6 (189)</p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- =============================================
+     PROMO BANNER
+     ============================================= -->
+<section class="section-promo" aria-label="시즌 세일 프로모션">
+  <img
+    src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1600&q=80&auto=format&fit=crop"
+    alt="MAISON 시즌 세일 — 최대 40% 할인"
+    loading="lazy"
+  />
+  <div class="promo-content">
+    <p class="promo-eyebrow">Limited Time Offer</p>
+    <h2 class="promo-title">Season<br>Sale</h2>
+    <p class="promo-sub">지금 바로 최대 <strong>40% 할인</strong>된 가격으로 만나보세요.</p>
+    <a href="#" class="btn-promo">
+      SALE 바로가기
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px">
+        <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+      </svg>
+    </a>
+  </div>
+</section>
+
+
+<!-- =============================================
+     BRAND STORY
+     ============================================= -->
+<section class="section-story">
+  <div class="container">
+    <div class="story-inner">
+
+      <!-- Images -->
+      <div class="story-img-stack" aria-hidden="true">
+        <img
+          class="story-img-main"
+          src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&q=80&auto=format&fit=crop"
+          alt="MAISON 아틀리에 — 장인의 손길이 담긴 제작 과정"
+          loading="lazy"
+        />
+        <img
+          class="story-img-sub"
+          src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=600&q=80&auto=format&fit=crop"
+          alt="MAISON 소재 디테일 — 프리미엄 원단"
+          loading="lazy"
+        />
+      </div>
+
+      <!-- Text -->
+      <div class="story-text-block">
+        <p class="story-eyebrow">Our Philosophy</p>
+        <h2 class="story-title">
+          아름다움은<br>
+          <strong>덜어냄에서</strong><br>
+          시작됩니다
+        </h2>
+        <p class="story-text">
+          MAISON은 2018년, 불필요한 것을 걷어내고 본질에 집중하는 미니멀리즘 철학에서 출발했습니다.<br><br>
+          계절을 초월하는 시즌리스 디자인, 지속 가능한 방식으로 생산된 프리미엄 소재, 그리고 시간이 지나도 변하지 않는 클래식한 실루엣. 이 세 가지가 MAISON이 추구하는 가치입니다.
+        </p>
+        <a href="#" class="btn-story">
+          브랜드 스토리 더보기
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- =============================================
+     FOOTER
+     ============================================= -->
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-top">
+
+      <!-- Brand -->
+      <div class="footer-brand">
+        <a href="/" class="footer-brand__logo">MAISON</a>
+        <p class="footer-brand__desc">
+          군더더기 없는 미니멀리즘 철학을 담은 프리미엄 패션 브랜드.<br>
+          본질에 집중한 디자인으로 일상의 우아함을 제안합니다.
+        </p>
+        <div class="footer-socials">
+          <!-- Instagram -->
+          <a href="#" class="footer-social-btn" aria-label="인스타그램">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+            </svg>
+          </a>
+          <!-- Pinterest -->
+          <a href="#" class="footer-social-btn" aria-label="핀터레스트">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M12 2C6.477 2 2 6.477 2 12c0 4.236 2.636 7.855 6.356 9.312-.088-.791-.167-2.005.035-2.868.181-.78 1.172-4.97 1.172-4.97s-.299-.598-.299-1.482c0-1.388.806-2.428 1.808-2.428.853 0 1.267.64 1.267 1.408 0 .858-.546 2.14-.828 3.33-.236.995.499 1.806 1.476 1.806 1.771 0 3.135-1.867 3.135-4.56 0-2.384-1.714-4.052-4.161-4.052-2.834 0-4.498 2.126-4.498 4.323 0 .856.33 1.773.741 2.274a.3.3 0 0 1 .069.286c-.076.315-.245 1 -.278 1.139-.044.183-.146.222-.336.134-1.249-.581-2.03-2.407-2.03-3.874 0-3.154 2.292-6.052 6.608-6.052 3.469 0 6.165 2.473 6.165 5.776 0 3.447-2.173 6.22-5.19 6.22-1.013 0-1.966-.527-2.292-1.148l-.623 2.378c-.226.869-.835 1.958-1.244 2.621.937.29 1.931.446 2.962.446 5.523 0 10-4.477 10-10S17.523 2 12 2z"/>
+            </svg>
+          </a>
+          <!-- YouTube -->
+          <a href="#" class="footer-social-btn" aria-label="유튜브">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58a2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/>
+              <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/>
+            </svg>
+          </a>
+          <!-- KakaoTalk -->
+          <a href="#" class="footer-social-btn" aria-label="카카오톡">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M12 3C6.48 3 2 6.69 2 11.25c0 2.88 1.75 5.4 4.38 6.95L5.5 21l3.9-2.08C10.22 19.3 11.1 19.5 12 19.5c5.52 0 10-3.69 10-8.25S17.52 3 12 3z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Shop -->
+      <div class="footer-col">
+        <p class="footer-col__title">Shop</p>
+        <ul>
+          <li><a href="#">신상품 (New Arrivals)</a></li>
+          <li><a href="#">여성 (Women)</a></li>
+          <li><a href="#">남성 (Men)</a></li>
+          <li><a href="#">액세서리 (ACC)</a></li>
+          <li><a href="#">세일 (Sale)</a></li>
+        </ul>
+      </div>
+
+      <!-- Info -->
+      <div class="footer-col">
+        <p class="footer-col__title">Info</p>
+        <ul>
+          <li><a href="#">브랜드 스토리</a></li>
+          <li><a href="#">지속가능성</a></li>
+          <li><a href="#">오프라인 매장</a></li>
+          <li><a href="#">Press &amp; Media</a></li>
+          <li><a href="#">채용 안내</a></li>
+        </ul>
+      </div>
+
+      <!-- Help -->
+      <div class="footer-col">
+        <p class="footer-col__title">Help</p>
+        <ul>
+          <li><a href="#">주문 조회</a></li>
+          <li><a href="#">배송 안내</a></li>
+          <li><a href="#">반품 / 교환</a></li>
+          <li><a href="#">사이즈 가이드</a></li>
+          <li><a href="#">자주 묻는 질문</a></li>
+          <li><a href="#">1:1 문의</a></li>
+        </ul>
+      </div>
+
+    </div><!-- /.footer-top -->
+  </div>
+
+  <!-- CS Bar -->
+  <div class="footer-cs">
+    <div class="footer-cs__inner">
+
+      <div class="cs-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.63 3.38 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21.73 16.92z"/>
+        </svg>
+        <div>
+          <p class="cs-item__title">고객센터</p>
+          <p class="cs-item__text">1588-0000<br>평일 10:00 – 18:00 (점심 12–13시 제외)<br>주말 · 공휴일 휴무</p>
+        </div>
+      </div>
+
+      <div class="cs-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="1" y="3" width="15" height="13" rx="2"/>
+          <path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+        </svg>
+        <div>
+          <p class="cs-item__title">배송 안내</p>
+          <p class="cs-item__text">오후 2시 이전 결제 당일 출고<br>일반 배송 무료 (3만원 이상)<br>제주 · 도서산간 추가 배송비 적용</p>
+        </div>
+      </div>
+
+      <div class="cs-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/>
+          <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+        </svg>
+        <div>
+          <p class="cs-item__title">반품 / 교환</p>
+          <p class="cs-item__text">수령 후 7일 이내 신청 가능<br>단순 변심 반품비 편도 3,000원<br>불량 · 오배송 무료 처리</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="container">
+    <div class="footer-bottom">
+      <p class="footer-copy">
+        &copy; 2025 MAISON. All rights reserved. | 상호: 메종 주식회사 | 사업자등록번호: 000-00-00000 | 통신판매업 신고: 제2025-서울강남-0000호
+      </p>
+      <div class="footer-links">
+        <a href="#">이용약관</a>
+        <a href="#">개인정보처리방침</a>
+        <a href="#">사이트맵</a>
+      </div>
+    </div>
+  </div>
+
+</footer>
+
+<!-- Scroll to top -->
+<button class="scroll-top" aria-label="맨 위로 이동">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <polyline points="18 15 12 9 6 15"/>
+  </svg>
+</button>
+
+<script src="script.js"></script>
+</body>
+</html>
