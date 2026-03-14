@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portfolio</title>
-  <meta name="description" content="웹 사이트 제작 전문 포트폴리오 - 랜딩페이지, 쇼핑몰, 대시보드, 웹앱 개발">
-  <meta property="og:title" content="Portfolio — 웹 개발자 포트폴리오">
-  <meta property="og:description" content="15개 이상의 웹 프로젝트 — 랜딩페이지, 쇼핑몰, 대시보드, 로그인/결제, 자동화 툴">
+  <title>웹 개발자 포트폴리오 — 18개 프로젝트 · 3개 LIVE 서비스</title>
+  <meta name="description" content="18개 웹 프로젝트 + 3개 LIVE 서비스 — 랜딩페이지, 쇼핑몰, 대시보드, 풀스택 웹앱 개발 포트폴리오">
+  <meta property="og:title" content="웹 개발자 포트폴리오 — 18개 프로젝트 · 3개 LIVE 서비스">
+  <meta property="og:description" content="18개 웹 프로젝트 + 3개 LIVE 서비스 — 랜딩페이지, 쇼핑몰, 대시보드, 풀스택 웹앱 개발">
   <meta property="og:type" content="website">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -49,7 +49,7 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 120px 24px 80px;
+      padding: 120px 24px 60px;
       position: relative;
     }
 
@@ -87,9 +87,93 @@
       margin: 0 auto;
     }
 
+    /* Stats Bar */
+    .stats-bar {
+      padding: 0 24px 80px;
+    }
+
+    .stats-bar-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .stat-item {
+      background: var(--surface);
+      padding: 28px 24px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 6px;
+      background: linear-gradient(135deg, #fff 0%, var(--primary-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    .stat-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: #51CF66;
+      border-radius: 50%;
+      margin-right: 5px;
+      vertical-align: middle;
+      animation: livePulse 2s ease infinite;
+    }
+
+    /* Category Filter */
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+
+    .filter-btn {
+      padding: 8px 18px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-sub);
+      font-size: 0.85rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .filter-btn:hover {
+      border-color: rgba(108,92,231,0.4);
+      color: var(--text);
+    }
+
+    .filter-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
     /* Projects */
     .projects {
-      padding: 40px 0 120px;
+      padding: 0 0 80px;
     }
 
     .projects-grid {
@@ -105,12 +189,28 @@
       overflow: hidden;
       transition: all 0.4s ease;
       display: block;
+      /* Scroll animation initial state */
+      opacity: 0;
+      transform: translateY(28px);
+    }
+
+    .project-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .project-card.hidden-by-filter {
+      display: none;
     }
 
     .project-card:hover {
       border-color: rgba(108,92,231,0.3);
       transform: translateY(-6px);
       box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+
+    .project-card.visible:hover {
+      transform: translateY(-6px);
     }
 
     .project-thumb {
@@ -475,33 +575,124 @@
       transform: translateX(4px);
     }
 
+    /* CTA Section */
+    .cta-section {
+      padding: 80px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(108,92,231,0.12) 0%, rgba(162,155,254,0.06) 100%);
+      border-top: 1px solid rgba(108,92,231,0.15);
+      border-bottom: 1px solid rgba(108,92,231,0.15);
+    }
+
+    .cta-section::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 600px;
+      height: 300px;
+      background: radial-gradient(ellipse, rgba(108,92,231,0.15), transparent 70%);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .cta-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    .cta-label {
+      font-size: 0.78rem;
+      letter-spacing: 3px;
+      color: var(--primary-light);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .cta-section h2 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 800;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .cta-section > .cta-inner > p {
+      font-size: 1rem;
+      color: var(--text-sub);
+      margin-bottom: 36px;
+      line-height: 1.7;
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, var(--primary), #8B7FFF);
+      border-radius: 100px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 24px rgba(108,92,231,0.35);
+    }
+
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 36px rgba(108,92,231,0.5);
+    }
+
     /* Footer */
     .footer {
       border-top: 1px solid var(--border);
-      padding: 40px 0;
+      padding: 48px 0;
       text-align: center;
-    }
-
-    .footer p {
-      font-size: 0.8rem;
-      color: var(--text-muted);
     }
 
     .footer-links {
       display: flex;
       justify-content: center;
-      gap: 24px;
-      margin-bottom: 16px;
+      align-items: center;
+      gap: 28px;
+      margin-bottom: 20px;
     }
 
-    .footer-links a {
-      font-size: 0.85rem;
+    .footer-link-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.88rem;
       color: var(--text-sub);
       transition: color 0.3s;
     }
 
-    .footer-links a:hover {
+    .footer-link-item:hover {
       color: var(--primary-light);
+    }
+
+    .footer-link-icon {
+      font-size: 1rem;
+    }
+
+    .footer-divider {
+      width: 1px;
+      height: 16px;
+      background: var(--border);
+    }
+
+    .footer p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
     }
 
     /* Responsive */
@@ -517,6 +708,24 @@
       }
 
       .hero { padding: 100px 24px 60px; }
+
+      .stats-bar-inner {
+        grid-template-columns: 1fr;
+        gap: 1px;
+      }
+
+      .stat-item {
+        padding: 20px 24px;
+      }
+
+      .filter-bar {
+        gap: 6px;
+      }
+
+      .filter-btn {
+        padding: 6px 14px;
+        font-size: 0.8rem;
+      }
     }
   </style>
 </head>
@@ -529,12 +738,40 @@
     </div>
   </section>
 
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <div class="stats-bar-inner">
+      <div class="stat-item">
+        <div class="stat-number">3</div>
+        <div class="stat-label"><span class="stat-dot"></span>LIVE 서비스 운영 중</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">18</div>
+        <div class="stat-label">완성 프로젝트</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">Full</div>
+        <div class="stat-label">풀스택 개발</div>
+      </div>
+    </div>
+  </div>
+
   <section class="projects">
     <div class="container">
+
+      <!-- Category Filter -->
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">전체</button>
+        <button class="filter-btn" data-filter="live">LIVE</button>
+        <button class="filter-btn" data-filter="landing">랜딩페이지</button>
+        <button class="filter-btn" data-filter="app">앱·SaaS</button>
+        <button class="filter-btn" data-filter="tool">도구·게임</button>
+      </div>
+
       <div class="projects-grid">
 
         <!-- DriveX — LIVE App -->
-        <a href="https://drivex-4kh.pages.dev/" target="_blank" class="project-card">
+        <a href="https://drivex-4kh.pages.dev/" target="_blank" class="project-card" data-category="live">
           <div class="project-thumb" style="background:linear-gradient(135deg,#0D0D2B,#1a1a3e);display:flex;align-items:center;justify-content:center;">
             <div style="text-align:center;">
               <div style="font-size:2.5rem;margin-bottom:8px;">🚗</div>
@@ -551,7 +788,7 @@
         </a>
 
         <!-- VideoForge — LIVE Service -->
-        <a href="https://web-production-ac42f4.up.railway.app" target="_blank" class="project-card">
+        <a href="https://web-production-ac42f4.up.railway.app" target="_blank" class="project-card" data-category="live">
           <div class="project-thumb" style="background:linear-gradient(135deg,#1a0000,#4a0e0e);display:flex;align-items:center;justify-content:center;">
             <div style="text-align:center;">
               <div style="font-size:2.5rem;margin-bottom:8px;">🎬</div>
@@ -568,7 +805,7 @@
         </a>
 
         <!-- SignTrack — LIVE Service -->
-        <a href="https://signtrack.net/" target="_blank" class="project-card">
+        <a href="https://signtrack.net/" target="_blank" class="project-card" data-category="live">
           <div class="project-thumb" style="background:linear-gradient(135deg,#1a0a2e,#2d1b69);display:flex;align-items:center;justify-content:center;">
             <div style="text-align:center;">
               <div style="font-size:2.5rem;margin-bottom:8px;">🎵</div>
@@ -585,7 +822,7 @@
         </a>
 
         <!-- SaaS Landing -->
-        <a href="saas-landing/index.html" class="project-card">
+        <a href="saas-landing/index.html" class="project-card" data-category="landing">
           <div class="project-thumb project-thumb-saas">
             <div class="mini-ui">
               <div class="mini-ui-bar">
@@ -618,7 +855,7 @@
         </a>
 
         <!-- Cafe Landing -->
-        <a href="cafe-landing/index.html" class="project-card">
+        <a href="cafe-landing/index.html" class="project-card" data-category="landing">
           <div class="project-thumb">
             <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600&h=300&fit=crop" alt="카페 랜딩페이지">
           </div>
@@ -631,7 +868,7 @@
         </a>
 
         <!-- Dashboard -->
-        <a href="dashboard/index.html" class="project-card">
+        <a href="dashboard/index.html" class="project-card" data-category="app">
           <div class="project-thumb project-thumb-dash">
             <div class="mini-dash">
               <div class="mini-dash-sidebar">
@@ -667,7 +904,7 @@
         </a>
 
         <!-- Shopping Mall -->
-        <a href="shop-landing/index.html" class="project-card">
+        <a href="shop-landing/index.html" class="project-card" data-category="app">
           <div class="project-thumb">
             <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&h=300&fit=crop" alt="쇼핑몰 메인">
           </div>
@@ -680,7 +917,7 @@
         </a>
 
         <!-- Wedding -->
-        <a href="wedding/index.html" class="project-card">
+        <a href="wedding/index.html" class="project-card" data-category="app">
           <div class="project-thumb project-thumb-wedding">
             <div class="mini-wedding">
               <div class="mini-wedding-flower">🌸</div>
@@ -697,7 +934,7 @@
         </a>
 
         <!-- Clinic -->
-        <a href="clinic/index.html" class="project-card">
+        <a href="clinic/index.html" class="project-card" data-category="landing">
           <div class="project-thumb project-thumb-clinic">
             <div class="mini-clinic">
               <div class="mini-clinic-icon">🦷</div>
@@ -714,7 +951,7 @@
         </a>
 
         <!-- Real Estate -->
-        <a href="realestate/index.html" class="project-card">
+        <a href="realestate/index.html" class="project-card" data-category="landing">
           <div class="project-thumb">
             <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&h=300&fit=crop" alt="인테리어">
           </div>
@@ -727,7 +964,7 @@
         </a>
 
         <!-- Personal Brand -->
-        <a href="personal-brand/index.html" class="project-card">
+        <a href="personal-brand/index.html" class="project-card" data-category="landing">
           <div class="project-thumb project-thumb-personal">
             <div class="mini-personal">
               <div class="mini-personal-avatar">K</div>
@@ -748,7 +985,7 @@
         </a>
 
         <!-- Food Order -->
-        <a href="food-order/index.html" class="project-card">
+        <a href="food-order/index.html" class="project-card" data-category="app">
           <div class="project-thumb project-thumb-food">
             <div class="mini-food">
               <div class="mini-food-icon">🐳</div>
@@ -765,7 +1002,7 @@
         </a>
 
         <!-- Calculator -->
-        <a href="calculator/index.html" class="project-card">
+        <a href="calculator/index.html" class="project-card" data-category="tool">
           <div class="project-thumb" style="background:linear-gradient(135deg,#0A0A0B,#1a1a2e);display:flex;align-items:center;justify-content:center;">
             <div style="text-align:center;">
               <div style="font-size:2.2rem;margin-bottom:6px;">🧮</div>
@@ -782,7 +1019,7 @@
         </a>
 
         <!-- Linktree -->
-        <a href="linktree/index.html" class="project-card">
+        <a href="linktree/index.html" class="project-card" data-category="tool">
           <div class="project-thumb" style="background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;">
             <div style="text-align:center;">
               <div style="font-size:2.2rem;margin-bottom:6px;">🔗</div>
@@ -799,7 +1036,7 @@
         </a>
 
         <!-- Auth & Payment -->
-        <a href="auth-pay/index.html" class="project-card">
+        <a href="auth-pay/index.html" class="project-card" data-category="app">
           <div class="project-thumb" style="background:linear-gradient(135deg,#0A0A0B,#1a2e1a);display:flex;align-items:center;justify-content:center;">
             <div style="text-align:center;">
               <div style="font-size:2.2rem;margin-bottom:6px;">🔐</div>
@@ -816,7 +1053,7 @@
         </a>
 
         <!-- Productivity App -->
-        <a href="productivity-app/index.html" class="project-card">
+        <a href="productivity-app/index.html" class="project-card" data-category="app">
           <div class="project-thumb" style="background:linear-gradient(135deg,#6C5CE7,#a29bfe);display:flex;align-items:center;justify-content:center;">
             <div style="text-align:center;">
               <div style="font-size:2.2rem;margin-bottom:6px;">🚀</div>
@@ -833,8 +1070,8 @@
         </a>
 
         <!-- Typing Game -->
-        <a href="typing-game/index.html" class="project-card">
-          <div class="project-thumb project-thumb-typing" style="background:linear-gradient(135deg,#0A0A0B 0%,#1a1a2e 100%);display:flex;align-items:center;justify-content:center;">
+        <a href="typing-game/index.html" class="project-card" data-category="tool">
+          <div class="project-thumb" style="background:linear-gradient(135deg,#0A0A0B 0%,#1a1a2e 100%);display:flex;align-items:center;justify-content:center;">
             <div style="text-align:center;">
               <div style="font-size:2.2rem;margin-bottom:6px;">⌨️</div>
               <div style="font-size:0.9rem;font-weight:700;color:#a29bfe;letter-spacing:1px;">타이핑 마스터</div>
@@ -850,7 +1087,7 @@
         </a>
 
         <!-- YouTube Auto -->
-        <a href="youtube-auto/index.html" class="project-card">
+        <a href="youtube-auto/index.html" class="project-card" data-category="app">
           <div class="project-thumb" style="background:linear-gradient(135deg,#0A0A0B 0%,#1a0a2e 100%);display:flex;align-items:center;justify-content:center;">
             <div style="text-align:center;">
               <div style="font-size:2.2rem;margin-bottom:6px;">▶️</div>
@@ -870,12 +1107,88 @@
     </div>
   </section>
 
-  <footer class="footer">
-    <div class="footer-links">
-      <a href="mailto:contact@portfolio.dev">Email</a>
-      <a href="#">GitHub</a>
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="cta-inner">
+      <p class="cta-label">Contact</p>
+      <h2>프로젝트가 필요하신가요?</h2>
+      <p>기획부터 디자인, 개발, 배포까지 원스텝으로 진행합니다.<br>아이디어만 있어도 괜찮아요. 함께 만들어 드립니다.</p>
+      <a href="mailto:wogns5486@naver.com" class="cta-btn">
+        프로젝트 문의하기 <span>→</span>
+      </a>
     </div>
-    <p>&copy; 2025 Portfolio. All rights reserved.</p>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-links">
+        <a href="https://github.com/wogns5486-design" target="_blank" class="footer-link-item">
+          <span class="footer-link-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+          </span>
+          GitHub
+        </a>
+        <div class="footer-divider"></div>
+        <a href="mailto:wogns5486@naver.com" class="footer-link-item">
+          <span class="footer-link-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </span>
+          wogns5486@naver.com
+        </a>
+      </div>
+      <p>&copy; 2025 Portfolio. All rights reserved.</p>
+    </div>
   </footer>
+
+  <script>
+    // Category Filter
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('.project-card');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filter = btn.dataset.filter;
+
+        cards.forEach(card => {
+          const category = card.dataset.category;
+          if (filter === 'all' || category === filter) {
+            card.classList.remove('hidden-by-filter');
+          } else {
+            card.classList.add('hidden-by-filter');
+          }
+        });
+      });
+    });
+
+    // Scroll Animation (IntersectionObserver with stagger)
+    const observerOptions = {
+      threshold: 0.08,
+      rootMargin: '0px 0px -40px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const card = entry.target;
+          const siblings = Array.from(card.parentElement.children).filter(el => !el.classList.contains('hidden-by-filter'));
+          const index = siblings.indexOf(card);
+          const delay = (index % 3) * 80;
+
+          setTimeout(() => {
+            card.classList.add('visible');
+          }, delay);
+
+          observer.unobserve(card);
+        }
+      });
+    }, observerOptions);
+
+    cards.forEach(card => {
+      observer.observe(card);
+    });
+  </script>
 </body>
 </html>
