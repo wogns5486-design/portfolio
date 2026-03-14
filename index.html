@@ -426,6 +426,25 @@
       letter-spacing: 0.5px;
     }
 
+    .badge-live {
+      display: inline-block;
+      padding: 3px 10px;
+      background: rgba(81,207,102,0.15);
+      border: 1px solid rgba(81,207,102,0.3);
+      border-radius: 100px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #51CF66;
+      letter-spacing: 1px;
+      margin-left: 8px;
+      animation: livePulse 2s ease infinite;
+    }
+
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
     .project-info h3 {
       font-size: 1.2rem;
       font-weight: 700;
@@ -506,13 +525,47 @@
     <div>
       <p class="hero-label">Web Developer</p>
       <h1>Portfolio</h1>
-      <p>웹 사이트 제작 전문 · 랜딩페이지, 쇼핑몰, 대시보드, 로그인/결제, 자동화 툴, 웹앱</p>
+      <p>기획부터 출시까지 원스텝 · 랜딩페이지, 쇼핑몰, 앱, SaaS, 결제연동, 웹앱</p>
     </div>
   </section>
 
   <section class="projects">
     <div class="container">
       <div class="projects-grid">
+
+        <!-- DriveX — LIVE App -->
+        <a href="https://drivex-4kh.pages.dev/" target="_blank" class="project-card">
+          <div class="project-thumb" style="background:linear-gradient(135deg,#0D0D2B,#1a1a3e);display:flex;align-items:center;justify-content:center;">
+            <div style="text-align:center;">
+              <div style="font-size:2.5rem;margin-bottom:8px;">🚗</div>
+              <div style="font-size:1.1rem;font-weight:800;color:#fff;letter-spacing:1px;">DriveX</div>
+              <div style="font-size:0.7rem;color:rgba(255,255,255,0.5);margin-top:4px;">운전 기반 보상 플랫폼</div>
+            </div>
+          </div>
+          <div class="project-info">
+            <div class="project-tag">Mobile App / 20+ Features</div><span class="badge-live">LIVE</span>
+            <h3>DriveX — 운전 보상 앱</h3>
+            <p>마일리지·미션·수면보상·제휴서비스·랭킹 등 20개+ 기능 탑재. 기획→개발→출시 전 과정 진행.</p>
+            <div class="project-link">라이브 서비스 보기 <span>→</span></div>
+          </div>
+        </a>
+
+        <!-- SignTrack — LIVE Service -->
+        <a href="https://signtrack.net/" target="_blank" class="project-card">
+          <div class="project-thumb" style="background:linear-gradient(135deg,#1a0a2e,#2d1b69);display:flex;align-items:center;justify-content:center;">
+            <div style="text-align:center;">
+              <div style="font-size:2.5rem;margin-bottom:8px;">🎵</div>
+              <div style="font-size:1.1rem;font-weight:800;color:#fff;letter-spacing:1px;">SignTrack</div>
+              <div style="font-size:0.7rem;color:rgba(255,255,255,0.5);margin-top:4px;">AI Brand Music Creator</div>
+            </div>
+          </div>
+          <div class="project-info">
+            <div class="project-tag">Web Service / AI SaaS</div><span class="badge-live">LIVE</span>
+            <h3>SignTrack — AI 브랜드 음악 생성</h3>
+            <p>AI 기반 브랜드 음악 제작 웹서비스. 기획→개발→결제연동→도메인 배포까지 원스텝 진행.</p>
+            <div class="project-link">라이브 서비스 보기 <span>→</span></div>
+          </div>
+        </a>
 
         <!-- SaaS Landing -->
         <a href="saas-landing/index.html" class="project-card">
