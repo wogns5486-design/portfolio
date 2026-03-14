@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>김하늘 | IT 개발 유튜버 &amp; 강사 - 코딩, 쉽게 알려드립니다</title>
+  <meta name="description" content="김하늘은 복잡한 개발 개념을 누구나 이해할 수 있게 알려주는 IT 개발 유튜버이자 강사입니다. 구독자 28만명, 누적 수강생 12,000명+." />
+  <meta name="keywords" content="김하늘, IT 개발, 코딩 강의, 유튜버, 자바스크립트, 파이썬, 웹개발" />
+  <meta name="author" content="김하늘" />
+
+  <!-- OG Tags -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="김하늘 | IT 개발 유튜버 &amp; 강사" />
+  <meta property="og:description" content="코딩, 쉽게 알려드립니다. 구독자 28만명의 IT 개발 유튜버 김하늘의 공식 사이트." />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?w=1200&h=630&fit=crop" />
+  <meta property="og:url" content="https://kimhaneul.dev" />
+  <meta property="og:site_name" content="김하늘 Dev" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="김하늘 | IT 개발 유튜버 &amp; 강사" />
+  <meta name="twitter:description" content="코딩, 쉽게 알려드립니다." />
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?w=1200&h=630&fit=crop" />
+
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner container">
+      <a href="#" class="nav-logo">
+        <span class="logo-icon">K</span>
+        <span class="logo-text">김하늘<span class="logo-dot">.</span>dev</span>
+      </a>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="#about" class="nav-link">About</a></li>
+        <li><a href="#youtube" class="nav-link">YouTube</a></li>
+        <li><a href="#courses" class="nav-link">강의</a></li>
+        <li><a href="#blog" class="nav-link">블로그</a></li>
+        <li><a href="#contact" class="nav-link">Contact</a></li>
+      </ul>
+      <a href="#courses" class="btn btn-gradient nav-cta">강의 보기</a>
+      <button class="hamburger" id="hamburger" aria-label="메뉴 열기">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="home">
+    <div class="hero-bg-grid"></div>
+    <div class="hero-glow hero-glow--left"></div>
+    <div class="hero-glow hero-glow--right"></div>
+    <div class="container hero-inner">
+      <div class="hero-content" data-aos>
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          <span>현재 새 강의 업로드 중</span>
+        </div>
+        <h1 class="hero-title">
+          코딩,<br />
+          <span class="gradient-text">쉽게 알려드립니다</span>
+        </h1>
+        <p class="hero-desc">
+          복잡한 개발 개념을 누구나 이해할 수 있도록.<br />
+          IT 개발 유튜버 &amp; 강사 <strong>김하늘</strong>입니다.
+        </p>
+        <div class="hero-actions">
+          <a href="#youtube" class="btn btn-gradient btn-lg">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+            유튜브 채널 보기
+          </a>
+          <a href="#courses" class="btn btn-outline btn-lg">강의 수강하기</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number" data-target="280000" data-suffix="K">0</span>
+            <span class="stat-label">유튜브 구독자</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number" data-target="47" data-suffix="+">0</span>
+            <span class="stat-label">강의 수</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number" data-target="12000" data-suffix="+">0</span>
+            <span class="stat-label">누적 수강생</span>
+          </div>
+        </div>
+        <div class="hero-socials">
+          <a href="#" class="social-link" aria-label="YouTube">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+          </a>
+          <a href="#" class="social-link" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </a>
+          <a href="#" class="social-link" aria-label="GitHub">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="hero-image-wrap" data-aos data-aos-delay="200">
+        <div class="hero-image-ring"></div>
+        <div class="hero-image-ring hero-image-ring--2"></div>
+        <img
+          src="https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?w=600&h=700&fit=crop&crop=faces"
+          alt="김하늘 프로필"
+          class="hero-image"
+          loading="eager"
+        />
+        <div class="hero-image-badge">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF6B35"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+          <span>28만 구독자</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-scroll-hint">
+      <span>스크롤</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT ===== -->
+  <section class="section about" id="about">
+    <div class="container">
+      <div class="section-header" data-aos>
+        <span class="section-tag">About Me</span>
+        <h2 class="section-title">개발자의 눈으로,<br /><span class="gradient-text">선생님의 마음으로</span></h2>
+      </div>
+      <div class="about-grid">
+        <div class="about-text" data-aos>
+          <p class="about-lead">
+            안녕하세요! 10년차 풀스택 개발자이자 IT 교육 콘텐츠 크리에이터, <strong>김하늘</strong>입니다.
+          </p>
+          <p>
+            현직 개발자로 일하면서 "왜 이렇게 배우기 어려울까?"라는 고민에서 유튜브를 시작했습니다.
+            어려운 개념도 현실적인 예시와 함께라면 누구나 이해할 수 있다고 믿습니다.
+          </p>
+          <p>
+            JavaScript, Python, React, Node.js를 주로 다루며, 취업 준비생부터 시니어 개발자까지
+            모두가 "아, 그거였구나!" 하는 순간을 만들어드립니다.
+          </p>
+          <div class="about-skills">
+            <span class="skill-tag">JavaScript</span>
+            <span class="skill-tag">TypeScript</span>
+            <span class="skill-tag">React</span>
+            <span class="skill-tag">Node.js</span>
+            <span class="skill-tag">Python</span>
+            <span class="skill-tag">AWS</span>
+            <span class="skill-tag">Docker</span>
+            <span class="skill-tag">SQL</span>
+          </div>
+        </div>
+        <div class="about-timeline" data-aos data-aos-delay="150">
+          <h3 class="timeline-title">경력 타임라인</h3>
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <span class="timeline-year">2024 - 현재</span>
+                <h4>풀타임 크리에이터 &amp; 강사</h4>
+                <p>유튜브 채널 운영 및 온라인 강의 제작</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <span class="timeline-year">2021 - 2024</span>
+                <h4>시니어 풀스택 개발자</h4>
+                <p>스타트업 CTO · React / Node.js 아키텍처 설계</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <span class="timeline-year">2019 - 2021</span>
+                <h4>소프트웨어 엔지니어</h4>
+                <p>네이버 · 검색 플랫폼 백엔드 개발</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <span class="timeline-year">2022</span>
+                <h4>유튜브 채널 개설</h4>
+                <p>첫 영상 업로드 → 1년 만에 10만 구독자 달성</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <span class="timeline-year">2015</span>
+                <h4>한국과학기술원(KAIST) 졸업</h4>
+                <p>컴퓨터공학과 학사</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== YOUTUBE ===== -->
+  <section class="section youtube" id="youtube">
+    <div class="container">
+      <div class="section-header" data-aos>
+        <span class="section-tag">YouTube</span>
+        <h2 class="section-title">최신 <span class="gradient-text">영상</span></h2>
+      </div>
+      <div class="yt-tabs" data-aos>
+        <button class="yt-tab active" data-tab="all">전체</button>
+        <button class="yt-tab" data-tab="coding">코딩</button>
+        <button class="yt-tab" data-tab="career">커리어</button>
+        <button class="yt-tab" data-tab="vlog">브이로그</button>
+      </div>
+      <div class="yt-grid" id="ytGrid">
+        <!-- JS로 렌더링 -->
+      </div>
+      <div class="section-cta" data-aos>
+        <a href="#" class="btn btn-outline btn-lg">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+          채널 전체 보기
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== COURSES ===== -->
+  <section class="section courses" id="courses">
+    <div class="container">
+      <div class="section-header" data-aos>
+        <span class="section-tag">강의</span>
+        <h2 class="section-title">지금 바로 시작할 수 있는<br /><span class="gradient-text">온라인 강의</span></h2>
+      </div>
+      <div class="courses-grid" id="coursesGrid">
+        <!-- JS로 렌더링 -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BLOG ===== -->
+  <section class="section blog" id="blog">
+    <div class="container">
+      <div class="section-header" data-aos>
+        <span class="section-tag">블로그</span>
+        <h2 class="section-title">최신 <span class="gradient-text">아티클</span></h2>
+      </div>
+      <div class="blog-grid" id="blogGrid">
+        <!-- JS로 렌더링 -->
+      </div>
+      <div class="section-cta" data-aos>
+        <a href="#" class="btn btn-outline btn-lg">전체 글 보기</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT ===== -->
+  <section class="section contact" id="contact">
+    <div class="container">
+      <div class="contact-inner">
+        <div class="contact-info" data-aos>
+          <span class="section-tag">Contact</span>
+          <h2 class="section-title">함께 만들어요,<br /><span class="gradient-text">더 나은 교육</span></h2>
+          <p class="contact-desc">강의 제휴, 콘텐츠 협업, 강연 요청 등 무엇이든 편하게 연락주세요.</p>
+          <div class="contact-details">
+            <div class="contact-detail-item">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <span>hello@kimhaneul.dev</span>
+            </div>
+            <div class="contact-detail-item">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span>서울특별시 강남구</span>
+            </div>
+          </div>
+        </div>
+        <form class="contact-form" id="contactForm" data-aos data-aos-delay="150" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="contactName">이름 <span class="required">*</span></label>
+              <input type="text" id="contactName" name="name" placeholder="홍길동" autocomplete="name" />
+              <span class="field-error" id="contactNameError"></span>
+            </div>
+            <div class="form-group">
+              <label for="contactEmail">이메일 <span class="required">*</span></label>
+              <input type="email" id="contactEmail" name="email" placeholder="hello@example.com" autocomplete="email" />
+              <span class="field-error" id="contactEmailError"></span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="contactSubject">제목 <span class="required">*</span></label>
+            <input type="text" id="contactSubject" name="subject" placeholder="문의 제목을 입력해주세요" />
+            <span class="field-error" id="contactSubjectError"></span>
+          </div>
+          <div class="form-group">
+            <label for="contactMessage">메시지 <span class="required">*</span></label>
+            <textarea id="contactMessage" name="message" rows="5" placeholder="메시지를 입력해주세요..."></textarea>
+            <span class="field-error" id="contactMessageError"></span>
+          </div>
+          <button type="submit" class="btn btn-gradient btn-lg btn-full">메시지 보내기</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo">
+          <span class="logo-icon">K</span>
+          <span class="logo-text">김하늘<span class="logo-dot">.</span>dev</span>
+        </a>
+        <p>코딩, 쉽게 알려드립니다.</p>
+      </div>
+      <div class="footer-links">
+        <a href="#about">About</a>
+        <a href="#youtube">YouTube</a>
+        <a href="#courses">강의</a>
+        <a href="#blog">블로그</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <div class="footer-socials">
+        <a href="#" aria-label="YouTube" class="social-link">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+        </a>
+        <a href="#" aria-label="Instagram" class="social-link">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </a>
+        <a href="#" aria-label="GitHub" class="social-link">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 김하늘. All rights reserved. · <a href="#">개인정보처리방침</a></p>
+    </div>
+  </footer>
+
+  <!-- ===== VIDEO MODAL ===== -->
+  <div class="modal-overlay" id="videoModal" role="dialog" aria-modal="true" aria-label="영상 보기">
+    <div class="modal modal--video">
+      <button class="modal-close" id="videoModalClose" aria-label="닫기">&times;</button>
+      <div class="modal-video-wrap">
+        <div class="video-placeholder" id="videoPlaceholder">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="rgba(255,107,53,0.8)"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+          <p id="videoTitle">영상 제목</p>
+          <span>YouTube 영상 플레이어 영역</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ENROLLMENT MODAL ===== -->
+  <div class="modal-overlay" id="enrollModal" role="dialog" aria-modal="true" aria-label="수강 신청">
+    <div class="modal modal--enroll">
+      <button class="modal-close" id="enrollModalClose" aria-label="닫기">&times;</button>
+      <div class="modal-header">
+        <h3>수강 신청</h3>
+        <p id="enrollCourseTitle" class="modal-course-title"></p>
+      </div>
+      <form id="enrollForm" novalidate>
+        <div class="form-group">
+          <label for="enrollName">이름 <span class="required">*</span></label>
+          <input type="text" id="enrollName" placeholder="홍길동" autocomplete="name" />
+          <span class="field-error" id="enrollNameError"></span>
+        </div>
+        <div class="form-group">
+          <label for="enrollEmail">이메일 <span class="required">*</span></label>
+          <input type="email" id="enrollEmail" placeholder="hello@example.com" autocomplete="email" />
+          <span class="field-error" id="enrollEmailError"></span>
+        </div>
+        <div class="form-group">
+          <label for="enrollCourse">강의 선택 <span class="required">*</span></label>
+          <select id="enrollCourse">
+            <option value="">강의를 선택해주세요</option>
+            <option value="js">JavaScript 완전 정복 (99,000원)</option>
+            <option value="react">React &amp; Next.js 마스터클래스 (149,000원)</option>
+            <option value="cs">개발자 취업 부트캠프 (299,000원)</option>
+          </select>
+          <span class="field-error" id="enrollCourseError"></span>
+        </div>
+        <div class="form-group">
+          <label>결제 방법 <span class="required">*</span></label>
+          <div class="payment-options">
+            <label class="payment-option">
+              <input type="radio" name="payment" value="card" checked />
+              <span class="payment-label">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                신용카드
+              </span>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="payment" value="transfer" />
+              <span class="payment-label">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                계좌이체
+              </span>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="payment" value="kakao" />
+              <span class="payment-label">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+                카카오페이
+              </span>
+            </label>
+          </div>
+          <span class="field-error" id="enrollPaymentError"></span>
+        </div>
+        <button type="submit" class="btn btn-gradient btn-lg btn-full">수강 신청 완료</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== TOAST ===== -->
+  <div class="toast" id="toast" role="alert" aria-live="polite">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    <span id="toastMsg">완료되었습니다.</span>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -90,7 +90,7 @@
 
     .projects-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 24px;
     }
 
@@ -296,6 +296,116 @@
       letter-spacing: 2px;
     }
 
+    /* Clinic thumbnail */
+    .project-thumb-clinic {
+      background: linear-gradient(135deg, #E8F4FD, #D0E8F7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .mini-clinic { text-align: center; }
+
+    .mini-clinic-icon {
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+    }
+
+    .mini-clinic-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #2E86AB;
+      margin-bottom: 4px;
+    }
+
+    .mini-clinic-sub {
+      font-size: 0.75rem;
+      color: #5A9BB5;
+      letter-spacing: 1px;
+    }
+
+    /* Personal brand thumbnail */
+    .project-thumb-personal {
+      background: linear-gradient(135deg, #0D0D0D, #1A1A2E);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .mini-personal { text-align: center; }
+
+    .mini-personal-avatar {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #FF6B35, #F72585);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #fff;
+      margin: 0 auto 10px;
+    }
+
+    .mini-personal-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 2px;
+    }
+
+    .mini-personal-sub {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 10px;
+    }
+
+    .mini-personal-stats {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .mini-personal-stats span {
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.06);
+      padding: 3px 10px;
+      border-radius: 100px;
+    }
+
+    /* Food order thumbnail */
+    .project-thumb-food {
+      background: linear-gradient(135deg, #FFF5EE, #FFE8D6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .mini-food { text-align: center; }
+
+    .mini-food-icon {
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+    }
+
+    .mini-food-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #FF6B35;
+      margin-bottom: 4px;
+    }
+
+    .mini-food-sub {
+      font-size: 0.75rem;
+      color: #A0785A;
+      letter-spacing: 1px;
+    }
+
     .project-info {
       padding: 24px;
     }
@@ -372,6 +482,12 @@
     }
 
     /* Responsive */
+    @media (max-width: 900px) {
+      .projects-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
     @media (max-width: 640px) {
       .projects-grid {
         grid-template-columns: 1fr;
@@ -502,6 +618,74 @@
             <div class="project-tag">Mobile Wedding</div>
             <h3>모바일 청첩장</h3>
             <p>모바일 전용 웨딩 초대장. 꽃잎 애니메이션, D-day 카운트다운, 계좌 복사 기능.</p>
+            <div class="project-link">자세히 보기 <span>→</span></div>
+          </div>
+        </a>
+
+        <!-- Clinic -->
+        <a href="clinic/index.html" class="project-card">
+          <div class="project-thumb project-thumb-clinic">
+            <div class="mini-clinic">
+              <div class="mini-clinic-icon">🦷</div>
+              <div class="mini-clinic-name">연세밝은치과</div>
+              <div class="mini-clinic-sub">밝은 미소를 되찾아드립니다</div>
+            </div>
+          </div>
+          <div class="project-info">
+            <div class="project-tag">Medical / Clinic</div>
+            <h3>연세밝은치과</h3>
+            <p>치과 병원 홈페이지. 진료과목 소개, 의료진 안내, 온라인 진료예약 시스템.</p>
+            <div class="project-link">자세히 보기 <span>→</span></div>
+          </div>
+        </a>
+
+        <!-- Real Estate -->
+        <a href="realestate/index.html" class="project-card">
+          <div class="project-thumb">
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&h=300&fit=crop" alt="인테리어">
+          </div>
+          <div class="project-info">
+            <div class="project-tag">Real Estate / Interior</div>
+            <h3>LIVSPACE — 인테리어</h3>
+            <p>프리미엄 인테리어 사이트. 포트폴리오 필터, 매물 검색, 상담 신청 폼.</p>
+            <div class="project-link">자세히 보기 <span>→</span></div>
+          </div>
+        </a>
+
+        <!-- Personal Brand -->
+        <a href="personal-brand/index.html" class="project-card">
+          <div class="project-thumb project-thumb-personal">
+            <div class="mini-personal">
+              <div class="mini-personal-avatar">K</div>
+              <div class="mini-personal-name">김하늘</div>
+              <div class="mini-personal-sub">IT 유튜버 & 강사</div>
+              <div class="mini-personal-stats">
+                <span>28만 구독</span>
+                <span>47개 강의</span>
+              </div>
+            </div>
+          </div>
+          <div class="project-info">
+            <div class="project-tag">Personal Branding</div>
+            <h3>김하늘 — 유튜버/강사</h3>
+            <p>개인 브랜딩 페이지. 영상 갤러리, 수강 신청, Contact 폼, 다크 테마.</p>
+            <div class="project-link">자세히 보기 <span>→</span></div>
+          </div>
+        </a>
+
+        <!-- Food Order -->
+        <a href="food-order/index.html" class="project-card">
+          <div class="project-thumb project-thumb-food">
+            <div class="mini-food">
+              <div class="mini-food-icon">🐳</div>
+              <div class="mini-food-name">맛집고래</div>
+              <div class="mini-food-sub">한식 배달 전문점</div>
+            </div>
+          </div>
+          <div class="project-info">
+            <div class="project-tag">Food Delivery</div>
+            <h3>맛집고래 — 배달 주문</h3>
+            <p>음식 배달 주문 페이지. 메뉴 옵션 선택, 장바구니, 실시간 가격 계산, 주문 완료.</p>
             <div class="project-link">자세히 보기 <span>→</span></div>
           </div>
         </a>

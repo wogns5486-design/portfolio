@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <circle cx="50" cy="55" r="38" fill="#FF6B35"/>
+  <ellipse cx="50" cy="30" rx="22" ry="12" fill="#FF6B35"/>
+  <ellipse cx="50" cy="30" rx="18" ry="9" fill="#FFD6C2"/>
+  <!-- whale body -->
+  <ellipse cx="50" cy="58" rx="30" ry="22" fill="#FF8C5A"/>
+  <!-- belly -->
+  <ellipse cx="50" cy="62" rx="18" ry="13" fill="#FFD6C2"/>
+  <!-- eye -->
+  <circle cx="62" cy="52" r="3.5" fill="#2D3436"/>
+  <circle cx="63.2" cy="51" r="1.2" fill="white"/>
+  <!-- tail -->
+  <path d="M18 65 Q5 55 8 75 Q15 68 18 72 Q20 60 18 65Z" fill="#FF6B35"/>
+  <!-- spout -->
+  <path d="M50 18 Q48 8 44 4 Q50 10 50 18Z" fill="#4ECDC4" opacity="0.8"/>
+  <path d="M50 18 Q52 6 56 3 Q51 10 50 18Z" fill="#4ECDC4" opacity="0.6"/>
+  <!-- smile -->
+  <path d="M44 67 Q50 73 56 67" stroke="#2D3436" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- fin -->
+  <path d="M74 62 Q88 52 84 68 Q78 63 74 66Z" fill="#FF6B35"/>
+</svg>

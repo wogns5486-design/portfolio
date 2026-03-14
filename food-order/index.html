@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>맛집고래 - 한식 배달 전문점</title>
+  <meta name="description" content="맛집고래에서 따뜻하고 맛있는 한식을 빠르게 배달받으세요. 김치찌개, 불고기, 비빔밥 등 다양한 한식 메뉴를 30~40분 내 배달합니다." />
+  <meta name="keywords" content="한식배달, 맛집고래, 김치찌개, 불고기, 비빔밥, 음식배달, 한식전문" />
+  <meta name="author" content="맛집고래" />
+  <!-- OG Tags -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="맛집고래 - 한식 배달 전문점" />
+  <meta property="og:description" content="따뜻하고 맛있는 한식을 30~40분 내 배달해드립니다. 지금 바로 주문하세요!" />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=1200&q=80" />
+  <meta property="og:url" content="https://matjipgorae.com" />
+  <meta property="og:locale" content="ko_KR" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="맛집고래 - 한식 배달 전문점" />
+  <meta name="twitter:description" content="따뜻하고 맛있는 한식을 30~40분 내 배달해드립니다." />
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=1200&q=80" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="header" id="header">
+    <div class="header-inner">
+      <a href="#" class="logo" aria-label="맛집고래 홈">
+        <img src="favicon.svg" alt="맛집고래 로고" class="logo-img" />
+        <span class="logo-text">맛집고래</span>
+      </a>
+
+      <div class="delivery-toggle" role="group" aria-label="주문 방식 선택">
+        <button class="toggle-btn active" id="btn-delivery" data-mode="delivery">
+          🛵 배달
+        </button>
+        <button class="toggle-btn" id="btn-pickup" data-mode="pickup">
+          🏃 포장
+        </button>
+      </div>
+
+      <div class="search-wrap">
+        <span class="search-icon" aria-hidden="true">🔍</span>
+        <input
+          type="search"
+          class="search-input"
+          id="searchInput"
+          placeholder="메뉴를 검색해보세요..."
+          aria-label="메뉴 검색"
+          autocomplete="off"
+        />
+        <button class="search-clear" id="searchClear" aria-label="검색어 지우기" hidden>✕</button>
+      </div>
+
+      <button class="cart-btn" id="cartBtn" aria-label="장바구니 열기">
+        <span class="cart-icon">🛒</span>
+        <span class="cart-badge" id="cartBadge" hidden>0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <img
+        src="https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=1400&q=80&auto=format&fit=crop"
+        alt="맛있는 한식"
+        class="hero-img"
+        loading="eager"
+      />
+      <div class="hero-overlay"></div>
+    </div>
+    <div class="hero-content">
+      <p class="hero-sub">🐳 맛집고래가 골라드리는 오늘의 한식</p>
+      <h1 class="hero-title">오늘 뭐 먹지?<br /><span>고민은 고래에게!</span></h1>
+      <p class="hero-desc">신선한 재료로 만든 따뜻한 한식을<br />30~40분 안에 문 앞까지 배달해드려요</p>
+      <div class="hero-actions">
+        <a href="#menu-section" class="hero-btn primary" id="heroMenuBtn">인기 메뉴 보기 🔥</a>
+        <a href="#menu-section" class="hero-btn secondary" id="heroNewBtn">신메뉴 보기 ✨</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <strong>4.9★</strong>
+          <span>평균 평점</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <strong>30~40분</strong>
+          <span>평균 배달시간</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <strong>12,000+</strong>
+          <span>누적 주문</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MAIN ===== -->
+  <main class="main-wrap" id="menu-section">
+
+    <!-- 카테고리 -->
+    <section class="category-section" aria-label="메뉴 카테고리">
+      <div class="category-scroll" id="categoryScroll" role="tablist">
+        <button class="cat-btn active" data-cat="전체" role="tab" aria-selected="true">
+          <span class="cat-icon">🍽️</span>
+          <span>전체</span>
+        </button>
+        <button class="cat-btn" data-cat="인기" role="tab" aria-selected="false">
+          <span class="cat-icon">🔥</span>
+          <span>인기</span>
+        </button>
+        <button class="cat-btn" data-cat="한식" role="tab" aria-selected="false">
+          <span class="cat-icon">🥢</span>
+          <span>한식</span>
+        </button>
+        <button class="cat-btn" data-cat="분식" role="tab" aria-selected="false">
+          <span class="cat-icon">🍢</span>
+          <span>분식</span>
+        </button>
+        <button class="cat-btn" data-cat="찌개" role="tab" aria-selected="false">
+          <span class="cat-icon">🍲</span>
+          <span>찌개</span>
+        </button>
+        <button class="cat-btn" data-cat="구이" role="tab" aria-selected="false">
+          <span class="cat-icon">🥩</span>
+          <span>구이</span>
+        </button>
+        <button class="cat-btn" data-cat="면류" role="tab" aria-selected="false">
+          <span class="cat-icon">🍜</span>
+          <span>면류</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 메뉴 리스트 -->
+    <section class="menu-section" aria-label="메뉴 목록">
+      <div class="menu-header">
+        <h2 class="menu-title" id="menuTitle">전체 메뉴</h2>
+        <p class="menu-count" id="menuCount">12개의 메뉴</p>
+      </div>
+      <div class="menu-grid" id="menuGrid" role="list">
+        <!-- JS로 렌더링 -->
+      </div>
+      <div class="empty-state" id="emptyState" hidden>
+        <div class="empty-icon">🐳</div>
+        <p class="empty-text">검색 결과가 없어요</p>
+        <p class="empty-sub">다른 키워드로 검색해보세요</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="favicon.svg" alt="" class="footer-logo" aria-hidden="true" />
+        <span class="footer-name">맛집고래</span>
+      </div>
+      <div class="footer-info">
+        <div class="footer-col">
+          <h3>영업 안내</h3>
+          <p>월~금: 오전 10:00 ~ 오후 10:00</p>
+          <p>주말·공휴일: 오전 11:00 ~ 오후 9:00</p>
+          <p>브레이크타임: 오후 3:00 ~ 4:00</p>
+        </div>
+        <div class="footer-col">
+          <h3>연락처</h3>
+          <p>📞 <a href="tel:02-1234-5678">02-1234-5678</a></p>
+          <p>📱 <a href="tel:010-9876-5432">010-9876-5432</a></p>
+          <p>✉️ hello@matjipgorae.com</p>
+        </div>
+        <div class="footer-col">
+          <h3>배달 지역</h3>
+          <p>강남구 · 서초구 · 송파구</p>
+          <p>마포구 · 용산구 · 중구</p>
+          <p>최소 주문금액: 15,000원</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 맛집고래. All rights reserved.</p>
+        <p>사업자등록번호: 123-45-67890 | 대표: 고래진</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== 메뉴 상세 모달 ===== -->
+  <div class="modal-overlay" id="menuModal" role="dialog" aria-modal="true" aria-labelledby="modalMenuName" hidden>
+    <div class="modal-box" role="document">
+      <button class="modal-close" id="modalClose" aria-label="닫기">✕</button>
+      <div class="modal-img-wrap">
+        <img src="" alt="" class="modal-img" id="modalImg" />
+        <div class="modal-badges" id="modalBadges"></div>
+      </div>
+      <div class="modal-body">
+        <div class="modal-info">
+          <h2 class="modal-name" id="modalMenuName"></h2>
+          <p class="modal-desc" id="modalDesc"></p>
+          <p class="modal-base-price" id="modalBasePrice"></p>
+        </div>
+
+        <div class="modal-options">
+          <!-- 맵기 -->
+          <div class="option-group">
+            <h3 class="option-title">맵기 조절</h3>
+            <div class="option-radio-wrap" id="spicyOptions">
+              <label class="option-radio">
+                <input type="radio" name="spicy" value="0" data-price="0" checked />
+                <span class="radio-label">순한맛</span>
+                <span class="radio-price">기본</span>
+              </label>
+              <label class="option-radio">
+                <input type="radio" name="spicy" value="1" data-price="0" />
+                <span class="radio-label">보통맛</span>
+                <span class="radio-price">기본</span>
+              </label>
+              <label class="option-radio">
+                <input type="radio" name="spicy" value="2" data-price="500" />
+                <span class="radio-label">🌶️ 매운맛</span>
+                <span class="radio-price">+500원</span>
+              </label>
+              <label class="option-radio">
+                <input type="radio" name="spicy" value="3" data-price="500" />
+                <span class="radio-label">🌶️🌶️ 아주매운맛</span>
+                <span class="radio-price">+500원</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 사이즈 -->
+          <div class="option-group">
+            <h3 class="option-title">사이즈 선택</h3>
+            <div class="option-radio-wrap" id="sizeOptions">
+              <label class="option-radio">
+                <input type="radio" name="size" value="regular" data-price="0" checked />
+                <span class="radio-label">보통 (1인분)</span>
+                <span class="radio-price">기본</span>
+              </label>
+              <label class="option-radio">
+                <input type="radio" name="size" value="large" data-price="2000" />
+                <span class="radio-label">곱빼기 (1.5인분)</span>
+                <span class="radio-price">+2,000원</span>
+              </label>
+              <label class="option-radio">
+                <input type="radio" name="size" value="xl" data-price="4000" />
+                <span class="radio-label">대 (2인분)</span>
+                <span class="radio-price">+4,000원</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 추가 토핑 -->
+          <div class="option-group">
+            <h3 class="option-title">추가 토핑 <span class="option-sub">(복수 선택 가능)</span></h3>
+            <div class="option-check-wrap" id="toppingOptions">
+              <label class="option-check">
+                <input type="checkbox" name="topping" value="egg" data-price="500" />
+                <span class="check-label">계란 추가</span>
+                <span class="check-price">+500원</span>
+              </label>
+              <label class="option-check">
+                <input type="checkbox" name="topping" value="cheese" data-price="800" />
+                <span class="check-label">치즈 추가</span>
+                <span class="check-price">+800원</span>
+              </label>
+              <label class="option-check">
+                <input type="checkbox" name="topping" value="meat" data-price="2000" />
+                <span class="check-label">고기 추가</span>
+                <span class="check-price">+2,000원</span>
+              </label>
+              <label class="option-check">
+                <input type="checkbox" name="topping" value="rice" data-price="500" />
+                <span class="check-label">공기밥 추가</span>
+                <span class="check-price">+500원</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- 수량 + 담기 -->
+        <div class="modal-footer">
+          <div class="qty-wrap">
+            <button class="qty-btn" id="qtyMinus" aria-label="수량 줄이기">−</button>
+            <span class="qty-num" id="qtyNum">1</span>
+            <button class="qty-btn" id="qtyPlus" aria-label="수량 늘리기">+</button>
+          </div>
+          <button class="add-cart-btn" id="addCartBtn">
+            <span id="addCartPrice">0원</span> 담기
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 장바구니 패널 ===== -->
+  <div class="cart-overlay" id="cartOverlay" hidden></div>
+  <aside class="cart-panel" id="cartPanel" role="complementary" aria-label="장바구니" aria-hidden="true">
+    <div class="cart-panel-header">
+      <h2 class="cart-panel-title">🛒 장바구니</h2>
+      <button class="cart-panel-close" id="cartPanelClose" aria-label="장바구니 닫기">✕</button>
+    </div>
+
+    <div class="cart-mode-info" id="cartModeInfo">
+      <span class="mode-badge delivery">🛵 배달</span>
+    </div>
+
+    <div class="cart-panel-body" id="cartPanelBody">
+      <!-- 비어있을 때 -->
+      <div class="cart-empty" id="cartEmpty">
+        <div class="cart-empty-icon">🐳</div>
+        <p>장바구니가 비어있어요</p>
+        <p class="cart-empty-sub">맛있는 메뉴를 담아보세요!</p>
+      </div>
+      <!-- 아이템들 -->
+      <ul class="cart-items" id="cartItems"></ul>
+    </div>
+
+    <div class="cart-panel-footer" id="cartPanelFooter">
+      <div class="cart-summary">
+        <div class="summary-row">
+          <span>소계</span>
+          <span id="summarySubtotal">0원</span>
+        </div>
+        <div class="summary-row delivery-row" id="deliveryRow">
+          <span>배달팁</span>
+          <span id="summaryDelivery">3,000원</span>
+        </div>
+        <div class="summary-row total-row">
+          <span>합계</span>
+          <span id="summaryTotal">0원</span>
+        </div>
+      </div>
+      <div class="min-order-notice" id="minOrderNotice"></div>
+      <button class="order-btn" id="orderBtn" disabled>주문하기</button>
+    </div>
+  </aside>
+
+  <!-- ===== 주문 완료 모달 ===== -->
+  <div class="modal-overlay" id="orderModal" role="dialog" aria-modal="true" aria-labelledby="orderTitle" hidden>
+    <div class="order-complete-box">
+      <div class="order-complete-icon">✅</div>
+      <h2 class="order-complete-title" id="orderTitle">주문이 완료되었어요!</h2>
+      <p class="order-complete-sub">따뜻하게 준비해서 빠르게 보내드릴게요 🐳</p>
+
+      <div class="order-info-card">
+        <div class="order-info-row">
+          <span class="order-info-label">주문번호</span>
+          <span class="order-info-value" id="orderNum">#MG-00000</span>
+        </div>
+        <div class="order-info-row">
+          <span class="order-info-label">예상 배달시간</span>
+          <span class="order-info-value highlight">30 ~ 40분</span>
+        </div>
+        <div class="order-info-row">
+          <span class="order-info-label">주문 방식</span>
+          <span class="order-info-value" id="orderMode">배달</span>
+        </div>
+      </div>
+
+      <div class="order-items-summary">
+        <h3>주문 내역</h3>
+        <ul id="orderSummaryList"></ul>
+        <div class="order-total-row">
+          <span>총 결제금액</span>
+          <span id="orderTotalPrice"></span>
+        </div>
+      </div>
+
+      <button class="order-confirm-btn" id="orderConfirmBtn">확인</button>
+    </div>
+  </div>
+
+  <!-- 토스트 알림 -->
+  <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
