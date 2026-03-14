@@ -9,190 +9,337 @@
   <meta property="og:description" content="18개 웹 프로젝트 + 3개 LIVE 서비스 — 랜딩페이지, 쇼핑몰, 대시보드, 풀스택 웹앱 개발">
   <meta property="og:type" content="website">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --bg: #0A0A0B;
-      --surface: #141416;
-      --border: rgba(255,255,255,0.08);
-      --text: #FAFAFA;
-      --text-sub: #A1A1AA;
-      --text-muted: #71717A;
-      --primary: #6C5CE7;
-      --primary-light: #A29BFE;
+      /* Color Psychology: Deep navy = trust, stability */
+      --bg: #0B1120;
+      --bg-deep: #070D1A;
+      --surface: #111827;
+      --surface-light: #1E293B;
+      --border: rgba(148,163,184,0.08);
+      --border-light: rgba(148,163,184,0.12);
+      --text: #F1F5F9;
+      --text-sub: #94A3B8;
+      --text-muted: #64748B;
+      /* Calm purple accent */
+      --primary: #818CF8;
+      --primary-deep: #6366F1;
+      /* CTA: Orange-amber for action (dopamine trigger) */
+      --accent: #F59E0B;
+      --accent-hover: #F97316;
+      /* LIVE: Emerald green = growth, stability */
+      --live: #34D399;
+      --live-bg: rgba(52,211,153,0.1);
+      --live-border: rgba(52,211,153,0.25);
+      /* Golden glow for Von Restorff */
+      --gold-glow: rgba(245,158,11,0.15);
+      --gold-border: rgba(245,158,11,0.3);
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      /* Subtle blue gradient noise background for stability feel */
+      background-image:
+        radial-gradient(ellipse at 20% 50%, rgba(99,102,241,0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(129,140,248,0.03) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 100%, rgba(99,102,241,0.03) 0%, transparent 40%);
+      background-attachment: fixed;
     }
 
     a { text-decoration: none; color: inherit; }
 
     .container {
-      max-width: 960px;
+      max-width: 1080px;
       margin: 0 auto;
-      padding: 0 24px;
+      padding: 0 28px;
     }
 
-    /* Hero */
+    /* ============================================
+       TYPOGRAPHY HIERARCHY (Cognitive Load reduction)
+       h1: 4rem, h2: 2.8rem, h3: 1.25rem, p: 0.9rem
+       Clear size jumps for scanability
+       ============================================ */
+
+    /* ============================================
+       HERO — Z-Pattern Layout
+       Left-aligned text + right visual element
+       Stats integrated into hero (Serial Position)
+       ============================================ */
     .hero {
-      min-height: 60vh;
+      min-height: 90vh;
       display: flex;
       align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 120px 24px 60px;
+      padding: 120px 28px 80px;
       position: relative;
+      overflow: hidden;
     }
 
     .hero::before {
       content: '';
       position: absolute;
-      top: -100px;
-      left: 50%;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(108,92,231,0.12), transparent 70%);
-      transform: translateX(-50%);
+      top: -200px;
+      right: -100px;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(99,102,241,0.08), rgba(129,140,248,0.04) 40%, transparent 70%);
       pointer-events: none;
     }
 
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -100px;
+      left: -200px;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(245,158,11,0.04), transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .hero-content {
+      /* Z-pattern: text on left */
+    }
+
     .hero-label {
-      font-size: 0.8rem;
-      letter-spacing: 3px;
-      color: var(--primary-light);
+      font-size: 0.75rem;
+      letter-spacing: 4px;
+      color: var(--accent);
       text-transform: uppercase;
       margin-bottom: 20px;
+      font-weight: 600;
     }
 
     .hero h1 {
-      font-size: clamp(2.5rem, 5vw, 4rem);
-      font-weight: 800;
-      line-height: 1.1;
-      margin-bottom: 16px;
+      font-size: clamp(2.8rem, 5.5vw, 4.2rem);
+      font-weight: 900;
+      line-height: 1.08;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
     }
 
-    .hero p {
-      font-size: 1.1rem;
-      color: var(--text-sub);
-      max-width: 640px;
-      margin: 0 auto;
-      word-break: keep-all;
-    }
-
-    /* Stats Bar */
-    .stats-bar {
-      padding: 0 24px 80px;
-    }
-
-    .stats-bar-inner {
-      max-width: 960px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      overflow: hidden;
-    }
-
-    .stat-item {
-      background: var(--surface);
-      padding: 28px 24px;
-      text-align: center;
-    }
-
-    .stat-number {
-      font-size: 2.4rem;
-      font-weight: 800;
-      color: var(--text);
-      line-height: 1;
-      margin-bottom: 6px;
-      background: linear-gradient(135deg, #fff 0%, var(--primary-light) 100%);
+    .hero h1 .highlight {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
 
+    .hero-desc {
+      font-size: 1.1rem;
+      color: var(--text-sub);
+      max-width: 480px;
+      word-break: keep-all;
+      line-height: 1.7;
+      margin-bottom: 36px;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 36px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+      border-radius: 100px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: 0 4px 24px rgba(245,158,11,0.3);
+      /* Fitts's Law: large target */
+    }
+
+    .hero-cta:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 8px 40px rgba(245,158,11,0.45);
+    }
+
+    .hero-cta span {
+      transition: transform 0.3s;
+    }
+
+    .hero-cta:hover span {
+      transform: translateX(4px);
+    }
+
+    /* Stats inside hero — right side (Z-pattern visual element) */
+    .hero-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .hero-stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 28px 32px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-stat-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(129,140,248,0.03), transparent);
+      pointer-events: none;
+    }
+
+    .hero-stat-card:hover {
+      border-color: rgba(129,140,248,0.2);
+      transform: translateX(6px);
+    }
+
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 900;
+      line-height: 1;
+      background: linear-gradient(135deg, #fff 0%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      min-width: 80px;
+    }
+
+    .stat-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
     .stat-label {
-      font-size: 0.82rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .stat-sublabel {
+      font-size: 0.78rem;
       color: var(--text-muted);
-      letter-spacing: 0.5px;
     }
 
     .stat-dot {
       display: inline-block;
-      width: 6px;
-      height: 6px;
-      background: #51CF66;
+      width: 8px;
+      height: 8px;
+      background: var(--live);
       border-radius: 50%;
-      margin-right: 5px;
+      margin-right: 6px;
       vertical-align: middle;
       animation: livePulse 2s ease infinite;
+      box-shadow: 0 0 8px rgba(52,211,153,0.4);
     }
 
-    /* Category Filter */
+    /* ============================================
+       SECTION HEADERS
+       ============================================ */
+    .section-header {
+      margin-bottom: 40px;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      letter-spacing: 3px;
+      color: var(--primary);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+
+    /* ============================================
+       CATEGORY FILTER
+       ============================================ */
     .filter-bar {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
-      margin-bottom: 32px;
+      margin-bottom: 40px;
     }
 
     .filter-btn {
-      padding: 8px 18px;
+      padding: 10px 22px;
       border-radius: 100px;
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-light);
       background: transparent;
       color: var(--text-sub);
       font-size: 0.85rem;
       font-family: 'Inter', sans-serif;
       font-weight: 500;
       cursor: pointer;
-      transition: all 0.25s ease;
+      transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
     }
 
     .filter-btn:hover {
-      border-color: rgba(108,92,231,0.4);
+      border-color: rgba(129,140,248,0.3);
       color: var(--text);
+      background: rgba(129,140,248,0.05);
     }
 
     .filter-btn.active {
-      background: var(--primary);
+      background: linear-gradient(135deg, var(--primary-deep), var(--primary));
       border-color: var(--primary);
       color: #fff;
+      box-shadow: 0 2px 12px rgba(99,102,241,0.3);
     }
 
-    /* Projects */
+    /* ============================================
+       PROJECTS GRID
+       Golden Ratio: card thumb height ~61.8% of width
+       ============================================ */
     .projects {
-      padding: 0 0 80px;
+      padding: 60px 0 100px;
     }
 
     .projects-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
+      gap: 28px;
     }
 
+    /* ============================================
+       PROJECT CARD — Base
+       Dopamine: hover border color + shadow expansion
+       ============================================ */
     .project-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 16px;
       overflow: hidden;
-      transition: all 0.4s ease;
+      transition: all 0.45s cubic-bezier(0.4,0,0.2,1);
       display: block;
-      /* Scroll animation initial state */
       opacity: 0;
-      transform: translateY(28px);
+      transform: translateY(32px);
+      position: relative;
     }
 
     .project-card.visible {
@@ -200,23 +347,65 @@
       transform: translateY(0);
     }
 
+    /* Gestalt: filtered cards blur+opacity instead of hiding */
+    .project-card.dimmed-by-filter {
+      opacity: 0.15;
+      filter: blur(2px) grayscale(0.8);
+      pointer-events: none;
+      transform: scale(0.97);
+    }
+
     .project-card.hidden-by-filter {
       display: none;
     }
 
     .project-card:hover {
-      border-color: rgba(108,92,231,0.3);
-      transform: translateY(-6px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      border-color: rgba(129,140,248,0.25);
+      transform: translateY(-8px);
+      box-shadow:
+        0 24px 48px rgba(0,0,0,0.3),
+        0 0 0 1px rgba(129,140,248,0.1);
     }
 
     .project-card.visible:hover {
-      transform: translateY(-6px);
+      transform: translateY(-8px);
+    }
+
+    /* ============================================
+       VON RESTORFF — LIVE cards stand out
+       Golden border glow, different surface
+       ============================================ */
+    .project-card[data-category="live"] {
+      border-color: var(--gold-border);
+      background: linear-gradient(135deg, var(--surface) 0%, rgba(245,158,11,0.03) 100%);
+      box-shadow: 0 0 20px var(--gold-glow), 0 0 60px rgba(245,158,11,0.05);
+    }
+
+    .project-card[data-category="live"]:hover {
+      border-color: rgba(245,158,11,0.5);
+      box-shadow:
+        0 24px 48px rgba(0,0,0,0.3),
+        0 0 30px var(--gold-glow),
+        0 0 80px rgba(245,158,11,0.08);
+    }
+
+    /* Von Restorff: First LIVE card is featured (2-column span) */
+    .project-card.featured {
+      grid-column: span 2;
+    }
+
+    .project-card.featured .project-thumb {
+      height: 280px;
+    }
+
+    .project-card.featured .project-info h3 {
+      font-size: 1.4rem;
     }
 
     .project-thumb {
       width: 100%;
-      height: 220px;
+      /* Golden Ratio: ~61.8% of ~320px card width */
+      height: 200px;
       overflow: hidden;
       position: relative;
     }
@@ -225,15 +414,16 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.5s ease;
+      transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
     }
 
     .project-card:hover .project-thumb img {
-      transform: scale(1.05);
+      transform: scale(1.06);
     }
 
+    /* Thumbnail variants */
     .project-thumb-saas {
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -281,13 +471,12 @@
     }
 
     .mini-ui-card.accent {
-      border-color: rgba(108,92,231,0.3);
-      background: rgba(108,92,231,0.08);
+      border-color: rgba(129,140,248,0.3);
+      background: rgba(129,140,248,0.08);
     }
 
-    /* Dashboard thumbnail */
     .project-thumb-dash {
-      background: #0f1117;
+      background: #0c1220;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -316,7 +505,7 @@
     .mini-dash-logo {
       width: 100%;
       height: 12px;
-      background: rgba(108,92,231,0.3);
+      background: rgba(129,140,248,0.3);
       border-radius: 3px;
       margin-bottom: 4px;
     }
@@ -329,7 +518,7 @@
     }
 
     .mini-dash-menu.active {
-      background: rgba(108,92,231,0.25);
+      background: rgba(129,140,248,0.25);
     }
 
     .mini-dash-main {
@@ -365,11 +554,10 @@
 
     .mini-bar {
       flex: 1;
-      background: linear-gradient(to top, rgba(108,92,231,0.4), rgba(108,92,231,0.15));
+      background: linear-gradient(to top, rgba(129,140,248,0.4), rgba(129,140,248,0.15));
       border-radius: 2px 2px 0 0;
     }
 
-    /* Wedding thumbnail */
     .project-thumb-wedding {
       background: linear-gradient(135deg, #FFF9F5, #F5EBE0);
       display: flex;
@@ -378,30 +566,11 @@
       padding: 24px;
     }
 
-    .mini-wedding {
-      text-align: center;
-    }
+    .mini-wedding { text-align: center; }
+    .mini-wedding-flower { font-size: 2.5rem; margin-bottom: 8px; }
+    .mini-wedding-names { font-size: 1.1rem; font-weight: 600; color: #8B7355; letter-spacing: 4px; margin-bottom: 4px; }
+    .mini-wedding-date { font-size: 0.8rem; color: #B8A08A; letter-spacing: 2px; }
 
-    .mini-wedding-flower {
-      font-size: 2.5rem;
-      margin-bottom: 8px;
-    }
-
-    .mini-wedding-names {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #8B7355;
-      letter-spacing: 4px;
-      margin-bottom: 4px;
-    }
-
-    .mini-wedding-date {
-      font-size: 0.8rem;
-      color: #B8A08A;
-      letter-spacing: 2px;
-    }
-
-    /* Clinic thumbnail */
     .project-thumb-clinic {
       background: linear-gradient(135deg, #E8F4FD, #D0E8F7);
       display: flex;
@@ -411,28 +580,12 @@
     }
 
     .mini-clinic { text-align: center; }
+    .mini-clinic-icon { font-size: 2.5rem; margin-bottom: 8px; }
+    .mini-clinic-name { font-size: 1.1rem; font-weight: 700; color: #2E86AB; margin-bottom: 4px; }
+    .mini-clinic-sub { font-size: 0.75rem; color: #5A9BB5; letter-spacing: 1px; }
 
-    .mini-clinic-icon {
-      font-size: 2.5rem;
-      margin-bottom: 8px;
-    }
-
-    .mini-clinic-name {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #2E86AB;
-      margin-bottom: 4px;
-    }
-
-    .mini-clinic-sub {
-      font-size: 0.75rem;
-      color: #5A9BB5;
-      letter-spacing: 1px;
-    }
-
-    /* Personal brand thumbnail */
     .project-thumb-personal {
-      background: linear-gradient(135deg, #0D0D0D, #1A1A2E);
+      background: linear-gradient(135deg, #0D0D0D, #1a1a2e);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -440,49 +593,19 @@
     }
 
     .mini-personal { text-align: center; }
-
     .mini-personal-avatar {
-      width: 48px;
-      height: 48px;
+      width: 48px; height: 48px;
       background: linear-gradient(135deg, #FF6B35, #F72585);
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      font-weight: 800;
-      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; font-weight: 800; color: #fff;
       margin: 0 auto 10px;
     }
+    .mini-personal-name { font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 2px; }
+    .mini-personal-sub { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 10px; }
+    .mini-personal-stats { display: flex; gap: 12px; justify-content: center; }
+    .mini-personal-stats span { font-size: 0.65rem; color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.06); padding: 3px 10px; border-radius: 100px; }
 
-    .mini-personal-name {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 2px;
-    }
-
-    .mini-personal-sub {
-      font-size: 0.75rem;
-      color: rgba(255,255,255,0.5);
-      margin-bottom: 10px;
-    }
-
-    .mini-personal-stats {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-    }
-
-    .mini-personal-stats span {
-      font-size: 0.65rem;
-      color: rgba(255,255,255,0.4);
-      background: rgba(255,255,255,0.06);
-      padding: 3px 10px;
-      border-radius: 100px;
-    }
-
-    /* Food order thumbnail */
     .project-thumb-food {
       background: linear-gradient(135deg, #FFF5EE, #FFE8D6);
       display: flex;
@@ -492,37 +615,22 @@
     }
 
     .mini-food { text-align: center; }
-
-    .mini-food-icon {
-      font-size: 2.5rem;
-      margin-bottom: 8px;
-    }
-
-    .mini-food-name {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #FF6B35;
-      margin-bottom: 4px;
-    }
-
-    .mini-food-sub {
-      font-size: 0.75rem;
-      color: #A0785A;
-      letter-spacing: 1px;
-    }
+    .mini-food-icon { font-size: 2.5rem; margin-bottom: 8px; }
+    .mini-food-name { font-size: 1.1rem; font-weight: 700; color: #FF6B35; margin-bottom: 4px; }
+    .mini-food-sub { font-size: 0.75rem; color: #A0785A; letter-spacing: 1px; }
 
     .project-info {
-      padding: 24px;
+      padding: 24px 28px 28px;
     }
 
     .project-tag {
       display: inline-block;
       padding: 4px 12px;
-      background: rgba(108,92,231,0.1);
-      border: 1px solid rgba(108,92,231,0.15);
+      background: rgba(129,140,248,0.08);
+      border: 1px solid rgba(129,140,248,0.15);
       border-radius: 100px;
       font-size: 0.72rem;
-      color: var(--primary-light);
+      color: var(--primary);
       margin-bottom: 12px;
       letter-spacing: 0.5px;
     }
@@ -530,12 +638,12 @@
     .badge-live {
       display: inline-block;
       padding: 3px 10px;
-      background: rgba(81,207,102,0.15);
-      border: 1px solid rgba(81,207,102,0.3);
+      background: var(--live-bg);
+      border: 1px solid var(--live-border);
       border-radius: 100px;
       font-size: 0.65rem;
       font-weight: 700;
-      color: #51CF66;
+      color: var(--live);
       letter-spacing: 1px;
       margin-left: 8px;
       animation: livePulse 2s ease infinite;
@@ -543,19 +651,21 @@
 
     @keyframes livePulse {
       0%, 100% { opacity: 1; }
-      50% { opacity: 0.6; }
+      50% { opacity: 0.5; }
     }
 
     .project-info h3 {
       font-size: 1.2rem;
       font-weight: 700;
       margin-bottom: 8px;
+      line-height: 1.3;
     }
 
     .project-info p {
       font-size: 0.88rem;
       color: var(--text-sub);
-      line-height: 1.6;
+      line-height: 1.65;
+      word-break: keep-all;
     }
 
     .project-link {
@@ -564,8 +674,13 @@
       gap: 6px;
       margin-top: 16px;
       font-size: 0.85rem;
-      color: var(--primary-light);
-      font-weight: 500;
+      color: var(--primary);
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .project-card:hover .project-link {
+      color: var(--accent);
     }
 
     .project-link span {
@@ -573,24 +688,35 @@
     }
 
     .project-card:hover .project-link span {
-      transform: translateX(4px);
+      transform: translateX(5px);
     }
 
-    /* CTA Section */
+    /* ============================================
+       CTA SECTION — Peak-End Rule
+       Near full-screen, dramatic gradient
+       ============================================ */
     .cta-section {
-      padding: 80px 24px;
+      padding: 140px 28px;
       text-align: center;
       position: relative;
       overflow: hidden;
+      min-height: 70vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .cta-section::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, rgba(108,92,231,0.12) 0%, rgba(162,155,254,0.06) 100%);
-      border-top: 1px solid rgba(108,92,231,0.15);
-      border-bottom: 1px solid rgba(108,92,231,0.15);
+      background:
+        linear-gradient(180deg,
+          var(--bg) 0%,
+          rgba(99,102,241,0.06) 30%,
+          rgba(245,158,11,0.06) 70%,
+          var(--bg) 100%
+        );
       pointer-events: none;
     }
 
@@ -599,9 +725,9 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 600px;
-      height: 300px;
-      background: radial-gradient(ellipse, rgba(108,92,231,0.15), transparent 70%);
+      width: 800px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(129,140,248,0.1), rgba(245,158,11,0.05) 40%, transparent 70%);
       transform: translate(-50%, -50%);
       pointer-events: none;
     }
@@ -609,55 +735,87 @@
     .cta-inner {
       position: relative;
       z-index: 1;
-      max-width: 560px;
+      max-width: 620px;
       margin: 0 auto;
     }
 
     .cta-label {
-      font-size: 0.78rem;
-      letter-spacing: 3px;
-      color: var(--primary-light);
+      font-size: 0.75rem;
+      letter-spacing: 4px;
+      color: var(--accent);
       text-transform: uppercase;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
+      font-weight: 600;
     }
 
     .cta-section h2 {
-      font-size: clamp(1.8rem, 4vw, 2.6rem);
-      font-weight: 800;
-      margin-bottom: 16px;
-      line-height: 1.2;
+      font-size: clamp(2rem, 4.5vw, 3rem);
+      font-weight: 900;
+      margin-bottom: 20px;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
     }
 
     .cta-section > .cta-inner > p {
-      font-size: 1rem;
+      font-size: 1.05rem;
       color: var(--text-sub);
-      margin-bottom: 36px;
-      line-height: 1.7;
+      margin-bottom: 44px;
+      line-height: 1.75;
+      word-break: keep-all;
     }
 
+    /* CTA Button — Fitts's Law: large, prominent
+       Dopamine: shimmer effect on hover */
     .cta-btn {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 14px 32px;
-      background: linear-gradient(135deg, var(--primary), #8B7FFF);
+      gap: 10px;
+      padding: 20px 48px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
       border-radius: 100px;
-      font-size: 0.95rem;
+      font-size: 1.05rem;
       font-weight: 700;
       color: #fff;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 24px rgba(108,92,231,0.35);
+      transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: 0 4px 30px rgba(245,158,11,0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.6s;
+    }
+
+    .cta-btn:hover::before {
+      left: 100%;
     }
 
     .cta-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 36px rgba(108,92,231,0.5);
+      transform: translateY(-3px) scale(1.04);
+      box-shadow: 0 8px 48px rgba(245,158,11,0.45);
     }
 
-    /* Footer */
+    .cta-btn span {
+      transition: transform 0.3s;
+    }
+
+    .cta-btn:hover span {
+      transform: translateX(4px);
+    }
+
+    /* ============================================
+       FOOTER
+       ============================================ */
     .footer {
       border-top: 1px solid var(--border);
-      padding: 48px 0;
+      padding: 52px 0;
       text-align: center;
     }
 
@@ -679,12 +837,10 @@
     }
 
     .footer-link-item:hover {
-      color: var(--primary-light);
+      color: var(--primary);
     }
 
-    .footer-link-icon {
-      font-size: 1rem;
-    }
+    .footer-link-icon { font-size: 1rem; }
 
     .footer-divider {
       width: 1px;
@@ -697,10 +853,67 @@
       color: var(--text-muted);
     }
 
-    /* Responsive */
+    /* ============================================
+       SCROLL ANIMATIONS — Fade + Slide
+       ============================================ */
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .scroll-reveal.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .scroll-reveal-left {
+      opacity: 0;
+      transform: translateX(-30px);
+      transition: opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .scroll-reveal-left.revealed {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
+    @media (max-width: 1024px) {
+      .hero-inner {
+        grid-template-columns: 1fr;
+        gap: 48px;
+        text-align: center;
+      }
+
+      .hero-desc {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .hero-cta {
+        margin: 0 auto;
+      }
+
+      .hero-stats {
+        max-width: 480px;
+        margin: 0 auto;
+      }
+
+      .project-card.featured {
+        grid-column: span 2;
+      }
+    }
+
     @media (max-width: 900px) {
       .projects-grid {
         grid-template-columns: repeat(2, 1fr);
+      }
+
+      .project-card.featured {
+        grid-column: span 2;
       }
     }
 
@@ -709,15 +922,30 @@
         grid-template-columns: 1fr;
       }
 
-      .hero { padding: 100px 24px 60px; }
-
-      .stats-bar-inner {
-        grid-template-columns: 1fr;
-        gap: 1px;
+      .project-card.featured {
+        grid-column: span 1;
       }
 
-      .stat-item {
+      .project-card.featured .project-thumb {
+        height: 200px;
+      }
+
+      .hero {
+        padding: 100px 20px 60px;
+        min-height: auto;
+      }
+
+      .hero-inner {
+        gap: 36px;
+      }
+
+      .hero-stat-card {
         padding: 20px 24px;
+      }
+
+      .stat-number {
+        font-size: 2.2rem;
+        min-width: 60px;
       }
 
       .filter-bar {
@@ -725,44 +953,76 @@
       }
 
       .filter-btn {
-        padding: 6px 14px;
+        padding: 8px 16px;
         font-size: 0.8rem;
+      }
+
+      .cta-section {
+        padding: 100px 20px;
+        min-height: auto;
+      }
+
+      .cta-btn {
+        padding: 16px 36px;
+        font-size: 0.95rem;
       }
     }
   </style>
 </head>
 <body>
+
+  <!-- ============================================
+       HERO — Z-Pattern: left text + right stats
+       Serial Position: strongest content first
+       ============================================ -->
   <section class="hero">
-    <div>
-      <p class="hero-label">Web Developer</p>
-      <h1>Portfolio</h1>
-      <p>기획부터 출시까지 원스텝 · 랜딩페이지, 쇼핑몰, 앱, SaaS, 결제연동, 웹앱</p>
+    <div class="hero-inner">
+      <div class="hero-content scroll-reveal-left">
+        <p class="hero-label">Web Developer Portfolio</p>
+        <h1>아이디어를<br><span class="highlight">현실로</span> 만드는 개발자</h1>
+        <p class="hero-desc">기획부터 디자인, 개발, 배포까지 원스텝으로 진행합니다. 랜딩페이지, 쇼핑몰, SaaS, 풀스택 웹앱 — 18개 프로젝트와 3개 라이브 서비스로 증명합니다.</p>
+        <a href="mailto:wogns5486@gmail.com" class="hero-cta">프로젝트 문의하기 <span>→</span></a>
+      </div>
+
+      <!-- Stats integrated into hero (Social Proof + Z-pattern right side) -->
+      <div class="hero-stats">
+        <div class="hero-stat-card scroll-reveal">
+          <div class="stat-number" data-count="3">0</div>
+          <div class="stat-meta">
+            <div class="stat-label"><span class="stat-dot"></span>LIVE 서비스 운영 중</div>
+            <div class="stat-sublabel">실제 사용자가 이용하는 서비스</div>
+          </div>
+        </div>
+        <div class="hero-stat-card scroll-reveal">
+          <div class="stat-number" data-count="18">0</div>
+          <div class="stat-meta">
+            <div class="stat-label">완성 프로젝트</div>
+            <div class="stat-sublabel">다양한 산업군 경험</div>
+          </div>
+        </div>
+        <div class="hero-stat-card scroll-reveal">
+          <div class="stat-number" data-count-text="Full">F</div>
+          <div class="stat-meta">
+            <div class="stat-label">풀스택 개발</div>
+            <div class="stat-sublabel">프론트엔드 + 백엔드 + 배포</div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Stats Bar -->
-  <div class="stats-bar">
-    <div class="stats-bar-inner">
-      <div class="stat-item">
-        <div class="stat-number">3</div>
-        <div class="stat-label"><span class="stat-dot"></span>LIVE 서비스 운영 중</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number">18</div>
-        <div class="stat-label">완성 프로젝트</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number">Full</div>
-        <div class="stat-label">풀스택 개발</div>
-      </div>
-    </div>
-  </div>
-
+  <!-- ============================================
+       PROJECTS — Von Restorff: LIVE cards first & featured
+       ============================================ -->
   <section class="projects">
     <div class="container">
 
-      <!-- Category Filter -->
-      <div class="filter-bar">
+      <div class="section-header scroll-reveal">
+        <p class="section-label">Projects</p>
+        <h2 class="section-title">프로젝트 갤러리</h2>
+      </div>
+
+      <div class="filter-bar scroll-reveal">
         <button class="filter-btn active" data-filter="all">전체</button>
         <button class="filter-btn" data-filter="live">LIVE</button>
         <button class="filter-btn" data-filter="landing">랜딩페이지</button>
@@ -772,8 +1032,8 @@
 
       <div class="projects-grid">
 
-        <!-- DriveX — LIVE App -->
-        <a href="https://drivex-4kh.pages.dev/" target="_blank" class="project-card" data-category="live">
+        <!-- DriveX — LIVE App (Featured: Von Restorff, 2-col span) -->
+        <a href="https://drivex-4kh.pages.dev/" target="_blank" class="project-card featured" data-category="live">
           <div class="project-thumb" style="background:linear-gradient(135deg,#0D0D2B,#1a1a3e);display:flex;align-items:center;justify-content:center;">
             <div style="text-align:center;">
               <div style="font-size:2.5rem;margin-bottom:8px;">🚗</div>
@@ -1005,11 +1265,11 @@
 
         <!-- Calculator -->
         <a href="calculator/index.html" class="project-card" data-category="tool">
-          <div class="project-thumb" style="background:linear-gradient(135deg,#0A0A0B,#1a1a2e);display:flex;align-items:center;justify-content:center;">
+          <div class="project-thumb" style="background:linear-gradient(135deg,#0B1120,#1e293b);display:flex;align-items:center;justify-content:center;">
             <div style="text-align:center;">
               <div style="font-size:2.2rem;margin-bottom:6px;">🧮</div>
-              <div style="font-size:0.9rem;font-weight:700;color:#a29bfe;letter-spacing:1px;">대출 이자 계산기</div>
-              <div style="font-size:0.72rem;color:#55556a;margin-top:4px;">3가지 상환방식 비교</div>
+              <div style="font-size:0.9rem;font-weight:700;color:#818CF8;letter-spacing:1px;">대출 이자 계산기</div>
+              <div style="font-size:0.72rem;color:#64748B;margin-top:4px;">3가지 상환방식 비교</div>
             </div>
           </div>
           <div class="project-info">
@@ -1039,11 +1299,11 @@
 
         <!-- Auth & Payment -->
         <a href="auth-pay/index.html" class="project-card" data-category="app">
-          <div class="project-thumb" style="background:linear-gradient(135deg,#0A0A0B,#1a2e1a);display:flex;align-items:center;justify-content:center;">
+          <div class="project-thumb" style="background:linear-gradient(135deg,#0B1120,#162a1a);display:flex;align-items:center;justify-content:center;">
             <div style="text-align:center;">
               <div style="font-size:2.2rem;margin-bottom:6px;">🔐</div>
-              <div style="font-size:0.9rem;font-weight:700;color:#a29bfe;letter-spacing:1px;">로그인 · 결제</div>
-              <div style="font-size:0.72rem;color:#55556a;margin-top:4px;">회원가입 → 결제 풀플로우</div>
+              <div style="font-size:0.9rem;font-weight:700;color:#818CF8;letter-spacing:1px;">로그인 · 결제</div>
+              <div style="font-size:0.72rem;color:#64748B;margin-top:4px;">회원가입 → 결제 풀플로우</div>
             </div>
           </div>
           <div class="project-info">
@@ -1056,7 +1316,7 @@
 
         <!-- Productivity App -->
         <a href="productivity-app/index.html" class="project-card" data-category="app">
-          <div class="project-thumb" style="background:linear-gradient(135deg,#6C5CE7,#a29bfe);display:flex;align-items:center;justify-content:center;">
+          <div class="project-thumb" style="background:linear-gradient(135deg,#6366F1,#818CF8);display:flex;align-items:center;justify-content:center;">
             <div style="text-align:center;">
               <div style="font-size:2.2rem;margin-bottom:6px;">🚀</div>
               <div style="font-size:0.9rem;font-weight:700;color:#fff;letter-spacing:1px;">SuperApp</div>
@@ -1073,11 +1333,11 @@
 
         <!-- Typing Game -->
         <a href="typing-game/index.html" class="project-card" data-category="tool">
-          <div class="project-thumb" style="background:linear-gradient(135deg,#0A0A0B 0%,#1a1a2e 100%);display:flex;align-items:center;justify-content:center;">
+          <div class="project-thumb" style="background:linear-gradient(135deg,#0B1120 0%,#1e293b 100%);display:flex;align-items:center;justify-content:center;">
             <div style="text-align:center;">
               <div style="font-size:2.2rem;margin-bottom:6px;">⌨️</div>
-              <div style="font-size:0.9rem;font-weight:700;color:#a29bfe;letter-spacing:1px;">타이핑 마스터</div>
-              <div style="font-size:0.72rem;color:#55556a;margin-top:4px;">WPM · 정확도 · 리더보드</div>
+              <div style="font-size:0.9rem;font-weight:700;color:#818CF8;letter-spacing:1px;">타이핑 마스터</div>
+              <div style="font-size:0.72rem;color:#64748B;margin-top:4px;">WPM · 정확도 · 리더보드</div>
             </div>
           </div>
           <div class="project-info">
@@ -1090,11 +1350,11 @@
 
         <!-- YouTube Auto -->
         <a href="youtube-auto/index.html" class="project-card" data-category="app">
-          <div class="project-thumb" style="background:linear-gradient(135deg,#0A0A0B 0%,#1a0a2e 100%);display:flex;align-items:center;justify-content:center;">
+          <div class="project-thumb" style="background:linear-gradient(135deg,#0B1120 0%,#1a0a2e 100%);display:flex;align-items:center;justify-content:center;">
             <div style="text-align:center;">
               <div style="font-size:2.2rem;margin-bottom:6px;">▶️</div>
-              <div style="font-size:0.9rem;font-weight:700;color:#a29bfe;letter-spacing:1px;">TubeFlow</div>
-              <div style="font-size:0.72rem;color:#55556a;margin-top:4px;">유튜브 자동화 대시보드</div>
+              <div style="font-size:0.9rem;font-weight:700;color:#818CF8;letter-spacing:1px;">TubeFlow</div>
+              <div style="font-size:0.72rem;color:#64748B;margin-top:4px;">유튜브 자동화 대시보드</div>
             </div>
           </div>
           <div class="project-info">
@@ -1109,10 +1369,12 @@
     </div>
   </section>
 
-  <!-- CTA Section -->
+  <!-- ============================================
+       CTA — Peak-End Rule: dramatic last impression
+       ============================================ -->
   <section class="cta-section">
-    <div class="cta-inner">
-      <p class="cta-label">Contact</p>
+    <div class="cta-inner scroll-reveal">
+      <p class="cta-label">Start a Project</p>
       <h2>프로젝트가 필요하신가요?</h2>
       <p>기획부터 디자인, 개발, 배포까지 원스텝으로 진행합니다.<br>아이디어만 있어도 괜찮아요. 함께 만들어 드립니다.</p>
       <a href="mailto:wogns5486@gmail.com" class="cta-btn">
@@ -1136,7 +1398,9 @@
   </footer>
 
   <script>
-    // Category Filter
+    // ============================================
+    // CATEGORY FILTER — Gestalt: dimmed instead of hidden
+    // ============================================
     const filterBtns = document.querySelectorAll('.filter-btn');
     const cards = document.querySelectorAll('.project-card');
 
@@ -1149,42 +1413,118 @@
 
         cards.forEach(card => {
           const category = card.dataset.category;
-          if (filter === 'all' || category === filter) {
-            card.classList.remove('hidden-by-filter');
+          card.classList.remove('hidden-by-filter', 'dimmed-by-filter');
+
+          if (filter === 'all') {
+            card.classList.add('visible');
+          } else if (category === filter) {
             card.classList.add('visible');
           } else {
-            card.classList.add('hidden-by-filter');
+            // Gestalt: blur + opacity instead of completely hiding
+            card.classList.add('dimmed-by-filter');
           }
         });
       });
     });
 
-    // Scroll Animation (IntersectionObserver with stagger)
+    // ============================================
+    // SCROLL ANIMATION — IntersectionObserver
+    // Smooth fade + slide for cards and sections
+    // ============================================
     const observerOptions = {
-      threshold: 0.08,
-      rootMargin: '0px 0px -40px 0px'
+      threshold: 0.06,
+      rootMargin: '0px 0px -60px 0px'
     };
 
-    const observer = new IntersectionObserver((entries) => {
+    // Card observer with stagger delay
+    const cardObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const card = entry.target;
-          const siblings = Array.from(card.parentElement.children).filter(el => !el.classList.contains('hidden-by-filter'));
+          const siblings = Array.from(card.parentElement.children).filter(
+            el => !el.classList.contains('dimmed-by-filter') && !el.classList.contains('hidden-by-filter')
+          );
           const index = siblings.indexOf(card);
-          const delay = (index % 3) * 80;
+          const delay = (index % 3) * 100;
 
           setTimeout(() => {
             card.classList.add('visible');
           }, delay);
 
-          observer.unobserve(card);
+          cardObserver.unobserve(card);
         }
       });
     }, observerOptions);
 
     cards.forEach(card => {
-      observer.observe(card);
+      cardObserver.observe(card);
     });
+
+    // General scroll reveal for sections
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.scroll-reveal, .scroll-reveal-left').forEach(el => {
+      revealObserver.observe(el);
+    });
+
+    // ============================================
+    // STAT COUNT-UP ANIMATION — Social Proof
+    // Numbers animate from 0 when scrolled into view
+    // ============================================
+    const statNumbers = document.querySelectorAll('.stat-number[data-count]');
+    const textStat = document.querySelector('.stat-number[data-count-text]');
+
+    const statObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+
+          if (el.dataset.countText) {
+            // Animate text: type out "Full"
+            const text = el.dataset.countText;
+            let i = 0;
+            el.textContent = '';
+            const typeInterval = setInterval(() => {
+              el.textContent = text.slice(0, i + 1);
+              i++;
+              if (i >= text.length) clearInterval(typeInterval);
+            }, 120);
+          } else {
+            const target = parseInt(el.dataset.count);
+            const duration = 1200;
+            const start = performance.now();
+
+            function animate(now) {
+              const elapsed = now - start;
+              const progress = Math.min(elapsed / duration, 1);
+              // Ease out cubic
+              const eased = 1 - Math.pow(1 - progress, 3);
+              el.textContent = Math.round(target * eased);
+
+              if (progress < 1) {
+                requestAnimationFrame(animate);
+              } else {
+                el.textContent = target;
+              }
+            }
+
+            requestAnimationFrame(animate);
+          }
+
+          statObserver.unobserve(el);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    statNumbers.forEach(el => statObserver.observe(el));
+    if (textStat) statObserver.observe(textStat);
   </script>
 </body>
 </html>
