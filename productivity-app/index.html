@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuperApp — 올인원 생산성 앱</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0A0A0B;--surface:#141416;--surface2:#1C1C1F;--border:rgba(255,255,255,0.08);--text:#FAFAFA;--text-sub:#A1A1AA;--text-muted:#71717A;--primary:#6C5CE7;--primary-light:#A29BFE;--danger:#FF6B6B;--success:#51CF66;--warning:#FFC078;--sidebar-w:260px}
+[data-theme="light"]{--bg:#F5F5F7;--surface:#FFFFFF;--surface2:#EEEEF0;--border:rgba(0,0,0,0.08);--text:#1A1A1B;--text-sub:#52525B;--text-muted:#A1A1AA}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;display:flex;min-height:100vh;transition:background .3s,color .3s}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font-family:inherit;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:.9rem;outline:none;transition:border .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--primary)}
+
+/* Sidebar */
+.sidebar{width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;transition:transform .3s}
+.sidebar-header{padding:24px 20px;border-bottom:1px solid var(--border)}
+.sidebar-header h1{font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--primary-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sidebar-header span{font-size:.7rem;color:var(--text-muted);display:block;margin-top:2px}
+.sidebar-nav{flex:1;overflow-y:auto;padding:12px 8px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:11px 16px;border-radius:10px;font-size:.88rem;color:var(--text-sub);transition:all .2s;margin-bottom:2px;font-weight:500}
+.nav-item:hover{background:rgba(108,92,231,.08);color:var(--text)}
+.nav-item.active{background:rgba(108,92,231,.12);color:var(--primary-light)}
+.nav-icon{width:20px;text-align:center;font-size:1rem}
+.sidebar-footer{padding:16px 20px;border-top:1px solid var(--border);display:flex;gap:8px}
+.sidebar-footer button{flex:1;padding:8px;border-radius:8px;font-size:.8rem;background:var(--surface2);transition:background .2s}
+.sidebar-footer button:hover{background:rgba(108,92,231,.15)}
+
+/* Main */
+.main{margin-left:var(--sidebar-w);flex:1;min-height:100vh;padding:32px}
+.page{display:none;animation:fadeIn .3s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.page-title{font-size:1.8rem;font-weight:800;margin-bottom:24px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px;transition:border .2s}
+.card:hover{border-color:rgba(108,92,231,.2)}
+.btn{padding:10px 20px;border-radius:10px;font-size:.85rem;font-weight:600;transition:all .2s}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:#5A4BD1}
+.btn-sm{padding:6px 14px;font-size:.78rem;border-radius:8px}
+.badge{display:inline-block;padding:3px 10px;border-radius:100px;font-size:.7rem;font-weight:600}
+.badge-primary{background:rgba(108,92,231,.15);color:var(--primary-light)}
+.badge-success{background:rgba(81,207,102,.15);color:var(--success)}
+.badge-danger{background:rgba(255,107,107,.15);color:var(--danger)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.flex-between{display:flex;justify-content:space-between;align-items:center}
+.mt-16{margin-top:16px}
+.mb-8{margin-bottom:8px}
+.mb-16{margin-bottom:16px}
+
+/* Toast */
+.toast-container{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+.toast{padding:12px 20px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:.85rem;animation:slideIn .3s ease;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+@keyframes slideIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+
+/* Search */
+.search-bar{position:relative;margin-bottom:24px}
+.search-bar input{width:100%;padding:12px 16px 12px 42px;border-radius:12px;background:var(--surface);font-size:.9rem}
+.search-bar::before{content:"🔍";position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:.9rem}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-overlay.active{opacity:1;pointer-events:all}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;width:90%;max-width:480px;transform:scale(.9);transition:transform .3s}
+.modal-overlay.active .modal{transform:scale(1)}
+
+/* Stat card */
+.stat-card{text-align:center;padding:24px}
+.stat-card .stat-icon{font-size:2rem;margin-bottom:8px}
+.stat-card .stat-value{font-size:2rem;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--primary-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-card .stat-label{font-size:.8rem;color:var(--text-muted);margin-top:4px}
+
+/* Checkbox */
+.check-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;transition:background .2s}
+.check-item:hover{background:var(--surface2)}
+.check-box{width:22px;height:22px;border:2px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0}
+.check-box.checked{background:var(--primary);border-color:var(--primary)}
+.check-box.checked::after{content:"✓";color:#fff;font-size:.75rem;font-weight:700}
+.check-text.done{text-decoration:line-through;color:var(--text-muted)}
+
+/* Tabs */
+.tabs{display:flex;gap:4px;background:var(--surface2);padding:4px;border-radius:10px;margin-bottom:20px}
+.tab{flex:1;padding:8px 16px;border-radius:8px;font-size:.82rem;font-weight:600;text-align:center;transition:all .2s;color:var(--text-sub)}
+.tab.active{background:var(--primary);color:#fff}
+
+/* Mobile */
+.menu-toggle{display:none;position:fixed;top:16px;left:16px;z-index:200;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:1.2rem}
+@media(max-width:768px){
+.sidebar{transform:translateX(-100%)}
+.sidebar.open{transform:translateX(0)}
+.main{margin-left:0;padding:20px;padding-top:64px}
+.menu-toggle{display:block}
+.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+</style>
+</head>
+<body>
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+
+<aside class="sidebar" id="sidebar">
+<div class="sidebar-header">
+<h1>SuperApp</h1>
+<span>올인원 생산성 앱 v2.0</span>
+</div>
+<nav class="sidebar-nav" id="sidebarNav"></nav>
+<div class="sidebar-footer">
+<button onclick="toggleTheme()">🌓 테마</button>
+<button onclick="navigate('settings')">⚙️ 설정</button>
+</div>
+</aside>
+
+<main class="main" id="mainContent"></main>
+
+<div class="toast-container" id="toastContainer"></div>
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+<div class="modal" id="modalContent"></div>
+</div>
+
+<script>
+// ===== APP STATE =====
+const state = {
+  todos: JSON.parse(localStorage.getItem('sa_todos')||'[]'),
+  notes: JSON.parse(localStorage.getItem('sa_notes')||'[]'),
+  events: JSON.parse(localStorage.getItem('sa_events')||'[]'),
+  habits: JSON.parse(localStorage.getItem('sa_habits')||'[]'),
+  bookmarks: JSON.parse(localStorage.getItem('sa_bookmarks')||'[]'),
+  finance: JSON.parse(localStorage.getItem('sa_finance')||'[]'),
+  theme: localStorage.getItem('sa_theme')||'dark',
+  currentPage: 'dashboard'
+};
+
+function save(key){localStorage.setItem('sa_'+key,JSON.stringify(state[key]))}
+function toast(msg){
+  const t=document.createElement('div');t.className='toast';t.textContent=msg;
+  document.getElementById('toastContainer').appendChild(t);
+  setTimeout(()=>t.remove(),2500);
+}
+function openModal(html){
+  document.getElementById('modalContent').innerHTML=html;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('active')}
+
+// ===== NAV =====
+const pages=[
+  {id:'dashboard',icon:'📊',name:'대시보드'},
+  {id:'todos',icon:'✅',name:'할일 관리'},
+  {id:'notes',icon:'📝',name:'메모장'},
+  {id:'calendar',icon:'📅',name:'캘린더'},
+  {id:'timer',icon:'⏱️',name:'타이머/스톱워치'},
+  {id:'pomodoro',icon:'🍅',name:'포모도로'},
+  {id:'calc',icon:'🧮',name:'계산기'},
+  {id:'dday',icon:'🎯',name:'D-Day 카운터'},
+  {id:'weather',icon:'🌤️',name:'날씨'},
+  {id:'clock',icon:'🕐',name:'세계시간'},
+  {id:'habits',icon:'💪',name:'습관 트래커'},
+  {id:'bookmarks',icon:'🔖',name:'북마크'},
+  {id:'password',icon:'🔐',name:'비밀번호 생성기'},
+  {id:'converter',icon:'📏',name:'단위 변환기'},
+  {id:'colors',icon:'🎨',name:'색상 팔레트'},
+  {id:'finance',icon:'💰',name:'가계부'},
+  {id:'settings',icon:'⚙️',name:'설정'},
+];
+
+function navigate(id){
+  state.currentPage=id;
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.page===id));
+  renderPage(id);
+  document.querySelector('.sidebar').classList.remove('open');
+}
+
+function buildNav(){
+  const nav=document.getElementById('sidebarNav');
+  nav.innerHTML=pages.map(p=>`<a class="nav-item ${p.id===state.currentPage?'active':''}" data-page="${p.id}" onclick="navigate('${p.id}')"><span class="nav-icon">${p.icon}</span>${p.name}</a>`).join('');
+}
+
+// ===== PAGE RENDERERS =====
+function renderPage(id){
+  const m=document.getElementById('mainContent');
+  const r={dashboard:renderDashboard,todos:renderTodos,notes:renderNotes,calendar:renderCalendar,timer:renderTimer,pomodoro:renderPomodoro,calc:renderCalc,dday:renderDday,weather:renderWeather,clock:renderClock,habits:renderHabits,bookmarks:renderBookmarks,password:renderPassword,converter:renderConverter,colors:renderColors,finance:renderFinance,settings:renderSettings};
+  m.innerHTML=`<div class="page active">${(r[id]||renderDashboard)()}</div>`;
+  if(id==='timer')initTimer();
+  if(id==='pomodoro')initPomodoro();
+  if(id==='clock')initClock();
+  if(id==='calc')initCalc();
+}
+
+// 1. Dashboard
+function renderDashboard(){
+  const todoDone=state.todos.filter(t=>t.done).length;
+  const habitToday=state.habits.filter(h=>h.dates&&h.dates.includes(today())).length;
+  const totalIncome=state.finance.filter(f=>f.type==='income').reduce((s,f)=>s+f.amount,0);
+  const totalExpense=state.finance.filter(f=>f.type==='expense').reduce((s,f)=>s+f.amount,0);
+  return `<h1 class="page-title">대시보드</h1>
+  <div class="grid-4">
+    <div class="card stat-card"><div class="stat-icon">✅</div><div class="stat-value">${todoDone}/${state.todos.length}</div><div class="stat-label">할일 완료</div></div>
+    <div class="card stat-card"><div class="stat-icon">📝</div><div class="stat-value">${state.notes.length}</div><div class="stat-label">메모</div></div>
+    <div class="card stat-card"><div class="stat-icon">💪</div><div class="stat-value">${habitToday}/${state.habits.length}</div><div class="stat-label">오늘 습관</div></div>
+    <div class="card stat-card"><div class="stat-icon">💰</div><div class="stat-value">${formatMoney(totalIncome-totalExpense)}</div><div class="stat-label">잔액</div></div>
+  </div>
+  <div class="grid-2 mt-16">
+    <div class="card"><h3 class="mb-8">최근 할일</h3>${state.todos.slice(-5).map(t=>`<div class="check-item"><span class="check-box ${t.done?'checked':''}"></span><span class="${t.done?'check-text done':''}">${t.text}</span></div>`).join('')||'<p style="color:var(--text-muted);font-size:.85rem">할일을 추가해보세요</p>'}</div>
+    <div class="card"><h3 class="mb-8">최근 메모</h3>${state.notes.slice(-5).map(n=>`<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:.85rem"><strong>${n.title}</strong><br><span style="color:var(--text-muted)">${n.body.substring(0,40)}...</span></div>`).join('')||'<p style="color:var(--text-muted);font-size:.85rem">메모를 작성해보세요</p>'}</div>
+  </div>
+  <div class="card mt-16"><h3 class="mb-8">이번 달 수입/지출</h3>
+  <div style="display:flex;gap:24px;align-items:end;height:120px;padding:16px 0">
+  ${[...Array(7)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-6+i);const ds=d.toISOString().split('T')[0];
+    const inc=state.finance.filter(f=>f.type==='income'&&f.date===ds).reduce((s,f)=>s+f.amount,0);
+    const exp=state.finance.filter(f=>f.type==='expense'&&f.date===ds).reduce((s,f)=>s+f.amount,0);
+    const maxH=100;const ih=Math.min(inc/10000*maxH,maxH)||4;const eh=Math.min(exp/10000*maxH,maxH)||4;
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="display:flex;gap:3px;align-items:end;height:${maxH}px"><div style="width:12px;height:${ih}px;background:var(--success);border-radius:3px 3px 0 0"></div><div style="width:12px;height:${eh}px;background:var(--danger);border-radius:3px 3px 0 0"></div></div><span style="font-size:.65rem;color:var(--text-muted)">${d.getDate()}일</span></div>`;
+  }).join('')}
+  </div>
+  <div style="display:flex;gap:16px;font-size:.75rem;color:var(--text-muted);margin-top:8px"><span>🟢 수입</span><span>🔴 지출</span></div>
+  </div>`;
+}
+
+// 2. Todos
+function renderTodos(){
+  const filters=['전체','진행중','완료'];
+  return `<div class="flex-between"><h1 class="page-title">할일 관리</h1><button class="btn btn-primary" onclick="addTodoModal()">+ 추가</button></div>
+  <div class="tabs">${filters.map((f,i)=>`<div class="tab ${i===0?'active':''}" onclick="filterTodos(this,'${f}')">${f}</div>`).join('')}</div>
+  <div id="todoList">${renderTodoList(state.todos)}</div>`;
+}
+function renderTodoList(list){
+  if(!list.length)return '<div class="card" style="text-align:center;color:var(--text-muted);padding:40px">할일이 없습니다</div>';
+  return list.map((t,i)=>`<div class="card check-item">
+    <span class="check-box ${t.done?'checked':''}" onclick="toggleTodo(${i})"></span>
+    <span style="flex:1" class="${t.done?'check-text done':''}">${t.text}</span>
+    <span class="badge ${t.priority==='high'?'badge-danger':t.priority==='mid'?'badge-primary':'badge-success'}">${t.priority==='high'?'높음':t.priority==='mid'?'보통':'낮음'}</span>
+    <button onclick="deleteTodo(${i})" style="color:var(--danger);font-size:.9rem">✕</button>
+  </div>`).join('');
+}
+function addTodoModal(){
+  openModal(`<h3 class="mb-16">할일 추가</h3>
+  <input id="todoInput" placeholder="할일 입력..." style="width:100%;margin-bottom:12px">
+  <select id="todoPriority" style="width:100%;margin-bottom:16px"><option value="mid">보통</option><option value="high">높음</option><option value="low">낮음</option></select>
+  <button class="btn btn-primary" style="width:100%" onclick="addTodo()">추가</button>`);
+  setTimeout(()=>document.getElementById('todoInput').focus(),100);
+}
+function addTodo(){
+  const v=document.getElementById('todoInput').value.trim();if(!v)return;
+  state.todos.push({text:v,done:false,priority:document.getElementById('todoPriority').value,date:today()});
+  save('todos');closeModal();toast('할일 추가됨');navigate('todos');
+}
+function toggleTodo(i){state.todos[i].done=!state.todos[i].done;save('todos');navigate('todos')}
+function deleteTodo(i){state.todos.splice(i,1);save('todos');toast('삭제됨');navigate('todos')}
+function filterTodos(el,f){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');
+  const list=f==='전체'?state.todos:f==='완료'?state.todos.filter(t=>t.done):state.todos.filter(t=>!t.done);
+  document.getElementById('todoList').innerHTML=renderTodoList(list);
+}
+
+// 3. Notes
+function renderNotes(){
+  return `<div class="flex-between"><h1 class="page-title">메모장</h1><button class="btn btn-primary" onclick="addNoteModal()">+ 새 메모</button></div>
+  <div class="grid-3">${state.notes.map((n,i)=>`<div class="card" style="cursor:pointer" onclick="editNoteModal(${i})">
+    <div class="flex-between mb-8"><strong>${n.title}</strong><button onclick="event.stopPropagation();deleteNote(${i})" style="color:var(--danger)">✕</button></div>
+    <p style="font-size:.85rem;color:var(--text-sub)">${n.body.substring(0,80)}${n.body.length>80?'...':''}</p>
+    <span style="font-size:.7rem;color:var(--text-muted);margin-top:8px;display:block">${n.date}</span>
+  </div>`).join('')||'<div class="card" style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:40px">메모가 없습니다</div>'}</div>`;
+}
+function addNoteModal(){
+  openModal(`<h3 class="mb-16">새 메모</h3>
+  <input id="noteTitle" placeholder="제목" style="width:100%;margin-bottom:12px">
+  <textarea id="noteBody" placeholder="내용 입력..." rows="6" style="width:100%;margin-bottom:16px;resize:vertical"></textarea>
+  <button class="btn btn-primary" style="width:100%" onclick="addNote()">저장</button>`);
+}
+function addNote(){
+  const t=document.getElementById('noteTitle').value.trim()||'무제';
+  const b=document.getElementById('noteBody').value.trim();
+  state.notes.push({title:t,body:b,date:today()});save('notes');closeModal();toast('메모 저장됨');navigate('notes');
+}
+function editNoteModal(i){
+  const n=state.notes[i];
+  openModal(`<h3 class="mb-16">메모 수정</h3>
+  <input id="noteTitle" value="${n.title}" style="width:100%;margin-bottom:12px">
+  <textarea id="noteBody" rows="6" style="width:100%;margin-bottom:16px;resize:vertical">${n.body}</textarea>
+  <button class="btn btn-primary" style="width:100%" onclick="updateNote(${i})">수정</button>`);
+}
+function updateNote(i){
+  state.notes[i].title=document.getElementById('noteTitle').value.trim()||'무제';
+  state.notes[i].body=document.getElementById('noteBody').value;
+  save('notes');closeModal();toast('수정됨');navigate('notes');
+}
+function deleteNote(i){state.notes.splice(i,1);save('notes');toast('삭제됨');navigate('notes')}
+
+// 4. Calendar
+let calYear,calMonth;
+function renderCalendar(){
+  const now=new Date();calYear=calYear||now.getFullYear();calMonth=calMonth!=null?calMonth:now.getMonth();
+  const first=new Date(calYear,calMonth,1);const lastDay=new Date(calYear,calMonth+1,0).getDate();
+  const startDay=first.getDay();const days=['일','월','화','수','목','금','토'];
+  let cells='';
+  for(let i=0;i<startDay;i++)cells+='<div></div>';
+  for(let d=1;d<=lastDay;d++){
+    const ds=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const evts=state.events.filter(e=>e.date===ds);
+    const isToday=ds===today();
+    cells+=`<div style="padding:6px;border-radius:8px;min-height:60px;background:${isToday?'rgba(108,92,231,.12)':'var(--surface)'};border:1px solid ${isToday?'rgba(108,92,231,.3)':'var(--border)'};cursor:pointer" onclick="addEventModal('${ds}')">
+      <div style="font-size:.8rem;font-weight:${isToday?'700':'500'};color:${isToday?'var(--primary-light)':'var(--text)'}">${d}</div>
+      ${evts.map(e=>`<div style="font-size:.65rem;background:rgba(108,92,231,.2);color:var(--primary-light);padding:2px 6px;border-radius:4px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e.title}</div>`).join('')}
+    </div>`;
+  }
+  return `<div class="flex-between"><h1 class="page-title">캘린더</h1><button class="btn btn-primary btn-sm" onclick="addEventModal('${today()}')">+ 일정</button></div>
+  <div class="card">
+    <div class="flex-between mb-16">
+      <button class="btn btn-sm" onclick="calMonth--;if(calMonth<0){calMonth=11;calYear--}navigate('calendar')">◀</button>
+      <h3>${calYear}년 ${calMonth+1}월</h3>
+      <button class="btn btn-sm" onclick="calMonth++;if(calMonth>11){calMonth=0;calYear++}navigate('calendar')">▶</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center">
+      ${days.map(d=>`<div style="font-size:.75rem;font-weight:600;color:var(--text-muted);padding:8px 0">${d}</div>`).join('')}
+      ${cells}
+    </div>
+  </div>`;
+}
+function addEventModal(date){
+  openModal(`<h3 class="mb-16">일정 추가 (${date})</h3>
+  <input id="eventTitle" placeholder="일정 제목" style="width:100%;margin-bottom:16px">
+  <button class="btn btn-primary" style="width:100%" onclick="addEvent('${date}')">추가</button>`);
+}
+function addEvent(date){
+  const t=document.getElementById('eventTitle').value.trim();if(!t)return;
+  state.events.push({title:t,date});save('events');closeModal();toast('일정 추가됨');navigate('calendar');
+}
+
+// 5. Timer
+let timerInterval,timerMs=0,timerRunning=false,timerMode='stopwatch';
+function renderTimer(){
+  return `<h1 class="page-title">타이머 / 스톱워치</h1>
+  <div class="tabs"><div class="tab active" onclick="timerMode='stopwatch';navigate('timer')">스톱워치</div><div class="tab" onclick="timerMode='countdown';navigate('timer')">카운트다운</div></div>
+  <div class="card" style="text-align:center;padding:48px">
+    ${timerMode==='countdown'?'<div class="mb-16"><input id="countdownMin" type="number" value="5" min="1" max="999" style="width:80px;text-align:center"> 분</div>':''}
+    <div id="timerDisplay" style="font-size:4rem;font-weight:800;font-variant-numeric:tabular-nums;background:linear-gradient(135deg,var(--primary),var(--primary-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent">00:00.00</div>
+    <div style="margin-top:24px;display:flex;gap:12px;justify-content:center">
+      <button class="btn btn-primary" id="timerStartBtn" onclick="startTimer()">시작</button>
+      <button class="btn" style="background:var(--surface2)" onclick="resetTimer()">초기화</button>
+    </div>
+  </div>`;
+}
+function initTimer(){clearInterval(timerInterval);timerMs=0;timerRunning=false}
+function startTimer(){
+  if(timerRunning){clearInterval(timerInterval);timerRunning=false;document.getElementById('timerStartBtn').textContent='계속';return}
+  if(timerMode==='countdown'&&timerMs===0){const m=document.getElementById('countdownMin');timerMs=(parseInt(m.value)||5)*60000}
+  timerRunning=true;document.getElementById('timerStartBtn').textContent='일시정지';
+  const start=Date.now()-(timerMode==='stopwatch'?timerMs:0);const total=timerMode==='countdown'?timerMs:0;
+  if(timerMode==='countdown'){const end=Date.now()+timerMs;timerInterval=setInterval(()=>{const rem=end-Date.now();if(rem<=0){clearInterval(timerInterval);timerRunning=false;timerMs=0;document.getElementById('timerDisplay').textContent='00:00.00';toast('타이머 완료!');return}timerMs=rem;document.getElementById('timerDisplay').textContent=formatTime(rem)},30)}
+  else{timerInterval=setInterval(()=>{timerMs=Date.now()-start;document.getElementById('timerDisplay').textContent=formatTime(timerMs)},30)}
+}
+function resetTimer(){clearInterval(timerInterval);timerMs=0;timerRunning=false;const d=document.getElementById('timerDisplay');if(d)d.textContent='00:00.00';const b=document.getElementById('timerStartBtn');if(b)b.textContent='시작'}
+function formatTime(ms){const m=Math.floor(ms/60000);const s=Math.floor((ms%60000)/1000);const cs=Math.floor((ms%1000)/10);return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(cs).padStart(2,'0')}`}
+
+// 6. Pomodoro
+let pomInterval,pomSeconds=1500,pomRunning=false,pomMode='work';
+function renderPomodoro(){
+  const pct=pomMode==='work'?(1500-pomSeconds)/1500*100:(300-pomSeconds)/300*100;
+  return `<h1 class="page-title">포모도로 타이머</h1>
+  <div class="card" style="text-align:center;padding:48px">
+    <div class="badge ${pomMode==='work'?'badge-danger':'badge-success'} mb-16">${pomMode==='work'?'집중 시간':'휴식 시간'}</div>
+    <div style="width:200px;height:200px;border-radius:50%;border:6px solid var(--border);margin:0 auto 24px;display:flex;align-items:center;justify-content:center;position:relative;background:conic-gradient(var(--primary) ${pct}%,transparent ${pct}%)">
+      <div style="width:180px;height:180px;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center">
+        <span style="font-size:3rem;font-weight:800;font-variant-numeric:tabular-nums">${Math.floor(pomSeconds/60)}:${String(pomSeconds%60).padStart(2,'0')}</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;justify-content:center">
+      <button class="btn btn-primary" onclick="togglePomodoro()">${pomRunning?'일시정지':'시작'}</button>
+      <button class="btn" style="background:var(--surface2)" onclick="resetPomodoro()">초기화</button>
+    </div>
+  </div>`;
+}
+function initPomodoro(){}
+function togglePomodoro(){
+  if(pomRunning){clearInterval(pomInterval);pomRunning=false;navigate('pomodoro');return}
+  pomRunning=true;
+  pomInterval=setInterval(()=>{pomSeconds--;if(pomSeconds<=0){clearInterval(pomInterval);pomRunning=false;if(pomMode==='work'){pomMode='break';pomSeconds=300;toast('휴식 시간!');}else{pomMode='work';pomSeconds=1500;toast('집중 시간!');}navigate('pomodoro');return}navigate('pomodoro')},1000);
+}
+function resetPomodoro(){clearInterval(pomInterval);pomRunning=false;pomMode='work';pomSeconds=1500;navigate('pomodoro')}
+
+// 7. Calculator
+let calcDisplay='0',calcPrev='',calcOp='';
+function renderCalc(){
+  const btns=['C','±','%','÷','7','8','9','×','4','5','6','−','1','2','3','+','0','.','⌫','='];
+  return `<h1 class="page-title">계산기</h1>
+  <div class="card" style="max-width:360px">
+    <div style="text-align:right;padding:16px;margin-bottom:8px">
+      <div style="font-size:.85rem;color:var(--text-muted);height:20px" id="calcPrev">${calcPrev} ${calcOp}</div>
+      <div style="font-size:2.8rem;font-weight:700;font-variant-numeric:tabular-nums" id="calcDisplay">${calcDisplay}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+    ${btns.map(b=>{
+      const isOp='÷×−+='.includes(b);const isFunc='C±%⌫'.includes(b);const isZero=b==='0';
+      return `<button onclick="calcPress('${b}')" style="padding:18px;border-radius:12px;font-size:1.2rem;font-weight:600;${isZero?'grid-column:span 1;':''}background:${isOp?'var(--primary)':isFunc?'var(--surface2)':'rgba(255,255,255,0.05)'};color:${isOp?'#fff':'var(--text)'};transition:opacity .1s" onmousedown="this.style.opacity=0.7" onmouseup="this.style.opacity=1">${b}</button>`;
+    }).join('')}
+    </div>
+  </div>`;
+}
+function initCalc(){}
+function calcPress(b){
+  if(b==='C'){calcDisplay='0';calcPrev='';calcOp=''}
+  else if(b==='⌫'){calcDisplay=calcDisplay.length>1?calcDisplay.slice(0,-1):'0'}
+  else if(b==='±'){calcDisplay=String(-parseFloat(calcDisplay))}
+  else if(b==='%'){calcDisplay=String(parseFloat(calcDisplay)/100)}
+  else if('÷×−+'.includes(b)){calcPrev=calcDisplay;calcOp=b;calcDisplay='0'}
+  else if(b==='='){
+    const a=parseFloat(calcPrev),c=parseFloat(calcDisplay);
+    if(calcOp==='÷')calcDisplay=String(c!==0?a/c:'Error');
+    else if(calcOp==='×')calcDisplay=String(a*c);
+    else if(calcOp==='−')calcDisplay=String(a-c);
+    else if(calcOp==='+')calcDisplay=String(a+c);
+    if(calcDisplay.includes('.')&&calcDisplay.length>10)calcDisplay=parseFloat(calcDisplay).toFixed(6);
+    calcPrev='';calcOp='';
+  }
+  else if(b==='.'){if(!calcDisplay.includes('.'))calcDisplay+='.'}
+  else{calcDisplay=calcDisplay==='0'?b:calcDisplay+b}
+  const d=document.getElementById('calcDisplay');if(d)d.textContent=calcDisplay;
+  const p=document.getElementById('calcPrev');if(p)p.textContent=`${calcPrev} ${calcOp}`;
+}
+
+// 8. D-Day
+function renderDday(){
+  const stored=JSON.parse(localStorage.getItem('sa_ddays')||'[]');
+  return `<div class="flex-between"><h1 class="page-title">D-Day 카운터</h1><button class="btn btn-primary" onclick="addDdayModal()">+ 추가</button></div>
+  <div class="grid-3">${stored.map((d,i)=>{
+    const diff=Math.ceil((new Date(d.date)-new Date(today()))/(1000*60*60*24));
+    const label=diff>0?`D-${diff}`:diff===0?'D-Day':`D+${Math.abs(diff)}`;
+    return `<div class="card stat-card"><div class="stat-icon">${d.emoji||'📌'}</div><div class="stat-value">${label}</div><div class="stat-label">${d.title}</div><div style="font-size:.7rem;color:var(--text-muted);margin-top:4px">${d.date}</div><button onclick="removeDday(${i})" style="color:var(--danger);font-size:.75rem;margin-top:8px">삭제</button></div>`;
+  }).join('')||'<div class="card" style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:40px">D-Day를 추가해보세요</div>'}</div>`;
+}
+function addDdayModal(){
+  openModal(`<h3 class="mb-16">D-Day 추가</h3>
+  <input id="ddayTitle" placeholder="이벤트 이름" style="width:100%;margin-bottom:12px">
+  <input id="ddayDate" type="date" style="width:100%;margin-bottom:12px">
+  <select id="ddayEmoji" style="width:100%;margin-bottom:16px"><option>📌</option><option>🎂</option><option>✈️</option><option>💼</option><option>🎓</option><option>💍</option><option>🏠</option><option>🎯</option></select>
+  <button class="btn btn-primary" style="width:100%" onclick="addDday()">추가</button>`);
+}
+function addDday(){
+  const t=document.getElementById('ddayTitle').value.trim();const d=document.getElementById('ddayDate').value;if(!t||!d)return;
+  const stored=JSON.parse(localStorage.getItem('sa_ddays')||'[]');
+  stored.push({title:t,date:d,emoji:document.getElementById('ddayEmoji').value});
+  localStorage.setItem('sa_ddays',JSON.stringify(stored));closeModal();toast('D-Day 추가됨');navigate('dday');
+}
+function removeDday(i){const stored=JSON.parse(localStorage.getItem('sa_ddays')||'[]');stored.splice(i,1);localStorage.setItem('sa_ddays',JSON.stringify(stored));toast('삭제됨');navigate('dday')}
+
+// 9. Weather (mock)
+function renderWeather(){
+  const cities=[{name:'서울',temp:18,icon:'☀️',desc:'맑음',humid:45,wind:3.2},{name:'부산',temp:20,icon:'🌤️',desc:'구름 조금',humid:55,wind:4.1},{name:'제주',temp:22,icon:'⛅',desc:'구름 많음',humid:65,wind:5.5},{name:'대전',temp:17,icon:'🌧️',desc:'비',humid:80,wind:2.8},{name:'인천',temp:16,icon:'🌫️',desc:'안개',humid:70,wind:2.0},{name:'광주',temp:19,icon:'☀️',desc:'맑음',humid:50,wind:3.8}];
+  return `<h1 class="page-title">날씨</h1>
+  <div class="card mb-16" style="padding:32px;text-align:center">
+    <div style="font-size:4rem">${cities[0].icon}</div>
+    <div style="font-size:3rem;font-weight:800;margin:8px 0">${cities[0].temp}°C</div>
+    <div style="color:var(--text-sub)">${cities[0].name} · ${cities[0].desc}</div>
+    <div style="display:flex;gap:24px;justify-content:center;margin-top:16px;font-size:.85rem;color:var(--text-muted)"><span>💧 ${cities[0].humid}%</span><span>💨 ${cities[0].wind}m/s</span></div>
+  </div>
+  <div class="grid-3">${cities.slice(1).map(c=>`<div class="card" style="text-align:center"><div style="font-size:2rem">${c.icon}</div><div style="font-size:1.5rem;font-weight:700;margin:4px 0">${c.temp}°C</div><div style="font-size:.85rem;color:var(--text-sub)">${c.name}</div><div style="font-size:.75rem;color:var(--text-muted)">${c.desc}</div></div>`).join('')}</div>
+  <p style="text-align:center;color:var(--text-muted);font-size:.75rem;margin-top:16px">※ 데모 데이터입니다</p>`;
+}
+
+// 10. World Clock
+let clockInterval;
+function renderClock(){
+  const zones=[{name:'서울',tz:'Asia/Seoul',flag:'🇰🇷'},{name:'도쿄',tz:'Asia/Tokyo',flag:'🇯🇵'},{name:'뉴욕',tz:'America/New_York',flag:'🇺🇸'},{name:'런던',tz:'Europe/London',flag:'🇬🇧'},{name:'파리',tz:'Europe/Paris',flag:'🇫🇷'},{name:'시드니',tz:'Australia/Sydney',flag:'🇦🇺'}];
+  return `<h1 class="page-title">세계시간</h1>
+  <div class="card mb-16" style="text-align:center;padding:40px">
+    <div id="mainClock" style="font-size:4rem;font-weight:800;font-variant-numeric:tabular-nums;background:linear-gradient(135deg,var(--primary),var(--primary-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent"></div>
+    <div id="mainDate" style="color:var(--text-sub);margin-top:8px"></div>
+  </div>
+  <div class="grid-3">${zones.map(z=>`<div class="card" style="text-align:center"><div style="font-size:1.5rem;margin-bottom:4px">${z.flag}</div><div style="font-weight:600">${z.name}</div><div class="world-clock" data-tz="${z.tz}" style="font-size:1.3rem;font-weight:700;font-variant-numeric:tabular-nums;margin-top:4px"></div></div>`).join('')}</div>`;
+}
+function initClock(){
+  clearInterval(clockInterval);
+  function update(){
+    const now=new Date();
+    const mc=document.getElementById('mainClock');if(mc)mc.textContent=now.toLocaleTimeString('ko-KR');
+    const md=document.getElementById('mainDate');if(md)md.textContent=now.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
+    document.querySelectorAll('.world-clock').forEach(el=>{el.textContent=new Date().toLocaleTimeString('ko-KR',{timeZone:el.dataset.tz})});
+  }
+  update();clockInterval=setInterval(update,1000);
+}
+
+// 11. Habits
+function renderHabits(){
+  const weekDays=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);weekDays.push(d.toISOString().split('T')[0])}
+  return `<div class="flex-between"><h1 class="page-title">습관 트래커</h1><button class="btn btn-primary" onclick="addHabitModal()">+ 추가</button></div>
+  <div class="card">
+    <div style="display:grid;grid-template-columns:140px repeat(7,1fr);gap:8px;align-items:center">
+      <div></div>${weekDays.map(d=>`<div style="text-align:center;font-size:.7rem;color:var(--text-muted)">${new Date(d).toLocaleDateString('ko-KR',{weekday:'short'})}<br>${new Date(d).getDate()}</div>`).join('')}
+      ${state.habits.map((h,hi)=>`<div style="font-size:.85rem;font-weight:600">${h.emoji||'💪'} ${h.name}</div>
+        ${weekDays.map(d=>{const done=h.dates&&h.dates.includes(d);return `<div style="text-align:center"><div onclick="toggleHabit(${hi},'${d}')" style="width:32px;height:32px;border-radius:8px;margin:0 auto;cursor:pointer;display:flex;align-items:center;justify-content:center;background:${done?'var(--primary)':'var(--surface2)'};transition:all .2s">${done?'✓':''}</div></div>`}).join('')}
+      `).join('')}
+    </div>
+  </div>
+  ${!state.habits.length?'<p style="text-align:center;color:var(--text-muted);margin-top:24px">습관을 추가해서 매일 트래킹하세요</p>':''}`;
+}
+function addHabitModal(){
+  openModal(`<h3 class="mb-16">습관 추가</h3>
+  <input id="habitName" placeholder="습관 이름" style="width:100%;margin-bottom:12px">
+  <select id="habitEmoji" style="width:100%;margin-bottom:16px"><option>💪</option><option>📚</option><option>🏃</option><option>💧</option><option>🧘</option><option>✍️</option><option>🎵</option><option>😴</option></select>
+  <button class="btn btn-primary" style="width:100%" onclick="addHabit()">추가</button>`);
+}
+function addHabit(){
+  const n=document.getElementById('habitName').value.trim();if(!n)return;
+  state.habits.push({name:n,emoji:document.getElementById('habitEmoji').value,dates:[]});save('habits');closeModal();toast('습관 추가됨');navigate('habits');
+}
+function toggleHabit(hi,date){
+  if(!state.habits[hi].dates)state.habits[hi].dates=[];
+  const idx=state.habits[hi].dates.indexOf(date);
+  if(idx>-1)state.habits[hi].dates.splice(idx,1);else state.habits[hi].dates.push(date);
+  save('habits');navigate('habits');
+}
+
+// 12. Bookmarks
+function renderBookmarks(){
+  return `<div class="flex-between"><h1 class="page-title">북마크</h1><button class="btn btn-primary" onclick="addBookmarkModal()">+ 추가</button></div>
+  <div class="grid-2">${state.bookmarks.map((b,i)=>`<div class="card flex-between">
+    <div><strong style="font-size:.9rem">${b.title}</strong><br><span style="font-size:.75rem;color:var(--primary-light)">${b.url}</span></div>
+    <button onclick="deleteBookmark(${i})" style="color:var(--danger)">✕</button>
+  </div>`).join('')||'<div class="card" style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:40px">북마크를 추가해보세요</div>'}</div>`;
+}
+function addBookmarkModal(){
+  openModal(`<h3 class="mb-16">북마크 추가</h3>
+  <input id="bmTitle" placeholder="제목" style="width:100%;margin-bottom:12px">
+  <input id="bmUrl" placeholder="URL" style="width:100%;margin-bottom:16px">
+  <button class="btn btn-primary" style="width:100%" onclick="addBookmark()">추가</button>`);
+}
+function addBookmark(){
+  const t=document.getElementById('bmTitle').value.trim();const u=document.getElementById('bmUrl').value.trim();if(!t||!u)return;
+  state.bookmarks.push({title:t,url:u});save('bookmarks');closeModal();toast('북마크 추가됨');navigate('bookmarks');
+}
+function deleteBookmark(i){state.bookmarks.splice(i,1);save('bookmarks');toast('삭제됨');navigate('bookmarks')}
+
+// 13. Password Generator
+function renderPassword(){
+  return `<h1 class="page-title">비밀번호 생성기</h1>
+  <div class="card" style="max-width:480px">
+    <div style="background:var(--surface2);border-radius:10px;padding:16px;font-size:1.4rem;font-weight:700;font-family:monospace;text-align:center;word-break:break-all;margin-bottom:20px" id="pwDisplay">P@ssw0rd!2024</div>
+    <div class="mb-16"><label style="font-size:.85rem;color:var(--text-sub)">길이: <span id="pwLenVal">16</span></label><br><input type="range" id="pwLen" min="8" max="64" value="16" style="width:100%;margin-top:8px;border:none;padding:0" oninput="document.getElementById('pwLenVal').textContent=this.value"></div>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px">
+      <label style="font-size:.85rem;display:flex;align-items:center;gap:6px"><input type="checkbox" id="pwUpper" checked> 대문자</label>
+      <label style="font-size:.85rem;display:flex;align-items:center;gap:6px"><input type="checkbox" id="pwLower" checked> 소문자</label>
+      <label style="font-size:.85rem;display:flex;align-items:center;gap:6px"><input type="checkbox" id="pwNum" checked> 숫자</label>
+      <label style="font-size:.85rem;display:flex;align-items:center;gap:6px"><input type="checkbox" id="pwSym" checked> 특수문자</label>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" style="flex:1" onclick="genPassword()">생성</button>
+      <button class="btn" style="background:var(--surface2)" onclick="copyPassword()">복사</button>
+    </div>
+  </div>`;
+}
+function genPassword(){
+  const len=parseInt(document.getElementById('pwLen').value);
+  let chars='';
+  if(document.getElementById('pwUpper').checked)chars+='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  if(document.getElementById('pwLower').checked)chars+='abcdefghijklmnopqrstuvwxyz';
+  if(document.getElementById('pwNum').checked)chars+='0123456789';
+  if(document.getElementById('pwSym').checked)chars+='!@#$%^&*()_+-=[]{}|;:,.<>?';
+  if(!chars){toast('옵션을 하나 이상 선택하세요');return}
+  let pw='';for(let i=0;i<len;i++)pw+=chars[Math.floor(Math.random()*chars.length)];
+  document.getElementById('pwDisplay').textContent=pw;
+}
+function copyPassword(){
+  const pw=document.getElementById('pwDisplay').textContent;
+  navigator.clipboard.writeText(pw).then(()=>toast('클립보드에 복사됨'));
+}
+
+// 14. Unit Converter
+function renderConverter(){
+  const cats=[{name:'길이',units:['mm','cm','m','km','in','ft'],factors:[1,10,1000,1e6,25.4,304.8]},{name:'무게',units:['mg','g','kg','lb','oz'],factors:[1,1000,1e6,453592,28349.5]},{name:'온도',units:['°C','°F','K'],special:true}];
+  return `<h1 class="page-title">단위 변환기</h1>
+  <div class="tabs">${cats.map((c,i)=>`<div class="tab ${i===0?'active':''}" onclick="switchConverter(this,${i})">${c.name}</div>`).join('')}</div>
+  <div class="card" style="max-width:480px" id="converterBody">${renderConverterBody(0)}</div>`;
+}
+function renderConverterBody(ci){
+  const cats=[{name:'길이',units:['mm','cm','m','km','inch','ft'],factors:[1,10,1000,1e6,25.4,304.8]},{name:'무게',units:['mg','g','kg','lb','oz'],factors:[1,1000,1e6,453592,28349.5]},{name:'온도',units:['°C','°F','K']}];
+  const c=cats[ci];
+  return `<div class="grid-2 mb-16">
+    <div><label style="font-size:.8rem;color:var(--text-muted)">값</label><input type="number" id="convVal" value="1" oninput="convert(${ci})" style="width:100%;margin-top:4px"></div>
+    <div><label style="font-size:.8rem;color:var(--text-muted)">단위</label><select id="convFrom" onchange="convert(${ci})" style="width:100%;margin-top:4px">${c.units.map(u=>`<option>${u}</option>`).join('')}</select></div>
+  </div>
+  <div id="convResults" style="display:flex;flex-direction:column;gap:8px">${c.units.map(u=>`<div class="flex-between" style="padding:10px 14px;background:var(--surface2);border-radius:8px"><span style="color:var(--text-muted);font-size:.85rem">${u}</span><span style="font-weight:600">-</span></div>`).join('')}</div>`;
+}
+function switchConverter(el,ci){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');document.getElementById('converterBody').innerHTML=renderConverterBody(ci);convert(ci)}
+function convert(ci){
+  const cats=[{units:['mm','cm','m','km','inch','ft'],factors:[1,10,1000,1e6,25.4,304.8]},{units:['mg','g','kg','lb','oz'],factors:[1,1000,1e6,453592,28349.5]},{units:['°C','°F','K']}];
+  const c=cats[ci];const v=parseFloat(document.getElementById('convVal').value)||0;const from=document.getElementById('convFrom').value;
+  const results=document.getElementById('convResults');if(!results)return;
+  if(ci===2){
+    const toC=from==='°C'?v:from==='°F'?(v-32)*5/9:v-273.15;
+    const vals={'°C':toC,'°F':toC*9/5+32,'K':toC+273.15};
+    results.innerHTML=c.units.map(u=>`<div class="flex-between" style="padding:10px 14px;background:var(--surface2);border-radius:8px"><span style="color:var(--text-muted);font-size:.85rem">${u}</span><span style="font-weight:600">${vals[u].toFixed(2)}</span></div>`).join('');
+  } else {
+    const fi=c.units.indexOf(from);const base=v*c.factors[fi];
+    results.innerHTML=c.units.map((u,i)=>`<div class="flex-between" style="padding:10px 14px;background:var(--surface2);border-radius:8px"><span style="color:var(--text-muted);font-size:.85rem">${u}</span><span style="font-weight:600">${(base/c.factors[i]).toFixed(4)}</span></div>`).join('');
+  }
+}
+
+// 15. Color Palette
+function renderColors(){
+  const palettes=[
+    {name:'Sunset',colors:['#FF6B35','#F72585','#B5179E','#7209B7','#560BAD']},
+    {name:'Ocean',colors:['#03045E','#0077B6','#00B4D8','#90E0EF','#CAF0F8']},
+    {name:'Forest',colors:['#2D6A4F','#40916C','#52B788','#74C69D','#B7E4C7']},
+    {name:'Neon',colors:['#FF006E','#FB5607','#FFBE0B','#8338EC','#3A86FF']},
+  ];
+  return `<h1 class="page-title">색상 팔레트</h1>
+  <div class="card mb-16"><h3 class="mb-8">커스텀 색상</h3>
+    <div style="display:flex;gap:12px;align-items:center">
+      <input type="color" id="colorPicker" value="#6C5CE7" style="width:60px;height:40px;border:none;padding:0;cursor:pointer" oninput="updateColorInfo()">
+      <div id="colorInfo" style="font-size:.9rem;font-family:monospace">#6C5CE7</div>
+      <button class="btn btn-sm btn-primary" onclick="navigator.clipboard.writeText(document.getElementById('colorInfo').textContent);toast('복사됨')">복사</button>
+    </div>
+  </div>
+  ${palettes.map(p=>`<div class="card mb-16"><h3 class="mb-8">${p.name}</h3>
+    <div style="display:flex;gap:8px;height:80px;border-radius:10px;overflow:hidden">
+      ${p.colors.map(c=>`<div onclick="navigator.clipboard.writeText('${c}');toast('${c} 복사됨')" style="flex:1;background:${c};cursor:pointer;display:flex;align-items:flex-end;justify-content:center;padding:8px;transition:flex .3s" onmouseover="this.style.flex='1.5'" onmouseout="this.style.flex='1'"><span style="font-size:.65rem;color:#fff;background:rgba(0,0,0,.4);padding:2px 8px;border-radius:4px">${c}</span></div>`).join('')}
+    </div>
+  </div>`).join('')}
+  <div class="card"><h3 class="mb-8">랜덤 팔레트</h3>
+    <div id="randomPalette" style="display:flex;gap:8px;height:80px;border-radius:10px;overflow:hidden"></div>
+    <button class="btn btn-primary btn-sm mt-16" onclick="genRandomPalette()">새로 생성</button>
+  </div>`;
+}
+function updateColorInfo(){document.getElementById('colorInfo').textContent=document.getElementById('colorPicker').value.toUpperCase()}
+function genRandomPalette(){
+  const el=document.getElementById('randomPalette');if(!el)return;
+  const colors=Array.from({length:5},()=>'#'+Math.floor(Math.random()*16777215).toString(16).padStart(6,'0'));
+  el.innerHTML=colors.map(c=>`<div onclick="navigator.clipboard.writeText('${c}');toast('${c} 복사됨')" style="flex:1;background:${c};cursor:pointer;display:flex;align-items:flex-end;justify-content:center;padding:8px;transition:flex .3s" onmouseover="this.style.flex='1.5'" onmouseout="this.style.flex='1'"><span style="font-size:.65rem;color:#fff;background:rgba(0,0,0,.4);padding:2px 8px;border-radius:4px">${c}</span></div>`).join('');
+}
+
+// 16. Finance
+function renderFinance(){
+  const income=state.finance.filter(f=>f.type==='income').reduce((s,f)=>s+f.amount,0);
+  const expense=state.finance.filter(f=>f.type==='expense').reduce((s,f)=>s+f.amount,0);
+  return `<div class="flex-between"><h1 class="page-title">가계부</h1><button class="btn btn-primary" onclick="addFinanceModal()">+ 추가</button></div>
+  <div class="grid-3 mb-16">
+    <div class="card stat-card"><div class="stat-icon">📈</div><div class="stat-value" style="-webkit-text-fill-color:var(--success)">${formatMoney(income)}</div><div class="stat-label">총 수입</div></div>
+    <div class="card stat-card"><div class="stat-icon">📉</div><div class="stat-value" style="-webkit-text-fill-color:var(--danger)">${formatMoney(expense)}</div><div class="stat-label">총 지출</div></div>
+    <div class="card stat-card"><div class="stat-icon">💰</div><div class="stat-value">${formatMoney(income-expense)}</div><div class="stat-label">잔액</div></div>
+  </div>
+  <div class="card"><h3 class="mb-16">최근 내역</h3>
+  ${state.finance.slice().reverse().slice(0,20).map((f,i)=>`<div class="flex-between" style="padding:12px 0;border-bottom:1px solid var(--border)">
+    <div><span style="font-size:1.2rem;margin-right:8px">${f.emoji||'💳'}</span><span style="font-weight:600">${f.desc}</span><br><span style="font-size:.75rem;color:var(--text-muted)">${f.date}</span></div>
+    <div style="text-align:right"><span style="font-weight:700;color:${f.type==='income'?'var(--success)':'var(--danger)'}">${f.type==='income'?'+':'-'}${formatMoney(f.amount)}</span><br><button onclick="deleteFinance(${state.finance.length-1-i})" style="font-size:.7rem;color:var(--text-muted)">삭제</button></div>
+  </div>`).join('')||'<p style="color:var(--text-muted);text-align:center;padding:24px">내역이 없습니다</p>'}
+  </div>`;
+}
+function addFinanceModal(){
+  openModal(`<h3 class="mb-16">수입/지출 추가</h3>
+  <div class="tabs mb-16"><div class="tab active" onclick="this.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));this.classList.add('active');document.getElementById('finType').value='income'">수입</div><div class="tab" onclick="this.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));this.classList.add('active');document.getElementById('finType').value='expense'">지출</div></div>
+  <input type="hidden" id="finType" value="income">
+  <input id="finDesc" placeholder="설명" style="width:100%;margin-bottom:12px">
+  <input id="finAmount" type="number" placeholder="금액" style="width:100%;margin-bottom:12px">
+  <input id="finDate" type="date" value="${today()}" style="width:100%;margin-bottom:16px">
+  <button class="btn btn-primary" style="width:100%" onclick="addFinance()">추가</button>`);
+}
+function addFinance(){
+  const desc=document.getElementById('finDesc').value.trim();const amount=parseInt(document.getElementById('finAmount').value);if(!desc||!amount)return;
+  state.finance.push({desc,amount,type:document.getElementById('finType').value,date:document.getElementById('finDate').value,emoji:document.getElementById('finType').value==='income'?'💵':'💳'});
+  save('finance');closeModal();toast('추가됨');navigate('finance');
+}
+function deleteFinance(i){state.finance.splice(i,1);save('finance');toast('삭제됨');navigate('finance')}
+
+// 17. Settings
+function renderSettings(){
+  return `<h1 class="page-title">설정</h1>
+  <div class="card mb-16">
+    <h3 class="mb-16">테마</h3>
+    <div style="display:flex;gap:12px">
+      <button class="btn ${state.theme==='dark'?'btn-primary':''}" style="${state.theme!=='dark'?'background:var(--surface2)':''}" onclick="setTheme('dark')">🌙 다크</button>
+      <button class="btn ${state.theme==='light'?'btn-primary':''}" style="${state.theme!=='light'?'background:var(--surface2)':''}" onclick="setTheme('light')">☀️ 라이트</button>
+    </div>
+  </div>
+  <div class="card mb-16">
+    <h3 class="mb-16">데이터 관리</h3>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <button class="btn" style="background:var(--surface2)" onclick="exportData()">📦 데이터 내보내기</button>
+      <button class="btn" style="background:rgba(255,107,107,.15);color:var(--danger)" onclick="if(confirm('모든 데이터를 삭제하시겠습니까?')){localStorage.clear();location.reload()}">🗑️ 전체 초기화</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3 class="mb-16">앱 정보</h3>
+    <p style="font-size:.85rem;color:var(--text-sub)">SuperApp v2.0 — 올인원 생산성 앱</p>
+    <p style="font-size:.8rem;color:var(--text-muted);margin-top:4px">21개 기능 탑재 · localStorage 기반 · 반응형 디자인</p>
+    <p style="font-size:.8rem;color:var(--text-muted);margin-top:4px">기능: 대시보드, 할일, 메모, 캘린더, 타이머, 포모도로, 계산기, D-Day, 날씨, 세계시간, 습관트래커, 북마크, 비밀번호 생성, 단위변환, 색상 팔레트, 가계부, 검색, 알림, 테마, 설정</p>
+  </div>`;
+}
+
+// Theme
+function setTheme(t){state.theme=t;localStorage.setItem('sa_theme',t);document.documentElement.setAttribute('data-theme',t);toast(`${t==='dark'?'다크':'라이트'} 테마 적용`);if(state.currentPage==='settings')navigate('settings')}
+function toggleTheme(){setTheme(state.theme==='dark'?'light':'dark')}
+
+// Export
+function exportData(){
+  const data={todos:state.todos,notes:state.notes,events:state.events,habits:state.habits,bookmarks:state.bookmarks,finance:state.finance};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='superapp-backup.json';a.click();toast('데이터 내보내기 완료');
+}
+
+// Helpers
+function today(){return new Date().toISOString().split('T')[0]}
+function formatMoney(n){return new Intl.NumberFormat('ko-KR').format(n)+'원'}
+
+// Search handler (global)
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeModal();
+  if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();openSearchModal()}
+});
+
+function openSearchModal(){
+  openModal(`<h3 class="mb-16">앱 검색</h3>
+  <input id="searchInput" placeholder="기능 검색..." style="width:100%;margin-bottom:16px" oninput="searchApps(this.value)">
+  <div id="searchResults">${pages.map(p=>`<a class="nav-item" onclick="navigate('${p.id}');closeModal()"><span class="nav-icon">${p.icon}</span>${p.name}</a>`).join('')}</div>`);
+  setTimeout(()=>document.getElementById('searchInput').focus(),100);
+}
+function searchApps(q){
+  const r=pages.filter(p=>p.name.includes(q)||p.id.includes(q.toLowerCase()));
+  document.getElementById('searchResults').innerHTML=r.map(p=>`<a class="nav-item" onclick="navigate('${p.id}');closeModal()"><span class="nav-icon">${p.icon}</span>${p.name}</a>`).join('')||'<p style="color:var(--text-muted);text-align:center;padding:16px">결과 없음</p>';
+}
+
+// ===== INIT =====
+document.documentElement.setAttribute('data-theme',state.theme);
+buildNav();
+navigate('dashboard');
+</script>
+</body>
+</html>

@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LinkHub - 김지현</title>
+  <style>
+    /* ── Reset & Variables ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-from: #0f0c29;
+      --bg-mid:  #302b63;
+      --bg-to:   #24243e;
+      --card:    rgba(255,255,255,0.07);
+      --card-hover: rgba(255,255,255,0.14);
+      --border:  rgba(255,255,255,0.12);
+      --text:    #ffffff;
+      --text-muted: rgba(255,255,255,0.6);
+      --accent:  #a78bfa;
+      --accent2: #38bdf8;
+      --btn-text: #ffffff;
+      --shadow:  0 4px 24px rgba(0,0,0,0.4);
+      --radius:  16px;
+    }
+    [data-theme="light"] {
+      --bg-from: #e0e7ff;
+      --bg-mid:  #f0abfc;
+      --bg-to:   #bae6fd;
+      --card:    rgba(255,255,255,0.55);
+      --card-hover: rgba(255,255,255,0.8);
+      --border:  rgba(0,0,0,0.08);
+      --text:    #1e1b4b;
+      --text-muted: rgba(30,27,75,0.55);
+      --accent:  #7c3aed;
+      --accent2: #0284c7;
+      --btn-text: #1e1b4b;
+      --shadow:  0 4px 24px rgba(100,80,200,0.15);
+    }
+
+    /* ── Animated Background ── */
+    body {
+      min-height: 100vh;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      background: linear-gradient(135deg, var(--bg-from), var(--bg-mid), var(--bg-to));
+      background-size: 400% 400%;
+      animation: bgShift 12s ease infinite;
+      transition: color 0.4s, background 0.4s;
+    }
+    @keyframes bgShift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Floating blobs */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.25;
+      pointer-events: none;
+      animation: blobMove 18s ease-in-out infinite;
+      z-index: 0;
+    }
+    .blob-1 { width: 400px; height: 400px; background: #a78bfa; top: -100px; left: -100px; animation-delay: 0s; }
+    .blob-2 { width: 300px; height: 300px; background: #38bdf8; bottom: -80px; right: -80px; animation-delay: -6s; }
+    .blob-3 { width: 250px; height: 250px; background: #f472b6; top: 40%; left: 60%; animation-delay: -12s; }
+    @keyframes blobMove {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33%       { transform: translate(30px, -40px) scale(1.1); }
+      66%       { transform: translate(-20px, 30px) scale(0.95); }
+    }
+
+    /* ── Layout ── */
+    .page {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 16px 80px;
+    }
+
+    /* ── Top Bar ── */
+    .top-bar {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+    .brand {
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .top-actions { display: flex; gap: 8px; }
+
+    /* ── Icon Buttons ── */
+    .icon-btn {
+      width: 40px; height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      background: var(--card);
+      color: var(--text);
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, transform 0.15s, border-color 0.2s;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .icon-btn:hover { background: var(--card-hover); transform: scale(1.1); }
+    .icon-btn:active { transform: scale(0.95); }
+
+    /* ── Profile Section ── */
+    .profile { text-align: center; margin-bottom: 28px; }
+
+    .avatar-wrap {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+    .avatar {
+      width: 96px; height: 96px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #a78bfa 0%, #f472b6 50%, #38bdf8 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.6rem;
+      box-shadow: 0 0 0 4px var(--bg-from), 0 0 0 6px var(--accent);
+      animation: avatarPulse 3s ease-in-out infinite;
+    }
+    @keyframes avatarPulse {
+      0%, 100% { box-shadow: 0 0 0 4px var(--bg-from), 0 0 0 6px var(--accent); }
+      50%       { box-shadow: 0 0 0 4px var(--bg-from), 0 0 0 10px var(--accent); }
+    }
+    .online-dot {
+      position: absolute;
+      bottom: 4px; right: 4px;
+      width: 18px; height: 18px;
+      background: #22c55e;
+      border-radius: 50%;
+      border: 3px solid var(--bg-from);
+      animation: dotBlink 2s ease infinite;
+    }
+    @keyframes dotBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .profile-name {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      letter-spacing: -0.3px;
+    }
+    .profile-handle {
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .profile-bio {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      max-width: 300px;
+      margin: 0 auto 14px;
+    }
+
+    /* Stats row */
+    .stats {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+    .stat { text-align: center; }
+    .stat-num {
+      font-size: 1.1rem;
+      font-weight: 800;
+      display: block;
+      color: var(--text);
+    }
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Social Icons Row ── */
+    .social-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+    .social-btn {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none;
+      transition: all 0.2s;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      position: relative;
+      overflow: hidden;
+    }
+    .social-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: var(--social-color, var(--accent));
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .social-btn:hover::before { opacity: 0.25; }
+    .social-btn:hover { transform: translateY(-3px) scale(1.1); border-color: var(--social-color, var(--accent)); }
+    .social-btn span { position: relative; z-index: 1; }
+
+    /* ── Link Buttons ── */
+    .links { width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 12px; }
+
+    .link-btn {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--btn-text);
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .link-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--link-gradient, linear-gradient(135deg, #a78bfa22, #38bdf822));
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+    .link-btn:hover {
+      transform: translateY(-3px) scale(1.02);
+      background: var(--card-hover);
+      border-color: rgba(255,255,255,0.2);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+    }
+    .link-btn:hover::before { opacity: 1; }
+    .link-btn:active { transform: translateY(0) scale(0.98); }
+
+    .link-icon {
+      width: 42px; height: 42px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      position: relative; z-index: 1;
+    }
+    .link-text {
+      flex: 1;
+      position: relative; z-index: 1;
+    }
+    .link-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .link-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .link-arrow {
+      font-size: 1rem;
+      color: var(--text-muted);
+      position: relative; z-index: 1;
+      transition: transform 0.2s;
+    }
+    .link-btn:hover .link-arrow { transform: translateX(4px); }
+
+    .link-counter {
+      position: absolute;
+      top: 8px; right: 12px;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      background: rgba(0,0,0,0.2);
+      padding: 2px 6px;
+      border-radius: 20px;
+      font-weight: 600;
+      z-index: 2;
+    }
+    [data-theme="light"] .link-counter { background: rgba(0,0,0,0.08); }
+
+    /* Click ripple */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      transform: scale(0);
+      animation: rippleAnim 0.5s linear;
+      pointer-events: none;
+      z-index: 10;
+    }
+    @keyframes rippleAnim {
+      to { transform: scale(4); opacity: 0; }
+    }
+
+    /* ── Featured / Wide Card ── */
+    .link-btn.featured {
+      background: linear-gradient(135deg, rgba(167,139,250,0.2), rgba(56,189,248,0.2));
+      border-color: rgba(167,139,250,0.4);
+    }
+    .link-btn.featured:hover {
+      background: linear-gradient(135deg, rgba(167,139,250,0.3), rgba(56,189,248,0.3));
+      border-color: rgba(167,139,250,0.7);
+    }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: rgba(30, 20, 60, 0.95);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
+      z-index: 999;
+      white-space: nowrap;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    [data-theme="light"] .toast { background: rgba(255,255,255,0.95); color: #1e1b4b; border-color: rgba(0,0,0,0.1); }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ── Analytics Modal ── */
+    .overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 100;
+      display: flex; align-items: flex-end; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .overlay.open { opacity: 1; pointer-events: all; }
+    .modal {
+      width: 100%; max-width: 480px;
+      background: #1a1535;
+      border-radius: 24px 24px 0 0;
+      padding: 24px;
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    [data-theme="light"] .modal { background: #f5f3ff; }
+    .overlay.open .modal { transform: translateY(0); }
+    .modal-handle {
+      width: 40px; height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin: 0 auto 20px;
+    }
+    .modal-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 20px;
+      color: var(--text);
+    }
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .analytics-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .analytics-num {
+      font-size: 1.8rem;
+      font-weight: 900;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block;
+    }
+    .analytics-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .bar-chart { display: flex; flex-direction: column; gap: 8px; }
+    .bar-row { display: flex; align-items: center; gap: 10px; }
+    .bar-label { font-size: 0.75rem; color: var(--text-muted); width: 80px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .bar-track { flex: 1; height: 8px; background: var(--card); border-radius: 4px; overflow: hidden; }
+    .bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .bar-count { font-size: 0.75rem; color: var(--text-muted); width: 28px; text-align: right; }
+    .modal-close {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 8px;
+    }
+    .modal-close:hover { background: var(--card-hover); }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .footer a:hover { text-decoration: underline; }
+
+    /* ── Responsive ── */
+    @media (min-width: 480px) {
+      .avatar { width: 110px; height: 110px; font-size: 3rem; }
+      .profile-name { font-size: 1.75rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Animated background blobs -->
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+
+<div class="page">
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="brand">✦ LinkHub</div>
+    <div class="top-actions">
+      <button class="icon-btn" id="analyticsBtn" title="클릭 통계" aria-label="analytics">📊</button>
+      <button class="icon-btn" id="shareBtn" title="링크 공유" aria-label="share">🔗</button>
+      <button class="icon-btn" id="themeBtn" title="테마 전환" aria-label="theme toggle">🌙</button>
+    </div>
+  </div>
+
+  <!-- Profile -->
+  <div class="profile">
+    <div class="avatar-wrap">
+      <div class="avatar">👩‍💻</div>
+      <div class="online-dot"></div>
+    </div>
+    <div class="profile-name">김지현</div>
+    <div class="profile-handle">@jihyeon.creates</div>
+    <div class="profile-bio">
+      디지털 크리에이터 &amp; 라이프스타일 인플루언서 ✨<br>
+      뷰티 · 여행 · 일상 콘텐츠 | 브랜드 협업 문의 환영
+    </div>
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-num" id="followerCount">48.2K</span>
+        <span class="stat-label">팔로워</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num" id="totalClicks">0</span>
+        <span class="stat-label">총 클릭</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">9.8</span>
+        <span class="stat-label">평점</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Social Icons -->
+  <div class="social-row">
+    <a class="social-btn" href="#" style="--social-color:#E1306C" title="Instagram" aria-label="Instagram">
+      <span>📸</span>
+    </a>
+    <a class="social-btn" href="#" style="--social-color:#FF0050" title="TikTok" aria-label="TikTok">
+      <span>🎵</span>
+    </a>
+    <a class="social-btn" href="#" style="--social-color:#1DA1F2" title="Twitter/X" aria-label="Twitter">
+      <span>🐦</span>
+    </a>
+    <a class="social-btn" href="#" style="--social-color:#FF0000" title="YouTube" aria-label="YouTube">
+      <span>▶️</span>
+    </a>
+    <a class="social-btn" href="#" style="--social-color:#0A66C2" title="LinkedIn" aria-label="LinkedIn">
+      <span>💼</span>
+    </a>
+    <a class="social-btn" href="#" style="--social-color:#25D366" title="KakaoTalk" aria-label="KakaoTalk">
+      <span>💬</span>
+    </a>
+  </div>
+
+  <!-- Links -->
+  <div class="links" id="linksList">
+
+    <a class="link-btn featured"
+       data-id="0" data-title="유튜브 채널"
+       href="#" onclick="handleClick(event, this)">
+      <div class="link-icon" style="background:linear-gradient(135deg,#ff416c,#ff4b2b)">▶</div>
+      <div class="link-text">
+        <span class="link-title">유튜브 채널 구독하기 🔴</span>
+        <span class="link-sub">매주 새 영상 업로드 | 뷰티 &amp; 브이로그</span>
+      </div>
+      <span class="link-arrow">›</span>
+      <span class="link-counter" id="cnt-0">0 클릭</span>
+    </a>
+
+    <a class="link-btn"
+       data-id="1" data-title="인스타그램"
+       href="#" onclick="handleClick(event, this)"
+       style="--link-gradient:linear-gradient(135deg,#e1306c22,#fd1d1d11)">
+      <div class="link-icon" style="background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045)">📸</div>
+      <div class="link-text">
+        <span class="link-title">인스타그램 팔로우</span>
+        <span class="link-sub">일상 &amp; 피드 사진 | @jihyeon.creates</span>
+      </div>
+      <span class="link-arrow">›</span>
+      <span class="link-counter" id="cnt-1">0 클릭</span>
+    </a>
+
+    <a class="link-btn"
+       data-id="2" data-title="틱톡"
+       href="#" onclick="handleClick(event, this)"
+       style="--link-gradient:linear-gradient(135deg,#69C9D022,#EE1D5222)">
+      <div class="link-icon" style="background:linear-gradient(135deg,#010101,#69c9d0)">🎵</div>
+      <div class="link-text">
+        <span class="link-title">틱톡 팔로우</span>
+        <span class="link-sub">숏폼 콘텐츠 · 트렌드 영상</span>
+      </div>
+      <span class="link-arrow">›</span>
+      <span class="link-counter" id="cnt-2">0 클릭</span>
+    </a>
+
+    <a class="link-btn"
+       data-id="3" data-title="네이버 블로그"
+       href="#" onclick="handleClick(event, this)"
+       style="--link-gradient:linear-gradient(135deg,#03C75A22,#00000011)">
+      <div class="link-icon" style="background:linear-gradient(135deg,#03C75A,#018c3e)">📝</div>
+      <div class="link-text">
+        <span class="link-title">네이버 블로그</span>
+        <span class="link-sub">리뷰 &amp; 정보글 | 월 10만 방문자</span>
+      </div>
+      <span class="link-arrow">›</span>
+      <span class="link-counter" id="cnt-3">0 클릭</span>
+    </a>
+
+    <a class="link-btn"
+       data-id="4" data-title="브랜드 협업 문의"
+       href="#" onclick="handleClick(event, this)"
+       style="--link-gradient:linear-gradient(135deg,#a78bfa22,#38bdf822)">
+      <div class="link-icon" style="background:linear-gradient(135deg,#a78bfa,#38bdf8)">✉️</div>
+      <div class="link-text">
+        <span class="link-title">브랜드 협업 문의</span>
+        <span class="link-sub">광고 · 협찬 · 공동구매 환영합니다</span>
+      </div>
+      <span class="link-arrow">›</span>
+      <span class="link-counter" id="cnt-4">0 클릭</span>
+    </a>
+
+    <a class="link-btn"
+       data-id="5" data-title="최애템 쇼핑 리스트"
+       href="#" onclick="handleClick(event, this)"
+       style="--link-gradient:linear-gradient(135deg,#f472b622,#fb923c22)">
+      <div class="link-icon" style="background:linear-gradient(135deg,#f472b6,#fb923c)">🛍️</div>
+      <div class="link-text">
+        <span class="link-title">최애템 쇼핑 리스트</span>
+        <span class="link-sub">내가 실제로 쓰는 제품들만 모아둔 곳</span>
+      </div>
+      <span class="link-arrow">›</span>
+      <span class="link-counter" id="cnt-5">0 클릭</span>
+    </a>
+
+    <a class="link-btn"
+       data-id="6" data-title="크몽 서비스"
+       href="#" onclick="handleClick(event, this)"
+       style="--link-gradient:linear-gradient(135deg,#facc1522,#f9731622)">
+      <div class="link-icon" style="background:linear-gradient(135deg,#facc15,#f97316)">⭐</div>
+      <div class="link-text">
+        <span class="link-title">크몽 SNS 마케팅 서비스</span>
+        <span class="link-sub">SNS 컨설팅 &amp; 콘텐츠 기획 · 바로 의뢰하기</span>
+      </div>
+      <span class="link-arrow">›</span>
+      <span class="link-counter" id="cnt-6">0 클릭</span>
+    </a>
+
+    <a class="link-btn"
+       data-id="7" data-title="카카오채널"
+       href="#" onclick="handleClick(event, this)"
+       style="--link-gradient:linear-gradient(135deg,#FEE50022,#3A1D9622)">
+      <div class="link-icon" style="background:linear-gradient(135deg,#FEE500,#e6c800)">💬</div>
+      <div class="link-text">
+        <span class="link-title">카카오 채널 친구추가</span>
+        <span class="link-sub">신상품 정보 &amp; 할인 쿠폰 먼저 받기</span>
+      </div>
+      <span class="link-arrow">›</span>
+      <span class="link-counter" id="cnt-7">0 클릭</span>
+    </a>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>Made with ♥ by <a href="#">LinkHub</a> · &copy; 2025</p>
+    <p style="margin-top:4px">이 페이지는 데모 포트폴리오입니다</p>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Analytics Modal -->
+<div class="overlay" id="overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📊 클릭 통계</div>
+    <div class="analytics-grid">
+      <div class="analytics-card">
+        <span class="analytics-num" id="modal-total">0</span>
+        <div class="analytics-label">총 클릭 수</div>
+      </div>
+      <div class="analytics-card">
+        <span class="analytics-num" id="modal-today">0</span>
+        <div class="analytics-label">오늘 클릭</div>
+      </div>
+      <div class="analytics-card">
+        <span class="analytics-num" id="modal-top">-</span>
+        <div class="analytics-label">인기 링크</div>
+      </div>
+      <div class="analytics-card">
+        <span class="analytics-num" id="modal-links">8</span>
+        <div class="analytics-label">활성 링크</div>
+      </div>
+    </div>
+    <div id="barChart" class="bar-chart"></div>
+    <button class="modal-close" onclick="closeModalDirect()">닫기</button>
+  </div>
+</div>
+
+<script>
+  /* ── State ── */
+  const STORAGE_KEY = 'linkhub_clicks';
+  const TODAY_KEY   = 'linkhub_today_' + new Date().toDateString();
+
+  const linkTitles = [
+    '유튜브 채널', '인스타그램', '틱톡', '네이버 블로그',
+    '브랜드 협업', '최애템 리스트', '크몽 서비스', '카카오채널'
+  ];
+
+  function loadClicks() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
+  }
+  function saveClicks(clicks) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(clicks)); } catch {}
+  }
+  function loadToday() {
+    try { return JSON.parse(localStorage.getItem(TODAY_KEY)) || {}; } catch { return {}; }
+  }
+  function saveToday(data) {
+    try { localStorage.setItem(TODAY_KEY, JSON.stringify(data)); } catch {}
+  }
+
+  let clicks = loadClicks();
+  let todayClicks = loadToday();
+
+  /* ── Init counters ── */
+  function updateCounterDisplays() {
+    let total = 0;
+    Object.entries(clicks).forEach(([id, count]) => {
+      const el = document.getElementById('cnt-' + id);
+      if (el) el.textContent = count + ' 클릭';
+      total += count;
+    });
+    document.getElementById('totalClicks').textContent = formatNum(total);
+  }
+  updateCounterDisplays();
+
+  function formatNum(n) {
+    if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+    return n.toString();
+  }
+
+  /* ── Click handler ── */
+  function handleClick(e, btn) {
+    e.preventDefault();
+    const id = btn.dataset.id;
+    const title = btn.dataset.title;
+
+    // Update state
+    clicks[id] = (clicks[id] || 0) + 1;
+    todayClicks[id] = (todayClicks[id] || 0) + 1;
+    saveClicks(clicks);
+    saveToday(todayClicks);
+
+    // Update counter label
+    const counter = document.getElementById('cnt-' + id);
+    if (counter) counter.textContent = clicks[id] + ' 클릭';
+
+    // Update total
+    const total = Object.values(clicks).reduce((a, b) => a + b, 0);
+    document.getElementById('totalClicks').textContent = formatNum(total);
+
+    // Ripple
+    addRipple(e, btn);
+
+    // Toast
+    showToast('✔ ' + title + ' 클릭됨!');
+  }
+
+  function addRipple(e, btn) {
+    const rect = btn.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = e.clientX - rect.left - size / 2;
+    const y = e.clientY - rect.top  - size / 2;
+    const ripple = document.createElement('span');
+    ripple.className = 'ripple';
+    ripple.style.cssText = 'width:' + size + 'px;height:' + size + 'px;left:' + x + 'px;top:' + y + 'px';
+    btn.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 600);
+  }
+
+  /* ── Toast ── */
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  /* ── Theme Toggle ── */
+  const themeBtn = document.getElementById('themeBtn');
+  const html = document.documentElement;
+  function setTheme(isDark) {
+    html.dataset.theme = isDark ? 'dark' : 'light';
+    themeBtn.textContent = isDark ? '🌙' : '☀️';
+    try { localStorage.setItem('linkhub_theme', isDark ? 'dark' : 'light'); } catch {}
+  }
+  // Load saved theme
+  try {
+    const saved = localStorage.getItem('linkhub_theme');
+    if (saved) setTheme(saved === 'dark');
+  } catch {}
+  themeBtn.addEventListener('click', () => {
+    setTheme(html.dataset.theme !== 'dark');
+  });
+
+  /* ── Share ── */
+  document.getElementById('shareBtn').addEventListener('click', async () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: '김지현 LinkHub', url });
+        return;
+      } catch {}
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      showToast('🔗 링크가 클립보드에 복사되었습니다!');
+    } catch {
+      showToast('🔗 ' + url);
+    }
+  });
+
+  /* ── Analytics Modal ── */
+  document.getElementById('analyticsBtn').addEventListener('click', openModal);
+
+  function openModal() {
+    const total = Object.values(clicks).reduce((a, b) => a + b, 0);
+    const todayTotal = Object.values(todayClicks).reduce((a, b) => a + b, 0);
+    const maxEntry = Object.entries(clicks).sort((a,b) => b[1]-a[1])[0];
+    const topName = maxEntry ? linkTitles[+maxEntry[0]] || '-' : '-';
+    const maxVal = maxEntry ? maxEntry[1] : 0;
+
+    document.getElementById('modal-total').textContent = total;
+    document.getElementById('modal-today').textContent = todayTotal;
+    document.getElementById('modal-top').textContent = maxVal > 0 ? topName.slice(0, 5) : '-';
+
+    // Build bar chart
+    const chart = document.getElementById('barChart');
+    chart.innerHTML = '';
+    linkTitles.forEach((title, i) => {
+      const count = clicks[i] || 0;
+      const pct   = maxVal > 0 ? (count / maxVal) * 100 : 0;
+      chart.innerHTML += '<div class="bar-row">' +
+        '<span class="bar-label">' + title + '</span>' +
+        '<div class="bar-track"><div class="bar-fill" id="bar-' + i + '" style="width:0%"></div></div>' +
+        '<span class="bar-count">' + count + '</span>' +
+        '</div>';
+    });
+
+    document.getElementById('overlay').classList.add('open');
+
+    // Animate bars after paint
+    requestAnimationFrame(() => {
+      linkTitles.forEach((_, i) => {
+        const count = clicks[i] || 0;
+        const pct   = maxVal > 0 ? (count / maxVal) * 100 : 0;
+        const bar = document.getElementById('bar-' + i);
+        if (bar) bar.style.width = pct + '%';
+      });
+    });
+  }
+
+  function closeModal(e) {
+    if (e.target === document.getElementById('overlay')) closeModalDirect();
+  }
+  function closeModalDirect() {
+    document.getElementById('overlay').classList.remove('open');
+  }
+
+  /* ── Keyboard ESC ── */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModalDirect();
+  });
+
+  /* ── Animated follower counter (demo effect) ── */
+  (function() {
+    const el = document.getElementById('followerCount');
+    const base = 48200;
+    setInterval(() => {
+      const v = base + Math.floor(Math.random() * 40) - 20;
+      el.textContent = (v / 1000).toFixed(1) + 'K';
+    }, 4000);
+  })();
+</script>
+</body>
+</html>

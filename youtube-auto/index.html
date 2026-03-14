@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TubeFlow - 유튜브 자동화 매니저</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0A0A0B;
+  --surface:#141416;
+  --surface2:#1A1A1E;
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.12);
+  --text:#FAFAFA;
+  --text-sub:#A1A1AA;
+  --text-muted:#52525B;
+  --primary:#6C5CE7;
+  --primary-light:#A29BFE;
+  --primary-dim:rgba(108,92,231,0.15);
+  --green:#00B894;
+  --green-dim:rgba(0,184,148,0.15);
+  --red:#FF6B6B;
+  --red-dim:rgba(255,107,107,0.15);
+  --yellow:#FDCB6E;
+  --yellow-dim:rgba(253,203,110,0.15);
+  --blue:#74B9FF;
+  --blue-dim:rgba(116,185,255,0.15);
+  --sidebar:240px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased;display:flex;min-height:100vh;overflow-x:hidden;}
+
+/* SIDEBAR */
+.sidebar{
+  width:var(--sidebar);min-width:var(--sidebar);
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;height:100vh;
+  z-index:100;overflow-y:auto;
+}
+.sidebar-logo{
+  padding:24px 20px 20px;
+  display:flex;align-items:center;gap:10px;
+  border-bottom:1px solid var(--border);
+}
+.logo-icon{
+  width:36px;height:36px;border-radius:10px;
+  background:linear-gradient(135deg,#6C5CE7,#a855f7);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+}
+.logo-text{font-size:16px;font-weight:700;letter-spacing:-0.3px;}
+.logo-text span{color:var(--primary-light);}
+
+.sidebar-section{padding:16px 12px 8px;font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;margin:2px 8px;border-radius:8px;
+  cursor:pointer;transition:all 0.15s;
+  font-size:13.5px;font-weight:500;color:var(--text-sub);
+  position:relative;
+}
+.nav-item:hover{background:rgba(255,255,255,0.05);color:var(--text);}
+.nav-item.active{background:var(--primary-dim);color:var(--primary-light);}
+.nav-item.active::before{
+  content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:3px;height:60%;background:var(--primary);border-radius:0 2px 2px 0;
+}
+.nav-icon{font-size:16px;width:20px;text-align:center;}
+.nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;}
+
+.sidebar-footer{margin-top:auto;padding:16px;border-top:1px solid var(--border);}
+.channel-card{
+  display:flex;align-items:center;gap:10px;
+  padding:10px;border-radius:10px;background:var(--surface2);cursor:pointer;
+}
+.channel-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#e17055,#d63031);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;}
+.channel-info{flex:1;min-width:0;}
+.channel-name{font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.channel-subs{font-size:11px;color:var(--text-sub);}
+
+/* MAIN */
+.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+
+/* TOPBAR */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(10,10,11,0.85);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0 28px;height:60px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.topbar-title{font-size:17px;font-weight:700;}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.topbar-btn{
+  width:36px;height:36px;border-radius:9px;
+  background:var(--surface);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:16px;transition:all 0.15s;
+}
+.topbar-btn:hover{border-color:var(--border2);background:var(--surface2);}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);}
+
+/* PAGE CONTENT */
+.page{display:none;padding:28px;}
+.page.active{display:block;}
+
+/* SECTION HEADER */
+.page-header{margin-bottom:24px;}
+.page-title{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+.page-subtitle{font-size:13.5px;color:var(--text-sub);margin-top:4px;}
+
+/* GRID */
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:24px;}
+
+/* STAT CARD */
+.stat-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:20px;position:relative;overflow:hidden;
+}
+.stat-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--accent-color,var(--primary));
+}
+.stat-label{font-size:12px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;}
+.stat-value{font-size:28px;font-weight:800;letter-spacing:-1px;line-height:1;}
+.stat-change{display:flex;align-items:center;gap:4px;margin-top:8px;font-size:12px;}
+.stat-change.up{color:var(--green);}
+.stat-change.down{color:var(--red);}
+.stat-sub{font-size:12px;color:var(--text-muted);margin-top:2px;}
+
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px;}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.card-title{font-size:14px;font-weight:700;}
+.card-action{font-size:12px;color:var(--primary-light);cursor:pointer;font-weight:500;}
+.card-action:hover{text-decoration:underline;}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;}
+.badge-green{background:var(--green-dim);color:var(--green);}
+.badge-red{background:var(--red-dim);color:var(--red);}
+.badge-yellow{background:var(--yellow-dim);color:var(--yellow);}
+.badge-blue{background:var(--blue-dim);color:var(--blue);}
+.badge-purple{background:var(--primary-dim);color:var(--primary-light);}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+th{text-align:left;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;padding:10px 14px;border-bottom:1px solid var(--border);}
+td{padding:13px 14px;border-bottom:1px solid var(--border);font-size:13.5px;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,0.02);}
+.video-thumb{width:60px;height:38px;border-radius:6px;object-fit:cover;background:#333;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.video-title-cell{display:flex;align-items:center;gap:12px;}
+.video-title-text{font-size:13px;font-weight:500;max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.video-ch{font-size:11px;color:var(--text-muted);margin-top:2px;}
+
+/* BAR CHART */
+.bar-chart{display:flex;align-items:flex-end;gap:6px;height:120px;padding-top:10px;}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.bar{width:100%;border-radius:4px 4px 0 0;background:var(--primary-dim);position:relative;cursor:pointer;transition:all 0.3s;min-height:4px;}
+.bar:hover{background:var(--primary);transform:scaleY(1.03);transform-origin:bottom;}
+.bar-label{font-size:10px;color:var(--text-muted);white-space:nowrap;}
+.bar-val{font-size:10px;color:var(--text-sub);font-weight:500;}
+
+/* LINE CHART */
+.line-chart-wrap{position:relative;height:140px;overflow:hidden;}
+.line-chart-svg{width:100%;height:100%;}
+
+/* PROGRESS BAR */
+.progress-bar-wrap{margin-bottom:14px;}
+.progress-label{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px;}
+.progress-label span:first-child{color:var(--text-sub);}
+.progress-label span:last-child{font-weight:600;}
+.progress-track{height:6px;background:rgba(255,255,255,0.06);border-radius:10px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:10px;transition:width 1s ease;}
+
+/* FORM ELEMENTS */
+.form-group{margin-bottom:16px;}
+.form-label{display:block;font-size:12.5px;font-weight:600;color:var(--text-sub);margin-bottom:6px;}
+.form-input, .form-select, .form-textarea{
+  width:100%;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:8px;padding:9px 13px;font-size:13.5px;color:var(--text);
+  font-family:'Inter',sans-serif;outline:none;transition:border 0.15s;
+}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(108,92,231,0.12);}
+.form-select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23A1A1AA' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+.form-textarea{resize:vertical;min-height:80px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+
+/* BUTTON */
+.btn{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 18px;border-radius:8px;font-size:13.5px;font-weight:600;
+  cursor:pointer;border:none;transition:all 0.15s;font-family:'Inter',sans-serif;
+}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:#5a4bd1;transform:translateY(-1px);box-shadow:0 4px 14px rgba(108,92,231,0.4);}
+.btn-outline{background:transparent;color:var(--text-sub);border:1px solid var(--border2);}
+.btn-outline:hover{background:var(--surface2);color:var(--text);}
+.btn-danger{background:var(--red-dim);color:var(--red);border:1px solid rgba(255,107,107,0.2);}
+.btn-danger:hover{background:var(--red);color:#fff;}
+.btn-sm{padding:6px 12px;font-size:12px;}
+.btn-icon{padding:8px;border-radius:7px;}
+
+/* TOGGLE */
+.toggle{position:relative;display:inline-block;width:40px;height:22px;cursor:pointer;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;inset:0;background:rgba(255,255,255,0.1);border-radius:22px;transition:0.2s;}
+.toggle-slider::before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:0.2s;}
+.toggle input:checked+.toggle-slider{background:var(--primary);}
+.toggle input:checked+.toggle-slider::before{transform:translateX(18px);}
+
+/* TAG INPUT */
+.tags-wrap{display:flex;flex-wrap:wrap;gap:6px;padding:8px;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;min-height:42px;}
+.tag-item{display:flex;align-items:center;gap:4px;background:var(--primary-dim);color:var(--primary-light);border-radius:5px;padding:3px 8px;font-size:12px;font-weight:500;}
+.tag-remove{cursor:pointer;opacity:0.7;}
+.tag-remove:hover{opacity:1;}
+
+/* THUMBNAIL PREVIEW */
+.thumb-preview{
+  width:100%;aspect-ratio:16/9;border-radius:10px;
+  background:linear-gradient(135deg,#1a1a2e,#16213e);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;margin-bottom:14px;border:1px solid var(--border);
+}
+.thumb-overlay-text{
+  font-size:28px;font-weight:900;color:#fff;text-align:center;
+  text-shadow:2px 3px 12px rgba(0,0,0,0.8);letter-spacing:-0.5px;
+  padding:0 16px;line-height:1.2;
+}
+.thumb-templates{display:flex;gap:8px;flex-wrap:wrap;}
+.thumb-tmpl{
+  width:calc(25% - 6px);aspect-ratio:16/9;border-radius:7px;cursor:pointer;
+  border:2px solid transparent;transition:all 0.15s;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;
+}
+.thumb-tmpl:hover{transform:scale(1.04);}
+.thumb-tmpl.selected{border-color:var(--primary);}
+
+/* KEYWORD TABLE */
+.kw-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+.kw-row:last-child{border-bottom:none;}
+.kw-word{font-size:13.5px;font-weight:600;width:140px;}
+.kw-vol-bar{flex:1;height:5px;background:rgba(255,255,255,0.07);border-radius:10px;overflow:hidden;}
+.kw-vol-fill{height:100%;border-radius:10px;}
+.kw-vol-num{font-size:12px;color:var(--text-sub);width:60px;text-align:right;}
+.kw-diff{width:55px;text-align:center;}
+
+/* COMMENT */
+.comment-item{padding:14px 0;border-bottom:1px solid var(--border);}
+.comment-item:last-child{border-bottom:none;}
+.comment-meta{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.comment-avatar{width:28px;height:28px;border-radius:50%;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.comment-author{font-size:13px;font-weight:600;}
+.comment-time{font-size:11px;color:var(--text-muted);}
+.comment-text{font-size:13px;color:var(--text-sub);line-height:1.5;}
+.comment-actions{display:flex;gap:8px;margin-top:8px;}
+
+/* REVENUE CHART */
+.rev-chart{display:flex;align-items:flex-end;gap:4px;height:100px;padding-top:8px;}
+.rev-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.rev-bar{width:100%;border-radius:3px 3px 0 0;min-height:4px;cursor:pointer;transition:opacity 0.15s;}
+.rev-bar:hover{opacity:0.8;}
+.rev-label{font-size:9px;color:var(--text-muted);}
+
+/* SCHEDULE */
+.schedule-item{
+  display:flex;align-items:center;gap:14px;
+  padding:13px;border-radius:10px;background:var(--surface2);
+  border:1px solid var(--border);margin-bottom:10px;cursor:pointer;
+  transition:border-color 0.15s;
+}
+.schedule-item:hover{border-color:var(--border2);}
+.schedule-time{font-size:12px;font-weight:700;color:var(--primary-light);min-width:50px;}
+.schedule-title{font-size:13.5px;font-weight:600;}
+.schedule-ch{font-size:11px;color:var(--text-sub);}
+.schedule-icon{font-size:20px;flex-shrink:0;}
+
+/* FILTER RULE */
+.rule-item{
+  display:flex;align-items:center;gap:12px;padding:12px 14px;
+  background:var(--surface2);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;
+}
+.rule-icon{font-size:18px;width:32px;text-align:center;}
+.rule-info{flex:1;}
+.rule-name{font-size:13.5px;font-weight:600;}
+.rule-desc{font-size:11.5px;color:var(--text-muted);margin-top:2px;}
+
+/* API KEY */
+.api-key-item{
+  display:flex;align-items:center;gap:12px;padding:14px;
+  background:var(--surface2);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;
+}
+.api-key-info{flex:1;}
+.api-key-name{font-size:13.5px;font-weight:600;}
+.api-key-val{font-size:12px;color:var(--text-muted);font-family:monospace;margin-top:3px;}
+.api-status{display:flex;align-items:center;gap:5px;font-size:12px;}
+
+/* MINI STAT ROW */
+.mini-stats{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px;}
+.mini-stat{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;flex:1;min-width:120px;}
+.mini-stat-label{font-size:11px;color:var(--text-muted);margin-bottom:4px;}
+.mini-stat-val{font-size:18px;font-weight:800;}
+
+/* DONUT */
+.donut-wrap{display:flex;align-items:center;gap:20px;}
+.donut-svg{flex-shrink:0;}
+.donut-legend{display:flex;flex-direction:column;gap:8px;}
+.donut-legend-item{display:flex;align-items:center;gap:8px;font-size:12.5px;}
+.donut-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .grid-4{grid-template-columns:repeat(2,1fr);}
+  .grid-3{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:700px){
+  .sidebar{transform:translateX(-100%);}
+  .main{margin-left:0;}
+  .grid-4,.grid-3,.grid-2{grid-template-columns:1fr;}
+  .form-row{grid-template-columns:1fr;}
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:10px;}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.2);}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">▶</div>
+    <div class="logo-text">Tube<span>Flow</span></div>
+  </div>
+
+  <div class="sidebar-section">메인</div>
+  <div class="nav-item active" data-page="dashboard">
+    <span class="nav-icon">🏠</span> 대시보드
+  </div>
+  <div class="nav-item" data-page="videos">
+    <span class="nav-icon">🎬</span> 영상 관리
+  </div>
+  <div class="nav-item" data-page="upload">
+    <span class="nav-icon">📅</span> 자동 업로드
+  </div>
+
+  <div class="sidebar-section">도구</div>
+  <div class="nav-item" data-page="thumbnail">
+    <span class="nav-icon">🖼️</span> 썸네일 생성기
+  </div>
+  <div class="nav-item" data-page="seo">
+    <span class="nav-icon">🔍</span> SEO 분석
+  </div>
+  <div class="nav-item" data-page="comments">
+    <span class="nav-icon">💬</span> 댓글 자동 관리
+    <span class="nav-badge">3</span>
+  </div>
+
+  <div class="sidebar-section">수익</div>
+  <div class="nav-item" data-page="revenue">
+    <span class="nav-icon">💰</span> 수익 분석
+  </div>
+
+  <div class="sidebar-section">계정</div>
+  <div class="nav-item" data-page="settings">
+    <span class="nav-icon">⚙️</span> 설정
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="channel-card">
+      <div class="channel-avatar">K</div>
+      <div class="channel-info">
+        <div class="channel-name">크리에이터 김민준</div>
+        <div class="channel-subs">구독자 128.4K</div>
+      </div>
+      <span style="font-size:14px;color:var(--text-muted);">⋯</span>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-title" id="topbar-title">대시보드</div>
+    <div class="topbar-right">
+      <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--green);">
+        <div class="status-dot"></div> API 연결됨
+      </div>
+      <div class="topbar-btn" title="알림">🔔</div>
+      <div class="topbar-btn" title="검색">🔎</div>
+      <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#6C5CE7,#a855f7);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;cursor:pointer;">K</div>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE: DASHBOARD ==================== -->
+  <div class="page active" id="page-dashboard">
+    <div class="page-header">
+      <div class="page-title">채널 현황 요약</div>
+      <div class="page-subtitle">최근 30일 기준 · 마지막 업데이트 2026-03-15 09:42</div>
+    </div>
+
+    <div class="grid-4">
+      <div class="stat-card" style="--accent-color:var(--primary)">
+        <div class="stat-label">총 구독자</div>
+        <div class="stat-value">128,412</div>
+        <div class="stat-change up">▲ +3,241 <span style="color:var(--text-muted);margin-left:2px;">(+2.6%)</span></div>
+      </div>
+      <div class="stat-card" style="--accent-color:var(--blue)">
+        <div class="stat-label">월간 조회수</div>
+        <div class="stat-value">2.4M</div>
+        <div class="stat-change up">▲ +184K <span style="color:var(--text-muted);margin-left:2px;">(+8.3%)</span></div>
+      </div>
+      <div class="stat-card" style="--accent-color:var(--green)">
+        <div class="stat-label">이번 달 수익</div>
+        <div class="stat-value">₩ 847K</div>
+        <div class="stat-change up">▲ +₩ 112K <span style="color:var(--text-muted);margin-left:2px;">(+15.2%)</span></div>
+      </div>
+      <div class="stat-card" style="--accent-color:var(--yellow)">
+        <div class="stat-label">평균 시청 지속</div>
+        <div class="stat-value">6:42</div>
+        <div class="stat-change down">▼ -0:18 <span style="color:var(--text-muted);margin-left:2px;">(-4.3%)</span></div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- 조회수 추이 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📊 조회수 추이 (최근 7일)</div>
+          <div class="card-action">전체보기 →</div>
+        </div>
+        <div class="bar-chart" id="views-chart"></div>
+        <div style="display:flex;gap:16px;margin-top:12px;flex-wrap:wrap;">
+          <span style="font-size:12px;color:var(--text-muted);">총 조회수</span>
+          <span style="font-size:12px;font-weight:700;color:var(--primary-light);">2,384,100</span>
+          <span style="font-size:12px;color:var(--text-muted);">일평균</span>
+          <span style="font-size:12px;font-weight:700;">340,585</span>
+        </div>
+      </div>
+
+      <!-- 구독자 증가 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">👥 구독자 증감 (최근 7일)</div>
+          <div class="card-action">전체보기 →</div>
+        </div>
+        <div class="bar-chart" id="subs-chart"></div>
+        <div style="display:flex;gap:16px;margin-top:12px;flex-wrap:wrap;">
+          <span style="font-size:12px;color:var(--text-muted);">신규 구독</span>
+          <span style="font-size:12px;font-weight:700;color:var(--green);">+3,241</span>
+          <span style="font-size:12px;color:var(--text-muted);">취소</span>
+          <span style="font-size:12px;font-weight:700;color:var(--red);">-287</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- 최근 영상 성과 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🎬 최근 업로드 영상</div>
+          <div class="card-action">영상 관리 →</div>
+        </div>
+        <div id="recent-videos-list"></div>
+      </div>
+
+      <!-- 예정 업로드 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📅 예약 업로드 일정</div>
+          <div class="card-action">자동 업로드 →</div>
+        </div>
+        <div id="upcoming-schedule"></div>
+      </div>
+    </div>
+
+    <!-- 성과 요약 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🎯 채널 성과 목표</div>
+        <div class="card-action">설정 변경</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+        <div>
+          <div class="progress-bar-wrap">
+            <div class="progress-label"><span>구독자 목표 (15만)</span><span>128,412 / 150,000</span></div>
+            <div class="progress-track"><div class="progress-fill" style="width:85.6%;background:var(--primary);"></div></div>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-label"><span>월 조회수 목표 (300만)</span><span>2.4M / 3M</span></div>
+            <div class="progress-track"><div class="progress-fill" style="width:80%;background:var(--blue);"></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="progress-bar-wrap">
+            <div class="progress-label"><span>월 수익 목표 (₩1M)</span><span>₩847K / ₩1M</span></div>
+            <div class="progress-track"><div class="progress-fill" style="width:84.7%;background:var(--green);"></div></div>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-label"><span>업로드 목표 (12편/월)</span><span>9 / 12</span></div>
+            <div class="progress-track"><div class="progress-fill" style="width:75%;background:var(--yellow);"></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="progress-bar-wrap">
+            <div class="progress-label"><span>평균 시청률 목표 (55%)</span><span>48.2% / 55%</span></div>
+            <div class="progress-track"><div class="progress-fill" style="width:87.6%;background:var(--red);"></div></div>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-label"><span>좋아요율 목표 (8%)</span><span>6.4% / 8%</span></div>
+            <div class="progress-track"><div class="progress-fill" style="width:80%;background:var(--primary-light);"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE: VIDEOS ==================== -->
+  <div class="page" id="page-videos">
+    <div class="page-header">
+      <div class="page-title">영상 관리</div>
+      <div class="page-subtitle">업로드된 모든 영상을 관리합니다</div>
+    </div>
+
+    <div class="grid-4">
+      <div class="stat-card" style="--accent-color:var(--primary)">
+        <div class="stat-label">총 영상 수</div><div class="stat-value">247</div>
+        <div class="stat-sub" style="margin-top:8px;font-size:12px;color:var(--text-muted);">공개 231 · 비공개 16</div>
+      </div>
+      <div class="stat-card" style="--accent-color:var(--blue)">
+        <div class="stat-label">총 조회수</div><div class="stat-value">18.7M</div>
+        <div class="stat-change up">▲ +2.4M 이번달</div>
+      </div>
+      <div class="stat-card" style="--accent-color:var(--green)">
+        <div class="stat-label">총 좋아요</div><div class="stat-value">342K</div>
+        <div class="stat-change up">▲ +18.2K 이번달</div>
+      </div>
+      <div class="stat-card" style="--accent-color:var(--yellow)">
+        <div class="stat-label">총 댓글</div><div class="stat-value">89.4K</div>
+        <div class="stat-change up">▲ +4.1K 이번달</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">전체 영상 목록</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <select class="form-select" style="width:130px;font-size:12px;padding:6px 10px;">
+            <option>전체 상태</option>
+            <option>공개</option>
+            <option>비공개</option>
+            <option>예약됨</option>
+          </select>
+          <button class="btn btn-primary btn-sm">+ 영상 추가</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>영상</th>
+              <th>조회수</th>
+              <th>좋아요</th>
+              <th>댓글</th>
+              <th>시청 지속</th>
+              <th>상태</th>
+              <th>업로드일</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="video-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE: UPLOAD ==================== -->
+  <div class="page" id="page-upload">
+    <div class="page-header">
+      <div class="page-title">자동 업로드</div>
+      <div class="page-subtitle">영상 예약 업로드 및 반복 스케줄을 설정합니다</div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">➕ 새 업로드 예약</div></div>
+        <div class="form-group">
+          <div class="form-label">영상 제목</div>
+          <input class="form-input" value="2026년 최강 유튜브 성장 전략 완벽 정리">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <div class="form-label">업로드 날짜</div>
+            <input class="form-input" type="date" value="2026-03-20">
+          </div>
+          <div class="form-group">
+            <div class="form-label">업로드 시간</div>
+            <input class="form-input" type="time" value="18:00">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="form-label">공개 설정</div>
+          <select class="form-select">
+            <option>공개</option><option>비공개</option><option>일부 공개</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <div class="form-label">카테고리</div>
+          <select class="form-select">
+            <option>교육</option><option>엔터테인먼트</option><option>게임</option><option>음악</option><option>테크</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <div class="form-label">설명 (자동 생성)</div>
+          <textarea class="form-textarea">📌 이 영상에서는 2026년 유튜브 알고리즘 변화와 함께 채널 성장을 위한 핵심 전략을 정리했습니다.
+
+⏱️ 목차
+00:00 인트로
+02:15 알고리즘 분석
+08:30 썸네일 최적화
+15:00 업로드 최적화 전략
+
+👍 좋아요와 구독 부탁드립니다!</textarea>
+        </div>
+        <div class="form-group">
+          <div class="form-label">반복 업로드</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;">
+              <input type="radio" name="repeat" checked style="accent-color:var(--primary);"> 없음
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;">
+              <input type="radio" name="repeat" style="accent-color:var(--primary);"> 매일
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;">
+              <input type="radio" name="repeat" style="accent-color:var(--primary);"> 매주
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;">
+              <input type="radio" name="repeat" style="accent-color:var(--primary);"> 격주
+            </label>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn btn-primary">📅 예약 등록</button>
+          <button class="btn btn-outline">미리보기</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">📋 예약된 업로드</div><div class="card-action">전체보기</div></div>
+          <div id="schedule-list"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">⚡ 자동화 설정</div></div>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div>
+                <div style="font-size:13.5px;font-weight:600;">자동 썸네일 생성</div>
+                <div style="font-size:11.5px;color:var(--text-muted);margin-top:2px;">업로드 시 AI 썸네일 자동 적용</div>
+              </div>
+              <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div>
+                <div style="font-size:13.5px;font-weight:600;">자동 태그 삽입</div>
+                <div style="font-size:11.5px;color:var(--text-muted);margin-top:2px;">SEO 분석 기반 태그 자동 추가</div>
+              </div>
+              <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div>
+                <div style="font-size:13.5px;font-weight:600;">자막 자동 생성</div>
+                <div style="font-size:11.5px;color:var(--text-muted);margin-top:2px;">AI 음성 인식으로 자막 자동 작성</div>
+              </div>
+              <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div>
+                <div style="font-size:13.5px;font-weight:600;">SNS 자동 공유</div>
+                <div style="font-size:11.5px;color:var(--text-muted);margin-top:2px;">업로드 후 인스타그램/트위터 자동 포스팅</div>
+              </div>
+              <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE: THUMBNAIL ==================== -->
+  <div class="page" id="page-thumbnail">
+    <div class="page-header">
+      <div class="page-title">썸네일 생성기</div>
+      <div class="page-subtitle">전문적인 유튜브 썸네일을 빠르게 제작합니다</div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">🎨 편집</div></div>
+        <div class="form-group">
+          <div class="form-label">메인 텍스트</div>
+          <input class="form-input" id="thumb-text-main" value="유튜브 구독자 10만 달성하는 법" oninput="updateThumb()">
+        </div>
+        <div class="form-group">
+          <div class="form-label">서브 텍스트</div>
+          <input class="form-input" id="thumb-text-sub" value="실전 노하우 공개" oninput="updateThumb()">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <div class="form-label">텍스트 색상</div>
+            <input class="form-input" type="color" value="#ffffff" id="thumb-text-color" oninput="updateThumb()" style="height:40px;cursor:pointer;">
+          </div>
+          <div class="form-group">
+            <div class="form-label">배경 스타일</div>
+            <select class="form-select" id="thumb-bg" onchange="updateThumb()">
+              <option value="grad1">다크 블루</option>
+              <option value="grad2">그라데이션 퍼플</option>
+              <option value="grad3">레드 블랙</option>
+              <option value="grad4">그린 다크</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="form-label">이모지 / 아이콘</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <span onclick="addEmoji('🔥')" style="font-size:22px;cursor:pointer;padding:4px;" title="추가">🔥</span>
+            <span onclick="addEmoji('🚀')" style="font-size:22px;cursor:pointer;padding:4px;" title="추가">🚀</span>
+            <span onclick="addEmoji('💰')" style="font-size:22px;cursor:pointer;padding:4px;" title="추가">💰</span>
+            <span onclick="addEmoji('⚡')" style="font-size:22px;cursor:pointer;padding:4px;" title="추가">⚡</span>
+            <span onclick="addEmoji('🎯')" style="font-size:22px;cursor:pointer;padding:4px;" title="추가">🎯</span>
+            <span onclick="addEmoji('📈')" style="font-size:22px;cursor:pointer;padding:4px;" title="추가">📈</span>
+            <span onclick="addEmoji('✅')" style="font-size:22px;cursor:pointer;padding:4px;" title="추가">✅</span>
+            <span onclick="addEmoji('💡')" style="font-size:22px;cursor:pointer;padding:4px;" title="추가">💡</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="form-label">템플릿 선택</div>
+          <div class="thumb-templates">
+            <div class="thumb-tmpl selected" style="background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;" onclick="selectTemplate(this,'grad1')">다크</div>
+            <div class="thumb-tmpl" style="background:linear-gradient(135deg,#6C5CE7,#a855f7);color:#fff;" onclick="selectTemplate(this,'grad2')">퍼플</div>
+            <div class="thumb-tmpl" style="background:linear-gradient(135deg,#c0392b,#1a1a1a);color:#fff;" onclick="selectTemplate(this,'grad3')">레드</div>
+            <div class="thumb-tmpl" style="background:linear-gradient(135deg,#00B894,#0a0a0b);color:#fff;" onclick="selectTemplate(this,'grad4')">그린</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn btn-primary">💾 PNG 저장</button>
+          <button class="btn btn-outline">📤 유튜브 적용</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">👁️ 미리보기</div></div>
+        <div class="thumb-preview" id="thumb-preview">
+          <div style="text-align:center;padding:20px;">
+            <div class="thumb-overlay-text" id="thumb-overlay-main">유튜브 구독자 10만 달성하는 법</div>
+            <div id="thumb-overlay-sub" style="font-size:14px;color:rgba(255,255,255,0.7);margin-top:8px;font-weight:600;">실전 노하우 공개</div>
+            <div id="thumb-overlay-emoji" style="font-size:32px;margin-top:8px;"></div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;">
+          <div style="background:var(--surface2);border-radius:8px;padding:12px;text-align:center;">
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">클릭률 예상</div>
+            <div style="font-size:20px;font-weight:800;color:var(--green);">7.8%</div>
+          </div>
+          <div style="background:var(--surface2);border-radius:8px;padding:12px;text-align:center;">
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">A/B 테스트</div>
+            <div style="font-size:13px;font-weight:600;color:var(--primary-light);">3개 변형</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE: SEO ==================== -->
+  <div class="page" id="page-seo">
+    <div class="page-header">
+      <div class="page-title">SEO 분석</div>
+      <div class="page-subtitle">키워드 분석으로 영상 노출을 극대화합니다</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-title">🔍 키워드 검색</div></div>
+      <div style="display:flex;gap:10px;margin-bottom:16px;">
+        <input class="form-input" value="유튜브 성장" style="max-width:320px;">
+        <button class="btn btn-primary">분석하기</button>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+        <span class="badge badge-blue">🔥 트렌딩</span>
+        <span style="font-size:12.5px;color:var(--text-muted);">관련 키워드:</span>
+        <span onclick="this.style.background='var(--primary-dim)';this.style.color='var(--primary-light)'" class="tag-item">유튜브 알고리즘</span>
+        <span onclick="this.style.background='var(--primary-dim)';this.style.color='var(--primary-light)'" class="tag-item">구독자 늘리기</span>
+        <span onclick="this.style.background='var(--primary-dim)';this.style.color='var(--primary-light)'" class="tag-item">유튜브 수익화</span>
+        <span onclick="this.style.background='var(--primary-dim)';this.style.color='var(--primary-light)'" class="tag-item">쇼츠 전략</span>
+        <span onclick="this.style.background='var(--primary-dim)';this.style.color='var(--primary-light)'" class="tag-item">채널 성장</span>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">📊 키워드 검색량 분석</div></div>
+        <div id="keyword-list"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">🏷️ 추천 태그</div></div>
+        <div class="tags-wrap" id="tag-cloud"></div>
+        <div style="margin-top:14px;display:flex;gap:8px;">
+          <button class="btn btn-primary btn-sm">태그 전체 복사</button>
+          <button class="btn btn-outline btn-sm">영상에 적용</button>
+        </div>
+
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+          <div class="card-title" style="margin-bottom:12px;">📝 제목 최적화 점수</div>
+          <div id="title-score-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-title">🎯 경쟁 분석</div></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>채널</th><th>구독자</th><th>최근 영상 조회수</th><th>업로드 주기</th><th>참여율</th><th>위협도</th></tr></thead>
+          <tbody>
+            <tr><td><div style="display:flex;align-items:center;gap:8px;"><div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#e17055,#d63031);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">Y</div><span style="font-size:13px;font-weight:500;">YT마케터 박세준</span></div></td><td>284K</td><td>142K</td><td>주 3회</td><td>4.2%</td><td><span class="badge badge-red">높음</span></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px;"><div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#6C5CE7,#a855f7);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">C</div><span style="font-size:13px;font-weight:500;">크리에이터 랩</span></div></td><td>97K</td><td>56K</td><td>주 2회</td><td>6.1%</td><td><span class="badge badge-yellow">중간</span></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px;"><div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#00B894,#00cec9);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">G</div><span style="font-size:13px;font-weight:500;">그로스 해킹 TV</span></div></td><td>61K</td><td>34K</td><td>주 1회</td><td>7.8%</td><td><span class="badge badge-green">낮음</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE: COMMENTS ==================== -->
+  <div class="page" id="page-comments">
+    <div class="page-header">
+      <div class="page-title">댓글 자동 관리</div>
+      <div class="page-subtitle">필터 규칙과 자동 응답으로 댓글을 효율적으로 관리합니다</div>
+    </div>
+
+    <div class="grid-4">
+      <div class="stat-card" style="--accent-color:var(--primary)"><div class="stat-label">오늘 댓글</div><div class="stat-value">184</div></div>
+      <div class="stat-card" style="--accent-color:var(--green)"><div class="stat-label">자동 승인</div><div class="stat-value">161</div></div>
+      <div class="stat-card" style="--accent-color:var(--yellow)"><div class="stat-label">검토 필요</div><div class="stat-value">3</div></div>
+      <div class="stat-card" style="--accent-color:var(--red)"><div class="stat-label">스팸 차단</div><div class="stat-value">20</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">🚫 필터 규칙</div><button class="btn btn-primary btn-sm">+ 규칙 추가</button></div>
+        <div id="filter-rules-list"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">🤖 자동 응답 템플릿</div><button class="btn btn-outline btn-sm">+ 추가</button></div>
+        <div id="auto-reply-list"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">💬 최근 댓글 (검토 필요)</div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-outline btn-sm">전체 승인</button>
+          <button class="btn btn-danger btn-sm">전체 삭제</button>
+        </div>
+      </div>
+      <div id="pending-comments"></div>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE: REVENUE ==================== -->
+  <div class="page" id="page-revenue">
+    <div class="page-header">
+      <div class="page-title">수익 분석</div>
+      <div class="page-subtitle">채널 수익 현황 및 광고 성과를 분석합니다</div>
+    </div>
+
+    <div class="grid-4">
+      <div class="stat-card" style="--accent-color:var(--green)">
+        <div class="stat-label">이번 달 수익</div><div class="stat-value" style="color:var(--green);">₩847K</div>
+        <div class="stat-change up">▲ +15.2% 전월 대비</div>
+      </div>
+      <div class="stat-card" style="--accent-color:var(--blue)">
+        <div class="stat-label">예상 월말 수익</div><div class="stat-value">₩1.1M</div>
+        <div class="stat-sub" style="margin-top:8px;font-size:12px;color:var(--text-muted);">현재 페이스 기준</div>
+      </div>
+      <div class="stat-card" style="--accent-color:var(--yellow)">
+        <div class="stat-label">CPM (광고 단가)</div><div class="stat-value">₩3,240</div>
+        <div class="stat-change up">▲ +₩180 이번달</div>
+      </div>
+      <div class="stat-card" style="--accent-color:var(--primary)">
+        <div class="stat-label">RPM (1000뷰 수익)</div><div class="stat-value">₩354</div>
+        <div class="stat-change up">▲ +12.4%</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">💰 월별 수익 추이 (2025~2026)</div></div>
+        <div class="rev-chart" id="revenue-chart"></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:14px;">
+          <div style="display:flex;align-items:center;gap:5px;font-size:11.5px;"><div style="width:10px;height:10px;border-radius:2px;background:var(--green);"></div> 광고 수익</div>
+          <div style="display:flex;align-items:center;gap:5px;font-size:11.5px;"><div style="width:10px;height:10px;border-radius:2px;background:var(--primary);"></div> 슈퍼챗</div>
+          <div style="display:flex;align-items:center;gap:5px;font-size:11.5px;"><div style="width:10px;height:10px;border-radius:2px;background:var(--blue);"></div> 멤버십</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">📊 수익원 분포</div></div>
+        <div class="donut-wrap">
+          <svg class="donut-svg" width="120" height="120" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="18"/>
+            <circle cx="60" cy="60" r="50" fill="none" stroke="#00B894" stroke-width="18"
+              stroke-dasharray="197 117" stroke-dashoffset="-78" stroke-linecap="round"/>
+            <circle cx="60" cy="60" r="50" fill="none" stroke="#6C5CE7" stroke-width="18"
+              stroke-dasharray="75 239" stroke-dashoffset="119" stroke-linecap="round"/>
+            <circle cx="60" cy="60" r="50" fill="none" stroke="#74B9FF" stroke-width="18"
+              stroke-dasharray="42 272" stroke-dashoffset="194" stroke-linecap="round"/>
+            <text x="60" y="55" text-anchor="middle" fill="#FAFAFA" font-size="13" font-weight="700" font-family="Inter">₩847K</text>
+            <text x="60" y="70" text-anchor="middle" fill="#A1A1AA" font-size="9" font-family="Inter">이번달</text>
+          </svg>
+          <div class="donut-legend">
+            <div class="donut-legend-item"><div class="donut-dot" style="background:var(--green);"></div><div><div style="font-weight:600;font-size:13px;">광고 수익</div><div style="color:var(--text-muted);font-size:11px;">₩621K · 63.4%</div></div></div>
+            <div class="donut-legend-item"><div class="donut-dot" style="background:var(--primary);"></div><div><div style="font-weight:600;font-size:13px;">슈퍼챗</div><div style="color:var(--text-muted);font-size:11px;">₩142K · 16.8%</div></div></div>
+            <div class="donut-legend-item"><div class="donut-dot" style="background:var(--blue);"></div><div><div style="font-weight:600;font-size:13px;">멤버십</div><div style="color:var(--text-muted);font-size:11px;">₩84K · 9.9%</div></div></div>
+            <div class="donut-legend-item"><div class="donut-dot" style="background:var(--yellow);"></div><div><div style="font-weight:600;font-size:13px;">협찬/기타</div><div style="color:var(--text-muted);font-size:11px;">₩98K · 11.5%</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-title">🏆 수익 TOP 영상</div></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>영상 제목</th><th>조회수</th><th>광고 수익</th><th>RPM</th><th>CPM</th><th>시청 지속률</th></tr></thead>
+          <tbody>
+            <tr><td style="font-size:13px;font-weight:500;">유튜브 알고리즘 완전 정복 2025</td><td>284,120</td><td style="color:var(--green);font-weight:700;">₩98,400</td><td>₩346</td><td>₩3,180</td><td><div style="display:flex;align-items:center;gap:8px;"><div class="progress-track" style="width:80px;"><div class="progress-fill" style="width:62%;background:var(--green);"></div></div><span style="font-size:12px;">62%</span></div></td></tr>
+            <tr><td style="font-size:13px;font-weight:500;">쇼츠로 월 100만원 버는 법</td><td>198,450</td><td style="color:var(--green);font-weight:700;">₩72,100</td><td>₩363</td><td>₩3,420</td><td><div style="display:flex;align-items:center;gap:8px;"><div class="progress-track" style="width:80px;"><div class="progress-fill" style="width:58%;background:var(--green);"></div></div><span style="font-size:12px;">58%</span></div></td></tr>
+            <tr><td style="font-size:13px;font-weight:500;">구독자 10만 달성 1년 회고</td><td>167,800</td><td style="color:var(--green);font-weight:700;">₩61,200</td><td>₩365</td><td>₩3,520</td><td><div style="display:flex;align-items:center;gap:8px;"><div class="progress-track" style="width:80px;"><div class="progress-fill" style="width:71%;background:var(--blue);"></div></div><span style="font-size:12px;">71%</span></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE: SETTINGS ==================== -->
+  <div class="page" id="page-settings">
+    <div class="page-header">
+      <div class="page-title">설정</div>
+      <div class="page-subtitle">API 키 관리 및 채널 연동을 설정합니다</div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">🔑 API 키 관리</div><button class="btn btn-primary btn-sm">+ 키 추가</button></div>
+        <div id="api-keys-list"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">📺 채널 연동</div></div>
+        <div id="connected-channels"></div>
+        <div style="margin-top:14px;">
+          <button class="btn btn-outline" style="width:100%;justify-content:center;">+ 새 채널 연동</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-title">🔔 알림 설정</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div><div style="font-size:13.5px;font-weight:600;">구독자 알림</div><div style="font-size:11.5px;color:var(--text-muted);">1000명 단위 달성 시 알림</div></div>
+            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div><div style="font-size:13.5px;font-weight:600;">업로드 완료 알림</div><div style="font-size:11.5px;color:var(--text-muted);">예약 업로드 완료 시 알림</div></div>
+            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div><div style="font-size:13.5px;font-weight:600;">수익 정산 알림</div><div style="font-size:11.5px;color:var(--text-muted);">월 정산 완료 시 이메일 발송</div></div>
+            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div><div style="font-size:13.5px;font-weight:600;">스팸 댓글 알림</div><div style="font-size:11.5px;color:var(--text-muted);">스팸 집중 발생 시 알림</div></div>
+            <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div><div style="font-size:13.5px;font-weight:600;">주간 리포트</div><div style="font-size:11.5px;color:var(--text-muted);">매주 월요일 성과 요약 이메일</div></div>
+            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div><div style="font-size:13.5px;font-weight:600;">SEO 기회 알림</div><div style="font-size:11.5px;color:var(--text-muted);">급상승 키워드 감지 시 알림</div></div>
+            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-title">👤 계정 정보</div></div>
+      <div class="form-row">
+        <div class="form-group"><div class="form-label">이름</div><input class="form-input" value="김민준"></div>
+        <div class="form-group"><div class="form-label">이메일</div><input class="form-input" value="minjun.kim@tubeflow.io"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><div class="form-label">플랜</div>
+          <div style="display:flex;align-items:center;gap:10px;padding:9px 13px;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;">
+            <span class="badge badge-purple">PRO</span>
+            <span style="font-size:13px;color:var(--text-sub);">프로 플랜 · 2026-06-30 만료</span>
+          </div>
+        </div>
+        <div class="form-group"><div class="form-label">시간대</div>
+          <select class="form-select"><option>Asia/Seoul (UTC+9)</option></select>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-primary">변경사항 저장</button>
+        <button class="btn btn-outline">비밀번호 변경</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+// ==================== NAVIGATION ====================
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const page = item.dataset.page;
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    item.classList.add('active');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    const titles = {
+      dashboard:'대시보드', videos:'영상 관리', upload:'자동 업로드',
+      thumbnail:'썸네일 생성기', seo:'SEO 분석', comments:'댓글 자동 관리',
+      revenue:'수익 분석', settings:'설정'
+    };
+    document.getElementById('topbar-title').textContent = titles[page] || page;
+  });
+});
+
+// ==================== MOCK DATA ====================
+const viewsData = [
+  {day:'3/9', val:280000},
+  {day:'3/10', val:342000},
+  {day:'3/11', val:298000},
+  {day:'3/12', val:412000},
+  {day:'3/13', val:384000},
+  {day:'3/14', val:327000},
+  {day:'3/15', val:341100},
+];
+const subsData = [
+  {day:'3/9', val:380},
+  {day:'3/10', val:520},
+  {day:'3/11', val:410},
+  {day:'3/12', val:640},
+  {day:'3/13', val:580},
+  {day:'3/14', val:460},
+  {day:'3/15', val:490},
+];
+
+const videos = [
+  {emoji:'📈', title:'유튜브 알고리즘 완전 정복 2025', views:'284,120', likes:'18.2K', comments:'1,240', dur:'7:14', status:'공개', date:'2026-03-10', statusType:'green'},
+  {emoji:'💰', title:'쇼츠로 월 100만원 버는 실전 방법 (2025)', views:'198,450', likes:'14.7K', comments:'892', dur:'9:32', status:'공개', date:'2026-03-07', statusType:'green'},
+  {emoji:'🎯', title:'구독자 10만 달성 1년 회고 솔직 후기', views:'167,800', likes:'21.4K', comments:'3,410', dur:'18:22', status:'공개', date:'2026-03-01', statusType:'green'},
+  {emoji:'🚀', title:'유튜브 SEO 완벽 가이드 - 상위 노출 전략', views:'142,300', likes:'9.8K', comments:'724', dur:'12:05', status:'공개', date:'2026-02-24', statusType:'green'},
+  {emoji:'🔥', title:'2026년 유튜브 성장 전략 총정리', views:'0', likes:'0', comments:'0', dur:'-', status:'예약됨', date:'2026-03-20', statusType:'yellow'},
+  {emoji:'🎬', title:'촬영 장비 추천 2026 (예산별 완벽 정리)', views:'98,410', likes:'7.2K', comments:'541', dur:'14:48', status:'공개', date:'2026-02-18', statusType:'green'},
+  {emoji:'💡', title:'유튜브 수익화 신청 조건 총정리', views:'87,640', likes:'6.1K', comments:'413', dur:'8:27', status:'공개', date:'2026-02-12', statusType:'green'},
+  {emoji:'⚡', title:'알고리즘이 싫어하는 6가지 실수 (내부 고발)', views:'0', likes:'0', comments:'0', dur:'-', status:'비공개', date:'2026-02-08', statusType:'red'},
+];
+
+const schedules = [
+  {time:'18:00', date:'3/20', title:'2026년 유튜브 성장 전략 총정리', emoji:'🔥'},
+  {time:'12:00', date:'3/24', title:'유튜브 수익 극대화 완벽 공략', emoji:'💰'},
+  {time:'09:00', date:'3/28', title:'쇼츠 알고리즘 비밀 완전 분석', emoji:'📱'},
+  {time:'18:00', date:'4/3',  title:'1인 크리에이터 세금 신고 가이드', emoji:'📋'},
+];
+
+const keywords = [
+  {word:'유튜브 성장', vol:840000, diff:'쉬움', color:'#00B894'},
+  {word:'유튜브 알고리즘', vol:620000, diff:'보통', color:'#FDCB6E'},
+  {word:'구독자 늘리기', vol:480000, diff:'어려움', color:'#FF6B6B'},
+  {word:'유튜브 수익화', vol:390000, diff:'보통', color:'#FDCB6E'},
+  {word:'쇼츠 전략', vol:310000, diff:'쉬움', color:'#00B894'},
+  {word:'채널 성장 팁', vol:240000, diff:'쉬움', color:'#00B894'},
+];
+
+const tags = ['유튜브','유튜브성장','알고리즘','구독자늘리기','유튜브수익화','크리에이터','유튜버','쇼츠','유튜브팁','채널운영','콘텐츠전략','유튜브2026','유튜브마케팅','디지털노마드','1인미디어'];
+
+const titleScores = [
+  {title:'유튜브 구독자 10만 달성하는 법 (실전)', score:92, color:'#00B894'},
+  {title:'구독자 늘리기 완벽 가이드 2026', score:78, color:'#FDCB6E'},
+  {title:'유튜브 성장 전략', score:54, color:'#FF6B6B'},
+];
+
+const filterRules = [
+  {icon:'🚫', name:'스팸 키워드 차단', desc:'홍보, 팔로우, 구독해요 등 포함 시 자동 삭제', active:true},
+  {icon:'⚠️', name:'욕설/비방 필터', desc:'AI 감지 욕설 댓글 자동 숨김 처리', active:true},
+  {icon:'🔗', name:'외부 링크 차단', desc:'URL 포함 댓글 자동 스팸 처리', active:true},
+  {icon:'🌍', name:'비한국어 댓글 검토', desc:'한국어 이외 댓글 검토 대기열로 이동', active:false},
+];
+
+const autoReplies = [
+  {trigger:'감사해요', reply:'시청해주셔서 감사합니다! 😊 구독과 좋아요가 큰 힘이 됩니다!', active:true},
+  {trigger:'질문 있어요', reply:'댓글 확인했습니다! 다음 영상에서 자세히 다뤄볼게요 🙏', active:true},
+  {trigger:'최고', reply:'최고로 봐주셔서 감사합니다! 더 좋은 콘텐츠로 보답할게요 🔥', active:false},
+];
+
+const pendingComments = [
+  {user:'박지수', avatar:'박', color:'#e17055', text:'영상 퀄리티가 진짜 최고예요! 혹시 편집 프로그램 알려주실 수 있나요?', time:'5분 전'},
+  {user:'이동현', avatar:'이', color:'#6C5CE7', text:'이 내용 진짜 도움됐어요. 다음 영상은 수익화 심화편으로 해주세요!', time:'12분 전'},
+  {user:'김소연', avatar:'김', color:'#00B894', text:'구독 막 했는데 벌써 팬이 됐어요 ㅋㅋㅋ 완전 실용적인 정보 감사합니다', time:'28분 전'},
+];
+
+const revenueMonths = [
+  {m:'4월', ad:280, sc:42, mb:28, total:350},
+  {m:'5월', ad:310, sc:50, mb:32, total:392},
+  {m:'6월', ad:290, sc:38, mb:30, total:358},
+  {m:'7월', ad:380, sc:65, mb:40, total:485},
+  {m:'8월', ad:420, sc:72, mb:44, total:536},
+  {m:'9월', ad:390, sc:58, mb:41, total:489},
+  {m:'10월', ad:460, sc:80, mb:48, total:588},
+  {m:'11월', ad:540, sc:95, mb:52, total:687},
+  {m:'12월', ad:610, sc:110, mb:58, total:778},
+  {m:'1월', ad:520, sc:88, mb:54, total:662},
+  {m:'2월', ad:580, sc:96, mb:60, total:736},
+  {m:'3월', ad:621, sc:142, mb:84, total:847},
+];
+
+const apiKeys = [
+  {name:'YouTube Data API v3', key:'AIzaSy••••••••••••Kx9mP', status:'연결됨', statusType:'green'},
+  {name:'YouTube Analytics API', key:'AIzaSy••••••••••••8hRq2', status:'연결됨', statusType:'green'},
+  {name:'OpenAI API (썸네일 생성)', key:'sk-proj-••••••••••••••••kzL', status:'연결됨', statusType:'green'},
+  {name:'Google Ads API', key:'미연결', status:'미연결', statusType:'red'},
+];
+
+const connectedChannels = [
+  {name:'크리에이터 김민준', subs:'128.4K', status:'연결됨', avatar:'K', color:'#6C5CE7'},
+  {name:'미니 채널 (테스트)', subs:'2.1K', status:'연결됨', avatar:'M', color:'#00B894'},
+];
+
+// ==================== RENDER FUNCTIONS ====================
+
+function renderBarChart(containerId, data, color) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const max = Math.max(...data.map(d => d.val));
+  container.innerHTML = data.map(d => `
+    <div class="bar-col">
+      <div class="bar-val">${d.val > 10000 ? (d.val/10000).toFixed(0)+'만' : d.val.toLocaleString()}</div>
+      <div class="bar" style="height:${(d.val/max)*90}px;background:${color || 'var(--primary-dim)'};" title="${d.val.toLocaleString()}"></div>
+      <div class="bar-label">${d.day}</div>
+    </div>
+  `).join('');
+}
+
+function renderVideoTable() {
+  const tbody = document.getElementById('video-table-body');
+  if (!tbody) return;
+  tbody.innerHTML = videos.map(v => `
+    <tr>
+      <td>
+        <div class="video-title-cell">
+          <div class="video-thumb">${v.emoji}</div>
+          <div><div class="video-title-text">${v.title}</div></div>
+        </div>
+      </td>
+      <td>${v.views}</td>
+      <td>${v.likes}</td>
+      <td>${v.comments}</td>
+      <td>${v.dur}</td>
+      <td><span class="badge badge-${v.statusType}">${v.status}</span></td>
+      <td style="font-size:12px;color:var(--text-muted);">${v.date}</td>
+      <td>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-outline btn-sm btn-icon" title="편집">✏️</button>
+          <button class="btn btn-danger btn-sm btn-icon" title="삭제">🗑️</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function renderRecentVideos() {
+  const el = document.getElementById('recent-videos-list');
+  if (!el) return;
+  el.innerHTML = videos.slice(0,4).map(v => `
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
+      <div style="width:44px;height:28px;border-radius:5px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">${v.emoji}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${v.title}</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:1px;">조회수 ${v.views} · ${v.date}</div>
+      </div>
+      <span class="badge badge-${v.statusType}" style="flex-shrink:0;">${v.status}</span>
+    </div>
+  `).join('');
+}
+
+function renderUpcomingSchedule() {
+  const el = document.getElementById('upcoming-schedule');
+  if (!el) return;
+  el.innerHTML = schedules.map(s => `
+    <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);">
+      <div style="font-size:18px;">${s.emoji}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.title}</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:1px;">${s.date} ${s.time}</div>
+      </div>
+      <span class="badge badge-blue" style="flex-shrink:0;">예약됨</span>
+    </div>
+  `).join('');
+}
+
+function renderScheduleList() {
+  const el = document.getElementById('schedule-list');
+  if (!el) return;
+  el.innerHTML = schedules.map(s => `
+    <div class="schedule-item">
+      <div class="schedule-icon">${s.emoji}</div>
+      <div style="flex:1;min-width:0;">
+        <div class="schedule-title" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.title}</div>
+        <div class="schedule-ch">${s.date} · ${s.time} 업로드 예정</div>
+      </div>
+      <span class="badge badge-blue">예약됨</span>
+    </div>
+  `).join('');
+}
+
+function renderKeywords() {
+  const el = document.getElementById('keyword-list');
+  if (!el) return;
+  const max = Math.max(...keywords.map(k => k.vol));
+  el.innerHTML = keywords.map(k => `
+    <div class="kw-row">
+      <div class="kw-word">${k.word}</div>
+      <div class="kw-vol-bar"><div class="kw-vol-fill" style="width:${(k.vol/max)*100}%;background:${k.color};"></div></div>
+      <div class="kw-vol-num">${(k.vol/10000).toFixed(0)}만</div>
+      <div class="kw-diff"><span class="badge ${k.diff==='쉬움'?'badge-green':k.diff==='보통'?'badge-yellow':'badge-red'}">${k.diff}</span></div>
+    </div>
+  `).join('');
+}
+
+function renderTagCloud() {
+  const el = document.getElementById('tag-cloud');
+  if (!el) return;
+  el.innerHTML = tags.map(t => `
+    <div class="tag-item">#${t}<span class="tag-remove" onclick="this.parentElement.remove()">×</span></div>
+  `).join('');
+}
+
+function renderTitleScores() {
+  const el = document.getElementById('title-score-list');
+  if (!el) return;
+  el.innerHTML = titleScores.map(t => `
+    <div style="margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">
+        <span style="color:var(--text-sub);font-size:12px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.title}</span>
+        <span style="font-weight:700;color:${t.color};">${t.score}점</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" style="width:${t.score}%;background:${t.color};"></div></div>
+    </div>
+  `).join('');
+}
+
+function renderFilterRules() {
+  const el = document.getElementById('filter-rules-list');
+  if (!el) return;
+  el.innerHTML = filterRules.map((r,i) => `
+    <div class="rule-item">
+      <div class="rule-icon">${r.icon}</div>
+      <div class="rule-info">
+        <div class="rule-name">${r.name}</div>
+        <div class="rule-desc">${r.desc}</div>
+      </div>
+      <label class="toggle"><input type="checkbox" ${r.active?'checked':''}><span class="toggle-slider"></span></label>
+    </div>
+  `).join('');
+}
+
+function renderAutoReplies() {
+  const el = document.getElementById('auto-reply-list');
+  if (!el) return;
+  el.innerHTML = autoReplies.map(r => `
+    <div style="padding:11px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;margin-bottom:8px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <span class="badge badge-purple">트리거: ${r.trigger}</span>
+        <label class="toggle" style="margin-left:auto;"><input type="checkbox" ${r.active?'checked':''}><span class="toggle-slider"></span></label>
+      </div>
+      <div style="font-size:12.5px;color:var(--text-sub);line-height:1.5;">${r.reply}</div>
+    </div>
+  `).join('');
+}
+
+function renderPendingComments() {
+  const el = document.getElementById('pending-comments');
+  if (!el) return;
+  el.innerHTML = pendingComments.map(c => `
+    <div class="comment-item">
+      <div class="comment-meta">
+        <div class="comment-avatar" style="background:${c.color}20;color:${c.color};">${c.avatar}</div>
+        <span class="comment-author">${c.user}</span>
+        <span class="comment-time">${c.time}</span>
+      </div>
+      <div class="comment-text">${c.text}</div>
+      <div class="comment-actions">
+        <button class="btn btn-outline btn-sm">✅ 승인</button>
+        <button class="btn btn-outline btn-sm">↩️ 답글</button>
+        <button class="btn btn-danger btn-sm">🗑️ 삭제</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderRevenueChart() {
+  const el = document.getElementById('revenue-chart');
+  if (!el) return;
+  const max = Math.max(...revenueMonths.map(r => r.total));
+  el.innerHTML = revenueMonths.map(r => `
+    <div class="rev-bar-col">
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:88px;gap:1px;">
+        <div class="rev-bar" style="height:${(r.ad/max)*88}px;background:var(--green);width:100%;"></div>
+        <div class="rev-bar" style="height:${(r.sc/max)*88}px;background:var(--primary);width:100%;"></div>
+        <div class="rev-bar" style="height:${(r.mb/max)*88}px;background:var(--blue);width:100%;"></div>
+      </div>
+      <div class="rev-label">${r.m}</div>
+    </div>
+  `).join('');
+}
+
+function renderApiKeys() {
+  const el = document.getElementById('api-keys-list');
+  if (!el) return;
+  el.innerHTML = apiKeys.map(k => `
+    <div class="api-key-item">
+      <div style="font-size:22px;">🔑</div>
+      <div class="api-key-info">
+        <div class="api-key-name">${k.name}</div>
+        <div class="api-key-val">${k.key}</div>
+      </div>
+      <div class="api-status">
+        <div style="width:7px;height:7px;border-radius:50%;background:${k.statusType==='green'?'var(--green)':'var(--red)'};"></div>
+        <span style="color:${k.statusType==='green'?'var(--green)':'var(--red)'};">${k.status}</span>
+      </div>
+      <button class="btn btn-outline btn-sm btn-icon" title="${k.statusType==='green'?'편집':'연결'}">
+        ${k.statusType==='green'?'✏️':'🔗'}
+      </button>
+    </div>
+  `).join('');
+}
+
+function renderConnectedChannels() {
+  const el = document.getElementById('connected-channels');
+  if (!el) return;
+  el.innerHTML = connectedChannels.map(c => `
+    <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;">
+      <div style="width:38px;height:38px;border-radius:50%;background:${c.color};display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0;">${c.avatar}</div>
+      <div style="flex:1;">
+        <div style="font-size:13.5px;font-weight:600;">${c.name}</div>
+        <div style="font-size:11.5px;color:var(--text-muted);">구독자 ${c.subs}</div>
+      </div>
+      <span class="badge badge-green">${c.status}</span>
+      <button class="btn btn-outline btn-sm">연동 해제</button>
+    </div>
+  `).join('');
+}
+
+// ==================== THUMBNAIL ====================
+const bgMap = {
+  grad1:'linear-gradient(135deg,#1a1a2e,#16213e)',
+  grad2:'linear-gradient(135deg,#6C5CE7,#a855f7)',
+  grad3:'linear-gradient(135deg,#c0392b,#1a1a1a)',
+  grad4:'linear-gradient(135deg,#00B894,#0a0a0b)',
+};
+let currentEmoji = '';
+function updateThumb() {
+  const main = document.getElementById('thumb-text-main').value;
+  const sub  = document.getElementById('thumb-text-sub').value;
+  const color= document.getElementById('thumb-text-color').value;
+  const bg   = document.getElementById('thumb-bg').value;
+  document.getElementById('thumb-overlay-main').textContent = main;
+  document.getElementById('thumb-overlay-main').style.color = color;
+  document.getElementById('thumb-overlay-sub').textContent = sub;
+  document.getElementById('thumb-overlay-sub').style.color = color + 'bb';
+  document.getElementById('thumb-preview').style.background = bgMap[bg];
+}
+function addEmoji(e) {
+  currentEmoji += e;
+  document.getElementById('thumb-overlay-emoji').textContent = currentEmoji;
+}
+function selectTemplate(el, bg) {
+  document.querySelectorAll('.thumb-tmpl').forEach(t => t.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('thumb-bg').value = bg;
+  updateThumb();
+}
+
+// ==================== INIT ====================
+renderBarChart('views-chart', viewsData, 'var(--primary)');
+renderBarChart('subs-chart', subsData, 'var(--green)');
+renderVideoTable();
+renderRecentVideos();
+renderUpcomingSchedule();
+renderScheduleList();
+renderKeywords();
+renderTagCloud();
+renderTitleScores();
+renderFilterRules();
+renderAutoReplies();
+renderPendingComments();
+renderRevenueChart();
+renderApiKeys();
+renderConnectedChannels();
+</script>
+</body>
+</html>
