@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>쿡마스터 - 맛있는 레시피</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#FF6B35;
+  --primary-light:#FF8C5A;
+  --primary-dark:#E55A2B;
+  --orange-50:#FFF3ED;
+  --orange-100:#FFE4D4;
+  --gray-50:#FAFAFA;
+  --gray-100:#F5F5F5;
+  --gray-200:#E5E5E5;
+  --gray-300:#D4D4D4;
+  --gray-400:#A3A3A3;
+  --gray-500:#737373;
+  --gray-600:#525252;
+  --gray-700:#404040;
+  --gray-800:#262626;
+  --gray-900:#171717;
+  --white:#FFFFFF;
+  --shadow-sm:0 1px 2px rgba(0,0,0,0.05);
+  --shadow:0 1px 3px rgba(0,0,0,0.1),0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md:0 4px 6px rgba(0,0,0,0.07),0 2px 4px rgba(0,0,0,0.06);
+  --shadow-lg:0 10px 15px rgba(0,0,0,0.1),0 4px 6px rgba(0,0,0,0.05);
+  --shadow-xl:0 20px 25px rgba(0,0,0,0.1),0 10px 10px rgba(0,0,0,0.04);
+  --radius:12px;
+  --radius-lg:16px;
+  --radius-xl:20px;
+}
+body{font-family:'Inter',sans-serif;background:var(--gray-50);color:var(--gray-800);line-height:1.6;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+
+/* Header */
+.header{background:var(--white);border-bottom:1px solid var(--gray-200);position:sticky;top:0;z-index:100;backdrop-filter:blur(10px);background:rgba(255,255,255,0.95)}
+.header-inner{max-width:1200px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:1.4rem;color:var(--primary);white-space:nowrap}
+.logo-icon{width:36px;height:36px;background:var(--primary);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--white);font-size:1.1rem}
+.search-bar{flex:1;min-width:200px;max-width:500px;position:relative}
+.search-bar input{width:100%;padding:10px 16px 10px 42px;border:2px solid var(--gray-200);border-radius:50px;font-size:0.95rem;font-family:inherit;outline:none;transition:all 0.3s;background:var(--gray-50)}
+.search-bar input:focus{border-color:var(--primary);background:var(--white);box-shadow:0 0 0 3px rgba(255,107,53,0.1)}
+.search-bar input::placeholder{color:var(--gray-400)}
+.search-bar svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--gray-400);width:18px;height:18px}
+.header-actions{display:flex;align-items:center;gap:12px}
+.header-btn{width:40px;height:40px;border-radius:50%;border:none;background:var(--gray-100);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--gray-600);transition:all 0.2s;position:relative}
+.header-btn:hover{background:var(--orange-50);color:var(--primary)}
+.header-btn .badge{position:absolute;top:-2px;right:-2px;width:18px;height:18px;background:var(--primary);color:var(--white);border-radius:50%;font-size:0.65rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+/* Categories */
+.categories{max-width:1200px;margin:0 auto;padding:16px 20px 0}
+.cat-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;padding-bottom:4px}
+.cat-scroll::-webkit-scrollbar{display:none}
+.cat-btn{padding:8px 20px;border-radius:50px;border:2px solid var(--gray-200);background:var(--white);font-size:0.88rem;font-weight:500;cursor:pointer;white-space:nowrap;transition:all 0.25s;font-family:inherit;color:var(--gray-600)}
+.cat-btn:hover{border-color:var(--primary-light);color:var(--primary)}
+.cat-btn.active{background:var(--primary);color:var(--white);border-color:var(--primary)}
+
+/* Hero */
+.hero{max-width:1200px;margin:20px auto;padding:0 20px}
+.hero-card{position:relative;border-radius:var(--radius-xl);overflow:hidden;height:380px;cursor:pointer;box-shadow:var(--shadow-lg)}
+.hero-card img{width:100%;height:100%;object-fit:cover;transition:transform 0.6s}
+.hero-card:hover img{transform:scale(1.03)}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.1) 50%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:32px}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--primary);color:var(--white);padding:6px 14px;border-radius:50px;font-size:0.8rem;font-weight:600;width:fit-content;margin-bottom:12px}
+.hero-title{color:var(--white);font-size:2rem;font-weight:800;margin-bottom:8px;text-shadow:0 2px 4px rgba(0,0,0,0.3)}
+.hero-meta{display:flex;gap:16px;color:rgba(255,255,255,0.9);font-size:0.9rem}
+.hero-meta span{display:flex;align-items:center;gap:5px}
+
+/* Section Title */
+.section-header{max-width:1200px;margin:0 auto;padding:28px 20px 16px;display:flex;align-items:center;justify-content:space-between}
+.section-title{font-size:1.4rem;font-weight:700;color:var(--gray-900)}
+.section-title span{color:var(--primary)}
+.view-all{color:var(--primary);font-weight:600;font-size:0.9rem;cursor:pointer;transition:opacity 0.2s}
+.view-all:hover{opacity:0.7}
+
+/* Recipe Grid */
+.recipe-grid{max-width:1200px;margin:0 auto;padding:0 20px 40px;display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:20px}
+.recipe-card{background:var(--white);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow);transition:all 0.3s;cursor:pointer;position:relative}
+.recipe-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-xl)}
+.card-img-wrap{position:relative;height:190px;overflow:hidden}
+.card-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s}
+.recipe-card:hover .card-img-wrap img{transform:scale(1.08)}
+.card-time{position:absolute;top:12px;left:12px;background:rgba(0,0,0,0.6);color:var(--white);padding:4px 10px;border-radius:50px;font-size:0.75rem;font-weight:600;backdrop-filter:blur(4px);display:flex;align-items:center;gap:4px}
+.card-bookmark{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.25s;backdrop-filter:blur(4px)}
+.card-bookmark:hover{background:var(--white);transform:scale(1.1)}
+.card-bookmark.active{background:var(--primary);color:var(--white)}
+.card-bookmark svg{width:16px;height:16px}
+.card-body{padding:14px 16px 16px}
+.card-category{font-size:0.75rem;font-weight:600;color:var(--primary);text-transform:uppercase;margin-bottom:4px}
+.card-title{font-size:1rem;font-weight:700;color:var(--gray-800);margin-bottom:8px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-footer{display:flex;align-items:center;justify-content:space-between}
+.card-difficulty{display:flex;gap:2px}
+.card-difficulty .star{color:var(--gray-300);font-size:0.8rem}
+.card-difficulty .star.filled{color:#FBBF24}
+.card-likes{display:flex;align-items:center;gap:4px;color:var(--gray-500);font-size:0.85rem;cursor:pointer;transition:color 0.2s;border:none;background:none;font-family:inherit;padding:4px}
+.card-likes:hover,.card-likes.active{color:#EF4444}
+.card-likes svg{width:16px;height:16px;transition:transform 0.2s}
+.card-likes:hover svg{transform:scale(1.15)}
+
+/* No results */
+.no-results{max-width:1200px;margin:0 auto;padding:60px 20px;text-align:center;display:none}
+.no-results svg{width:80px;height:80px;color:var(--gray-300);margin-bottom:16px}
+.no-results h3{font-size:1.2rem;color:var(--gray-600);margin-bottom:8px}
+.no-results p{color:var(--gray-400);font-size:0.95rem}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);opacity:0;transition:opacity 0.3s}
+.modal-overlay.show{display:flex;opacity:1}
+.modal{background:var(--white);border-radius:var(--radius-xl);max-width:720px;width:100%;max-height:90vh;overflow-y:auto;position:relative;animation:modalIn 0.35s ease}
+@keyframes modalIn{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal::-webkit-scrollbar{width:6px}
+.modal::-webkit-scrollbar-thumb{background:var(--gray-300);border-radius:3px}
+.modal-close{position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.5);border:none;color:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;transition:background 0.2s;backdrop-filter:blur(4px)}
+.modal-close:hover{background:rgba(0,0,0,0.7)}
+.modal-img{width:100%;height:320px;object-fit:cover}
+.modal-content{padding:24px 28px 28px}
+.modal-cat{font-size:0.8rem;font-weight:600;color:var(--primary);margin-bottom:6px}
+.modal-title{font-size:1.6rem;font-weight:800;margin-bottom:12px;color:var(--gray-900)}
+.modal-meta{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--gray-200)}
+.meta-item{display:flex;align-items:center;gap:6px;color:var(--gray-600);font-size:0.88rem}
+.meta-item svg{width:18px;height:18px;color:var(--primary)}
+.modal-actions{display:flex;gap:10px;margin-bottom:24px}
+.modal-action-btn{display:flex;align-items:center;gap:6px;padding:10px 18px;border-radius:50px;border:2px solid var(--gray-200);background:var(--white);cursor:pointer;font-size:0.88rem;font-weight:500;transition:all 0.2s;font-family:inherit;color:var(--gray-600)}
+.modal-action-btn:hover{border-color:var(--primary);color:var(--primary)}
+.modal-action-btn.active{background:var(--primary);color:var(--white);border-color:var(--primary)}
+.modal-action-btn svg{width:16px;height:16px}
+
+.modal-section{margin-bottom:24px}
+.modal-section-title{font-size:1.1rem;font-weight:700;margin-bottom:12px;color:var(--gray-800);display:flex;align-items:center;gap:8px}
+.modal-section-title svg{width:20px;height:20px;color:var(--primary)}
+
+/* Ingredients */
+.ingredient-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.ingredient-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:10px;transition:background 0.2s;cursor:pointer}
+.ingredient-item:hover{background:var(--gray-100)}
+.ingredient-item input{appearance:none;width:20px;height:20px;border:2px solid var(--gray-300);border-radius:6px;cursor:pointer;position:relative;flex-shrink:0;transition:all 0.2s}
+.ingredient-item input:checked{background:var(--primary);border-color:var(--primary)}
+.ingredient-item input:checked::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--white);font-size:0.7rem;font-weight:700}
+.ingredient-item label{font-size:0.9rem;color:var(--gray-700);cursor:pointer;transition:all 0.2s}
+.ingredient-item input:checked+label{text-decoration:line-through;color:var(--gray-400)}
+
+/* Steps */
+.step-list{list-style:none;counter-reset:step}
+.step-item{display:flex;gap:16px;padding:14px 0;border-bottom:1px solid var(--gray-100);counter-increment:step}
+.step-item:last-child{border-bottom:none}
+.step-num{width:32px;height:32px;border-radius:50%;background:var(--primary);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700;flex-shrink:0;margin-top:2px}
+.step-text{font-size:0.93rem;color:var(--gray-700);line-height:1.7}
+
+/* Nutrition */
+.nutrition-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.nutrition-item{text-align:center;padding:14px 8px;background:var(--orange-50);border-radius:var(--radius);transition:transform 0.2s}
+.nutrition-item:hover{transform:scale(1.03)}
+.nutrition-value{font-size:1.3rem;font-weight:800;color:var(--primary);margin-bottom:2px}
+.nutrition-label{font-size:0.75rem;color:var(--gray-500);font-weight:500}
+
+/* Tips */
+.tip-box{background:linear-gradient(135deg,var(--orange-50),#FFF7ED);border:1px solid var(--orange-100);border-radius:var(--radius);padding:16px 18px;display:flex;gap:12px;align-items:flex-start}
+.tip-icon{font-size:1.3rem;flex-shrink:0;margin-top:2px}
+.tip-text{font-size:0.9rem;color:var(--gray-700);line-height:1.6}
+
+/* Footer */
+.footer{background:var(--white);border-top:1px solid var(--gray-200);padding:24px 20px;text-align:center;margin-top:20px}
+.footer p{color:var(--gray-400);font-size:0.85rem}
+.footer span{color:var(--primary);font-weight:600}
+
+/* Responsive */
+@media(max-width:768px){
+  .header-inner{gap:12px}
+  .search-bar{order:3;min-width:100%;max-width:100%}
+  .hero-card{height:260px}
+  .hero-title{font-size:1.4rem}
+  .recipe-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+  .modal-img{height:220px}
+  .modal-content{padding:20px}
+  .ingredient-list{grid-template-columns:1fr}
+  .nutrition-grid{grid-template-columns:repeat(2,1fr)}
+  .section-title{font-size:1.2rem}
+}
+@media(max-width:480px){
+  .hero-card{height:220px}
+  .hero-overlay{padding:20px}
+  .hero-title{font-size:1.2rem}
+  .modal-title{font-size:1.3rem}
+  .modal-actions{flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">🍳</div>
+      쿡마스터
+    </div>
+    <div class="search-bar">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3" stroke-linecap="round"/></svg>
+      <input type="text" id="searchInput" placeholder="레시피, 재료, 카테고리 검색..." oninput="handleSearch(this.value)">
+    </div>
+    <div class="header-actions">
+      <button class="header-btn" id="bookmarkHeaderBtn" onclick="showBookmarked()" title="북마크">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        <span class="badge" id="bookmarkCount" style="display:none">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Categories -->
+<nav class="categories">
+  <div class="cat-scroll" id="catScroll">
+    <button class="cat-btn active" data-cat="전체" onclick="filterCategory('전체',this)">🍽️ 전체</button>
+    <button class="cat-btn" data-cat="한식" onclick="filterCategory('한식',this)">🍚 한식</button>
+    <button class="cat-btn" data-cat="중식" onclick="filterCategory('중식',this)">🥟 중식</button>
+    <button class="cat-btn" data-cat="일식" onclick="filterCategory('일식',this)">🍣 일식</button>
+    <button class="cat-btn" data-cat="양식" onclick="filterCategory('양식',this)">🍝 양식</button>
+    <button class="cat-btn" data-cat="디저트" onclick="filterCategory('디저트',this)">🍰 디저트</button>
+    <button class="cat-btn" data-cat="음료" onclick="filterCategory('음료',this)">🥤 음료</button>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero" id="heroSection">
+  <div class="hero-card" onclick="openModal(0)">
+    <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=1200&h=600&fit=crop" alt="오늘의 추천 레시피">
+    <div class="hero-overlay">
+      <div class="hero-badge">⭐ 오늘의 추천</div>
+      <h2 class="hero-title">황금 비율 팬케이크</h2>
+      <div class="hero-meta">
+        <span>⏱️ 25분</span>
+        <span>⭐ 4.8</span>
+        <span>❤️ 2,340</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section Header -->
+<div class="section-header">
+  <h2 class="section-title" id="sectionTitle">인기 <span>레시피</span></h2>
+  <span class="view-all" id="viewAllBtn" onclick="resetFilters()">전체 보기</span>
+</div>
+
+<!-- Recipe Grid -->
+<div class="recipe-grid" id="recipeGrid"></div>
+
+<!-- No Results -->
+<div class="no-results" id="noResults">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3" stroke-linecap="round"/><path d="M8 11h6" stroke-linecap="round"/></svg>
+  <h3>검색 결과가 없습니다</h3>
+  <p>다른 키워드로 검색해 보세요</p>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <p>© 2026 <span>쿡마스터</span> — 매일 맛있는 레시피를 만나보세요</p>
+</footer>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12" stroke-linecap="round"/></svg>
+    </button>
+    <img class="modal-img" id="modalImg" src="" alt="">
+    <div class="modal-content" id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+const recipes = [
+  {
+    id:0, title:"황금 비율 팬케이크", category:"양식", time:"25분", difficulty:3, likes:2340,
+    img:"https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&h=400&fit=crop",
+    imgLg:"https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=1000&h=500&fit=crop",
+    desc:"부드럽고 폭신한 팬케이크를 완벽하게 만드는 황금 비율 레시피입니다.",
+    servings:"2인분", calories:"320kcal",
+    ingredients:["박력분 200g","달걀 2개","우유 250ml","설탕 30g","베이킹파우더 1작은술","버터 30g","바닐라 에센스 약간","소금 한 꼬집","메이플 시럽 적당량","블루베리 한 줌"],
+    steps:["박력분, 베이킹파우더, 설탕, 소금을 큰 볼에 체로 쳐서 넣습니다.","다른 볼에 달걀, 우유, 녹인 버터, 바닐라 에센스를 넣고 잘 섞습니다.","마른 재료에 젖은 재료를 넣고 가볍게 섞습니다. 덩어리가 약간 남아도 됩니다.","달군 팬에 버터를 살짝 두르고 중약불에서 반죽을 올립니다.","표면에 기포가 올라오면 뒤집어 2분 더 구워줍니다.","접시에 담고 메이플 시럽과 블루베리를 올려 완성합니다."],
+    nutrition:{cal:"320",protein:"8g",carb:"42g",fat:"14g"},
+    tip:"반죽을 과하게 섞으면 글루텐이 생겨 딱딱해집니다. 덩어리가 조금 남아있을 정도로만 가볍게 섞어주세요."
+  },
+  {
+    id:1, title:"매콤 달콤 떡볶이", category:"한식", time:"30분", difficulty:2, likes:3120,
+    img:"https://images.unsplash.com/photo-1635363638580-c2809d049eee?w=600&h=400&fit=crop",
+    imgLg:"https://images.unsplash.com/photo-1635363638580-c2809d049eee?w=1000&h=500&fit=crop",
+    desc:"국민 간식! 쫄깃한 떡과 매콤달콤한 소스의 완벽한 조화.",
+    servings:"3인분", calories:"450kcal",
+    ingredients:["밀떡 500g","어묵 3장","대파 1대","양배추 2잎","삶은 달걀 2개","고추장 3큰술","고춧가루 1큰술","설탕 2큰술","간장 1큰술","다진 마늘 1큰술","물 600ml"],
+    steps:["떡은 찬물에 10분 불려 부드럽게 준비합니다.","어묵은 먹기 좋은 크기로 자르고, 대파는 송송 썹니다.","냄비에 물을 넣고 고추장, 고춧가루, 설탕, 간장, 마늘을 풀어줍니다.","소스가 끓기 시작하면 떡과 어묵을 넣고 중불에서 끓입니다.","양배추를 넣고 5분 더 끓여 소스가 걸쭉해지면 완성합니다.","삶은 달걀과 대파를 올려 서빙합니다."],
+    nutrition:{cal:"450",protein:"12g",carb:"68g",fat:"8g"},
+    tip:"물엿을 한 스푼 추가하면 소스에 더 윤기가 나고 맛있어요. 치즈를 올려 먹어도 훌륭합니다!"
+  },
+  {
+    id:2, title:"크림 파스타", category:"양식", time:"20분", difficulty:2, likes:1860,
+    img:"https://images.unsplash.com/photo-1645112411341-6c4fd023714a?w=600&h=400&fit=crop",
+    imgLg:"https://images.unsplash.com/photo-1645112411341-6c4fd023714a?w=1000&h=500&fit=crop",
+    desc:"진한 크림 소스와 알덴테 파스타의 클래식 조합.",
+    servings:"2인분", calories:"580kcal",
+    ingredients:["페투치니 200g","베이컨 4줄","양파 반 개","마늘 3쪽","생크림 200ml","파르메산 치즈 50g","올리브오일 2큰술","소금 적당량","후추 적당량","파슬리 약간"],
+    steps:["끓는 소금물에 파스타를 알덴테로 삶아 건집니다.","팬에 올리브오일을 두르고 다진 마늘과 양파를 볶습니다.","베이컨을 넣고 바삭해질 때까지 구워줍니다.","생크림을 넣고 약불에서 소스를 졸입니다.","삶은 파스타를 넣고 파르메산 치즈를 뿌려 버무립니다.","접시에 담고 후추와 파슬리로 마무리합니다."],
+    nutrition:{cal:"580",protein:"18g",carb:"52g",fat:"32g"},
+    tip:"파스타 삶은 물을 조금 남겨두세요. 소스가 너무 되직하면 삶은 물을 넣어 농도를 조절합니다."
+  },
+  {
+    id:3, title:"연어 포케 볼", category:"일식", time:"15분", difficulty:1, likes:2750,
+    img:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&h=400&fit=crop",
+    imgLg:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=1000&h=500&fit=crop",
+    desc:"신선한 연어와 알록달록 채소의 건강한 한 그릇 요리.",
+    servings:"1인분", calories:"420kcal",
+    ingredients:["회용 연어 150g","밥 1공기","아보카도 반 개","오이 반 개","당근 반 개","에다마메 50g","간장 2큰술","참기름 1큰술","와사비 약간","김 가루 적당량","깨 약간"],
+    steps:["연어는 깍둑썰기로 먹기 좋게 자릅니다.","간장, 참기름, 와사비를 섞어 소스를 만듭니다.","연어에 소스를 반만 넣고 5분간 재워둡니다.","아보카도, 오이, 당근을 얇게 썹니다.","그릇에 밥을 담고 재료를 예쁘게 올립니다.","남은 소스를 뿌리고 김 가루, 깨로 마무리합니다."],
+    nutrition:{cal:"420",protein:"28g",carb:"38g",fat:"18g"},
+    tip:"연어를 너무 오래 소스에 재우면 식감이 물러집니다. 5분 이내가 가장 좋아요."
+  },
+  {
+    id:4, title:"마파두부", category:"중식", time:"25분", difficulty:2, likes:1540,
+    img:"https://images.unsplash.com/photo-1582576163090-09d3b6f8a969?w=600&h=400&fit=crop",
+    imgLg:"https://images.unsplash.com/photo-1582576163090-09d3b6f8a969?w=1000&h=500&fit=crop",
+    desc:"얼얼하고 매콤한 정통 사천식 마파두부.",
+    servings:"3인분", calories:"350kcal",
+    ingredients:["두부 1모","다진 돼지고기 150g","대파 1대","마늘 3쪽","두반장 2큰술","고춧가루 1큰술","화자오 가루 약간","간장 1큰술","전분물 2큰술","참기름 1큰술","식용유 2큰술"],
+    steps:["두부를 2cm 크기로 깍둑썰기하고 소금물에 데칩니다.","팬에 기름을 두르고 다진 고기를 볶습니다.","두반장, 고춧가루, 다진 마늘을 넣고 향을 냅니다.","물 200ml을 넣고 끓으면 두부를 조심히 넣습니다.","전분물을 넣어 소스를 걸쭉하게 만듭니다.","화자오 가루와 대파, 참기름을 뿌려 완성합니다."],
+    nutrition:{cal:"350",protein:"22g",carb:"12g",fat:"24g"},
+    tip:"두부를 먼저 소금물에 데치면 부서지지 않고 간도 살짝 밸 수 있어요."
+  },
+  {
+    id:5, title:"티라미수", category:"디저트", time:"40분", difficulty:3, likes:2980,
+    img:"https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600&h=400&fit=crop",
+    imgLg:"https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=1000&h=500&fit=crop",
+    desc:"이탈리안 클래식 디저트, 부드러운 마스카포네 크림과 커피의 조화.",
+    servings:"6인분", calories:"380kcal",
+    ingredients:["마스카포네 치즈 500g","달걀 3개","설탕 100g","에스프레소 200ml","레이디핑거 200g","카카오 파우더 적당량","럼 주(선택) 1큰술","바닐라 에센스 약간"],
+    steps:["에스프레소를 내려 식힌 후 럼을 섞어둡니다.","달걀 노른자에 설탕 반을 넣고 연한 크림색이 될 때까지 휘핑합니다.","마스카포네 치즈를 넣고 부드럽게 섞습니다.","달걀 흰자에 나머지 설탕을 넣고 단단하게 머랭을 올립니다.","노른자 혼합물에 머랭을 2회에 나눠 가볍게 폴딩합니다.","레이디핑거를 커피에 살짝 적셔 용기에 깔고 크림을 올려 층을 쌓습니다.","냉장고에서 4시간 이상 숙성 후 카카오 파우더를 뿌려 완성합니다."],
+    nutrition:{cal:"380",protein:"9g",carb:"35g",fat:"22g"},
+    tip:"레이디핑거를 커피에 너무 오래 담그면 물러집니다. 양면을 1초씩만 빠르게 적셔주세요."
+  },
+  {
+    id:6, title:"김치찌개", category:"한식", time:"35분", difficulty:1, likes:4210,
+    img:"https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=600&h=400&fit=crop",
+    imgLg:"https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=1000&h=500&fit=crop",
+    desc:"잘 익은 김치로 끓이는 깊은 맛의 국민 찌개.",
+    servings:"3인분", calories:"280kcal",
+    ingredients:["묵은지 300g","돼지고기 앞다리살 200g","두부 반 모","대파 1대","양파 반 개","고춧가루 1큰술","다진 마늘 1큰술","간장 1큰술","참기름 1큰술","물 600ml"],
+    steps:["돼지고기를 한 입 크기로 자르고 참기름에 볶습니다.","김치를 넣고 함께 볶아 감칠맛을 냅니다.","물을 넣고 센 불에서 끓인 후 중불로 줄입니다.","고춧가루, 간장, 마늘을 넣고 15분 끓입니다.","두부와 양파를 넣고 5분 더 끓입니다.","대파를 송송 썰어 올리고 서빙합니다."],
+    nutrition:{cal:"280",protein:"20g",carb:"15g",fat:"16g"},
+    tip:"김치를 먼저 볶아주면 감칠맛이 훨씬 깊어집니다. 묵은지일수록 더 맛있어요!"
+  },
+  {
+    id:7, title:"초코 브라우니", category:"디저트", time:"45분", difficulty:2, likes:1870,
+    img:"https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=600&h=400&fit=crop",
+    imgLg:"https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=1000&h=500&fit=crop",
+    desc:"겉은 바삭, 속은 촉촉한 진한 초콜릿 브라우니.",
+    servings:"8조각", calories:"290kcal",
+    ingredients:["다크 초콜릿 200g","버터 150g","달걀 3개","설탕 150g","박력분 80g","코코아 파우더 20g","바닐라 에센스 약간","소금 한 꼬집","호두 50g"],
+    steps:["오븐을 180도로 예열합니다.","초콜릿과 버터를 중탕으로 녹입니다.","달걀에 설탕을 넣고 연한 크림색이 될 때까지 섞습니다.","녹인 초콜릿을 달걀 혼합물에 넣고 섞습니다.","체 친 박력분과 코코아 파우더를 넣고 가볍게 섞습니다.","호두를 넣고 팬에 부어 180도에서 25분 구워 완성합니다."],
+    nutrition:{cal:"290",protein:"5g",carb:"32g",fat:"16g"},
+    tip:"오븐에서 꺼낸 후 완전히 식힌 다음 자르세요. 이쑤시개로 찔러봤을 때 약간 묻어나오는 정도가 완벽합니다."
+  },
+  {
+    id:8, title:"스시 모둠", category:"일식", time:"50분", difficulty:4, likes:1230,
+    img:"https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600&h=400&fit=crop",
+    imgLg:"https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=1000&h=500&fit=crop",
+    desc:"집에서 만드는 정통 니기리 스시 모둠.",
+    servings:"2인분", calories:"380kcal",
+    ingredients:["초밥용 쌀 2컵","배합초(식초 4큰술+설탕 2큰술+소금 1작은술)","회용 연어 100g","회용 참치 100g","새우 6마리","아보카도 1개","와사비 적당량","간장 적당량","초생강 적당량"],
+    steps:["밥을 약간 되게 지어 뜨거울 때 배합초를 넣고 주걱으로 자르듯 섞습니다.","부채질하며 밥을 식히고 윤기를 냅니다.","각 네타(생선)를 적당한 크기로 포를 뜹니다.","손에 물을 적시고 밥을 20g씩 쥐어 모양을 잡습니다.","와사비를 살짝 바르고 네타를 올려 가볍게 눌러줍니다.","접시에 예쁘게 담고 초생강과 간장을 곁들입니다."],
+    nutrition:{cal:"380",protein:"24g",carb:"48g",fat:"10g"},
+    tip:"밥은 체온 정도의 온도일 때 가장 쥐기 좋습니다. 손에 물+식초를 살짝 묻히면 달라붙지 않아요."
+  },
+  {
+    id:9, title:"딸기 스무디", category:"음료", time:"5분", difficulty:1, likes:1650,
+    img:"https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=600&h=400&fit=crop",
+    imgLg:"https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=1000&h=500&fit=crop",
+    desc:"신선한 딸기로 만드는 상큼 달콤 스무디.",
+    servings:"2잔", calories:"150kcal",
+    ingredients:["딸기 300g","바나나 1개","우유 200ml","플레인 요거트 100g","꿀 1큰술","얼음 1컵","민트잎 약간"],
+    steps:["딸기는 깨끗이 씻어 꼭지를 제거합니다.","바나나를 적당한 크기로 자릅니다.","블렌더에 딸기, 바나나, 우유, 요거트를 넣습니다.","꿀과 얼음을 넣고 부드러워질 때까지 갈아줍니다.","잔에 담고 민트잎으로 장식하면 완성입니다."],
+    nutrition:{cal:"150",protein:"5g",carb:"28g",fat:"3g"},
+    tip:"딸기를 미리 냉동하면 얼음 없이도 시원하고 진한 스무디를 만들 수 있어요."
+  },
+  {
+    id:10, title:"짜장면", category:"중식", time:"40분", difficulty:3, likes:2890,
+    img:"https://images.unsplash.com/photo-1645696301019-35adcc18fc71?w=600&h=400&fit=crop",
+    imgLg:"https://images.unsplash.com/photo-1645696301019-35adcc18fc71?w=1000&h=500&fit=crop",
+    desc:"춘장의 깊은 맛, 집에서 만드는 정통 짜장면.",
+    servings:"3인분", calories:"520kcal",
+    ingredients:["중면 3인분","춘장 4큰술","돼지고기 200g","양파 1개","감자 1개","호박 반 개","대파 1대","식용유 3큰술","설탕 1큰술","전분물 2큰술","오이 약간"],
+    steps:["양파, 감자, 호박을 1cm 깍둑썰기합니다.","돼지고기도 작은 크기로 자릅니다.","팬에 기름을 넉넉히 두르고 춘장을 약불에서 3분 볶아 쓴맛을 날립니다.","고기를 넣고 익힌 후 채소를 넣고 볶습니다.","물 400ml을 넣고 끓으면 설탕, 전분물로 농도를 맞춥니다.","삶은 면 위에 소스를 올리고 오이채를 얹어 완성합니다."],
+    nutrition:{cal:"520",protein:"18g",carb:"72g",fat:"16g"},
+    tip:"춘장을 충분히 볶아야 쓴맛이 사라지고 윤기가 납니다. 최소 3분 이상 볶아주세요."
+  },
+  {
+    id:11, title:"아이스 아메리카노", category:"음료", time:"5분", difficulty:1, likes:5100,
+    img:"https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=600&h=400&fit=crop",
+    imgLg:"https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=1000&h=500&fit=crop",
+    desc:"카페 못지않은 완벽한 홈카페 아이스 아메리카노.",
+    servings:"1잔", calories:"5kcal",
+    ingredients:["원두 20g (또는 에스프레소 2샷)","물 200ml","얼음 가득","시럽(선택) 약간"],
+    steps:["원두를 곱게 분쇄합니다.","에스프레소 머신이나 모카포트로 진하게 추출합니다.","잔에 얼음을 가득 채웁니다.","추출한 에스프레소를 얼음 위에 부어줍니다.","차가운 물을 원하는 농도만큼 추가합니다."],
+    nutrition:{cal:"5",protein:"0g",carb:"0g",fat:"0g"},
+    tip:"좋은 원두와 깨끗한 물이 맛의 핵심입니다. 원두는 로스팅 후 2주 이내가 가장 향이 좋아요."
+  }
+];
+
+let currentCategory = "전체";
+let searchQuery = "";
+let likedSet = new Set();
+let bookmarkSet = new Set();
+let showingBookmarks = false;
+
+function init() {
+  const saved = localStorage.getItem("cook_likes");
+  if (saved) likedSet = new Set(JSON.parse(saved));
+  const savedBm = localStorage.getItem("cook_bookmarks");
+  if (savedBm) bookmarkSet = new Set(JSON.parse(savedBm));
+  renderGrid();
+  updateBookmarkBadge();
+}
+
+function saveLikes() { localStorage.setItem("cook_likes", JSON.stringify([...likedSet])); }
+function saveBookmarks() { localStorage.setItem("cook_bookmarks", JSON.stringify([...bookmarkSet])); updateBookmarkBadge(); }
+
+function updateBookmarkBadge() {
+  const badge = document.getElementById("bookmarkCount");
+  const count = bookmarkSet.size;
+  badge.textContent = count;
+  badge.style.display = count > 0 ? "flex" : "none";
+}
+
+function getFiltered() {
+  let list = recipes;
+  if (showingBookmarks) list = list.filter(r => bookmarkSet.has(r.id));
+  if (currentCategory !== "전체") list = list.filter(r => r.category === currentCategory);
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    list = list.filter(r => r.title.toLowerCase().includes(q) || r.category.toLowerCase().includes(q) || r.ingredients.some(i => i.toLowerCase().includes(q)));
+  }
+  return list;
+}
+
+function renderGrid() {
+  const grid = document.getElementById("recipeGrid");
+  const noRes = document.getElementById("noResults");
+  const filtered = getFiltered();
+  if (filtered.length === 0) {
+    grid.innerHTML = "";
+    noRes.style.display = "block";
+    return;
+  }
+  noRes.style.display = "none";
+  grid.innerHTML = filtered.map(r => {
+    const stars = Array.from({length:5}, (_,i) => `<span class="star ${i < r.difficulty ? 'filled' : ''}">★</span>`).join("");
+    const liked = likedSet.has(r.id);
+    const bm = bookmarkSet.has(r.id);
+    const likeCount = liked ? r.likes + 1 : r.likes;
+    return `
+    <div class="recipe-card" onclick="openModal(${r.id})">
+      <div class="card-img-wrap">
+        <img src="${r.img}" alt="${r.title}" loading="lazy">
+        <span class="card-time">⏱ ${r.time}</span>
+        <button class="card-bookmark ${bm?'active':''}" onclick="event.stopPropagation();toggleBookmark(${r.id})" title="북마크">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="${bm?'currentColor':'none'}" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="card-category">${r.category}</div>
+        <div class="card-title">${r.title}</div>
+        <div class="card-footer">
+          <div class="card-difficulty">${stars}</div>
+          <button class="card-likes ${liked?'active':''}" onclick="event.stopPropagation();toggleLike(${r.id})">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="${liked?'currentColor':'none'}" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            ${likeCount.toLocaleString()}
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function toggleLike(id) {
+  if (likedSet.has(id)) likedSet.delete(id); else likedSet.add(id);
+  saveLikes(); renderGrid();
+}
+
+function toggleBookmark(id) {
+  if (bookmarkSet.has(id)) bookmarkSet.delete(id); else bookmarkSet.add(id);
+  saveBookmarks(); renderGrid();
+}
+
+function filterCategory(cat, btn) {
+  currentCategory = cat;
+  showingBookmarks = false;
+  document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  document.getElementById("sectionTitle").innerHTML = cat === "전체" ? '인기 <span>레시피</span>' : `${cat} <span>레시피</span>`;
+  document.getElementById("heroSection").style.display = "";
+  renderGrid();
+}
+
+function handleSearch(val) {
+  searchQuery = val.trim();
+  showingBookmarks = false;
+  if (searchQuery) {
+    document.getElementById("heroSection").style.display = "none";
+    document.getElementById("sectionTitle").innerHTML = `'${searchQuery}' <span>검색 결과</span>`;
+  } else {
+    document.getElementById("heroSection").style.display = "";
+    document.getElementById("sectionTitle").innerHTML = '인기 <span>레시피</span>';
+  }
+  renderGrid();
+}
+
+function showBookmarked() {
+  showingBookmarks = !showingBookmarks;
+  if (showingBookmarks) {
+    document.getElementById("sectionTitle").innerHTML = '북마크한 <span>레시피</span>';
+    document.getElementById("heroSection").style.display = "none";
+    document.getElementById("bookmarkHeaderBtn").style.background = "var(--orange-50)";
+    document.getElementById("bookmarkHeaderBtn").style.color = "var(--primary)";
+  } else {
+    document.getElementById("sectionTitle").innerHTML = '인기 <span>레시피</span>';
+    document.getElementById("heroSection").style.display = "";
+    document.getElementById("bookmarkHeaderBtn").style.background = "";
+    document.getElementById("bookmarkHeaderBtn").style.color = "";
+  }
+  renderGrid();
+}
+
+function resetFilters() {
+  currentCategory = "전체";
+  searchQuery = "";
+  showingBookmarks = false;
+  document.getElementById("searchInput").value = "";
+  document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
+  document.querySelector('.cat-btn[data-cat="전체"]').classList.add("active");
+  document.getElementById("heroSection").style.display = "";
+  document.getElementById("sectionTitle").innerHTML = '인기 <span>레시피</span>';
+  document.getElementById("bookmarkHeaderBtn").style.background = "";
+  document.getElementById("bookmarkHeaderBtn").style.color = "";
+  renderGrid();
+}
+
+function openModal(id) {
+  const r = recipes.find(x => x.id === id);
+  if (!r) return;
+  const liked = likedSet.has(r.id);
+  const bm = bookmarkSet.has(r.id);
+  const stars = Array.from({length:5}, (_,i) => `<span class="star ${i < r.difficulty ? 'filled' : ''}">★</span>`).join("");
+
+  document.getElementById("modalImg").src = r.imgLg;
+  document.getElementById("modalImg").alt = r.title;
+
+  document.getElementById("modalContent").innerHTML = `
+    <div class="modal-cat">${r.category}</div>
+    <h2 class="modal-title">${r.title}</h2>
+    <p style="color:var(--gray-600);font-size:0.95rem;margin-bottom:16px">${r.desc}</p>
+    <div class="modal-meta">
+      <div class="meta-item">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        ${r.time}
+      </div>
+      <div class="meta-item">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        ${r.servings}
+      </div>
+      <div class="meta-item">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 20V10M18 20V4M6 20v-4"/></svg>
+        난이도 ${stars}
+      </div>
+      <div class="meta-item">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        ${r.calories}
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-action-btn ${liked?'active':''}" onclick="toggleLike(${r.id});openModal(${r.id})">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="${liked?'currentColor':'none'}" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        좋아요 ${(liked ? r.likes+1 : r.likes).toLocaleString()}
+      </button>
+      <button class="modal-action-btn ${bm?'active':''}" onclick="toggleBookmark(${r.id});openModal(${r.id})">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="${bm?'currentColor':'none'}" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        북마크
+      </button>
+    </div>
+
+    <div class="modal-section">
+      <h3 class="modal-section-title">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+        재료 (${r.servings})
+      </h3>
+      <ul class="ingredient-list">
+        ${r.ingredients.map((ing, i) => `
+          <li class="ingredient-item">
+            <input type="checkbox" id="ing-${r.id}-${i}">
+            <label for="ing-${r.id}-${i}">${ing}</label>
+          </li>
+        `).join("")}
+      </ul>
+    </div>
+
+    <div class="modal-section">
+      <h3 class="modal-section-title">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        조리 순서
+      </h3>
+      <ol class="step-list">
+        ${r.steps.map((s, i) => `
+          <li class="step-item">
+            <div class="step-num">${i+1}</div>
+            <div class="step-text">${s}</div>
+          </li>
+        `).join("")}
+      </ol>
+    </div>
+
+    <div class="modal-section">
+      <h3 class="modal-section-title">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 20V10M18 20V4M6 20v-4"/></svg>
+        영양 정보
+      </h3>
+      <div class="nutrition-grid">
+        <div class="nutrition-item"><div class="nutrition-value">${r.nutrition.cal}</div><div class="nutrition-label">칼로리(kcal)</div></div>
+        <div class="nutrition-item"><div class="nutrition-value">${r.nutrition.protein}</div><div class="nutrition-label">단백질</div></div>
+        <div class="nutrition-item"><div class="nutrition-value">${r.nutrition.carb}</div><div class="nutrition-label">탄수화물</div></div>
+        <div class="nutrition-item"><div class="nutrition-value">${r.nutrition.fat}</div><div class="nutrition-label">지방</div></div>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <h3 class="modal-section-title">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        요리 팁
+      </h3>
+      <div class="tip-box">
+        <div class="tip-icon">💡</div>
+        <div class="tip-text">${r.tip}</div>
+      </div>
+    </div>
+  `;
+
+  const overlay = document.getElementById("modalOverlay");
+  overlay.classList.add("show");
+  document.body.style.overflow = "hidden";
+}
+
+function closeModal() {
+  document.getElementById("modalOverlay").classList.remove("show");
+  document.body.style.overflow = "";
+}
+
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+init();
+</script>
+</body>
+</html>
