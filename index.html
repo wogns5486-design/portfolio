@@ -1071,6 +1071,20 @@
       .value-grid {
         grid-template-columns: 1fr;
       }
+
+      /* Blur orbs: shrink on mobile */
+      .hero-orb-1 { width: 300px; height: 300px; }
+      .hero-orb-2 { width: 250px; height: 250px; }
+      .hero-orb-3 { width: 200px; height: 200px; }
+      .projects-orb-1,
+      .projects-orb-2 { width: 250px; height: 250px; }
+      .cta-orb-1 { width: 250px; height: 250px; }
+      .cta-orb-2 { width: 200px; height: 200px; }
+      .cta-orb-3 { display: none; }
+
+      .hero::before { width: 500px; height: 500px; }
+      .hero::after { width: 400px; height: 300px; }
+      .cta-section::after { width: 500px; height: 300px; }
     }
     /* ============================================
        PREMIUM SaaS BLUR ORBS
