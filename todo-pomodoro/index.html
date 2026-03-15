@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Todo + Pomodoro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#E8453C;
+  --primary-light:#FF6B61;
+  --primary-dark:#C23028;
+  --coral:#FF7F6E;
+  --bg:#F8F9FA;
+  --card:#FFFFFF;
+  --text:#1A1A2E;
+  --text-secondary:#6B7280;
+  --border:#E5E7EB;
+  --shadow:0 2px 12px rgba(0,0,0,0.06);
+  --shadow-lg:0 8px 30px rgba(0,0,0,0.1);
+  --radius:14px;
+  --high:#E8453C;
+  --medium:#F59E0B;
+  --low:#10B981;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+button{cursor:pointer;font-family:inherit;border:none;background:none}
+input,select{font-family:inherit}
+
+/* Layout */
+.app{max-width:1100px;margin:0 auto;padding:20px 16px 40px}
+header{text-align:center;padding:30px 0 20px}
+header h1{font-size:1.8rem;font-weight:800;color:var(--primary)}
+header p{color:var(--text-secondary);font-size:.9rem;margin-top:4px}
+.grid{display:grid;grid-template-columns:1fr 380px;gap:24px;align-items:start}
+
+/* Cards */
+.card{background:var(--card);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}
+.card h2{font-size:1.1rem;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.card h2 .icon{font-size:1.2rem}
+
+/* Stats bar */
+.stats-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+.stat-item{background:var(--card);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow);text-align:center}
+.stat-item .label{font-size:.75rem;color:var(--text-secondary);font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+.stat-item .value{font-size:1.6rem;font-weight:800;color:var(--primary);margin-top:4px}
+
+/* Todo input */
+.todo-input-wrap{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.todo-input-wrap input[type=text]{flex:1;min-width:180px;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-size:.9rem;outline:none;transition:border .2s}
+.todo-input-wrap input[type=text]:focus{border-color:var(--primary)}
+.select-wrap select{padding:10px 12px;border:2px solid var(--border);border-radius:10px;font-size:.85rem;outline:none;background:var(--card);color:var(--text);cursor:pointer}
+.select-wrap select:focus{border-color:var(--primary)}
+.btn-add{background:var(--primary);color:#fff;padding:10px 20px;border-radius:10px;font-weight:600;font-size:.9rem;transition:background .2s}
+.btn-add:hover{background:var(--primary-dark)}
+
+/* Filters */
+.filters{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.filters button{padding:6px 14px;border-radius:20px;font-size:.8rem;font-weight:600;color:var(--text-secondary);background:var(--bg);transition:all .2s}
+.filters button.active{background:var(--primary);color:#fff}
+.filters button:hover:not(.active){background:var(--border)}
+.category-filters{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.category-filters button{padding:5px 12px;border-radius:16px;font-size:.75rem;font-weight:600;border:2px solid var(--border);color:var(--text-secondary);transition:all .2s}
+.category-filters button.active{border-color:var(--primary);color:var(--primary);background:rgba(232,69,60,.06)}
+.category-filters button:hover:not(.active){border-color:#ccc}
+
+/* Todo list */
+.todo-list{list-style:none;display:flex;flex-direction:column;gap:8px;max-height:420px;overflow-y:auto;padding-right:4px}
+.todo-list::-webkit-scrollbar{width:5px}
+.todo-list::-webkit-scrollbar-thumb{background:#ddd;border-radius:10px}
+.todo-item{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--bg);border-radius:10px;border-left:4px solid var(--medium);transition:all .2s}
+.todo-item.priority-high{border-left-color:var(--high)}
+.todo-item.priority-medium{border-left-color:var(--medium)}
+.todo-item.priority-low{border-left-color:var(--low)}
+.todo-item.done{opacity:.5}
+.todo-item.done .todo-text{text-decoration:line-through}
+.todo-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.todo-item.done .todo-check{background:var(--primary);border-color:var(--primary)}
+.todo-item.done .todo-check::after{content:'';display:block;width:6px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.todo-content{flex:1;min-width:0}
+.todo-text{font-size:.88rem;font-weight:500;word-break:break-word}
+.todo-meta{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap}
+.todo-tag{font-size:.65rem;font-weight:600;padding:2px 8px;border-radius:10px;background:rgba(232,69,60,.08);color:var(--primary)}
+.todo-priority-badge{font-size:.65rem;font-weight:600;padding:2px 8px;border-radius:10px}
+.todo-priority-badge.high{background:rgba(232,69,60,.1);color:var(--high)}
+.todo-priority-badge.medium{background:rgba(245,158,11,.1);color:var(--medium)}
+.todo-priority-badge.low{background:rgba(16,185,129,.1);color:var(--low)}
+.todo-actions{display:flex;gap:4px;flex-shrink:0}
+.todo-actions button{width:28px;height:28px;border-radius:8px;font-size:.8rem;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);transition:all .15s}
+.todo-actions button:hover{background:var(--border)}
+.todo-actions button.del:hover{background:#FEE2E2;color:var(--high)}
+.edit-input{width:100%;padding:6px 10px;border:2px solid var(--primary);border-radius:8px;font-size:.88rem;outline:none}
+.empty-state{text-align:center;padding:40px 0;color:var(--text-secondary);font-size:.9rem}
+
+/* Pomodoro */
+.pomodoro{text-align:center}
+.timer-modes{display:flex;gap:6px;justify-content:center;margin-bottom:20px}
+.timer-modes button{padding:8px 16px;border-radius:20px;font-size:.8rem;font-weight:600;color:var(--text-secondary);background:var(--bg);transition:all .2s}
+.timer-modes button.active{background:var(--primary);color:#fff}
+.timer-modes button:hover:not(.active){background:var(--border)}
+.canvas-wrap{position:relative;margin:0 auto 20px;width:240px;height:240px}
+.canvas-wrap canvas{display:block}
+.timer-display{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.timer-display .time{font-size:2.8rem;font-weight:800;color:var(--text);letter-spacing:-2px}
+.timer-display .session-label{font-size:.75rem;color:var(--text-secondary);margin-top:2px;font-weight:500}
+.timer-controls{display:flex;gap:10px;justify-content:center;margin-bottom:20px}
+.timer-controls button{padding:10px 28px;border-radius:12px;font-weight:700;font-size:.9rem;transition:all .2s}
+.btn-start{background:var(--primary);color:#fff}
+.btn-start:hover{background:var(--primary-dark)}
+.btn-start.running{background:var(--coral)}
+.btn-reset{background:var(--bg);color:var(--text-secondary);border:2px solid var(--border)}
+.btn-reset:hover{background:var(--border)}
+.sessions{display:flex;gap:8px;justify-content:center;margin-bottom:20px}
+.session-dot{width:14px;height:14px;border-radius:50%;background:var(--border);transition:background .3s}
+.session-dot.filled{background:var(--primary)}
+.pomo-stat{font-size:.85rem;color:var(--text-secondary);margin-top:8px}
+.pomo-stat span{font-weight:700;color:var(--primary)}
+
+/* Responsive */
+@media(max-width:800px){
+  .grid{grid-template-columns:1fr}
+  .stats-bar{grid-template-columns:repeat(3,1fr)}
+  .canvas-wrap{width:200px;height:200px}
+  .timer-display .time{font-size:2.2rem}
+}
+@media(max-width:480px){
+  .stats-bar{grid-template-columns:1fr 1fr 1fr}
+  .stat-item .value{font-size:1.3rem}
+  header h1{font-size:1.4rem}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Todo + Pomodoro</h1>
+    <p>할 일을 관리하고, 집중 시간을 기록하세요</p>
+  </header>
+
+  <div class="stats-bar">
+    <div class="stat-item"><div class="label">오늘 완료</div><div class="value" id="statDone">0</div></div>
+    <div class="stat-item"><div class="label">남은 할일</div><div class="value" id="statRemain">0</div></div>
+    <div class="stat-item"><div class="label">집중 시간</div><div class="value" id="statFocus">0<span style="font-size:.8rem;font-weight:500">분</span></div></div>
+  </div>
+
+  <div class="grid">
+    <!-- Todo Section -->
+    <div class="card">
+      <h2><span class="icon">&#9745;</span> 할 일 목록</h2>
+      <div class="todo-input-wrap">
+        <input type="text" id="todoInput" placeholder="새로운 할 일을 입력하세요..." />
+        <div class="select-wrap"><select id="todoPriority"><option value="medium">중간</option><option value="high">높음</option><option value="low">낮음</option></select></div>
+        <div class="select-wrap"><select id="todoCategory"><option value="업무">업무</option><option value="개인">개인</option><option value="공부">공부</option><option value="운동">운동</option></select></div>
+        <button class="btn-add" id="btnAdd">추가</button>
+      </div>
+      <div class="filters" id="statusFilters">
+        <button class="active" data-filter="all">전체</button>
+        <button data-filter="active">진행중</button>
+        <button data-filter="done">완료</button>
+      </div>
+      <div class="category-filters" id="categoryFilters">
+        <button class="active" data-cat="all">전체</button>
+        <button data-cat="업무">업무</button>
+        <button data-cat="개인">개인</button>
+        <button data-cat="공부">공부</button>
+        <button data-cat="운동">운동</button>
+      </div>
+      <ul class="todo-list" id="todoList"></ul>
+    </div>
+
+    <!-- Pomodoro Section -->
+    <div class="card pomodoro">
+      <h2 style="justify-content:center"><span class="icon">&#9202;</span> 포모도로 타이머</h2>
+      <div class="timer-modes" id="timerModes">
+        <button class="active" data-mode="focus">집중 25분</button>
+        <button data-mode="short">휴식 5분</button>
+        <button data-mode="long">긴휴식 15분</button>
+      </div>
+      <div class="canvas-wrap">
+        <canvas id="timerCanvas" width="240" height="240"></canvas>
+        <div class="timer-display">
+          <div class="time" id="timerTime">25:00</div>
+          <div class="session-label" id="timerLabel">집중 모드</div>
+        </div>
+      </div>
+      <div class="timer-controls">
+        <button class="btn-start" id="btnStart">시작</button>
+        <button class="btn-reset" id="btnReset">초기화</button>
+      </div>
+      <div class="sessions" id="sessionDots">
+        <div class="session-dot"></div>
+        <div class="session-dot"></div>
+        <div class="session-dot"></div>
+        <div class="session-dot"></div>
+      </div>
+      <div class="pomo-stat">오늘 완료한 세션: <span id="totalSessions">0</span>회</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== Storage =====
+const STORAGE_KEY = 'todo-pomo-data';
+function loadData() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return defaultData();
+  const d = JSON.parse(raw);
+  // Reset daily stats if not today
+  const today = new Date().toDateString();
+  if (d.date !== today) { d.date = today; d.focusMinutes = 0; d.completedToday = 0; d.totalSessions = 0; d.todos.forEach(t => { if (t.done) t.doneToday = false; }); }
+  return d;
+}
+function defaultData() { return { date: new Date().toDateString(), todos: [], focusMinutes: 0, completedToday: 0, totalSessions: 0 }; }
+function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+let data = loadData();
+
+// ===== Todo =====
+const todoInput = document.getElementById('todoInput');
+const todoPriority = document.getElementById('todoPriority');
+const todoCategory = document.getElementById('todoCategory');
+const todoList = document.getElementById('todoList');
+let statusFilter = 'all', categoryFilter = 'all';
+
+document.getElementById('btnAdd').addEventListener('click', addTodo);
+todoInput.addEventListener('keydown', e => { if (e.key === 'Enter') addTodo(); });
+
+document.getElementById('statusFilters').addEventListener('click', e => {
+  if (!e.target.dataset.filter) return;
+  statusFilter = e.target.dataset.filter;
+  document.querySelectorAll('#statusFilters button').forEach(b => b.classList.toggle('active', b.dataset.filter === statusFilter));
+  renderTodos();
+});
+document.getElementById('categoryFilters').addEventListener('click', e => {
+  if (!e.target.dataset.cat) return;
+  categoryFilter = e.target.dataset.cat;
+  document.querySelectorAll('#categoryFilters button').forEach(b => b.classList.toggle('active', b.dataset.cat === categoryFilter));
+  renderTodos();
+});
+
+function addTodo() {
+  const text = todoInput.value.trim();
+  if (!text) return;
+  data.todos.unshift({ id: Date.now(), text, priority: todoPriority.value, category: todoCategory.value, done: false, doneToday: false });
+  todoInput.value = '';
+  saveData(); renderTodos(); updateStats();
+}
+
+function renderTodos() {
+  const filtered = data.todos.filter(t => {
+    if (statusFilter === 'active' && t.done) return false;
+    if (statusFilter === 'done' && !t.done) return false;
+    if (categoryFilter !== 'all' && t.category !== categoryFilter) return false;
+    return true;
+  });
+  if (!filtered.length) { todoList.innerHTML = '<div class="empty-state">표시할 할 일이 없습니다</div>'; return; }
+  todoList.innerHTML = filtered.map(t => `
+    <li class="todo-item priority-${t.priority} ${t.done ? 'done' : ''}" data-id="${t.id}">
+      <div class="todo-check" onclick="toggleTodo(${t.id})"></div>
+      <div class="todo-content">
+        <div class="todo-text">${escHtml(t.text)}</div>
+        <div class="todo-meta">
+          <span class="todo-tag">${t.category}</span>
+          <span class="todo-priority-badge ${t.priority}">${{high:'높음',medium:'중간',low:'낮음'}[t.priority]}</span>
+        </div>
+      </div>
+      <div class="todo-actions">
+        <button onclick="editTodo(${t.id})" title="편집">&#9998;</button>
+        <button class="del" onclick="deleteTodo(${t.id})" title="삭제">&#10005;</button>
+      </div>
+    </li>`).join('');
+}
+
+function escHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+window.toggleTodo = function(id) {
+  const t = data.todos.find(x => x.id === id); if (!t) return;
+  t.done = !t.done;
+  if (t.done) { t.doneToday = true; data.completedToday++; }
+  else if (t.doneToday) { data.completedToday = Math.max(0, data.completedToday - 1); }
+  saveData(); renderTodos(); updateStats();
+};
+window.deleteTodo = function(id) {
+  data.todos = data.todos.filter(x => x.id !== id);
+  saveData(); renderTodos(); updateStats();
+};
+window.editTodo = function(id) {
+  const t = data.todos.find(x => x.id === id); if (!t) return;
+  const li = todoList.querySelector(`[data-id="${id}"]`);
+  const content = li.querySelector('.todo-content');
+  const oldHtml = content.innerHTML;
+  content.innerHTML = `<input class="edit-input" value="${escHtml(t.text)}" />`;
+  const inp = content.querySelector('input');
+  inp.focus(); inp.select();
+  const finish = () => {
+    const v = inp.value.trim();
+    if (v) { t.text = v; saveData(); }
+    renderTodos();
+  };
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter') finish(); if (e.key === 'Escape') renderTodos(); });
+  inp.addEventListener('blur', finish);
+};
+
+function updateStats() {
+  document.getElementById('statDone').textContent = data.completedToday;
+  document.getElementById('statRemain').textContent = data.todos.filter(t => !t.done).length;
+  const fm = data.focusMinutes;
+  document.getElementById('statFocus').innerHTML = fm + '<span style="font-size:.8rem;font-weight:500">분</span>';
+  document.getElementById('totalSessions').textContent = data.totalSessions;
+}
+
+// ===== Pomodoro =====
+const MODES = { focus: { time: 25 * 60, label: '집중 모드' }, short: { time: 5 * 60, label: '짧은 휴식' }, long: { time: 15 * 60, label: '긴 휴식' } };
+let currentMode = 'focus', timeLeft = MODES.focus.time, totalTime = MODES.focus.time, running = false, intervalId = null, sessionCount = 0;
+const canvas = document.getElementById('timerCanvas');
+const ctx = canvas.getContext('2d');
+const btnStart = document.getElementById('btnStart');
+const btnReset = document.getElementById('btnReset');
+
+// HiDPI canvas
+function setupCanvas() {
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const size = Math.round(rect.width);
+  canvas.width = size * dpr; canvas.height = size * dpr;
+  canvas.style.width = size + 'px'; canvas.style.height = size + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+setupCanvas();
+window.addEventListener('resize', () => { setupCanvas(); drawTimer(); });
+
+function drawTimer() {
+  const size = parseInt(canvas.style.width);
+  const cx = size / 2, cy = size / 2, r = size / 2 - 14;
+  ctx.clearRect(0, 0, size, size);
+  // bg circle
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.strokeStyle = '#EEEFF2'; ctx.lineWidth = 10; ctx.lineCap = 'round'; ctx.stroke();
+  // progress arc
+  const progress = 1 - timeLeft / totalTime;
+  if (progress > 0) {
+    const start = -Math.PI / 2;
+    const end = start + Math.PI * 2 * progress;
+    ctx.beginPath(); ctx.arc(cx, cy, r, start, end);
+    const grad = ctx.createLinearGradient(0, 0, size, size);
+    grad.addColorStop(0, '#E8453C'); grad.addColorStop(1, '#FF7F6E');
+    ctx.strokeStyle = grad; ctx.lineWidth = 10; ctx.lineCap = 'round'; ctx.stroke();
+  }
+  // inner glow dot at end
+  if (progress > 0) {
+    const angle = -Math.PI / 2 + Math.PI * 2 * progress;
+    const dx = cx + r * Math.cos(angle), dy = cy + r * Math.sin(angle);
+    ctx.beginPath(); ctx.arc(dx, dy, 6, 0, Math.PI * 2);
+    ctx.fillStyle = '#E8453C'; ctx.fill();
+    ctx.beginPath(); ctx.arc(dx, dy, 3, 0, Math.PI * 2);
+    ctx.fillStyle = '#fff'; ctx.fill();
+  }
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+  document.getElementById('timerTime').textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  document.getElementById('timerLabel').textContent = MODES[currentMode].label;
+  drawTimer();
+}
+
+function setMode(mode) {
+  if (running) return;
+  currentMode = mode;
+  timeLeft = MODES[mode].time; totalTime = MODES[mode].time;
+  document.querySelectorAll('#timerModes button').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+  updateTimerDisplay();
+}
+document.getElementById('timerModes').addEventListener('click', e => { if (e.target.dataset.mode) setMode(e.target.dataset.mode); });
+
+btnStart.addEventListener('click', () => {
+  if (running) { clearInterval(intervalId); running = false; btnStart.textContent = '계속'; btnStart.classList.remove('running'); }
+  else { running = true; btnStart.textContent = '일시정지'; btnStart.classList.add('running'); intervalId = setInterval(tick, 1000); }
+});
+btnReset.addEventListener('click', () => {
+  clearInterval(intervalId); running = false;
+  timeLeft = MODES[currentMode].time; totalTime = MODES[currentMode].time;
+  btnStart.textContent = '시작'; btnStart.classList.remove('running');
+  updateTimerDisplay();
+});
+
+function tick() {
+  timeLeft--;
+  if (timeLeft <= 0) {
+    clearInterval(intervalId); running = false;
+    btnStart.textContent = '시작'; btnStart.classList.remove('running');
+    timeLeft = 0; updateTimerDisplay();
+    onTimerComplete();
+    return;
+  }
+  updateTimerDisplay();
+}
+
+function onTimerComplete() {
+  // Notification sound (short beep)
+  try {
+    const ac = new AudioContext();
+    const osc = ac.createOscillator(); const g = ac.createGain();
+    osc.connect(g); g.connect(ac.destination);
+    osc.frequency.value = 800; g.gain.value = 0.3;
+    osc.start(); osc.stop(ac.currentTime + 0.3);
+    setTimeout(() => { const o2 = ac.createOscillator(); const g2 = ac.createGain(); o2.connect(g2); g2.connect(ac.destination); o2.frequency.value = 1000; g2.gain.value = 0.3; o2.start(); o2.stop(ac.currentTime + 0.3); }, 400);
+  } catch(e){}
+
+  if (currentMode === 'focus') {
+    sessionCount++;
+    data.totalSessions++;
+    data.focusMinutes += 25;
+    saveData(); updateStats(); renderSessionDots();
+    // Auto switch
+    if (sessionCount >= 4) { sessionCount = 0; setMode('long'); }
+    else { setMode('short'); }
+  } else {
+    setMode('focus');
+  }
+}
+
+function renderSessionDots() {
+  const dots = document.querySelectorAll('.session-dot');
+  dots.forEach((d, i) => d.classList.toggle('filled', i < sessionCount));
+}
+
+// ===== Init =====
+renderTodos(); updateStats(); updateTimerDisplay(); renderSessionDots();
+</script>
+</body>
+</html>
