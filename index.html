@@ -48,11 +48,13 @@
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      /* Subtle blue gradient noise background for stability feel */
+      /* Subtle blue gradient noise background + SaaS dot grid */
       background-image:
+        radial-gradient(circle, rgba(148,163,184,0.07) 1px, transparent 1px),
         radial-gradient(ellipse at 20% 50%, rgba(99,102,241,0.04) 0%, transparent 50%),
         radial-gradient(ellipse at 80% 20%, rgba(129,140,248,0.03) 0%, transparent 50%),
         radial-gradient(ellipse at 50% 100%, rgba(99,102,241,0.03) 0%, transparent 40%);
+      background-size: 24px 24px, 100% 100%, 100% 100%, 100% 100%;
       background-attachment: fixed;
     }
 
@@ -90,10 +92,11 @@
       top: -200px;
       left: 50%;
       transform: translateX(-50%);
-      width: 800px;
-      height: 800px;
-      background: radial-gradient(circle, rgba(99,102,241,0.1), rgba(129,140,248,0.04) 40%, transparent 70%);
+      width: 900px;
+      height: 900px;
+      background: radial-gradient(circle, rgba(99,102,241,0.18), rgba(129,140,248,0.07) 40%, transparent 70%);
       pointer-events: none;
+      z-index: 0;
     }
 
     .hero::after {
@@ -102,16 +105,19 @@
       bottom: -150px;
       left: 50%;
       transform: translateX(-50%);
-      width: 600px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(99,102,241,0.05), transparent 60%);
+      width: 700px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(99,102,241,0.1), transparent 60%);
       pointer-events: none;
+      z-index: 0;
     }
 
     .hero-inner {
       max-width: 800px;
       margin: 0 auto;
       width: 100%;
+      position: relative;
+      z-index: 1;
     }
 
     .hero-label {
@@ -1066,6 +1072,161 @@
         grid-template-columns: 1fr;
       }
     }
+    /* ============================================
+       PREMIUM SaaS BLUR ORBS
+       ============================================ */
+    .blur-orb {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      will-change: transform;
+    }
+
+    /* Hero blur orbs */
+    .hero-orb-1 {
+      top: -10%;
+      left: -10%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(79,70,229,0.15) 0%, transparent 70%);
+    }
+
+    .hero-orb-2 {
+      bottom: -5%;
+      right: -8%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(168,85,247,0.12) 0%, transparent 70%);
+    }
+
+    .hero-orb-3 {
+      bottom: 10%;
+      left: 30%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(45,212,191,0.06) 0%, transparent 70%);
+    }
+
+    /* ============================================
+       SECTION GRADIENT DIVIDERS
+       ============================================ */
+    .section-divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, rgba(129,140,248,0.3) 50%, transparent 100%);
+      pointer-events: none;
+    }
+
+    /* ============================================
+       VALUE CARD NOISE TEXTURE
+       ============================================ */
+    .value-card {
+      position: relative;
+    }
+
+    .value-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      background-size: 128px 128px;
+      pointer-events: none;
+      opacity: 0.5;
+      z-index: 0;
+    }
+
+    .value-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ============================================
+       PROJECT SECTION BLUR ORBS
+       ============================================ */
+    .projects {
+      position: relative;
+      overflow: visible;
+    }
+
+    .projects-orb-1 {
+      top: 60px;
+      left: -15%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(129,140,248,0.08) 0%, transparent 70%);
+    }
+
+    .projects-orb-2 {
+      top: 60px;
+      right: -15%;
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(79,70,229,0.07) 0%, transparent 70%);
+    }
+
+    /* Stronger golden glow for featured DriveX card */
+    .project-card.featured[data-category="live"] {
+      box-shadow: 0 0 30px rgba(245,158,11,0.2), 0 0 80px rgba(245,158,11,0.08), 0 0 120px rgba(245,158,11,0.04);
+    }
+
+    .project-card.featured[data-category="live"]:hover {
+      box-shadow:
+        0 24px 48px rgba(0,0,0,0.3),
+        0 0 40px rgba(245,158,11,0.25),
+        0 0 100px rgba(245,158,11,0.12),
+        0 0 160px rgba(245,158,11,0.06);
+    }
+
+    /* ============================================
+       CTA SECTION — Stronger gradient mesh + blur orbs
+       ============================================ */
+    .cta-section::before {
+      background:
+        linear-gradient(180deg,
+          var(--bg) 0%,
+          rgba(99,102,241,0.14) 30%,
+          rgba(129,140,248,0.10) 70%,
+          var(--bg) 100%
+        );
+    }
+
+    .cta-section::after {
+      width: 900px;
+      height: 500px;
+      background: radial-gradient(ellipse, rgba(99,102,241,0.18), rgba(129,140,248,0.08) 40%, transparent 70%);
+    }
+
+    .cta-orb-1 {
+      top: 15%;
+      left: -5%;
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(129,140,248,0.12) 0%, transparent 70%);
+    }
+
+    .cta-orb-2 {
+      bottom: 10%;
+      right: -5%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(79,70,229,0.10) 0%, transparent 70%);
+    }
+
+    .cta-orb-3 {
+      top: 40%;
+      right: 20%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(236,72,153,0.06) 0%, transparent 70%);
+    }
+
+    /* Ensure CTA inner stays above orbs */
+    .cta-inner {
+      position: relative;
+      z-index: 2;
+    }
   </style>
 </head>
 <body>
@@ -1074,6 +1235,9 @@
        HERO — Center-aligned single column
        ============================================ -->
   <section class="hero">
+    <div class="blur-orb hero-orb-1" data-parallax="0.03"></div>
+    <div class="blur-orb hero-orb-2" data-parallax="0.05"></div>
+    <div class="blur-orb hero-orb-3" data-parallax="0.04"></div>
     <div class="hero-inner scroll-reveal">
       <p class="hero-label">ONESTEP</p>
       <h1>원하는 기능, 전부 만들어 드립니다</h1>
@@ -1111,6 +1275,8 @@
     </div>
   </section>
 
+  <div class="section-divider"></div>
+
   <!-- ============================================
        VALUE PROPOSITION
        ============================================ -->
@@ -1145,10 +1311,14 @@
     </div>
   </section>
 
+  <div class="section-divider"></div>
+
   <!-- ============================================
        PROJECTS — Von Restorff: LIVE cards first & featured
        ============================================ -->
   <section class="projects">
+    <div class="blur-orb projects-orb-1"></div>
+    <div class="blur-orb projects-orb-2"></div>
     <div class="container">
 
       <div class="section-header scroll-reveal">
@@ -1507,6 +1677,9 @@
        CTA — Peak-End Rule: dramatic last impression
        ============================================ -->
   <section class="cta-section">
+    <div class="blur-orb cta-orb-1"></div>
+    <div class="blur-orb cta-orb-2"></div>
+    <div class="blur-orb cta-orb-3"></div>
     <div class="cta-inner scroll-reveal">
       <p class="cta-label">Start a Project</p>
       <h2>프로젝트가 필요하신가요?</h2>
@@ -1666,6 +1839,37 @@
 
     statNumbers.forEach(el => statObserver.observe(el));
     if (textStat) statObserver.observe(textStat);
+
+    // ============================================
+    // PARALLAX — Hero blur orbs move on scroll
+    // Disabled on mobile for performance
+    // ============================================
+    (function() {
+      const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+      if (!isDesktop) return;
+
+      const parallaxOrbs = document.querySelectorAll('[data-parallax]');
+      if (!parallaxOrbs.length) return;
+
+      let ticking = false;
+
+      function updateParallax() {
+        const scrollY = window.scrollY;
+        parallaxOrbs.forEach(orb => {
+          const speed = parseFloat(orb.dataset.parallax);
+          const yOffset = scrollY * speed;
+          orb.style.transform = 'translate3d(0,' + (-yOffset) + 'px,0)';
+        });
+        ticking = false;
+      }
+
+      window.addEventListener('scroll', function() {
+        if (!ticking) {
+          requestAnimationFrame(updateParallax);
+          ticking = true;
+        }
+      }, { passive: true });
+    })();
   </script>
 </body>
 </html>
