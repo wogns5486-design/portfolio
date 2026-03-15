@@ -813,6 +813,39 @@
     /* ============================================
        FOOTER
        ============================================ */
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--surface-light);
+      color: var(--text);
+      border: 1px solid var(--border-light);
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      z-index: 9999;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+      pointer-events: none;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Button resets for hero-cta and cta-btn */
+    button.hero-cta,
+    button.cta-btn {
+      border: none;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+
     .footer {
       border-top: 1px solid var(--border);
       padding: 52px 0;
@@ -981,7 +1014,7 @@
         <p class="hero-label">Web Developer Portfolio</p>
         <h1>아이디어를<br><span class="highlight">현실로</span> 만드는 개발자</h1>
         <p class="hero-desc">기획부터 디자인, 개발, 배포까지 원스텝으로 진행합니다. 랜딩페이지, 쇼핑몰, SaaS, 풀스택 웹앱 — 18개 프로젝트와 3개 라이브 서비스로 증명합니다.</p>
-        <a href="mailto:wogns5486@gmail.com" class="hero-cta">프로젝트 문의하기 <span>→</span></a>
+        <button onclick="copyEmail()" class="hero-cta">프로젝트 문의하기 <span>→</span></button>
       </div>
 
       <!-- Stats integrated into hero (Social Proof + Z-pattern right side) -->
@@ -1377,27 +1410,37 @@
       <p class="cta-label">Start a Project</p>
       <h2>프로젝트가 필요하신가요?</h2>
       <p>기획부터 디자인, 개발, 배포까지 원스텝으로 진행합니다.<br>아이디어만 있어도 괜찮아요. 함께 만들어 드립니다.</p>
-      <a href="mailto:wogns5486@gmail.com" class="cta-btn">
+      <button onclick="copyEmail()" class="cta-btn">
         프로젝트 문의하기 <span>→</span>
-      </a>
+      </button>
     </div>
   </section>
 
   <footer class="footer">
     <div class="container">
       <div class="footer-links">
-        <a href="mailto:wogns5486@gmail.com" class="footer-link-item">
+        <button onclick="copyEmail()" class="footer-link-item" style="background:none;border:none;cursor:pointer;font-family:inherit;">
           <span class="footer-link-icon">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
           </span>
           wogns5486@gmail.com
-        </a>
+        </button>
       </div>
       <p>&copy; 2025 Portfolio. All rights reserved.</p>
     </div>
   </footer>
 
+  <div class="toast" id="toast">이메일 주소가 복사되었습니다!</div>
+
   <script>
+    // Copy email to clipboard + toast
+    function copyEmail() {
+      navigator.clipboard.writeText('wogns5486@gmail.com').then(() => {
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2500);
+      });
+    }
     // ============================================
     // CATEGORY FILTER — Gestalt: dimmed instead of hidden
     // ============================================
