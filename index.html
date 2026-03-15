@@ -341,14 +341,6 @@
       transform: translateY(0);
     }
 
-    /* Gestalt: filtered cards blur+opacity instead of hiding */
-    .project-card.dimmed-by-filter {
-      opacity: 0.15;
-      filter: blur(2px) grayscale(0.8);
-      pointer-events: none;
-      transform: scale(0.97);
-    }
-
     .project-card.hidden-by-filter {
       display: none;
     }
@@ -1425,15 +1417,12 @@
 
         cards.forEach(card => {
           const category = card.dataset.category;
-          card.classList.remove('hidden-by-filter', 'dimmed-by-filter');
+          card.classList.remove('hidden-by-filter');
 
-          if (filter === 'all') {
-            card.classList.add('visible');
-          } else if (category === filter) {
+          if (filter === 'all' || category === filter) {
             card.classList.add('visible');
           } else {
-            // Gestalt: blur + opacity instead of completely hiding
-            card.classList.add('dimmed-by-filter');
+            card.classList.add('hidden-by-filter');
           }
         });
       });
@@ -1454,7 +1443,7 @@
         if (entry.isIntersecting) {
           const card = entry.target;
           const siblings = Array.from(card.parentElement.children).filter(
-            el => !el.classList.contains('dimmed-by-filter') && !el.classList.contains('hidden-by-filter')
+            el => !el.classList.contains('hidden-by-filter')
           );
           const index = siblings.indexOf(card);
           const delay = (index % 3) * 100;
