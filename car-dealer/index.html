@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRESTIGE MOTORS | 프리미엄 자동차 딜러</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #111111;
+  --bg-card: #1a1a1a;
+  --bg-card-hover: #222222;
+  --red-primary: #e63946;
+  --red-dark: #c1121f;
+  --red-light: #ff4d5a;
+  --red-glow: rgba(230, 57, 70, 0.3);
+  --text-primary: #ffffff;
+  --text-secondary: #b0b0b0;
+  --text-muted: #666666;
+  --border-color: #2a2a2a;
+  --border-red: rgba(230, 57, 70, 0.3);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--red-primary); border-radius: 4px; }
+
+/* ===== NAVIGATION ===== */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.3s, backdrop-filter 0.3s;
+}
+
+.nav.scrolled {
+  background: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.nav-logo {
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.nav-logo span {
+  color: var(--red-primary);
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+}
+
+.nav-links a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+
+.nav-links a:hover {
+  color: var(--red-primary);
+}
+
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px;
+}
+
+.nav-hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--text-primary);
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+/* ===== HERO ===== */
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background: url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1920&q=80') center/cover no-repeat;
+}
+
+.hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(10,10,10,0.85) 0%, rgba(10,10,10,0.5) 50%, rgba(230,57,70,0.15) 100%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 900px;
+  padding: 0 2rem;
+}
+
+.hero-badge {
+  display: inline-block;
+  padding: 0.5rem 1.5rem;
+  border: 1px solid var(--border-red);
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--red-primary);
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+  background: rgba(230, 57, 70, 0.08);
+}
+
+.hero-title {
+  font-size: clamp(2.5rem, 7vw, 5.5rem);
+  font-weight: 900;
+  line-height: 1.05;
+  margin-bottom: 1.5rem;
+  letter-spacing: -2px;
+}
+
+.hero-title .accent {
+  color: var(--red-primary);
+  text-shadow: 0 0 40px var(--red-glow);
+}
+
+.hero-subtitle {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: var(--text-secondary);
+  font-weight: 300;
+  max-width: 600px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.8;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2.5rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--red-primary);
+  color: #fff;
+  box-shadow: 0 4px 30px var(--red-glow);
+}
+
+.btn-primary:hover {
+  background: var(--red-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 40px var(--red-glow);
+}
+
+.btn-outline {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.25);
+}
+
+.btn-outline:hover {
+  border-color: var(--red-primary);
+  color: var(--red-primary);
+}
+
+.hero-scroll {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  animation: float 2s ease-in-out infinite;
+}
+
+.hero-scroll::after {
+  content: '';
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--red-primary), transparent);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-8px); }
+}
+
+/* ===== SECTIONS ===== */
+.section {
+  padding: 6rem 2rem;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.section-label {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--red-primary);
+  margin-bottom: 1rem;
+}
+
+.section-title {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin-bottom: 1rem;
+}
+
+.section-desc {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  max-width: 550px;
+  margin: 0 auto;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ===== LINEUP ===== */
+#lineup {
+  background: var(--bg-secondary);
+}
+
+.lineup-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.car-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.4s;
+  position: relative;
+}
+
+.car-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--border-red);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 30px var(--red-glow);
+}
+
+.car-card-img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s;
+}
+
+.car-card:hover .car-card-img {
+  transform: scale(1.05);
+}
+
+.car-card-img-wrap {
+  overflow: hidden;
+  position: relative;
+}
+
+.car-card-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: var(--red-primary);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.3rem 0.8rem;
+  border-radius: 50px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.car-card-body {
+  padding: 1.5rem;
+}
+
+.car-card-brand {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--red-primary);
+  margin-bottom: 0.3rem;
+}
+
+.car-card-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.car-card-specs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.car-card-spec {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.car-card-spec svg {
+  width: 14px;
+  height: 14px;
+  fill: var(--text-muted);
+}
+
+.car-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.car-card-price {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--red-primary);
+}
+
+.car-card-price small {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.car-card-btn {
+  padding: 0.5rem 1.2rem;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.car-card-btn:hover {
+  border-color: var(--red-primary);
+  color: var(--red-primary);
+}
+
+/* ===== BOOKING ===== */
+#booking {
+  background: var(--bg-primary);
+}
+
+.booking-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.booking-info {
+  padding: 2rem 0;
+}
+
+.booking-info h3 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+
+.booking-info p {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  line-height: 1.8;
+}
+
+.booking-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.booking-features li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.booking-features li::before {
+  content: '✓';
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: rgba(230, 57, 70, 0.15);
+  color: var(--red-primary);
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.form-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2.5rem;
+}
+
+.form-card h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  transition: border-color 0.3s;
+  outline: none;
+}
+
+.form-input:focus {
+  border-color: var(--red-primary);
+  box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.1);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-submit {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+/* ===== CALCULATOR ===== */
+#calculator {
+  background: var(--bg-secondary);
+}
+
+.calc-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.calc-form {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2.5rem;
+}
+
+.calc-form h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.range-group {
+  margin-bottom: 1.5rem;
+}
+
+.range-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.range-header label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.range-header .range-value {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--red-primary);
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  background: var(--border-color);
+  border-radius: 2px;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  background: var(--red-primary);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 10px var(--red-glow);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: var(--red-primary);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
+.calc-result {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.calc-result-main {
+  text-align: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(230,57,70,0.1), rgba(230,57,70,0.02));
+  border: 1px solid var(--border-red);
+  border-radius: 12px;
+}
+
+.calc-result-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.calc-result-amount {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--red-primary);
+  letter-spacing: -1px;
+}
+
+.calc-result-amount small {
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.calc-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.calc-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.calc-detail-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.calc-detail-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.calc-detail-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+/* ===== ABOUT ===== */
+#about {
+  background: var(--bg-primary);
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.about-img {
+  width: 100%;
+  height: 450px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.about-content h3 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  line-height: 1.3;
+}
+
+.about-content p {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  line-height: 1.8;
+}
+
+.about-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.about-stat {
+  text-align: center;
+  padding: 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+
+.about-stat-num {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--red-primary);
+  display: block;
+}
+
+.about-stat-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-top: 0.3rem;
+  display: block;
+}
+
+/* ===== LOCATION ===== */
+#location {
+  background: var(--bg-secondary);
+}
+
+.location-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.location-map {
+  width: 100%;
+  height: 400px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.location-map iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  filter: grayscale(0.8) brightness(0.7) contrast(1.2);
+}
+
+.location-info {
+  padding: 1rem 0;
+}
+
+.location-info h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+}
+
+.location-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.location-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.location-icon {
+  width: 44px;
+  height: 44px;
+  background: rgba(230, 57, 70, 0.1);
+  border: 1px solid var(--border-red);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.location-icon svg {
+  width: 20px;
+  height: 20px;
+  fill: var(--red-primary);
+}
+
+.location-item-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.location-item-text {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  background: var(--bg-primary);
+  border-top: 1px solid var(--border-color);
+  padding: 3rem 2rem 2rem;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer-logo {
+  font-size: 1.2rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.footer-logo span {
+  color: var(--red-primary);
+}
+
+.footer-copy {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ===== MOBILE NAV ===== */
+.mobile-menu {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(10, 10, 10, 0.98);
+  backdrop-filter: blur(20px);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.mobile-menu.active {
+  display: flex;
+}
+
+.mobile-menu a {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-decoration: none;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+
+.mobile-menu a:hover {
+  color: var(--red-primary);
+}
+
+.mobile-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: var(--bg-card);
+  border: 1px solid var(--red-primary);
+  color: var(--text-primary);
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  z-index: 9999;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.4s;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .lineup-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
+
+  .lineup-grid {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .booking-wrapper,
+  .calc-wrapper,
+  .about-grid,
+  .location-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-img {
+    height: 300px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .section {
+    padding: 4rem 1.25rem;
+  }
+
+  .about-stats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+
+  .about-stat {
+    padding: 1rem 0.5rem;
+  }
+
+  .about-stat-num {
+    font-size: 1.5rem;
+  }
+
+  .footer-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav" id="nav">
+  <a href="#" class="nav-logo">PRESTIGE <span>M</span></a>
+  <ul class="nav-links">
+    <li><a href="#lineup">라인업</a></li>
+    <li><a href="#booking">시승예약</a></li>
+    <li><a href="#calculator">금융계산</a></li>
+    <li><a href="#about">딜러소개</a></li>
+    <li><a href="#location">오시는 길</a></li>
+  </ul>
+  <button class="nav-hamburger" id="navHamburger" aria-label="메뉴 열기">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" id="mobileClose" aria-label="메뉴 닫기">&times;</button>
+  <a href="#lineup" onclick="closeMobile()">라인업</a>
+  <a href="#booking" onclick="closeMobile()">시승예약</a>
+  <a href="#calculator" onclick="closeMobile()">금융계산</a>
+  <a href="#about" onclick="closeMobile()">딜러소개</a>
+  <a href="#location" onclick="closeMobile()">오시는 길</a>
+</div>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Authorized Premium Dealer</div>
+    <h1 class="hero-title">
+      당신의 드림카,<br><span class="accent">현실이 되다</span>
+    </h1>
+    <p class="hero-subtitle">
+      20년 전통의 프리미엄 자동차 딜러십.<br>
+      최상의 차량과 맞춤형 금융 솔루션을 제공합니다.
+    </p>
+    <div class="hero-buttons">
+      <a href="#lineup" class="btn btn-primary">차량 라인업 보기</a>
+      <a href="#booking" class="btn btn-outline">시승 예약하기</a>
+    </div>
+  </div>
+  <div class="hero-scroll">SCROLL</div>
+</section>
+
+<!-- Lineup -->
+<section class="section" id="lineup">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Vehicle Lineup</div>
+      <h2 class="section-title">프리미엄 차량 라인업</h2>
+      <p class="section-desc">엄선된 최고급 차량들을 만나보세요</p>
+    </div>
+    <div class="lineup-grid">
+
+      <!-- Car 1 -->
+      <div class="car-card">
+        <div class="car-card-img-wrap">
+          <img class="car-card-img" src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=600&q=80" alt="Mercedes-Benz S-Class" loading="lazy">
+          <span class="car-card-badge">신차</span>
+        </div>
+        <div class="car-card-body">
+          <div class="car-card-brand">Mercedes-Benz</div>
+          <div class="car-card-name">S 580 4MATIC</div>
+          <div class="car-card-specs">
+            <span class="car-card-spec">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
+              4.0L V8
+            </span>
+            <span class="car-card-spec">
+              <svg viewBox="0 0 24 24"><path d="M12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm0-10c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
+              503 마력
+            </span>
+            <span class="car-card-spec">
+              <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm10 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM5.78 5h12.44l-1.1 5H6.88L5.78 5zM20.5 3H4.7l-.84-2H1v2h2l3.6 8.59-1.35 2.44C4.52 15.37 5.48 17 7 17h12v-2H7l1.1-2h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0020.5 4V3z"/></svg>
+              AWD
+            </span>
+          </div>
+          <div class="car-card-footer">
+            <div class="car-card-price">1억 8,900만 <small>원</small></div>
+            <button class="car-card-btn" onclick="scrollTo('#booking')">상담</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Car 2 -->
+      <div class="car-card">
+        <div class="car-card-img-wrap">
+          <img class="car-card-img" src="https://images.unsplash.com/photo-1617531653332-bd46c24f2068?w=600&q=80" alt="BMW 7 Series" loading="lazy">
+          <span class="car-card-badge">인기</span>
+        </div>
+        <div class="car-card-body">
+          <div class="car-card-brand">BMW</div>
+          <div class="car-card-name">760i xDrive</div>
+          <div class="car-card-specs">
+            <span class="car-card-spec">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
+              4.4L V8
+            </span>
+            <span class="car-card-spec">
+              <svg viewBox="0 0 24 24"><path d="M12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm0-10c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
+              544 마력
+            </span>
+            <span class="car-card-spec">
+              <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm10 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM5.78 5h12.44l-1.1 5H6.88L5.78 5zM20.5 3H4.7l-.84-2H1v2h2l3.6 8.59-1.35 2.44C4.52 15.37 5.48 17 7 17h12v-2H7l1.1-2h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0020.5 4V3z"/></svg>
+              AWD
+            </span>
+          </div>
+          <div class="car-card-footer">
+            <div class="car-card-price">1억 9,800만 <small>원</small></div>
+            <button class="car-card-btn" onclick="scrollTo('#booking')">상담</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Car 3 -->
+      <div class="car-card">
+        <div class="car-card-img-wrap">
+          <img class="car-card-img" src="https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=600&q=80" alt="Porsche 911" loading="lazy">
+          <span class="car-card-badge">한정</span>
+        </div>
+        <div class="car-card-body">
+          <div class="car-card-brand">Porsche</div>
+          <div class="car-card-name">911 Turbo S</div>
+          <div class="car-card-specs">
+            <span class="car-card-spec">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
+              3.7L 트윈터보
+            </span>
+            <span class="car-card-spec">
+              <svg viewBox="0 0 24 24"><path d="M12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm0-10c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
+              650 마력
+            </span>
+            <span class="car-card-spec">
+              <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm10 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM5.78 5h12.44l-1.1 5H6.88L5.78 5zM20.5 3H4.7l-.84-2H1v2h2l3.6 8.59-1.35 2.44C4.52 15.37 5.48 17 7 17h12v-2H7l1.1-2h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0020.5 4V3z"/></svg>
+              AWD
+            </span>
+          </div>
+          <div class="car-card-footer">
+            <div class="car-card-price">2억 9,500만 <small>원</small></div>
+            <button class="car-card-btn" onclick="scrollTo('#booking')">상담</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Car 4 -->
+      <div class="car-card">
+        <div class="car-card-img-wrap">
+          <img class="car-card-img" src="https://images.unsplash.com/photo-1619362280286-f1f8fd5032ed?w=600&q=80" alt="Audi RS e-tron GT" loading="lazy">
+        </div>
+        <div class="car-card-body">
+          <div class="car-card-brand">Audi</div>
+          <div class="car-card-name">RS e-tron GT</div>
+          <div class="car-card-specs">
+            <span class="car-card-spec">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
+              전기 듀얼모터
+            </span>
+            <span class="car-card-spec">
+              <svg viewBox="0 0 24 24"><path d="M12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm0-10c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
+              646 마력
+            </span>
+            <span class="car-card-spec">
+              <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm10 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM5.78 5h12.44l-1.1 5H6.88L5.78 5zM20.5 3H4.7l-.84-2H1v2h2l3.6 8.59-1.35 2.44C4.52 15.37 5.48 17 7 17h12v-2H7l1.1-2h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0020.5 4V3z"/></svg>
+              AWD
+            </span>
+          </div>
+          <div class="car-card-footer">
+            <div class="car-card-price">1억 7,500만 <small>원</small></div>
+            <button class="car-card-btn" onclick="scrollTo('#booking')">상담</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Car 5 -->
+      <div class="car-card">
+        <div class="car-card-img-wrap">
+          <img class="car-card-img" src="https://images.unsplash.com/photo-1621135802920-133df287f89c?w=600&q=80" alt="Range Rover" loading="lazy">
+          <span class="car-card-badge">베스트</span>
+        </div>
+        <div class="car-card-body">
+          <div class="car-card-brand">Land Rover</div>
+          <div class="car-card-name">Range Rover Autobiography</div>
+          <div class="car-card-specs">
+            <span class="car-card-spec">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
+              4.4L V8
+            </span>
+            <span class="car-card-spec">
+              <svg viewBox="0 0 24 24"><path d="M12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm0-10c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
+              530 마력
+            </span>
+            <span class="car-card-spec">
+              <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm10 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM5.78 5h12.44l-1.1 5H6.88L5.78 5zM20.5 3H4.7l-.84-2H1v2h2l3.6 8.59-1.35 2.44C4.52 15.37 5.48 17 7 17h12v-2H7l1.1-2h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0020.5 4V3z"/></svg>
+              AWD
+            </span>
+          </div>
+          <div class="car-card-footer">
+            <div class="car-card-price">2억 3,800만 <small>원</small></div>
+            <button class="car-card-btn" onclick="scrollTo('#booking')">상담</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Car 6 -->
+      <div class="car-card">
+        <div class="car-card-img-wrap">
+          <img class="car-card-img" src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=600&q=80" alt="Lexus LC 500" loading="lazy">
+        </div>
+        <div class="car-card-body">
+          <div class="car-card-brand">Lexus</div>
+          <div class="car-card-name">LC 500 Convertible</div>
+          <div class="car-card-specs">
+            <span class="car-card-spec">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
+              5.0L V8
+            </span>
+            <span class="car-card-spec">
+              <svg viewBox="0 0 24 24"><path d="M12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm0-10c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
+              471 마력
+            </span>
+            <span class="car-card-spec">
+              <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm10 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM5.78 5h12.44l-1.1 5H6.88L5.78 5zM20.5 3H4.7l-.84-2H1v2h2l3.6 8.59-1.35 2.44C4.52 15.37 5.48 17 7 17h12v-2H7l1.1-2h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0020.5 4V3z"/></svg>
+              RWD
+            </span>
+          </div>
+          <div class="car-card-footer">
+            <div class="car-card-price">1억 5,200만 <small>원</small></div>
+            <button class="car-card-btn" onclick="scrollTo('#booking')">상담</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Booking -->
+<section class="section" id="booking">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Test Drive</div>
+      <h2 class="section-title">시승 예약</h2>
+      <p class="section-desc">원하시는 차량을 직접 경험해 보세요</p>
+    </div>
+    <div class="booking-wrapper">
+      <div class="booking-info">
+        <h3>특별한 시승 경험을<br>제공해 드립니다</h3>
+        <p>
+          전문 어드바이저가 1:1로 동행하며, 고객님의 라이프스타일에 맞는
+          최적의 차량을 추천해 드립니다. 시승 후 구매 시 특별 혜택이 적용됩니다.
+        </p>
+        <ul class="booking-features">
+          <li>전문 어드바이저 1:1 동행 시승</li>
+          <li>시승 후 구매 시 특별 할인 적용</li>
+          <li>프리미엄 라운지 이용 가능</li>
+          <li>맞춤형 차량 컨설팅 제공</li>
+          <li>주말 및 공휴일 예약 가능</li>
+        </ul>
+      </div>
+      <div class="form-card">
+        <h3>시승 예약 신청</h3>
+        <form id="bookingForm" onsubmit="handleBooking(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="bName">이름</label>
+              <input class="form-input" type="text" id="bName" placeholder="홍길동" required>
+            </div>
+            <div class="form-group">
+              <label for="bPhone">연락처</label>
+              <input class="form-input" type="tel" id="bPhone" placeholder="010-1234-5678" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="bEmail">이메일</label>
+            <input class="form-input" type="email" id="bEmail" placeholder="example@email.com" required>
+          </div>
+          <div class="form-group">
+            <label for="bCar">희망 차량</label>
+            <select class="form-input" id="bCar" required>
+              <option value="">차량을 선택해 주세요</option>
+              <option>Mercedes-Benz S 580 4MATIC</option>
+              <option>BMW 760i xDrive</option>
+              <option>Porsche 911 Turbo S</option>
+              <option>Audi RS e-tron GT</option>
+              <option>Range Rover Autobiography</option>
+              <option>Lexus LC 500 Convertible</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="bDate">희망 날짜</label>
+              <input class="form-input" type="date" id="bDate" required>
+            </div>
+            <div class="form-group">
+              <label for="bTime">희망 시간</label>
+              <select class="form-input" id="bTime" required>
+                <option value="">시간 선택</option>
+                <option>09:00</option>
+                <option>10:00</option>
+                <option>11:00</option>
+                <option>13:00</option>
+                <option>14:00</option>
+                <option>15:00</option>
+                <option>16:00</option>
+                <option>17:00</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="bMsg">요청사항</label>
+            <textarea class="form-input" id="bMsg" rows="3" placeholder="추가 요청사항을 입력해 주세요"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary form-submit">시승 예약 신청하기</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Calculator -->
+<section class="section" id="calculator">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Finance Calculator</div>
+      <h2 class="section-title">할부 금융 계산기</h2>
+      <p class="section-desc">월 납입금을 간편하게 계산해 보세요</p>
+    </div>
+    <div class="calc-wrapper">
+      <div class="calc-form">
+        <h3>금융 조건 설정</h3>
+        <div class="range-group">
+          <div class="range-header">
+            <label>차량 가격</label>
+            <span class="range-value" id="priceVal">1억 원</span>
+          </div>
+          <input type="range" id="priceRange" min="3000" max="50000" value="10000" step="500">
+        </div>
+        <div class="range-group">
+          <div class="range-header">
+            <label>선수금 비율</label>
+            <span class="range-value" id="downVal">30%</span>
+          </div>
+          <input type="range" id="downRange" min="0" max="70" value="30" step="5">
+        </div>
+        <div class="range-group">
+          <div class="range-header">
+            <label>할부 기간</label>
+            <span class="range-value" id="termVal">36개월</span>
+          </div>
+          <input type="range" id="termRange" min="12" max="72" value="36" step="12">
+        </div>
+        <div class="range-group">
+          <div class="range-header">
+            <label>금리</label>
+            <span class="range-value" id="rateVal">4.9%</span>
+          </div>
+          <input type="range" id="rateRange" min="2.0" max="9.0" value="4.9" step="0.1">
+        </div>
+      </div>
+      <div class="calc-result">
+        <div class="calc-result-main">
+          <div class="calc-result-label">월 납입금</div>
+          <div class="calc-result-amount" id="monthlyPayment">0 <small>원</small></div>
+        </div>
+        <div class="calc-details">
+          <div class="calc-detail-row">
+            <span class="calc-detail-label">차량 가격</span>
+            <span class="calc-detail-value" id="detailPrice">-</span>
+          </div>
+          <div class="calc-detail-row">
+            <span class="calc-detail-label">선수금</span>
+            <span class="calc-detail-value" id="detailDown">-</span>
+          </div>
+          <div class="calc-detail-row">
+            <span class="calc-detail-label">대출 원금</span>
+            <span class="calc-detail-value" id="detailLoan">-</span>
+          </div>
+          <div class="calc-detail-row">
+            <span class="calc-detail-label">총 이자</span>
+            <span class="calc-detail-value" id="detailInterest">-</span>
+          </div>
+          <div class="calc-detail-row">
+            <span class="calc-detail-label">총 납입액</span>
+            <span class="calc-detail-value" id="detailTotal">-</span>
+          </div>
+        </div>
+        <a href="#booking" class="btn btn-primary" style="text-align:center;">상담 신청하기</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About -->
+<section class="section" id="about">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">About Us</div>
+      <h2 class="section-title">딜러 소개</h2>
+      <p class="section-desc">신뢰와 품격의 프리미엄 자동차 딜러십</p>
+    </div>
+    <div class="about-grid">
+      <img class="about-img" src="https://images.unsplash.com/photo-1562519776-b232148ce69d?w=800&q=80" alt="프레스티지 모터스 쇼룸" loading="lazy">
+      <div class="about-content">
+        <h3>20년 전통의<br>프리미엄 딜러십</h3>
+        <p>
+          프레스티지 모터스는 2005년 설립 이래, 대한민국 최고의 프리미엄 자동차 딜러십으로
+          자리매김해 왔습니다. 엄격한 품질 기준과 투명한 거래를 통해 고객님께
+          최상의 자동차 구매 경험을 제공합니다.
+        </p>
+        <p>
+          모든 차량은 200가지 이상의 체크리스트를 통과한 인증 차량만을 취급하며,
+          구매 후에도 전담 매니저를 통한 프리미엄 애프터서비스를 약속드립니다.
+        </p>
+        <div class="about-stats">
+          <div class="about-stat">
+            <span class="about-stat-num">20+</span>
+            <span class="about-stat-label">운영 연수</span>
+          </div>
+          <div class="about-stat">
+            <span class="about-stat-num">5,000+</span>
+            <span class="about-stat-label">판매 대수</span>
+          </div>
+          <div class="about-stat">
+            <span class="about-stat-num">98%</span>
+            <span class="about-stat-label">고객 만족도</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Location -->
+<section class="section" id="location">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Directions</div>
+      <h2 class="section-title">오시는 길</h2>
+      <p class="section-desc">편리하게 방문하실 수 있습니다</p>
+    </div>
+    <div class="location-grid">
+      <div class="location-map">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3164.123456!2d127.0276!3d37.4979!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzfCsDI5JzUyLjQiTiAxMjfCsDAxJzM5LjQiRQ!5e0!3m2!1sko!2skr!4v1" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <div class="location-info">
+        <h3>프레스티지 모터스</h3>
+        <div class="location-items">
+          <div class="location-item">
+            <div class="location-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            </div>
+            <div>
+              <div class="location-item-title">주소</div>
+              <div class="location-item-text">서울특별시 강남구 테헤란로 152<br>프레스티지 모터스 빌딩 1~3F</div>
+            </div>
+          </div>
+          <div class="location-item">
+            <div class="location-icon">
+              <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+            </div>
+            <div>
+              <div class="location-item-title">연락처</div>
+              <div class="location-item-text">대표전화: 02-555-7890<br>시승예약: 02-555-7891</div>
+            </div>
+          </div>
+          <div class="location-item">
+            <div class="location-icon">
+              <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+            </div>
+            <div>
+              <div class="location-item-title">영업시간</div>
+              <div class="location-item-text">평일: 09:00 ~ 19:00<br>주말/공휴일: 10:00 ~ 18:00</div>
+            </div>
+          </div>
+          <div class="location-item">
+            <div class="location-icon">
+              <svg viewBox="0 0 24 24"><path d="M4 16c0 .88.39 1.67 1 2.22V20c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h8v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1.78c.61-.55 1-1.34 1-2.22V6c0-3.5-3.58-4-8-4s-8 .5-8 4v10zm3.5 1c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM18 10H6V6h12v4z"/></svg>
+            </div>
+            <div>
+              <div class="location-item-title">교통안내</div>
+              <div class="location-item-text">지하철 2호선 역삼역 3번 출구 도보 5분<br>건물 내 지하주차장 이용 가능 (2시간 무료)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">PRESTIGE <span>M</span></div>
+    <div class="footer-copy">&copy; 2025 Prestige Motors. All rights reserved.</div>
+  </div>
+</footer>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// Navigation scroll effect
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// Mobile menu
+const hamburger = document.getElementById('navHamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+const mobileClose = document.getElementById('mobileClose');
+
+hamburger.addEventListener('click', () => mobileMenu.classList.add('active'));
+mobileClose.addEventListener('click', () => mobileMenu.classList.remove('active'));
+
+function closeMobile() {
+  mobileMenu.classList.remove('active');
+}
+
+// Smooth scroll helper (avoids conflict with window.scrollTo)
+function scrollTo(selector) {
+  const el = document.querySelector(selector);
+  if (el) el.scrollIntoView({ behavior: 'smooth' });
+}
+
+// Toast notification
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+// Booking form
+function handleBooking(e) {
+  e.preventDefault();
+  const name = document.getElementById('bName').value;
+  showToast(`${name}님, 시승 예약이 완료되었습니다!`);
+  e.target.reset();
+}
+
+// Finance Calculator
+const priceRange = document.getElementById('priceRange');
+const downRange = document.getElementById('downRange');
+const termRange = document.getElementById('termRange');
+const rateRange = document.getElementById('rateRange');
+
+function formatKRW(num) {
+  if (num >= 10000) {
+    const eok = Math.floor(num / 10000);
+    const man = num % 10000;
+    return man > 0 ? `${eok}억 ${man.toLocaleString()}만` : `${eok}억`;
+  }
+  return `${num.toLocaleString()}만`;
+}
+
+function calcLoan() {
+  const price = parseInt(priceRange.value);       // 만원 단위
+  const downPct = parseInt(downRange.value);
+  const term = parseInt(termRange.value);
+  const rate = parseFloat(rateRange.value);
+
+  // Display values
+  document.getElementById('priceVal').textContent = formatKRW(price) + ' 원';
+  document.getElementById('downVal').textContent = downPct + '%';
+  document.getElementById('termVal').textContent = term + '개월';
+  document.getElementById('rateVal').textContent = rate.toFixed(1) + '%';
+
+  const downAmt = price * downPct / 100;
+  const loanAmt = price - downAmt;          // 만원 단위
+  const loanWon = loanAmt * 10000;          // 원 단위
+
+  let monthly, totalInterest;
+  if (rate === 0) {
+    monthly = loanWon / term;
+    totalInterest = 0;
+  } else {
+    const monthlyRate = rate / 100 / 12;
+    monthly = loanWon * monthlyRate * Math.pow(1 + monthlyRate, term) / (Math.pow(1 + monthlyRate, term) - 1);
+    totalInterest = monthly * term - loanWon;
+  }
+
+  const totalPayment = monthly * term;
+
+  document.getElementById('monthlyPayment').innerHTML =
+    Math.round(monthly).toLocaleString() + ' <small>원</small>';
+  document.getElementById('detailPrice').textContent = formatKRW(price) + ' 원';
+  document.getElementById('detailDown').textContent = formatKRW(downAmt) + ' 원';
+  document.getElementById('detailLoan').textContent = formatKRW(loanAmt) + ' 원';
+  document.getElementById('detailInterest').textContent =
+    Math.round(totalInterest).toLocaleString() + ' 원';
+  document.getElementById('detailTotal').textContent =
+    Math.round(totalPayment).toLocaleString() + ' 원';
+}
+
+[priceRange, downRange, termRange, rateRange].forEach(el => {
+  el.addEventListener('input', calcLoan);
+});
+
+// Initial calculation
+calcLoan();
+
+// Intersection Observer for scroll animations
+const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+    }
+  });
+}, observerOptions);
+
+document.querySelectorAll('.car-card, .form-card, .calc-form, .calc-result, .about-grid, .location-grid').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(30px)';
+  el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+  observer.observe(el);
+});
+
+// Set min date for booking to today
+const dateInput = document.getElementById('bDate');
+const today = new Date().toISOString().split('T')[0];
+dateInput.setAttribute('min', today);
+</script>
+</body>
+</html>

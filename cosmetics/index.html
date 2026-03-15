@@ -1,0 +1,1620 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLOOM - 뷰티 쇼핑몰</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --pink-50: #fdf2f8;
+  --pink-100: #fce7f3;
+  --pink-200: #fbcfe8;
+  --pink-300: #f9a8d4;
+  --pink-400: #f472b6;
+  --pink-500: #ec4899;
+  --pink-600: #db2777;
+  --pink-700: #be185d;
+  --white: #ffffff;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.04);
+  --shadow-lg: 0 20px 40px -8px rgba(0,0,0,0.12);
+  --radius: 12px;
+  --radius-lg: 16px;
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--pink-50);
+  color: var(--gray-800);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--pink-50); }
+::-webkit-scrollbar-thumb { background: var(--pink-300); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--pink-400); }
+
+/* Header */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--pink-100);
+  transition: var(--transition);
+}
+
+.header.scrolled { box-shadow: var(--shadow-md); }
+
+.header-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-size: 1.75rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--pink-500), var(--pink-700));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+}
+
+.logo span {
+  font-weight: 300;
+  font-size: 0.75rem;
+  display: block;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, var(--pink-400), var(--pink-600));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.nav { display: flex; align-items: center; gap: 32px; }
+
+.nav a {
+  text-decoration: none;
+  color: var(--gray-600);
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: var(--transition);
+  position: relative;
+}
+
+.nav a:hover { color: var(--pink-600); }
+
+.nav a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--pink-500);
+  transition: var(--transition);
+}
+
+.nav a:hover::after { width: 100%; }
+
+.cart-btn {
+  position: relative;
+  background: none;
+  border: 2px solid var(--pink-200);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  color: var(--pink-600);
+}
+
+.cart-btn:hover {
+  background: var(--pink-500);
+  border-color: var(--pink-500);
+  color: var(--white);
+  transform: scale(1.05);
+}
+
+.cart-btn svg { width: 20px; height: 20px; }
+
+.cart-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--pink-600);
+  color: var(--white);
+  font-size: 0.65rem;
+  font-weight: 700;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--white);
+  transition: var(--transition);
+}
+
+.cart-badge.empty { display: none; }
+
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--gray-700);
+  padding: 8px;
+}
+
+.mobile-menu-btn svg { width: 24px; height: 24px; }
+
+/* Hero */
+.hero {
+  margin-top: 72px;
+  position: relative;
+  height: 85vh;
+  min-height: 560px;
+  max-height: 800px;
+  background: linear-gradient(135deg, rgba(253,242,248,0.7), rgba(252,231,243,0.7)),
+              url('https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=1600&q=80') center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(253,242,248,0.6) 50%, rgba(252,231,243,0.4) 100%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  width: 100%;
+}
+
+.hero-badge {
+  display: inline-block;
+  background: var(--pink-100);
+  color: var(--pink-700);
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 24px;
+  letter-spacing: 0.5px;
+}
+
+.hero h1 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--gray-900);
+  margin-bottom: 20px;
+  max-width: 600px;
+}
+
+.hero h1 em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--pink-500), var(--pink-700));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  font-size: 1.15rem;
+  color: var(--gray-500);
+  max-width: 480px;
+  margin-bottom: 36px;
+  line-height: 1.7;
+}
+
+.hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 36px;
+  background: linear-gradient(135deg, var(--pink-500), var(--pink-600));
+  color: var(--white);
+  border: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+  box-shadow: 0 4px 20px rgba(236,72,153,0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(236,72,153,0.4);
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 36px;
+  background: var(--white);
+  color: var(--pink-600);
+  border: 2px solid var(--pink-200);
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+}
+
+.btn-outline:hover {
+  border-color: var(--pink-400);
+  background: var(--pink-50);
+  transform: translateY(-2px);
+}
+
+/* Floating shapes */
+.hero-shapes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hero-shapes .shape {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.15;
+}
+
+.hero-shapes .shape:nth-child(1) {
+  width: 400px; height: 400px;
+  background: var(--pink-300);
+  top: -100px; right: -50px;
+  animation: float 8s ease-in-out infinite;
+}
+
+.hero-shapes .shape:nth-child(2) {
+  width: 250px; height: 250px;
+  background: var(--pink-400);
+  bottom: -60px; right: 20%;
+  animation: float 6s ease-in-out infinite reverse;
+}
+
+.hero-shapes .shape:nth-child(3) {
+  width: 150px; height: 150px;
+  background: var(--pink-200);
+  top: 30%; right: 10%;
+  animation: float 10s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-30px) rotate(5deg); }
+}
+
+/* Section Common */
+.section {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 80px 24px;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.section-header h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 12px;
+}
+
+.section-header p {
+  color: var(--gray-500);
+  font-size: 1.05rem;
+}
+
+/* Categories */
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.category-card {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.category-card:hover { transform: translateY(-8px); }
+.category-card:hover .category-img { transform: scale(1.08); }
+
+.category-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.category-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 24px;
+}
+
+.category-overlay h3 {
+  color: var(--white);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.category-overlay span {
+  color: rgba(255,255,255,0.75);
+  font-size: 0.85rem;
+}
+
+/* Filter Bar */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+
+.filter-label {
+  font-weight: 600;
+  color: var(--gray-700);
+  margin-right: 8px;
+  font-size: 0.9rem;
+}
+
+.filter-btn {
+  padding: 10px 24px;
+  border: 2px solid var(--pink-200);
+  border-radius: 50px;
+  background: var(--white);
+  color: var(--gray-600);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+.filter-btn:hover {
+  border-color: var(--pink-400);
+  color: var(--pink-600);
+}
+
+.filter-btn.active {
+  background: linear-gradient(135deg, var(--pink-500), var(--pink-600));
+  border-color: var(--pink-500);
+  color: var(--white);
+}
+
+/* Products Grid */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.product-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  cursor: pointer;
+  position: relative;
+}
+
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+}
+
+.product-card.hidden {
+  display: none;
+}
+
+.product-img-wrap {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--gray-100);
+}
+
+.product-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.product-card:hover .product-img-wrap img { transform: scale(1.06); }
+
+.product-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.product-tag.new { background: var(--pink-500); color: var(--white); }
+.product-tag.best { background: #fbbf24; color: var(--gray-800); }
+.product-tag.sale { background: #ef4444; color: var(--white); }
+
+.product-wish {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.9);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  color: var(--gray-400);
+}
+
+.product-wish:hover { color: var(--pink-500); transform: scale(1.1); }
+.product-wish svg { width: 18px; height: 18px; }
+
+.product-info { padding: 16px; }
+
+.product-brand {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--pink-500);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.product-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--gray-800);
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.product-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.stars { color: #fbbf24; font-size: 0.8rem; letter-spacing: 1px; }
+.rating-count { font-size: 0.75rem; color: var(--gray-400); margin-left: 4px; }
+
+.product-price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.product-price {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+
+.product-price .original {
+  font-size: 0.8rem;
+  color: var(--gray-400);
+  text-decoration: line-through;
+  font-weight: 400;
+  margin-right: 6px;
+}
+
+.add-cart-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--pink-500);
+  color: var(--white);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.add-cart-btn:hover { background: var(--pink-600); transform: scale(1.1); }
+.add-cart-btn svg { width: 16px; height: 16px; }
+
+/* Skin Type Tags */
+.product-skin-tags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.skin-tag {
+  font-size: 0.65rem;
+  padding: 2px 8px;
+  border-radius: 50px;
+  background: var(--pink-50);
+  color: var(--pink-600);
+  font-weight: 500;
+  border: 1px solid var(--pink-100);
+}
+
+/* Footer */
+.footer {
+  background: var(--gray-900);
+  color: var(--gray-400);
+  padding: 60px 24px 30px;
+}
+
+.footer-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+}
+
+.footer-brand .logo {
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, var(--pink-300), var(--pink-500));
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.footer-brand p {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  max-width: 300px;
+}
+
+.footer h4 {
+  color: var(--white);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.footer ul { list-style: none; }
+.footer ul li { margin-bottom: 10px; }
+
+.footer ul li a {
+  color: var(--gray-400);
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: var(--transition);
+}
+
+.footer ul li a:hover { color: var(--pink-400); }
+
+.footer-bottom {
+  max-width: 1280px;
+  margin: 40px auto 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--gray-800);
+  text-align: center;
+  font-size: 0.8rem;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: var(--transition);
+}
+
+.modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+.modal {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: translateY(30px) scale(0.95);
+  transition: var(--transition);
+}
+
+.modal-overlay.active .modal { transform: translateY(0) scale(1); }
+
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 32px;
+}
+
+.modal-img {
+  width: 280px;
+  height: 280px;
+  border-radius: var(--radius);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.modal-info { flex: 1; }
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--gray-100);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  color: var(--gray-500);
+  font-size: 1.2rem;
+}
+
+.modal-close:hover { background: var(--gray-200); }
+
+.modal-brand {
+  font-size: 0.8rem;
+  color: var(--pink-500);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.modal-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin: 8px 0;
+}
+
+.modal-price {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--pink-600);
+  margin-bottom: 16px;
+}
+
+.modal-section { padding: 0 32px 24px; }
+
+.modal-section h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--gray-800);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-section p {
+  font-size: 0.9rem;
+  color: var(--gray-600);
+  line-height: 1.7;
+}
+
+.modal-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.modal-tag {
+  font-size: 0.75rem;
+  padding: 4px 12px;
+  border-radius: 50px;
+  background: var(--pink-50);
+  color: var(--pink-600);
+  border: 1px solid var(--pink-100);
+}
+
+.modal-add-cart {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.modal-qty {
+  display: flex;
+  align-items: center;
+  border: 2px solid var(--gray-200);
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.modal-qty button {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--gray-600);
+  transition: var(--transition);
+}
+
+.modal-qty button:hover { background: var(--gray-100); }
+.modal-qty span { padding: 0 12px; font-weight: 600; font-size: 0.9rem; }
+
+.modal-cart-btn {
+  flex: 1;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, var(--pink-500), var(--pink-600));
+  color: var(--white);
+  border: none;
+  border-radius: 50px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+.modal-cart-btn:hover { box-shadow: 0 4px 20px rgba(236,72,153,0.4); transform: translateY(-1px); }
+
+/* Cart Drawer */
+.cart-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 3000;
+  opacity: 0;
+  pointer-events: none;
+  transition: var(--transition);
+}
+
+.cart-overlay.active { opacity: 1; pointer-events: auto; }
+
+.cart-drawer {
+  position: fixed;
+  top: 0;
+  right: -420px;
+  width: 400px;
+  max-width: 100vw;
+  height: 100vh;
+  background: var(--white);
+  z-index: 3001;
+  box-shadow: -10px 0 40px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition);
+}
+
+.cart-drawer.active { right: 0; }
+
+.cart-drawer-header {
+  padding: 24px;
+  border-bottom: 1px solid var(--gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cart-drawer-header h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+
+.cart-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--gray-100);
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: var(--gray-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.cart-close:hover { background: var(--gray-200); }
+
+.cart-items {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 24px;
+}
+
+.cart-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--gray-400);
+}
+
+.cart-empty svg { width: 64px; height: 64px; margin-bottom: 16px; opacity: 0.3; }
+.cart-empty p { font-size: 0.95rem; }
+
+.cart-item {
+  display: flex;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.cart-item img {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius);
+  object-fit: cover;
+}
+
+.cart-item-info { flex: 1; }
+.cart-item-brand { font-size: 0.7rem; color: var(--pink-500); font-weight: 600; text-transform: uppercase; }
+.cart-item-name { font-size: 0.85rem; font-weight: 600; color: var(--gray-800); margin: 2px 0; }
+
+.cart-item-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.cart-item-price { font-weight: 700; font-size: 0.9rem; color: var(--gray-900); }
+
+.cart-item-qty {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid var(--gray-200);
+  border-radius: 50px;
+}
+
+.cart-item-qty button {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--gray-500);
+}
+
+.cart-item-qty span { padding: 0 8px; font-size: 0.8rem; font-weight: 600; }
+
+.cart-item-remove {
+  background: none;
+  border: none;
+  color: var(--gray-400);
+  cursor: pointer;
+  font-size: 0.75rem;
+  margin-top: 4px;
+  transition: var(--transition);
+}
+
+.cart-item-remove:hover { color: #ef4444; }
+
+.cart-footer {
+  padding: 24px;
+  border-top: 1px solid var(--gray-100);
+  background: var(--gray-50);
+}
+
+.cart-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.cart-total span { font-size: 0.95rem; color: var(--gray-600); }
+.cart-total strong { font-size: 1.3rem; color: var(--gray-900); }
+
+.checkout-btn {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, var(--pink-500), var(--pink-600));
+  color: var(--white);
+  border: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+.checkout-btn:hover { box-shadow: 0 4px 20px rgba(236,72,153,0.4); }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--gray-900);
+  color: var(--white);
+  padding: 14px 28px;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  z-index: 5000;
+  transition: var(--transition);
+  box-shadow: var(--shadow-lg);
+}
+
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .products-grid { grid-template-columns: repeat(3, 1fr); }
+  .categories-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-inner { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  .nav { display: none; }
+  .mobile-menu-btn { display: block; }
+  .hero { height: 70vh; min-height: 480px; }
+  .hero h1 { font-size: 2rem; }
+  .products-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .categories-grid { grid-template-columns: repeat(2, 1fr); }
+  .section { padding: 60px 16px; }
+  .modal-header { flex-direction: column; }
+  .modal-img { width: 100%; height: 250px; }
+  .footer-inner { grid-template-columns: 1fr; gap: 30px; }
+  .cart-drawer { width: 100vw; }
+}
+
+@media (max-width: 480px) {
+  .products-grid { grid-template-columns: 1fr; }
+  .hero-buttons { flex-direction: column; }
+  .btn-primary, .btn-outline { text-align: center; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header" id="header">
+  <div class="header-inner">
+    <div class="logo">BLOOM<span>Beauty Store</span></div>
+    <nav class="nav">
+      <a href="#categories">카테고리</a>
+      <a href="#products">상품</a>
+      <a href="#about">브랜드</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="cart-btn" id="cartToggle" aria-label="장바구니 열기">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="cart-badge empty" id="cartBadge">0</span>
+      </button>
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="메뉴 열기">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-shapes">
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">2026 Spring Collection</div>
+    <h1>당신의 아름다움을<br><em>꽃피우는 순간</em></h1>
+    <p>엄선된 프리미엄 뷰티 브랜드의 스킨케어, 메이크업, 바디케어 제품을 만나보세요. 피부 타입별 맞춤 추천까지.</p>
+    <div class="hero-buttons">
+      <a href="#products" class="btn-primary">쇼핑 시작하기 &rarr;</a>
+      <a href="#categories" class="btn-outline">카테고리 보기</a>
+    </div>
+  </div>
+</section>
+
+<!-- Categories -->
+<section class="section" id="categories">
+  <div class="section-header">
+    <h2>카테고리</h2>
+    <p>원하는 카테고리를 선택해 제품을 탐색하세요</p>
+  </div>
+  <div class="categories-grid">
+    <div class="category-card" onclick="filterByCategory('skincare')">
+      <img class="category-img" src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d946?w=600&q=80" alt="스킨케어">
+      <div class="category-overlay">
+        <h3>스킨케어</h3>
+        <span>Skincare</span>
+      </div>
+    </div>
+    <div class="category-card" onclick="filterByCategory('makeup')">
+      <img class="category-img" src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=600&q=80" alt="메이크업">
+      <div class="category-overlay">
+        <h3>메이크업</h3>
+        <span>Makeup</span>
+      </div>
+    </div>
+    <div class="category-card" onclick="filterByCategory('body')">
+      <img class="category-img" src="https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=600&q=80" alt="바디케어">
+      <div class="category-overlay">
+        <h3>바디케어</h3>
+        <span>Body Care</span>
+      </div>
+    </div>
+    <div class="category-card" onclick="filterByCategory('perfume')">
+      <img class="category-img" src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=600&q=80" alt="향수">
+      <div class="category-overlay">
+        <h3>향수</h3>
+        <span>Perfume</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Products -->
+<section class="section" id="products">
+  <div class="section-header">
+    <h2>인기 상품</h2>
+    <p>고객들이 가장 사랑하는 베스트셀러를 확인하세요</p>
+  </div>
+
+  <!-- Skin Type Filter -->
+  <div class="filter-bar">
+    <span class="filter-label">피부 타입</span>
+    <button class="filter-btn active" data-skin="all" onclick="filterBySkin('all', this)">전체</button>
+    <button class="filter-btn" data-skin="dry" onclick="filterBySkin('dry', this)">건성</button>
+    <button class="filter-btn" data-skin="oily" onclick="filterBySkin('oily', this)">지성</button>
+    <button class="filter-btn" data-skin="combination" onclick="filterBySkin('combination', this)">복합성</button>
+    <button class="filter-btn" data-skin="sensitive" onclick="filterBySkin('sensitive', this)">민감성</button>
+  </div>
+
+  <div class="products-grid" id="productsGrid"></div>
+</section>
+
+<!-- Footer -->
+<footer class="footer" id="about">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">BLOOM<span>Beauty Store</span></div>
+      <p>당신의 피부에 맞는 최적의 뷰티 솔루션을 제공합니다. 엄선된 브랜드와 성분으로 건강한 아름다움을 선사합니다.</p>
+    </div>
+    <div>
+      <h4>쇼핑</h4>
+      <ul>
+        <li><a href="#categories">스킨케어</a></li>
+        <li><a href="#categories">메이크업</a></li>
+        <li><a href="#categories">바디케어</a></li>
+        <li><a href="#categories">향수</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>고객 지원</h4>
+      <ul>
+        <li><a href="#">배송 안내</a></li>
+        <li><a href="#">교환 및 반품</a></li>
+        <li><a href="#">자주 묻는 질문</a></li>
+        <li><a href="#">1:1 문의</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>회사 정보</h4>
+      <ul>
+        <li><a href="#">브랜드 소개</a></li>
+        <li><a href="#">이용 약관</a></li>
+        <li><a href="#">개인정보 처리방침</a></li>
+        <li><a href="#">사업자 정보</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2026 BLOOM Beauty Store. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- Product Detail Modal -->
+<div class="modal-overlay" id="productModal">
+  <div class="modal" style="position:relative;">
+    <button class="modal-close" id="modalClose">&times;</button>
+    <div class="modal-header">
+      <img class="modal-img" id="modalImg" src="" alt="">
+      <div class="modal-info">
+        <div class="modal-brand" id="modalBrand"></div>
+        <h2 class="modal-name" id="modalName"></h2>
+        <div class="modal-tags" id="modalTags"></div>
+        <div class="product-rating">
+          <span class="stars" id="modalStars"></span>
+          <span class="rating-count" id="modalRatingCount"></span>
+        </div>
+        <div class="modal-price" id="modalPrice"></div>
+        <div class="modal-add-cart">
+          <div class="modal-qty">
+            <button onclick="changeModalQty(-1)">&minus;</button>
+            <span id="modalQty">1</span>
+            <button onclick="changeModalQty(1)">+</button>
+          </div>
+          <button class="modal-cart-btn" id="modalCartBtn">장바구니 담기</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <h4>&#x1f9ea; 주요 성분</h4>
+      <p id="modalIngredients"></p>
+    </div>
+    <div class="modal-section">
+      <h4>&#x1f4cb; 사용법</h4>
+      <p id="modalUsage"></p>
+    </div>
+  </div>
+</div>
+
+<!-- Cart Drawer -->
+<div class="cart-overlay" id="cartOverlay"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-drawer-header">
+    <h3>장바구니</h3>
+    <button class="cart-close" id="cartClose">&times;</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty" id="cartEmpty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      <p>장바구니가 비어있습니다</p>
+    </div>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span>합계</span>
+      <strong id="cartTotal">0원</strong>
+    </div>
+    <button class="checkout-btn" onclick="alert('결제 기능은 준비 중입니다!')">결제하기</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// Product Data
+const products = [
+  {
+    id: 1, brand: "설화수", name: "자음생 에센스 리뉴", price: 120000, originalPrice: 150000,
+    category: "skincare", skinType: ["dry", "combination", "sensitive"],
+    tag: "best", rating: 4.8, reviews: 2341,
+    image: "https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd?w=500&q=80",
+    ingredients: "인삼 사포닌, 자음단 콤플렉스, 녹차 추출물, 히알루론산. 한방 성분이 피부 깊숙이 수분을 공급하고 탄력을 부여합니다.",
+    usage: "세안 후 토너 다음 단계에서 적당량을 덜어 얼굴 안쪽에서 바깥쪽으로 부드럽게 펴 발라주세요. 아침, 저녁으로 사용하시면 더욱 효과적입니다."
+  },
+  {
+    id: 2, brand: "라네즈", name: "워터 슬리핑 마스크", price: 32000, originalPrice: null,
+    category: "skincare", skinType: ["dry", "combination"],
+    tag: "new", rating: 4.6, reviews: 1876,
+    image: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=500&q=80",
+    ingredients: "수면 중 미생물 밸런스 기술, 스쿠알란, 프로바이오틱스, 라벤더 오일. 밤사이 피부 장벽을 강화합니다.",
+    usage: "저녁 스킨케어 마지막 단계에서 적당량을 얼굴에 고르게 펴 바른 후 그대로 취침합니다. 다음 날 아침 미온수로 세안하세요."
+  },
+  {
+    id: 3, brand: "이니스프리", name: "그린티 씨드 세럼", price: 28000, originalPrice: 35000,
+    category: "skincare", skinType: ["oily", "combination"],
+    tag: "sale", rating: 4.5, reviews: 3210,
+    image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500&q=80",
+    ingredients: "제주 녹차씨 오일, 녹차 추출물 16종 아미노산, 베타글루칸. 항산화 성분이 풍부하여 피부를 보호합니다.",
+    usage: "토너 사용 후 2~3방울을 손바닥에 덜어 체온으로 따뜻하게 한 뒤 얼굴에 가볍게 프레스하며 흡수시켜 주세요."
+  },
+  {
+    id: 4, brand: "헤라", name: "블랙 쿠션 SPF34", price: 52000, originalPrice: null,
+    category: "makeup", skinType: ["oily", "combination"],
+    tag: "best", rating: 4.7, reviews: 4521,
+    image: "https://images.unsplash.com/photo-1631214540553-ff044a3ff1ea?w=500&q=80",
+    ingredients: "카버 스테이 테크놀로지, 블랙 진주 추출물, 나이아신아마이드, 티타늄디옥사이드(자외선 차단). 커버력과 지속력을 모두 잡았습니다.",
+    usage: "퍼프에 적당량을 묻혀 얼굴 안쪽에서 바깥쪽으로 가볍게 두드리며 펴 발라주세요. 커버가 필요한 부위는 한 번 더 덧발라 주세요."
+  },
+  {
+    id: 5, brand: "롬앤", name: "쥬시 래스팅 틴트 #09", price: 13000, originalPrice: null,
+    category: "makeup", skinType: ["dry", "oily", "combination", "sensitive"],
+    tag: "new", rating: 4.4, reviews: 5678,
+    image: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=500&q=80",
+    ingredients: "모이스처 코팅 성분, 히알루론산, 식물성 오일 블렌드, 비타민 E. 입술에 촉촉한 수분감을 부여합니다.",
+    usage: "입술 안쪽부터 바깥쪽으로 자연스럽게 그라데이션 하듯 발라주세요. 한 번 바른 후 잠시 건조시킨 뒤 한 번 더 덧바르면 발색이 오래 지속됩니다."
+  },
+  {
+    id: 6, brand: "클리오", name: "킬 커버 파운데이션", price: 29000, originalPrice: 36000,
+    category: "makeup", skinType: ["oily"],
+    tag: "sale", rating: 4.3, reviews: 2890,
+    image: "https://images.unsplash.com/photo-1596704017254-9759879d86a6?w=500&q=80",
+    ingredients: "킬 커버 앰플 성분, 세라마이드, 편백수, SPF30/PA++. 고밀착 테크놀로지가 피부에 자연스럽게 밀착됩니다.",
+    usage: "소량을 브러시 또는 스펀지에 덜어 얼굴 중앙부터 바깥쪽으로 얇고 균일하게 펴 발라주세요. 자연스러운 마무리를 위해 스펀지로 경계를 블렌딩하세요."
+  },
+  {
+    id: 7, brand: "아모레퍼시픽", name: "바디 크림 딥 모이스처", price: 45000, originalPrice: null,
+    category: "body", skinType: ["dry", "sensitive"],
+    tag: null, rating: 4.6, reviews: 1234,
+    image: "https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=500&q=80",
+    ingredients: "시어버터, 세라마이드 NP, 판테놀, 녹차씨 오일, 알로에 베라. 깊은 보습과 함께 피부 장벽을 강화합니다.",
+    usage: "샤워 후 물기가 남아있는 상태에서 적당량을 덜어 온몸에 부드럽게 마사지하듯 발라주세요. 건조한 부위에는 한 번 더 덧발라 주세요."
+  },
+  {
+    id: 8, brand: "일리윤", name: "세라마이드 아토 로션", price: 18000, originalPrice: 24000,
+    category: "body", skinType: ["dry", "sensitive"],
+    tag: "sale", rating: 4.7, reviews: 3456,
+    image: "https://images.unsplash.com/photo-1625772452859-1c03d5bf1137?w=500&q=80",
+    ingredients: "세라마이드, 콜레스테롤, 지방산 밸런스 기술, 판테놀, 마데카소사이드. 아토피 피부도 사용 가능한 저자극 포뮬러입니다.",
+    usage: "아침, 저녁 세안/샤워 후 적당량을 덜어 얼굴과 몸 전체에 부드럽게 펴 발라주세요. 특히 건조한 부위에 집중적으로 발라주면 좋습니다."
+  },
+  {
+    id: 9, brand: "닥터자르트", name: "시카페어 바디 워시", price: 22000, originalPrice: null,
+    category: "body", skinType: ["sensitive", "combination"],
+    tag: "new", rating: 4.5, reviews: 987,
+    image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=500&q=80",
+    ingredients: "센텔라아시아티카, 마데카소사이드, 티트리 오일, 약산성 pH 5.5. 민감한 피부를 진정시키며 부드럽게 세정합니다.",
+    usage: "적당량을 젖은 손이나 타올에 덜어 충분히 거품을 낸 후 온몸에 부드럽게 마사지하듯 씻어주세요. 미온수로 깨끗이 헹궈주세요."
+  },
+  {
+    id: 10, brand: "딥티크", name: "오 드 퍼퓸 도손", price: 198000, originalPrice: null,
+    category: "perfume", skinType: ["dry", "oily", "combination", "sensitive"],
+    tag: "best", rating: 4.9, reviews: 876,
+    image: "https://images.unsplash.com/photo-1594035910387-fbd1a485b12e?w=500&q=80",
+    ingredients: "튜베로즈 앱솔루트, 핑크 페퍼, 오렌지 블라썸, 화이트 머스크. 관능적이면서도 우아한 플로럴 향입니다.",
+    usage: "손목 안쪽, 귀 뒤, 목 옆 등 맥박이 뛰는 곳에 1~2회 분사하세요. 향이 은은하게 퍼지며 6~8시간 지속됩니다."
+  },
+  {
+    id: 11, brand: "조말론", name: "잉글리쉬 페어 & 프리지아", price: 165000, originalPrice: 185000,
+    category: "perfume", skinType: ["dry", "oily", "combination", "sensitive"],
+    tag: "sale", rating: 4.8, reviews: 2134,
+    image: "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?w=500&q=80",
+    ingredients: "잉글리쉬 페어(서양배), 화이트 프리지아, 패출리, 앰버, 화이트 머스크. 과일과 꽃의 조화로운 향이 특징입니다.",
+    usage: "펄스 포인트(손목, 목, 귀 뒤)에 가볍게 스프레이하세요. 다른 조말론 향수와 레이어링하면 나만의 시그니처 향을 만들 수 있습니다."
+  },
+  {
+    id: 12, brand: "바이레도", name: "집시 워터 오 드 퍼퓸", price: 220000, originalPrice: null,
+    category: "perfume", skinType: ["dry", "oily", "combination", "sensitive"],
+    tag: "new", rating: 4.7, reviews: 654,
+    image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=500&q=80",
+    ingredients: "주니퍼 베리, 레몬, 페퍼, 인센스, 파인 니들, 샌달우드, 바닐라. 자유롭고 신비로운 분위기의 우디 향입니다.",
+    usage: "의류나 피부의 펄스 포인트에 20~30cm 거리에서 1~2회 분사하세요. 아침에 사용하면 하루 종일 은은한 잔향을 즐길 수 있습니다."
+  }
+];
+
+// State
+let cart = [];
+let currentModalProduct = null;
+let modalQty = 1;
+let currentSkinFilter = 'all';
+let currentCategoryFilter = 'all';
+
+// Render Products
+function renderProducts() {
+  const grid = document.getElementById('productsGrid');
+  grid.innerHTML = '';
+
+  products.forEach(p => {
+    const skinMatch = currentSkinFilter === 'all' || p.skinType.includes(currentSkinFilter);
+    const catMatch = currentCategoryFilter === 'all' || p.category === currentCategoryFilter;
+
+    if (!skinMatch || !catMatch) return;
+
+    const stars = generateStars(p.rating);
+    const tagHtml = p.tag ? `<span class="product-tag ${p.tag}">${p.tag === 'new' ? 'NEW' : p.tag === 'best' ? 'BEST' : 'SALE'}</span>` : '';
+    const priceHtml = p.originalPrice
+      ? `<span class="original">${p.originalPrice.toLocaleString()}원</span>${p.price.toLocaleString()}원`
+      : `${p.price.toLocaleString()}원`;
+
+    const skinLabels = { dry: '건성', oily: '지성', combination: '복합성', sensitive: '민감성' };
+    const skinTagsHtml = p.skinType.map(s => `<span class="skin-tag">${skinLabels[s]}</span>`).join('');
+
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.innerHTML = `
+      <div class="product-img-wrap" onclick="openModal(${p.id})">
+        ${tagHtml}
+        <button class="product-wish" onclick="event.stopPropagation(); showToast('위시리스트에 추가되었습니다')" aria-label="위시리스트 추가">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+        <img src="${p.image}" alt="${p.name}" loading="lazy">
+      </div>
+      <div class="product-info" onclick="openModal(${p.id})">
+        <div class="product-brand">${p.brand}</div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-skin-tags">${skinTagsHtml}</div>
+        <div class="product-rating">
+          <span class="stars">${stars}</span>
+          <span class="rating-count">(${p.reviews.toLocaleString()})</span>
+        </div>
+        <div class="product-price-row">
+          <span class="product-price">${priceHtml}</span>
+        </div>
+      </div>
+      <div style="padding:0 16px 16px;">
+        <button class="add-cart-btn" style="width:100%;border-radius:50px;height:40px;" onclick="event.stopPropagation(); addToCart(${p.id})" aria-label="장바구니 담기">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  if (!grid.children.length) {
+    grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--gray-400);padding:60px 0;">해당 조건에 맞는 상품이 없습니다.</p>';
+  }
+}
+
+function generateStars(rating) {
+  const full = Math.floor(rating);
+  const half = rating % 1 >= 0.5 ? 1 : 0;
+  const empty = 5 - full - half;
+  return '\u2605'.repeat(full) + (half ? '\u00BD' : '') + '\u2606'.repeat(empty);
+}
+
+// Filters
+function filterBySkin(skin, btn) {
+  currentSkinFilter = skin;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProducts();
+}
+
+function filterByCategory(cat) {
+  currentCategoryFilter = cat;
+  currentSkinFilter = 'all';
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.filter-btn[data-skin="all"]').classList.add('active');
+  renderProducts();
+  document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Modal
+function openModal(id) {
+  const p = products.find(pr => pr.id === id);
+  if (!p) return;
+  currentModalProduct = p;
+  modalQty = 1;
+
+  document.getElementById('modalImg').src = p.image;
+  document.getElementById('modalImg').alt = p.name;
+  document.getElementById('modalBrand').textContent = p.brand;
+  document.getElementById('modalName').textContent = p.name;
+  document.getElementById('modalPrice').textContent = p.price.toLocaleString() + '원';
+  document.getElementById('modalStars').textContent = generateStars(p.rating);
+  document.getElementById('modalRatingCount').textContent = `${p.rating} (${p.reviews.toLocaleString()}개 리뷰)`;
+  document.getElementById('modalIngredients').textContent = p.ingredients;
+  document.getElementById('modalUsage').textContent = p.usage;
+  document.getElementById('modalQty').textContent = '1';
+
+  const skinLabels = { dry: '건성', oily: '지성', combination: '복합성', sensitive: '민감성' };
+  document.getElementById('modalTags').innerHTML = p.skinType.map(s => `<span class="modal-tag">${skinLabels[s]}</span>`).join('');
+
+  document.getElementById('modalCartBtn').onclick = () => {
+    addToCart(p.id, modalQty);
+    closeModal();
+  };
+
+  document.getElementById('productModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('productModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function changeModalQty(delta) {
+  modalQty = Math.max(1, modalQty + delta);
+  document.getElementById('modalQty').textContent = modalQty;
+}
+
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('productModal').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) closeModal();
+});
+
+// Cart
+function addToCart(id, qty = 1) {
+  const p = products.find(pr => pr.id === id);
+  if (!p) return;
+  const existing = cart.find(c => c.id === id);
+  if (existing) {
+    existing.qty += qty;
+  } else {
+    cart.push({ ...p, qty });
+  }
+  updateCart();
+  showToast(`${p.name} ${qty}개가 장바구니에 추가되었습니다`);
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(c => c.id !== id);
+  updateCart();
+}
+
+function changeCartQty(id, delta) {
+  const item = cart.find(c => c.id === id);
+  if (!item) return;
+  item.qty = Math.max(1, item.qty + delta);
+  updateCart();
+}
+
+function updateCart() {
+  const badge = document.getElementById('cartBadge');
+  const totalCount = cart.reduce((s, c) => s + c.qty, 0);
+  badge.textContent = totalCount;
+  badge.classList.toggle('empty', totalCount === 0);
+
+  const itemsEl = document.getElementById('cartItems');
+  const emptyEl = document.getElementById('cartEmpty');
+  const totalEl = document.getElementById('cartTotal');
+
+  if (cart.length === 0) {
+    itemsEl.innerHTML = '';
+    itemsEl.appendChild(emptyEl);
+    emptyEl.style.display = '';
+    totalEl.textContent = '0원';
+    return;
+  }
+
+  emptyEl.style.display = 'none';
+  itemsEl.innerHTML = '';
+
+  let total = 0;
+  cart.forEach(item => {
+    total += item.price * item.qty;
+    const div = document.createElement('div');
+    div.className = 'cart-item';
+    div.innerHTML = `
+      <img src="${item.image}" alt="${item.name}">
+      <div class="cart-item-info">
+        <div class="cart-item-brand">${item.brand}</div>
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-bottom">
+          <span class="cart-item-price">${(item.price * item.qty).toLocaleString()}원</span>
+          <div class="cart-item-qty">
+            <button onclick="changeCartQty(${item.id}, -1)">&minus;</button>
+            <span>${item.qty}</span>
+            <button onclick="changeCartQty(${item.id}, 1)">+</button>
+          </div>
+        </div>
+        <button class="cart-item-remove" onclick="removeFromCart(${item.id})">삭제</button>
+      </div>
+    `;
+    itemsEl.appendChild(div);
+  });
+
+  totalEl.textContent = total.toLocaleString() + '원';
+}
+
+// Cart Drawer Toggle
+function openCart() {
+  document.getElementById('cartDrawer').classList.add('active');
+  document.getElementById('cartOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCart() {
+  document.getElementById('cartDrawer').classList.remove('active');
+  document.getElementById('cartOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('cartToggle').addEventListener('click', openCart);
+document.getElementById('cartClose').addEventListener('click', closeCart);
+document.getElementById('cartOverlay').addEventListener('click', closeCart);
+
+// Toast
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// Header scroll
+window.addEventListener('scroll', () => {
+  document.getElementById('header').classList.toggle('scrolled', window.scrollY > 10);
+});
+
+// Mobile menu
+document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+  const nav = document.querySelector('.nav');
+  if (nav.style.display === 'flex') {
+    nav.style.display = 'none';
+  } else {
+    nav.style.display = 'flex';
+    nav.style.position = 'absolute';
+    nav.style.top = '72px';
+    nav.style.left = '0';
+    nav.style.right = '0';
+    nav.style.background = 'white';
+    nav.style.flexDirection = 'column';
+    nav.style.padding = '20px 24px';
+    nav.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+    nav.style.gap = '16px';
+  }
+});
+
+// Keyboard
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeModal();
+    closeCart();
+  }
+});
+
+// Init
+renderProducts();
+</script>
+</body>
+</html>

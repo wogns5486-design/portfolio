@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>감성 일기장</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#FFF8F0;--card:#FFFFFF;--primary:#FF9AA2;--primary-light:#FFE0E3;
+  --secondary:#B5EAD7;--accent:#FFDAC1;--purple:#C7CEEA;--yellow:#FFFFD8;
+  --text:#4A4A4A;--text-light:#8A8A8A;--border:#F0E6D8;
+  --shadow:0 4px 20px rgba(0,0,0,0.06);--radius:16px;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+button{cursor:pointer;font-family:inherit;border:none;outline:none}
+input,textarea{font-family:inherit;outline:none;border:none}
+
+/* Header */
+.header{background:linear-gradient(135deg,var(--primary-light),var(--accent),var(--secondary));padding:20px 24px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(255,154,162,0.2)}
+.header h1{font-size:1.5rem;font-weight:700;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,0.1)}
+.header p{font-size:.8rem;color:rgba(255,255,255,.85);margin-top:2px}
+
+/* Layout */
+.app{max-width:900px;margin:0 auto;padding:16px}
+.tabs{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px}
+.tab-btn{padding:10px 20px;border-radius:30px;background:var(--card);color:var(--text-light);font-size:.85rem;font-weight:500;box-shadow:var(--shadow);white-space:nowrap;transition:.2s}
+.tab-btn.active{background:var(--primary);color:#fff}
+.tab-btn:hover:not(.active){background:var(--primary-light);color:var(--primary)}
+
+.panel{display:none}
+.panel.active{display:block}
+
+/* Search */
+.search-bar{display:flex;gap:8px;margin-bottom:16px}
+.search-bar input{flex:1;padding:12px 16px;border-radius:30px;background:var(--card);box-shadow:var(--shadow);font-size:.9rem;color:var(--text)}
+.search-bar input::placeholder{color:var(--text-light)}
+.search-bar button{padding:12px 20px;border-radius:30px;background:var(--primary);color:#fff;font-weight:600;font-size:.85rem;box-shadow:var(--shadow)}
+
+/* Calendar */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.cal-header h2{font-size:1.1rem;font-weight:600}
+.cal-nav{display:flex;gap:8px}
+.cal-nav button{width:36px;height:36px;border-radius:50%;background:var(--card);box-shadow:var(--shadow);font-size:1rem;color:var(--text);display:flex;align-items:center;justify-content:center}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:16px}
+.cal-day-label{text-align:center;font-size:.7rem;font-weight:600;color:var(--text-light);padding:8px 0}
+.cal-day{aspect-ratio:1;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.85rem;background:var(--card);box-shadow:0 1px 6px rgba(0,0,0,0.04);cursor:pointer;transition:.2s;position:relative}
+.cal-day:hover{transform:scale(1.05);box-shadow:var(--shadow)}
+.cal-day.empty{background:transparent;box-shadow:none;cursor:default}
+.cal-day.empty:hover{transform:none}
+.cal-day.today{border:2px solid var(--primary);font-weight:700}
+.cal-day.has-entry{background:var(--primary-light)}
+.cal-day .mood-dot{font-size:.65rem;margin-top:1px}
+.cal-day.sunday{color:#FF6B6B}
+.cal-day.saturday{color:#5B9BD5}
+
+/* Editor Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:200;align-items:center;justify-content:center;padding:16px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--card);border-radius:var(--radius);padding:24px;width:100%;max-width:540px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,0.15);animation:slideUp .3s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.modal-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.modal-top h3{font-size:1.1rem;font-weight:600}
+.modal-close{width:32px;height:32px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--text-light)}
+
+.editor-date{font-size:.85rem;color:var(--text-light);margin-bottom:16px}
+.mood-picker{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.mood-picker label{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer}
+.mood-picker input{display:none}
+.mood-picker .mood-icon{font-size:1.8rem;padding:8px;border-radius:12px;background:var(--yellow);transition:.2s;border:2px solid transparent}
+.mood-picker input:checked+.mood-icon{border-color:var(--primary);background:var(--primary-light);transform:scale(1.15)}
+.mood-picker .mood-label{font-size:.65rem;color:var(--text-light)}
+
+.editor-field{margin-bottom:12px}
+.editor-field label{display:block;font-size:.8rem;font-weight:600;color:var(--text-light);margin-bottom:6px}
+.editor-field input,.editor-field textarea{width:100%;padding:12px;border-radius:12px;background:#FAFAFA;font-size:.9rem;color:var(--text);border:1px solid var(--border);transition:.2s}
+.editor-field input:focus,.editor-field textarea:focus{border-color:var(--primary);background:#fff}
+.editor-field textarea{min-height:140px;resize:vertical;line-height:1.7}
+
+.photo-section{margin-bottom:16px}
+.photo-section label.upload-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:12px;background:var(--purple);color:var(--text);font-size:.85rem;font-weight:500;cursor:pointer;transition:.2s}
+.photo-section label.upload-btn:hover{opacity:.85}
+.photo-section input{display:none}
+.photo-preview{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.photo-preview .thumb{position:relative;width:80px;height:80px;border-radius:10px;overflow:hidden;box-shadow:var(--shadow)}
+.photo-preview .thumb img{width:100%;height:100%;object-fit:cover}
+.photo-preview .thumb .remove{position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,0.5);color:#fff;font-size:.7rem;display:flex;align-items:center;justify-content:center;cursor:pointer}
+
+.editor-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.btn-save{padding:12px 28px;border-radius:30px;background:var(--primary);color:#fff;font-weight:600;font-size:.9rem;box-shadow:0 4px 12px rgba(255,154,162,0.3);transition:.2s}
+.btn-save:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(255,154,162,0.4)}
+.btn-delete{padding:12px 20px;border-radius:30px;background:#FFE0E0;color:#E55;font-weight:600;font-size:.85rem}
+
+/* Entry List */
+.entry-list{display:flex;flex-direction:column;gap:10px}
+.entry-card{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);cursor:pointer;transition:.2s;border-left:4px solid var(--primary)}
+.entry-card:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,0.08)}
+.entry-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.entry-card-date{font-size:.8rem;color:var(--text-light);font-weight:500}
+.entry-card-mood{font-size:1.2rem}
+.entry-card h4{font-size:.95rem;font-weight:600;margin-bottom:4px}
+.entry-card p{font-size:.82rem;color:var(--text-light);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.entry-card .entry-photos{display:flex;gap:4px;margin-top:8px}
+.entry-card .entry-photos img{width:40px;height:40px;border-radius:6px;object-fit:cover}
+
+/* Stats */
+.stat-card{background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin-bottom:16px}
+.stat-card h3{font-size:1rem;font-weight:600;margin-bottom:16px}
+.stat-summary{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:20px}
+.stat-item{text-align:center;padding:12px 4px;border-radius:12px;background:var(--yellow)}
+.stat-item .emoji{font-size:1.4rem}
+.stat-item .count{font-size:1.1rem;font-weight:700;margin-top:4px}
+.stat-item .label{font-size:.65rem;color:var(--text-light);margin-top:2px}
+.chart-wrap{position:relative;width:100%;max-width:400px;margin:0 auto}
+.chart-wrap canvas{width:100%!important;height:auto!important}
+
+.no-data{text-align:center;padding:40px 20px;color:var(--text-light);font-size:.9rem}
+
+/* Highlight */
+mark{background:var(--accent);border-radius:3px;padding:0 2px}
+
+/* Responsive */
+@media(max-width:480px){
+  .app{padding:10px}
+  .modal{padding:16px}
+  .stat-summary{grid-template-columns:repeat(3,1fr)}
+  .cal-day{font-size:.75rem;border-radius:8px}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📖 감성 일기장</h1>
+  <p>나만의 소중한 하루를 기록하세요</p>
+</div>
+
+<div class="app">
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="calendar">📅 캘린더</button>
+    <button class="tab-btn" data-tab="list">📋 일기 목록</button>
+    <button class="tab-btn" data-tab="stats">📊 기분 통계</button>
+  </div>
+
+  <!-- Calendar Panel -->
+  <div class="panel active" id="panel-calendar">
+    <div class="cal-header">
+      <div class="cal-nav"><button onclick="changeMonth(-1)">◀</button></div>
+      <h2 id="cal-title"></h2>
+      <div class="cal-nav"><button onclick="changeMonth(1)">▶</button></div>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+    <button class="btn-save" style="width:100%" onclick="openEditor(todayStr())">✏️ 오늘 일기 쓰기</button>
+  </div>
+
+  <!-- List Panel -->
+  <div class="panel" id="panel-list">
+    <div class="search-bar">
+      <input type="text" id="search-input" placeholder="제목, 내용으로 검색..." oninput="renderList()">
+      <button onclick="renderList()">검색</button>
+    </div>
+    <div class="entry-list" id="entry-list"></div>
+  </div>
+
+  <!-- Stats Panel -->
+  <div class="panel" id="panel-stats">
+    <div class="stat-card">
+      <h3>이번 달 기분 요약</h3>
+      <div class="stat-summary" id="stat-summary"></div>
+    </div>
+    <div class="stat-card">
+      <h3>기분 분포 차트</h3>
+      <div class="chart-wrap"><canvas id="mood-chart" width="400" height="400"></canvas></div>
+    </div>
+    <div class="stat-card">
+      <h3>월별 기분 추이</h3>
+      <div class="chart-wrap"><canvas id="trend-chart" width="400" height="250"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- Editor Modal -->
+<div class="modal-overlay" id="editor-overlay">
+  <div class="modal">
+    <div class="modal-top">
+      <h3 id="editor-title">일기 작성</h3>
+      <button class="modal-close" onclick="closeEditor()">✕</button>
+    </div>
+    <div class="editor-date" id="editor-date"></div>
+
+    <p style="font-size:.85rem;font-weight:600;margin-bottom:8px">오늘의 기분</p>
+    <div class="mood-picker" id="mood-picker"></div>
+
+    <div class="editor-field">
+      <label>제목</label>
+      <input type="text" id="ed-title" placeholder="오늘의 한 줄 제목">
+    </div>
+    <div class="editor-field">
+      <label>본문</label>
+      <textarea id="ed-body" placeholder="오늘 하루는 어땠나요?"></textarea>
+    </div>
+
+    <div class="photo-section">
+      <label class="upload-btn" for="ed-photo">📷 사진 첨부</label>
+      <input type="file" id="ed-photo" accept="image/*" multiple onchange="handlePhotos(this)">
+      <div class="photo-preview" id="photo-preview"></div>
+    </div>
+
+    <div class="editor-actions">
+      <button class="btn-delete" id="btn-del" onclick="deleteEntry()" style="display:none">삭제</button>
+      <button class="btn-save" onclick="saveEntry()">저장하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Data
+const MOODS = [
+  {id:'happy',emoji:'😊',label:'행복'},
+  {id:'neutral',emoji:'😐',label:'보통'},
+  {id:'sad',emoji:'😢',label:'슬픔'},
+  {id:'angry',emoji:'😡',label:'화남'},
+  {id:'love',emoji:'🥰',label:'설렘'}
+];
+const MOOD_COLORS = {happy:'#FFB7B2',neutral:'#B5EAD7',sad:'#C7CEEA',angry:'#FF9AA2',love:'#FFDAC1'};
+
+let currentYear, currentMonth, editingDate, editingPhotos=[];
+
+function loadEntries(){ return JSON.parse(localStorage.getItem('diary_entries')||'{}'); }
+function saveEntries(d){ localStorage.setItem('diary_entries',JSON.stringify(d)); }
+function todayStr(){ const t=new Date(); return `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`; }
+function fmtDate(s){ const [y,m,d]=s.split('-'); return `${y}년 ${+m}월 ${+d}일`; }
+function getDayName(s){ return ['일','월','화','수','목','금','토'][new Date(s).getDay()]; }
+
+// Tabs
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+    if(btn.dataset.tab==='list') renderList();
+    if(btn.dataset.tab==='stats') renderStats();
+  });
+});
+
+// Calendar
+function initCal(){ const t=new Date(); currentYear=t.getFullYear(); currentMonth=t.getMonth(); renderCal(); }
+function changeMonth(d){ currentMonth+=d; if(currentMonth<0){currentMonth=11;currentYear--} if(currentMonth>11){currentMonth=0;currentYear++} renderCal(); }
+function renderCal(){
+  document.getElementById('cal-title').textContent=`${currentYear}년 ${currentMonth+1}월`;
+  const grid=document.getElementById('cal-grid');
+  grid.innerHTML='';
+  const labels=['일','월','화','수','목','금','토'];
+  labels.forEach((l,i)=>{
+    const el=document.createElement('div');
+    el.className='cal-day-label';
+    el.textContent=l;
+    if(i===0) el.style.color='#FF6B6B';
+    if(i===6) el.style.color='#5B9BD5';
+    grid.appendChild(el);
+  });
+  const first=new Date(currentYear,currentMonth,1).getDay();
+  const days=new Date(currentYear,currentMonth+1,0).getDate();
+  const entries=loadEntries();
+  const today=todayStr();
+  for(let i=0;i<first;i++){const el=document.createElement('div');el.className='cal-day empty';grid.appendChild(el);}
+  for(let d=1;d<=days;d++){
+    const el=document.createElement('div');
+    const ds=`${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dayOfWeek=(first+d-1)%7;
+    el.className='cal-day';
+    if(ds===today) el.classList.add('today');
+    if(dayOfWeek===0) el.classList.add('sunday');
+    if(dayOfWeek===6) el.classList.add('saturday');
+    if(entries[ds]){
+      el.classList.add('has-entry');
+      const m=MOODS.find(x=>x.id===entries[ds].mood);
+      el.innerHTML=`${d}<span class="mood-dot">${m?m.emoji:''}</span>`;
+    } else {
+      el.textContent=d;
+    }
+    el.onclick=()=>openEditor(ds);
+    grid.appendChild(el);
+  }
+}
+
+// Mood Picker
+function buildMoodPicker(){
+  const c=document.getElementById('mood-picker');
+  c.innerHTML='';
+  MOODS.forEach(m=>{
+    c.innerHTML+=`<label><input type="radio" name="mood" value="${m.id}"><span class="mood-icon">${m.emoji}</span><span class="mood-label">${m.label}</span></label>`;
+  });
+}
+
+// Editor
+function openEditor(dateStr){
+  editingDate=dateStr;
+  const entries=loadEntries();
+  const entry=entries[dateStr];
+  document.getElementById('editor-date').textContent=fmtDate(dateStr)+' '+getDayName(dateStr)+'요일';
+  document.getElementById('editor-title').textContent=entry?'일기 수정':'일기 작성';
+  buildMoodPicker();
+  if(entry){
+    const radio=document.querySelector(`input[name="mood"][value="${entry.mood}"]`);
+    if(radio) radio.checked=true;
+    document.getElementById('ed-title').value=entry.title||'';
+    document.getElementById('ed-body').value=entry.body||'';
+    editingPhotos=entry.photos||[];
+    document.getElementById('btn-del').style.display='block';
+  } else {
+    document.getElementById('ed-title').value='';
+    document.getElementById('ed-body').value='';
+    editingPhotos=[];
+    document.getElementById('btn-del').style.display='none';
+  }
+  renderPhotoPreviews();
+  document.getElementById('editor-overlay').classList.add('open');
+}
+function closeEditor(){ document.getElementById('editor-overlay').classList.remove('open'); }
+function saveEntry(){
+  const mood=document.querySelector('input[name="mood"]:checked');
+  if(!mood){alert('기분을 선택해주세요!');return;}
+  const title=document.getElementById('ed-title').value.trim();
+  const body=document.getElementById('ed-body').value.trim();
+  if(!title&&!body){alert('제목이나 본문을 입력해주세요!');return;}
+  const entries=loadEntries();
+  entries[editingDate]={mood:mood.value,title,body,photos:editingPhotos,updatedAt:Date.now()};
+  saveEntries(entries);
+  closeEditor();
+  renderCal();
+}
+function deleteEntry(){
+  if(!confirm('이 일기를 삭제하시겠습니까?')) return;
+  const entries=loadEntries();
+  delete entries[editingDate];
+  saveEntries(entries);
+  closeEditor();
+  renderCal();
+}
+
+// Photos
+function handlePhotos(input){
+  const files=Array.from(input.files);
+  files.forEach(f=>{
+    const reader=new FileReader();
+    reader.onload=e=>{editingPhotos.push(e.target.result);renderPhotoPreviews();};
+    reader.readAsDataURL(f);
+  });
+  input.value='';
+}
+function renderPhotoPreviews(){
+  const c=document.getElementById('photo-preview');
+  c.innerHTML='';
+  editingPhotos.forEach((src,i)=>{
+    c.innerHTML+=`<div class="thumb"><img src="${src}"><div class="remove" onclick="removePhoto(${i})">✕</div></div>`;
+  });
+}
+function removePhoto(i){ editingPhotos.splice(i,1); renderPhotoPreviews(); }
+
+// List
+function renderList(){
+  const q=document.getElementById('search-input').value.trim().toLowerCase();
+  const entries=loadEntries();
+  const sorted=Object.keys(entries).sort((a,b)=>b.localeCompare(a));
+  const list=document.getElementById('entry-list');
+  let html='';
+  let count=0;
+  sorted.forEach(ds=>{
+    const e=entries[ds];
+    const matchTitle=(e.title||'').toLowerCase().includes(q);
+    const matchBody=(e.body||'').toLowerCase().includes(q);
+    if(q&&!matchTitle&&!matchBody) return;
+    const m=MOODS.find(x=>x.id===e.mood);
+    let title=e.title||'(제목 없음)';
+    let body=e.body||'';
+    if(q){
+      title=highlight(title,q);
+      body=highlight(body,q);
+    }
+    let photos='';
+    if(e.photos&&e.photos.length){
+      photos='<div class="entry-photos">'+e.photos.slice(0,3).map(s=>`<img src="${s}">`).join('')+'</div>';
+    }
+    html+=`<div class="entry-card" onclick="openEditor('${ds}')">
+      <div class="entry-card-top"><span class="entry-card-date">${fmtDate(ds)} ${getDayName(ds)}요일</span><span class="entry-card-mood">${m?m.emoji:''}</span></div>
+      <h4>${title}</h4><p>${body}</p>${photos}</div>`;
+    count++;
+  });
+  if(!count) html='<div class="no-data">작성된 일기가 없습니다 ✨<br>캘린더에서 날짜를 눌러 첫 일기를 써보세요!</div>';
+  list.innerHTML=html;
+}
+function highlight(text,q){
+  if(!q) return text;
+  const re=new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'gi');
+  return text.replace(re,'<mark>$1</mark>');
+}
+
+// Stats
+function renderStats(){
+  const entries=loadEntries();
+  const keys=Object.keys(entries);
+  // Current month filter
+  const ym=`${currentYear}-${String(currentMonth+1).padStart(2,'0')}`;
+  const monthKeys=keys.filter(k=>k.startsWith(ym));
+  const counts={};
+  MOODS.forEach(m=>counts[m.id]=0);
+  monthKeys.forEach(k=>{const e=entries[k];if(counts[e.mood]!==undefined)counts[e.mood]++;});
+  // Summary
+  const sumEl=document.getElementById('stat-summary');
+  sumEl.innerHTML='';
+  MOODS.forEach(m=>{
+    sumEl.innerHTML+=`<div class="stat-item"><div class="emoji">${m.emoji}</div><div class="count">${counts[m.id]}</div><div class="label">${m.label}</div></div>`;
+  });
+  // Pie chart
+  drawPieChart(counts);
+  // Trend chart
+  drawTrendChart(entries);
+}
+
+function drawPieChart(counts){
+  const canvas=document.getElementById('mood-chart');
+  const ctx=canvas.getContext('2d');
+  const size=400;
+  canvas.width=size;canvas.height=size;
+  ctx.clearRect(0,0,size,size);
+  const total=Object.values(counts).reduce((a,b)=>a+b,0);
+  if(!total){
+    ctx.fillStyle='#ccc';ctx.font='16px Inter';ctx.textAlign='center';
+    ctx.fillText('데이터가 없습니다',size/2,size/2);return;
+  }
+  const cx=size/2,cy=size/2,r=150;
+  let start=-Math.PI/2;
+  MOODS.forEach(m=>{
+    const val=counts[m.id];if(!val)return;
+    const slice=(val/total)*Math.PI*2;
+    ctx.beginPath();ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r,start,start+slice);
+    ctx.fillStyle=MOOD_COLORS[m.id];ctx.fill();
+    // Label
+    const mid=start+slice/2;
+    const lx=cx+Math.cos(mid)*(r*0.65);
+    const ly=cy+Math.sin(mid)*(r*0.65);
+    ctx.fillStyle='#4A4A4A';ctx.font='bold 18px Inter';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(m.emoji,lx,ly-10);
+    ctx.font='13px Inter';
+    ctx.fillText(Math.round(val/total*100)+'%',lx,ly+12);
+    start+=slice;
+  });
+  // Center circle (donut)
+  ctx.beginPath();ctx.arc(cx,cy,80,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
+  ctx.fillStyle='var(--text)';ctx.font='bold 28px Inter';ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillStyle='#4A4A4A';
+  ctx.fillText(total+'일',cx,cy-8);
+  ctx.font='13px Inter';ctx.fillStyle='#8A8A8A';
+  ctx.fillText('기록됨',cx,cy+16);
+}
+
+function drawTrendChart(entries){
+  const canvas=document.getElementById('trend-chart');
+  const ctx=canvas.getContext('2d');
+  const W=800,H=500;
+  canvas.width=W;canvas.height=H;
+  ctx.clearRect(0,0,W,H);
+  // Last 6 months
+  const months=[];
+  for(let i=5;i>=0;i--){
+    let m=currentMonth-i,y=currentYear;
+    while(m<0){m+=12;y--;}
+    months.push({y,m});
+  }
+  const data=months.map(({y,m})=>{
+    const ym=`${y}-${String(m+1).padStart(2,'0')}`;
+    const mEntries=Object.keys(entries).filter(k=>k.startsWith(ym));
+    const c={};MOODS.forEach(x=>c[x.id]=0);
+    mEntries.forEach(k=>{const e=entries[k];if(c[e.mood]!==undefined)c[e.mood]++;});
+    return {label:`${m+1}월`,counts:c,total:mEntries.length};
+  });
+  const maxVal=Math.max(1,...data.map(d=>d.total));
+  const pad={t:40,r:30,b:50,l:50};
+  const cw=W-pad.l-pad.r,ch=H-pad.t-pad.b;
+  const barGroupW=cw/data.length;
+  // Grid lines
+  ctx.strokeStyle='#F0E6D8';ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){
+    const y=pad.t+ch*(1-i/4);
+    ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke();
+    ctx.fillStyle='#8A8A8A';ctx.font='12px Inter';ctx.textAlign='right';ctx.textBaseline='middle';
+    ctx.fillText(Math.round(maxVal*i/4),pad.l-8,y);
+  }
+  // Stacked bars
+  data.forEach((d,i)=>{
+    const x=pad.l+i*barGroupW+barGroupW*0.2;
+    const w=barGroupW*0.6;
+    let accY=0;
+    MOODS.forEach(m=>{
+      const v=d.counts[m.id];if(!v)return;
+      const h=(v/maxVal)*ch;
+      ctx.fillStyle=MOOD_COLORS[m.id];
+      const ry=pad.t+ch-accY-h;
+      roundRect(ctx,x,ry,w,h,6);
+      ctx.fill();
+      accY+=h;
+    });
+    // Label
+    ctx.fillStyle='#4A4A4A';ctx.font='13px Inter';ctx.textAlign='center';ctx.textBaseline='top';
+    ctx.fillText(d.label,x+w/2,H-pad.b+10);
+  });
+}
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
+}
+
+// Close modal on overlay click
+document.getElementById('editor-overlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeEditor();});
+
+// Init
+initCal();
+</script>
+</body>
+</html>
