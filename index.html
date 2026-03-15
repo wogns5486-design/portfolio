@@ -924,67 +924,77 @@
     }
 
     @media (max-width: 640px) {
-      .projects-grid {
-        grid-template-columns: 1fr;
-      }
+      /* 가로 스크롤 방지 */
+      html, body { overflow-x: hidden; }
+      .container { padding: 0 20px; }
 
-      .project-card.featured {
-        grid-column: span 1;
-      }
+      /* 히어로 */
+      .hero { padding: 80px 20px 36px; min-height: auto; overflow: hidden; }
+      .hero-label { font-size: 0.7rem; letter-spacing: 3px; margin-bottom: 16px; }
+      .hero h1 { font-size: 1.8rem; line-height: 1.2; margin-bottom: 14px; }
+      .hero-desc { font-size: 0.9rem; line-height: 1.65; margin: 0 auto 24px; }
+      .hero-cta { padding: 14px 32px; font-size: 0.9rem; }
+      .hero-tags { gap: 6px; margin-bottom: 24px; }
+      .hero-tag { font-size: 0.68rem; padding: 5px 10px; }
 
-      .project-card.featured .project-thumb {
-        height: 200px;
-      }
+      /* 스탯바 */
+      .stats-bar { padding: 0 20px 40px; }
+      .stats-bar-inner { grid-template-columns: 1fr; gap: 10px; }
+      .stat-card { padding: 20px 16px; display: flex; align-items: center; gap: 16px; text-align: left; }
+      .stat-number { font-size: 2rem; margin-bottom: 0; min-width: 60px; }
+      .stat-label { font-size: 0.85rem; }
+      .stat-sublabel { font-size: 0.72rem; }
 
-      .hero {
-        padding: 100px 20px 40px;
-        min-height: auto;
-      }
+      /* 섹션 헤더 */
+      .section-header { margin-bottom: 28px; }
+      .section-label { font-size: 0.65rem; margin-bottom: 6px; }
+      .section-title { font-size: 1.5rem; }
 
-      .stats-bar-inner {
-        grid-template-columns: 1fr;
-        gap: 12px;
-      }
+      /* 밸류 섹션 */
+      .value-section { padding: 48px 0 12px; }
+      .value-grid { grid-template-columns: 1fr; gap: 12px; margin-top: 24px; }
+      .value-card { padding: 24px 20px; display: flex; gap: 16px; align-items: flex-start; }
+      .value-icon { font-size: 1.6rem; margin-bottom: 0; flex-shrink: 0; }
+      .value-title { font-size: 0.95rem; margin-bottom: 4px; }
+      .value-desc { font-size: 0.8rem; }
 
-      .stat-card {
-        padding: 24px 20px;
-      }
+      /* 프로젝트 */
+      .projects { padding: 40px 0 60px; overflow: hidden; }
+      .projects-grid { grid-template-columns: 1fr; gap: 16px; }
+      .project-card.featured { grid-column: span 1; }
+      .project-card.featured .project-thumb, .project-thumb { height: 180px; }
+      .project-info { padding: 18px 20px 22px; }
+      .project-info h3 { font-size: 1.05rem; }
+      .project-info p { font-size: 0.82rem; }
+      .project-tag { font-size: 0.65rem; padding: 3px 10px; }
+      .badge-live { font-size: 0.6rem; padding: 2px 8px; }
+      .project-link { font-size: 0.8rem; margin-top: 12px; }
+      .filter-bar { gap: 6px; margin-bottom: 24px; }
+      .filter-btn { padding: 8px 14px; font-size: 0.78rem; }
 
-      .stat-number {
-        font-size: 2.2rem;
-      }
+      /* CTA */
+      .cta-section { padding: 80px 20px; min-height: auto; }
+      .cta-label { font-size: 0.68rem; margin-bottom: 14px; }
+      .cta-section h2 { font-size: 1.6rem; margin-bottom: 14px; }
+      .cta-section > .cta-inner > p { font-size: 0.9rem; margin-bottom: 32px; line-height: 1.7; }
+      .cta-btn { padding: 16px 36px; font-size: 0.92rem; }
 
-      .filter-bar {
-        gap: 6px;
-      }
+      /* 푸터 */
+      .footer { padding: 36px 0; }
+      .footer-link-item { font-size: 0.8rem; }
+      .footer p { font-size: 0.7rem; }
 
-      .filter-btn {
-        padding: 8px 16px;
-        font-size: 0.8rem;
-      }
-
-      .cta-section {
-        padding: 100px 20px;
-        min-height: auto;
-      }
-
-      .cta-btn {
-        padding: 16px 36px;
-        font-size: 0.95rem;
-      }
-
-      .hero-tags {
-        gap: 8px;
-      }
-
-      .hero-tag {
-        font-size: 0.72rem;
-        padding: 6px 12px;
-      }
-
-      .value-grid {
-        grid-template-columns: 1fr;
-      }
+      /* 블러 오브 축소 */
+      .hero-orb-1 { width: 280px; height: 280px; }
+      .hero-orb-2 { width: 220px; height: 220px; }
+      .hero-orb-3 { display: none; }
+      .projects-orb-1, .projects-orb-2 { width: 200px; height: 200px; }
+      .cta-orb-1 { width: 220px; height: 220px; }
+      .cta-orb-2 { width: 180px; height: 180px; }
+      .cta-orb-3 { display: none; }
+      .hero::before { width: 400px; height: 400px; }
+      .hero::after { width: 350px; height: 250px; }
+      .cta-section::after { width: 400px; height: 250px; }
     }
 
     /* ============================================
@@ -1067,25 +1077,7 @@
       }
     }
 
-    @media (max-width: 640px) {
-      .value-grid {
-        grid-template-columns: 1fr;
-      }
-
-      /* Blur orbs: shrink on mobile */
-      .hero-orb-1 { width: 300px; height: 300px; }
-      .hero-orb-2 { width: 250px; height: 250px; }
-      .hero-orb-3 { width: 200px; height: 200px; }
-      .projects-orb-1,
-      .projects-orb-2 { width: 250px; height: 250px; }
-      .cta-orb-1 { width: 250px; height: 250px; }
-      .cta-orb-2 { width: 200px; height: 200px; }
-      .cta-orb-3 { display: none; }
-
-      .hero::before { width: 500px; height: 500px; }
-      .hero::after { width: 400px; height: 300px; }
-      .cta-section::after { width: 500px; height: 300px; }
-    }
+    /* 640px mobile rules consolidated into main media query above */
     /* ============================================
        PREMIUM SaaS BLUR ORBS
        ============================================ */
