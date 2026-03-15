@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>집찾기 - 부동산 매물 검색</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --primary: #2563EB;
+  --primary-dark: #1D4ED8;
+  --primary-light: #DBEAFE;
+  --primary-50: #EFF6FF;
+  --bg: #F8FAFC;
+  --white: #FFFFFF;
+  --gray-50: #F8FAFC;
+  --gray-100: #F1F5F9;
+  --gray-200: #E2E8F0;
+  --gray-300: #CBD5E1;
+  --gray-400: #94A3B8;
+  --gray-500: #64748B;
+  --gray-600: #475569;
+  --gray-700: #334155;
+  --gray-800: #1E293B;
+  --gray-900: #0F172A;
+  --sale: #DC2626;
+  --jeonse: #2563EB;
+  --monthly: #16A34A;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--gray-800);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Header ── */
+.header {
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--primary);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--primary);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 18px;
+}
+
+.search-container {
+  flex: 1;
+  max-width: 480px;
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 16px 10px 42px;
+  border: 2px solid var(--gray-200);
+  border-radius: 100px;
+  font-size: 14px;
+  font-family: inherit;
+  background: var(--gray-50);
+  transition: all 0.2s;
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: var(--primary);
+  background: var(--white);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gray-400);
+  pointer-events: none;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border: none;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-filter {
+  background: var(--white);
+  color: var(--gray-700);
+  border: 2px solid var(--gray-200);
+}
+
+.btn-filter:hover { border-color: var(--primary); color: var(--primary); }
+.btn-filter.active { border-color: var(--primary); background: var(--primary-50); color: var(--primary); }
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover { background: var(--primary-dark); }
+
+.filter-count {
+  background: var(--primary);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Filter Panel ── */
+.filter-panel {
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+}
+
+.filter-panel.open {
+  max-height: 500px;
+}
+
+.filter-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+}
+
+.filter-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+}
+
+.filter-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  padding: 7px 14px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 500;
+  background: var(--white);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+  color: var(--gray-600);
+}
+
+.chip:hover { border-color: var(--primary); color: var(--primary); }
+.chip.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+.range-slider-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.range-display {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gray-800);
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--gray-200);
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary);
+  cursor: pointer;
+  border: 3px solid white;
+  box-shadow: var(--shadow-md);
+}
+
+select.filter-select {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: inherit;
+  background: var(--white);
+  color: var(--gray-700);
+  cursor: pointer;
+  outline: none;
+}
+
+select.filter-select:focus {
+  border-color: var(--primary);
+}
+
+/* ── Toolbar ── */
+.toolbar {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px 24px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.result-count {
+  font-size: 14px;
+  color: var(--gray-500);
+}
+
+.result-count strong {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.sort-select {
+  padding: 8px 12px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-family: inherit;
+  background: var(--white);
+  color: var(--gray-700);
+  cursor: pointer;
+  outline: none;
+}
+
+.sort-select:focus { border-color: var(--primary); }
+
+/* ── Property Grid ── */
+.property-grid {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 16px 24px 40px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.property-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-100);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.property-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--gray-200);
+}
+
+.card-image {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  background: var(--gray-100);
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.property-card:hover .card-image img {
+  transform: scale(1.05);
+}
+
+.badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
+  backdrop-filter: blur(4px);
+}
+
+.badge-sale { background: rgba(220, 38, 38, 0.9); }
+.badge-jeonse { background: rgba(37, 99, 235, 0.9); }
+.badge-monthly { background: rgba(22, 163, 74, 0.9); }
+
+.card-favorite {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(4px);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: all 0.2s;
+}
+
+.card-favorite:hover { background: white; transform: scale(1.1); }
+.card-favorite.liked { color: #EF4444; }
+
+.card-body {
+  padding: 16px;
+}
+
+.card-price {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--gray-900);
+  margin-bottom: 4px;
+}
+
+.card-price .unit { font-size: 14px; font-weight: 600; color: var(--gray-500); }
+
+.card-address {
+  font-size: 13px;
+  color: var(--gray-500);
+  margin-bottom: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.card-tag {
+  padding: 4px 8px;
+  background: var(--gray-50);
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--gray-600);
+  font-weight: 500;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid var(--gray-100);
+}
+
+.card-type {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.type-apt { background: #EFF6FF; color: #2563EB; }
+.type-villa { background: #F0FDF4; color: #16A34A; }
+.type-officetel { background: #FFF7ED; color: #EA580C; }
+.type-house { background: #FAF5FF; color: #9333EA; }
+
+.card-date {
+  font-size: 12px;
+  color: var(--gray-400);
+}
+
+/* ── No Results ── */
+.no-results {
+  text-align: center;
+  padding: 80px 24px;
+  grid-column: 1 / -1;
+}
+
+.no-results-icon { font-size: 48px; margin-bottom: 16px; }
+.no-results h3 { font-size: 18px; color: var(--gray-700); margin-bottom: 8px; }
+.no-results p { font-size: 14px; color: var(--gray-400); }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.modal-overlay.open {
+  display: flex;
+  opacity: 1;
+}
+
+.modal {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 720px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-xl);
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+}
+
+.modal-overlay.open .modal {
+  transform: translateY(0);
+}
+
+.modal-image {
+  width: 100%;
+  height: 320px;
+  overflow: hidden;
+  position: relative;
+}
+
+.modal-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.5);
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.modal-close:hover { background: rgba(0,0,0,0.7); }
+
+.modal-badge {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+}
+
+.modal-body {
+  padding: 28px;
+}
+
+.modal-price {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--gray-900);
+  margin-bottom: 4px;
+}
+
+.modal-address {
+  font-size: 15px;
+  color: var(--gray-500);
+  margin-bottom: 24px;
+}
+
+.detail-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 24px;
+}
+
+.detail-table tr {
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.detail-table th {
+  text-align: left;
+  padding: 12px 16px 12px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray-400);
+  width: 100px;
+  white-space: nowrap;
+}
+
+.detail-table td {
+  padding: 12px 0;
+  font-size: 14px;
+  color: var(--gray-700);
+  font-weight: 500;
+}
+
+.agent-card {
+  background: var(--gray-50);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.agent-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.agent-info h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gray-800);
+  margin-bottom: 2px;
+}
+
+.agent-info p {
+  font-size: 13px;
+  color: var(--gray-500);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.modal-actions .btn {
+  flex: 1;
+  justify-content: center;
+  padding: 13px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: var(--radius);
+}
+
+.btn-outline {
+  background: var(--white);
+  color: var(--gray-700);
+  border: 2px solid var(--gray-200);
+}
+
+.btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .header-inner { padding: 0 16px; gap: 12px; }
+  .logo span { display: none; }
+  .search-container { max-width: none; }
+  .filter-inner { grid-template-columns: 1fr; gap: 16px; padding: 16px; }
+  .toolbar { padding: 16px 16px 0; }
+  .property-grid {
+    padding: 12px 16px 40px;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .property-card { display: flex; flex-direction: row; }
+  .card-image { width: 130px; min-width: 130px; height: auto; min-height: 140px; }
+  .card-body { flex: 1; padding: 12px; }
+  .card-price { font-size: 16px; }
+  .card-tags { display: none; }
+  .modal { max-width: 100%; margin: 0; border-radius: var(--radius) var(--radius) 0 0; }
+  .modal-overlay { align-items: flex-end; padding: 0; }
+  .modal-image { height: 220px; }
+  .modal-body { padding: 20px; }
+  .modal-price { font-size: 22px; }
+  .modal-actions { flex-direction: column; }
+}
+
+@media (max-width: 480px) {
+  .header-inner { height: 56px; }
+  .btn-filter span.label-text { display: none; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 3px; }
+
+/* Animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.property-card {
+  animation: fadeInUp 0.4s ease both;
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon">🏠</div>
+      <span>집찾기</span>
+    </a>
+    <div class="search-container">
+      <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" class="search-input" id="searchInput" placeholder="지역명, 단지명으로 검색">
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-filter" id="filterToggle" onclick="toggleFilter()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+        <span class="label-text">필터</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Filter Panel -->
+<div class="filter-panel" id="filterPanel">
+  <div class="filter-inner">
+    <div class="filter-group">
+      <label>거래 유형</label>
+      <div class="filter-chips" id="dealTypeChips">
+        <button class="chip active" data-value="all" onclick="setDealType(this)">전체</button>
+        <button class="chip" data-value="매매" onclick="setDealType(this)">매매</button>
+        <button class="chip" data-value="전세" onclick="setDealType(this)">전세</button>
+        <button class="chip" data-value="월세" onclick="setDealType(this)">월세</button>
+      </div>
+    </div>
+    <div class="filter-group">
+      <label>가격 범위</label>
+      <div class="range-slider-group">
+        <div class="range-display" id="priceDisplay">전체</div>
+        <input type="range" id="priceRange" min="0" max="20" value="20" oninput="updatePrice()">
+      </div>
+    </div>
+    <div class="filter-group">
+      <label>면적</label>
+      <select class="filter-select" id="areaFilter" onchange="applyFilters()">
+        <option value="all">전체</option>
+        <option value="10">10평 이하</option>
+        <option value="20">10~20평</option>
+        <option value="30">20~30평</option>
+        <option value="40">30~40평</option>
+        <option value="50">40평 이상</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>방 수</label>
+      <div class="filter-chips" id="roomChips">
+        <button class="chip active" data-value="all" onclick="setRoom(this)">전체</button>
+        <button class="chip" data-value="1" onclick="setRoom(this)">원룸</button>
+        <button class="chip" data-value="2" onclick="setRoom(this)">2룸</button>
+        <button class="chip" data-value="3" onclick="setRoom(this)">3룸+</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toolbar -->
+<div class="toolbar">
+  <div class="result-count" id="resultCount">총 <strong>0</strong>개의 매물</div>
+  <select class="sort-select" id="sortSelect" onchange="applyFilters()">
+    <option value="latest">최신순</option>
+    <option value="price-asc">가격 낮은순</option>
+    <option value="price-desc">가격 높은순</option>
+    <option value="area">면적 넓은순</option>
+  </select>
+</div>
+
+<!-- Property Grid -->
+<div class="property-grid" id="propertyGrid"></div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-image">
+      <img id="modalImage" src="" alt="">
+      <button class="modal-close" onclick="closeModal(event, true)">✕</button>
+      <div class="modal-badge" id="modalBadge"></div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-price" id="modalPrice"></div>
+      <div class="modal-address" id="modalAddress"></div>
+      <table class="detail-table" id="modalTable">
+        <tbody></tbody>
+      </table>
+      <div class="agent-card">
+        <div class="agent-avatar">👤</div>
+        <div class="agent-info" id="agentInfo">
+          <h4></h4>
+          <p></p>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="alert('전화 연결 기능은 준비 중입니다.')">📞 전화 문의</button>
+        <button class="btn btn-primary" onclick="alert('채팅 문의 기능은 준비 중입니다.')">💬 채팅 문의</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Data ──
+const properties = [
+  {
+    id: 1, dealType: '매매', propertyType: '아파트', name: '래미안 레이크팰리스',
+    price: 185000, priceText: '18억 5,000만',
+    address: '서울 송파구 잠실동 신천역 인근', area: 34, areaM2: 112.3,
+    floor: '22/35층', rooms: 4, bathrooms: 2, direction: '남향',
+    date: '2026-03-14', parking: '세대당 1.5대',
+    description: '잠실 호수공원 조망, 신축급 리모델링 완료',
+    agent: '잠실 탑공인중개사', agentPhone: '02-1234-5678',
+    image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&h=400&fit=crop'
+  },
+  {
+    id: 2, dealType: '전세', propertyType: '아파트', name: '힐스테이트 에코 마곡',
+    price: 62000, priceText: '6억 2,000만',
+    address: '서울 강서구 마곡동 마곡나루역 5분', area: 25, areaM2: 82.6,
+    floor: '15/28층', rooms: 3, bathrooms: 2, direction: '남동향',
+    date: '2026-03-13', parking: '세대당 1대',
+    description: '마곡지구 중심, 마곡나루역 도보 5분',
+    agent: '마곡 베스트공인', agentPhone: '02-2345-6789',
+    image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&h=400&fit=crop'
+  },
+  {
+    id: 3, dealType: '월세', propertyType: '오피스텔', name: '강남 더샵 오피스텔',
+    price: 80, priceText: '보증금 1,000 / 월 80만',
+    address: '서울 강남구 역삼동 강남역 3분', area: 8, areaM2: 26.4,
+    floor: '10/20층', rooms: 1, bathrooms: 1, direction: '동향',
+    date: '2026-03-12', parking: '1대 가능',
+    description: '강남역 초역세권, 풀옵션 원룸',
+    agent: '강남 프라임부동산', agentPhone: '02-3456-7890',
+    image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&h=400&fit=crop'
+  },
+  {
+    id: 4, dealType: '매매', propertyType: '빌라', name: '성북 뉴타운 빌라',
+    price: 42000, priceText: '4억 2,000만',
+    address: '서울 성북구 장위동 돌곶이역 7분', area: 22, areaM2: 72.7,
+    floor: '3/4층', rooms: 3, bathrooms: 1, direction: '남향',
+    date: '2026-03-11', parking: '1대 가능',
+    description: '뉴타운 개발 호재, 실투자 적합',
+    agent: '성북 미래공인', agentPhone: '02-4567-8901',
+    image: 'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?w=600&h=400&fit=crop'
+  },
+  {
+    id: 5, dealType: '전세', propertyType: '오피스텔', name: '디큐브 오피스텔',
+    price: 18000, priceText: '1억 8,000만',
+    address: '서울 구로구 신도림동 신도림역 1분', area: 10, areaM2: 33.1,
+    floor: '8/25층', rooms: 1, bathrooms: 1, direction: '서향',
+    date: '2026-03-10', parking: '1대 포함',
+    description: '신도림역 초역세권, 깔끔한 투룸 구조',
+    agent: '신도림 OK공인', agentPhone: '02-5678-9012',
+    image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&h=400&fit=crop'
+  },
+  {
+    id: 6, dealType: '월세', propertyType: '아파트', name: '래미안 목동 아이파크',
+    price: 150, priceText: '보증금 5,000 / 월 150만',
+    address: '서울 양천구 목동 오목교역 10분', area: 32, areaM2: 105.8,
+    floor: '18/25층', rooms: 4, bathrooms: 2, direction: '남향',
+    date: '2026-03-09', parking: '세대당 1대',
+    description: '목동 학군, 넓은 4베이 구조',
+    agent: '목동 명가공인', agentPhone: '02-6789-0123',
+    image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=400&fit=crop'
+  },
+  {
+    id: 7, dealType: '매매', propertyType: '아파트', name: '반포 자이 아파트',
+    price: 310000, priceText: '31억',
+    address: '서울 서초구 반포동 반포역 5분', area: 45, areaM2: 148.8,
+    floor: '28/35층', rooms: 4, bathrooms: 2, direction: '남향',
+    date: '2026-03-08', parking: '세대당 2대',
+    description: '한강 조망, 반포 대장 아파트',
+    agent: '반포 VIP공인', agentPhone: '02-7890-1234',
+    image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&h=400&fit=crop'
+  },
+  {
+    id: 8, dealType: '전세', propertyType: '빌라', name: '합정 메종 빌라',
+    price: 28000, priceText: '2억 8,000만',
+    address: '서울 마포구 합정동 합정역 3분', area: 18, areaM2: 59.5,
+    floor: '2/3층', rooms: 2, bathrooms: 1, direction: '남동향',
+    date: '2026-03-07', parking: '없음',
+    description: '합정역 초역세권, 신축급 인테리어',
+    agent: '마포 행복공인', agentPhone: '02-8901-2345',
+    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&h=400&fit=crop'
+  },
+  {
+    id: 9, dealType: '월세', propertyType: '오피스텔', name: '판교 알파돔 오피스텔',
+    price: 120, priceText: '보증금 2,000 / 월 120만',
+    address: '경기 성남시 분당구 판교역 3분', area: 12, areaM2: 39.7,
+    floor: '12/22층', rooms: 1, bathrooms: 1, direction: '남향',
+    date: '2026-03-06', parking: '1대 포함',
+    description: '판교 테크노밸리 인근, 직주근접',
+    agent: '판교 스마트공인', agentPhone: '031-1234-5678',
+    image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=600&h=400&fit=crop'
+  },
+  {
+    id: 10, dealType: '매매', propertyType: '주택', name: '은평 한옥마을 주택',
+    price: 78000, priceText: '7억 8,000만',
+    address: '서울 은평구 진관동 은평한옥마을', area: 38, areaM2: 125.6,
+    floor: '1/2층', rooms: 3, bathrooms: 2, direction: '남향',
+    date: '2026-03-05', parking: '1대 가능',
+    description: '전통 한옥 스타일, 넓은 마당 포함',
+    agent: '은평 전원공인', agentPhone: '02-9012-3456',
+    image: 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=600&h=400&fit=crop'
+  },
+  {
+    id: 11, dealType: '전세', propertyType: '아파트', name: '위례 포레스트 자이',
+    price: 55000, priceText: '5억 5,000만',
+    address: '경기 성남시 수정구 위례신도시', area: 28, areaM2: 92.6,
+    floor: '10/28층', rooms: 3, bathrooms: 2, direction: '남서향',
+    date: '2026-03-04', parking: '세대당 1대',
+    description: '위례신도시 중심, 학군 우수',
+    agent: '위례 퍼스트공인', agentPhone: '031-2345-6789',
+    image: 'https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=600&h=400&fit=crop'
+  },
+  {
+    id: 12, dealType: '월세', propertyType: '빌라', name: '이태원 루프탑 빌라',
+    price: 200, priceText: '보증금 3,000 / 월 200만',
+    address: '서울 용산구 이태원동 이태원역 5분', area: 20, areaM2: 66.1,
+    floor: '4/4층', rooms: 2, bathrooms: 1, direction: '남향',
+    date: '2026-03-03', parking: '1대 가능',
+    description: '루프탑 테라스 포함, 남산 조망',
+    agent: '용산 글로벌공인', agentPhone: '02-0123-4567',
+    image: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=600&h=400&fit=crop'
+  },
+  {
+    id: 13, dealType: '매매', propertyType: '오피스텔', name: '여의도 IFC 오피스텔',
+    price: 68000, priceText: '6억 8,000만',
+    address: '서울 영등포구 여의도동 여의도역 2분', area: 15, areaM2: 49.6,
+    floor: '30/42층', rooms: 1, bathrooms: 1, direction: '남향',
+    date: '2026-03-02', parking: '1대 포함',
+    description: '한강뷰 고층, 프리미엄 인테리어',
+    agent: '여의도 센트럴공인', agentPhone: '02-1111-2222',
+    image: 'https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=600&h=400&fit=crop'
+  },
+  {
+    id: 14, dealType: '전세', propertyType: '주택', name: '북촌 한옥 단독주택',
+    price: 35000, priceText: '3억 5,000만',
+    address: '서울 종로구 가회동 안국역 8분', area: 26, areaM2: 85.9,
+    floor: '1/1층', rooms: 2, bathrooms: 1, direction: '동향',
+    date: '2026-03-01', parking: '없음',
+    description: '전통 한옥, 고즈넉한 북촌 생활',
+    agent: '종로 한옥공인', agentPhone: '02-3333-4444',
+    image: 'https://images.unsplash.com/photo-1600566753086-00f18f6b6637?w=600&h=400&fit=crop'
+  }
+];
+
+// ── State ──
+let currentDealType = 'all';
+let currentRoom = 'all';
+let currentMaxPrice = 20;
+const priceSteps = [0,5000,10000,15000,20000,30000,40000,50000,60000,80000,100000,120000,150000,180000,200000,250000,300000,350000,400000,500000,999999];
+
+// ── Filter Logic ──
+function toggleFilter() {
+  const panel = document.getElementById('filterPanel');
+  const btn = document.getElementById('filterToggle');
+  panel.classList.toggle('open');
+  btn.classList.toggle('active');
+}
+
+function setDealType(el) {
+  document.querySelectorAll('#dealTypeChips .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  currentDealType = el.dataset.value;
+  applyFilters();
+}
+
+function setRoom(el) {
+  document.querySelectorAll('#roomChips .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  currentRoom = el.dataset.value;
+  applyFilters();
+}
+
+function updatePrice() {
+  const val = parseInt(document.getElementById('priceRange').value);
+  currentMaxPrice = val;
+  const display = document.getElementById('priceDisplay');
+  if (val >= 20) {
+    display.textContent = '전체';
+  } else {
+    const maxP = priceSteps[val];
+    display.textContent = formatPriceShort(maxP) + ' 이하';
+  }
+  applyFilters();
+}
+
+function formatPriceShort(p) {
+  if (p >= 10000) return (p / 10000) + '억';
+  if (p >= 1000) return (p / 1000).toFixed(1) + '천만';
+  return p + '만';
+}
+
+function sortPrice(p) {
+  // Normalize: 월세 items have small price, multiply for sorting
+  return p.dealType === '월세' ? p.price * 10000 : p.price;
+}
+
+function applyFilters() {
+  let filtered = [...properties];
+
+  // Search
+  const query = document.getElementById('searchInput').value.trim().toLowerCase();
+  if (query) {
+    filtered = filtered.filter(p =>
+      p.address.toLowerCase().includes(query) ||
+      p.name.toLowerCase().includes(query)
+    );
+  }
+
+  // Deal type
+  if (currentDealType !== 'all') {
+    filtered = filtered.filter(p => p.dealType === currentDealType);
+  }
+
+  // Price
+  if (currentMaxPrice < 20) {
+    const maxP = priceSteps[currentMaxPrice];
+    filtered = filtered.filter(p => {
+      const sp = sortPrice(p);
+      return sp <= maxP;
+    });
+  }
+
+  // Area
+  const areaVal = document.getElementById('areaFilter').value;
+  if (areaVal !== 'all') {
+    const av = parseInt(areaVal);
+    filtered = filtered.filter(p => {
+      if (av === 10) return p.area <= 10;
+      if (av === 20) return p.area > 10 && p.area <= 20;
+      if (av === 30) return p.area > 20 && p.area <= 30;
+      if (av === 40) return p.area > 30 && p.area <= 40;
+      if (av === 50) return p.area > 40;
+      return true;
+    });
+  }
+
+  // Rooms
+  if (currentRoom !== 'all') {
+    const rv = parseInt(currentRoom);
+    filtered = filtered.filter(p => {
+      if (rv === 3) return p.rooms >= 3;
+      return p.rooms === rv;
+    });
+  }
+
+  // Sort
+  const sort = document.getElementById('sortSelect').value;
+  if (sort === 'latest') filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+  else if (sort === 'price-asc') filtered.sort((a, b) => sortPrice(a) - sortPrice(b));
+  else if (sort === 'price-desc') filtered.sort((a, b) => sortPrice(b) - sortPrice(a));
+  else if (sort === 'area') filtered.sort((a, b) => b.area - a.area);
+
+  renderGrid(filtered);
+}
+
+function renderGrid(items) {
+  const grid = document.getElementById('propertyGrid');
+  document.getElementById('resultCount').innerHTML = `총 <strong>${items.length}</strong>개의 매물`;
+
+  if (items.length === 0) {
+    grid.innerHTML = `<div class="no-results"><div class="no-results-icon">🏚️</div><h3>검색 결과가 없습니다</h3><p>필터 조건을 변경해 보세요</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = items.map((p, i) => {
+    const badgeClass = p.dealType === '매매' ? 'badge-sale' : p.dealType === '전세' ? 'badge-jeonse' : 'badge-monthly';
+    const typeClass = p.propertyType === '아파트' ? 'type-apt' : p.propertyType === '빌라' ? 'type-villa' : p.propertyType === '오피스텔' ? 'type-officetel' : 'type-house';
+    return `
+      <div class="property-card" style="animation-delay:${i * 0.05}s" onclick="openModal(${p.id})">
+        <div class="card-image">
+          <img src="${p.image}" alt="${p.name}" loading="lazy">
+          <span class="badge ${badgeClass}">${p.dealType}</span>
+          <button class="card-favorite" onclick="event.stopPropagation(); toggleLike(this)">♡</button>
+        </div>
+        <div class="card-body">
+          <div class="card-price">${p.priceText}</div>
+          <div class="card-address">${p.address}</div>
+          <div class="card-tags">
+            <span class="card-tag">${p.area}평 (${p.areaM2}㎡)</span>
+            <span class="card-tag">${p.floor}</span>
+            <span class="card-tag">${p.rooms}룸</span>
+          </div>
+          <div class="card-footer">
+            <span class="card-type ${typeClass}">${p.propertyType}</span>
+            <span class="card-date">${p.date}</span>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function toggleLike(el) {
+  el.classList.toggle('liked');
+  el.textContent = el.classList.contains('liked') ? '♥' : '♡';
+}
+
+function openModal(id) {
+  const p = properties.find(x => x.id === id);
+  if (!p) return;
+
+  const badgeClass = p.dealType === '매매' ? 'badge-sale' : p.dealType === '전세' ? 'badge-jeonse' : 'badge-monthly';
+
+  document.getElementById('modalImage').src = p.image;
+  document.getElementById('modalBadge').className = 'modal-badge ' + badgeClass;
+  document.getElementById('modalBadge').textContent = p.dealType;
+  document.getElementById('modalPrice').textContent = p.priceText;
+  document.getElementById('modalAddress').textContent = p.address;
+
+  const tbody = document.getElementById('modalTable').querySelector('tbody');
+  tbody.innerHTML = `
+    <tr><th>매물명</th><td>${p.name}</td></tr>
+    <tr><th>매물유형</th><td>${p.propertyType}</td></tr>
+    <tr><th>면적</th><td>${p.area}평 (${p.areaM2}㎡)</td></tr>
+    <tr><th>층수</th><td>${p.floor}</td></tr>
+    <tr><th>방/욕실</th><td>${p.rooms}룸 / ${p.bathrooms}욕실</td></tr>
+    <tr><th>방향</th><td>${p.direction}</td></tr>
+    <tr><th>주차</th><td>${p.parking}</td></tr>
+    <tr><th>등록일</th><td>${p.date}</td></tr>
+    <tr><th>설명</th><td>${p.description}</td></tr>
+  `;
+
+  document.querySelector('#agentInfo h4').textContent = p.agent;
+  document.querySelector('#agentInfo p').textContent = p.agentPhone;
+
+  const overlay = document.getElementById('modalOverlay');
+  overlay.style.display = 'flex';
+  requestAnimationFrame(() => overlay.classList.add('open'));
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e, force) {
+  if (!force && e.target !== document.getElementById('modalOverlay')) return;
+  const overlay = document.getElementById('modalOverlay');
+  overlay.classList.remove('open');
+  setTimeout(() => { overlay.style.display = 'none'; }, 250);
+  document.body.style.overflow = '';
+}
+
+// ── Search ──
+document.getElementById('searchInput').addEventListener('input', () => {
+  applyFilters();
+});
+
+// ── Keyboard ──
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal(null, true);
+});
+
+// ── Init ──
+applyFilters();
+</script>
+</body>
+</html>

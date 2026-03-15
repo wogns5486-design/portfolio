@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>배달이요 - 맛있는 음식 배달</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --primary: #00C4B4;
+  --primary-dark: #00A89A;
+  --primary-light: #E0F7F5;
+  --bg: #F5F6F8;
+  --white: #FFFFFF;
+  --gray-50: #F9FAFB;
+  --gray-100: #F3F4F6;
+  --gray-200: #E5E7EB;
+  --gray-300: #D1D5DB;
+  --gray-400: #9CA3AF;
+  --gray-500: #6B7280;
+  --gray-600: #4B5563;
+  --gray-700: #374151;
+  --gray-800: #1F2937;
+  --gray-900: #111827;
+  --yellow: #FBBF24;
+  --red: #EF4444;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
+  --radius: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+}
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--gray-800);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+.app-wrapper {
+  max-width: 430px;
+  margin: 0 auto;
+  background: var(--white);
+  min-height: 100vh;
+  position: relative;
+  box-shadow: 0 0 40px rgba(0,0,0,0.08);
+}
+
+/* Header */
+.header {
+  background: var(--white);
+  padding: 12px 16px 8px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--gray-100);
+}
+.address-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.address-icon {
+  font-size: 18px;
+  color: var(--primary);
+}
+.address-text {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gray-900);
+  flex: 1;
+}
+.address-arrow {
+  font-size: 12px;
+  color: var(--gray-400);
+  margin-left: 2px;
+}
+.header-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.header-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: var(--gray-50);
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.header-btn:hover { background: var(--gray-100); }
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: var(--gray-50);
+  border-radius: 10px;
+  padding: 10px 14px;
+  gap: 8px;
+  border: 1.5px solid var(--gray-100);
+  transition: border-color 0.2s;
+}
+.search-bar:focus-within { border-color: var(--primary); }
+.search-icon { font-size: 16px; color: var(--gray-400); }
+.search-bar input {
+  border: none;
+  background: none;
+  outline: none;
+  font-size: 14px;
+  color: var(--gray-800);
+  width: 100%;
+  font-family: inherit;
+}
+.search-bar input::placeholder { color: var(--gray-400); }
+
+/* Categories */
+.categories {
+  padding: 18px 16px 12px;
+  background: var(--white);
+}
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px 4px;
+}
+.cat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 8px 4px;
+  border-radius: var(--radius);
+  transition: background 0.2s, transform 0.15s;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+.cat-item:hover { background: var(--gray-50); }
+.cat-item:active { transform: scale(0.95); }
+.cat-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  box-shadow: var(--shadow-sm);
+}
+.cat-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gray-700);
+}
+
+/* Banner Slider */
+.banner-section {
+  padding: 12px 16px;
+}
+.banner-slider {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  height: 140px;
+}
+.banner-track {
+  display: flex;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  height: 100%;
+}
+.banner-slide {
+  min-width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 24px 28px;
+  position: relative;
+  color: var(--white);
+}
+.banner-slide::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0,0,0,0.35), rgba(0,0,0,0.1));
+  z-index: 1;
+}
+.banner-content {
+  position: relative;
+  z-index: 2;
+}
+.banner-tag {
+  display: inline-block;
+  background: rgba(255,255,255,0.25);
+  backdrop-filter: blur(4px);
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.banner-title {
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.3;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.banner-sub {
+  font-size: 13px;
+  margin-top: 4px;
+  opacity: 0.9;
+}
+.banner-dots {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 3;
+}
+.banner-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition: all 0.3s;
+  border: none;
+}
+.banner-dot.active {
+  background: var(--white);
+  width: 20px;
+  border-radius: 4px;
+}
+.banner-arrows {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 8px;
+  pointer-events: none;
+}
+.banner-arrow {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  backdrop-filter: blur(4px);
+  border: none;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.banner-arrow:hover { background: rgba(255,255,255,0.5); }
+
+/* Section */
+.section {
+  padding: 20px 16px 8px;
+}
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.section-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--gray-900);
+}
+.section-more {
+  font-size: 13px;
+  color: var(--gray-400);
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+/* Restaurant Card */
+.restaurant-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 100px;
+}
+.restaurant-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid var(--gray-100);
+}
+.restaurant-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+.restaurant-card:active { transform: scale(0.98); }
+.restaurant-img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+}
+.restaurant-info {
+  padding: 12px 14px 14px;
+}
+.restaurant-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 6px;
+}
+.restaurant-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray-800);
+}
+.rating .star { color: var(--yellow); font-size: 14px; }
+.review-count {
+  font-size: 12px;
+  color: var(--gray-400);
+}
+.meta-dot {
+  width: 3px;
+  height: 3px;
+  background: var(--gray-300);
+  border-radius: 50%;
+}
+.delivery-time, .min-order {
+  font-size: 12px;
+  color: var(--gray-500);
+}
+.restaurant-tags {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+}
+.tag {
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+.tag.coupon {
+  background: #FEF3C7;
+  color: #D97706;
+}
+
+/* ============ DETAIL PAGE ============ */
+.detail-page {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--white);
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.detail-page.open { transform: translateX(0); }
+.detail-page-inner {
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--white);
+}
+.detail-hero {
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+}
+.detail-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.detail-hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.4));
+}
+.detail-back {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(8px);
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.detail-info {
+  padding: 16px;
+  border-bottom: 8px solid var(--gray-50);
+}
+.detail-name {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--gray-900);
+  margin-bottom: 8px;
+}
+.detail-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.detail-desc {
+  font-size: 13px;
+  color: var(--gray-500);
+  line-height: 1.5;
+}
+.detail-stats {
+  display: flex;
+  gap: 0;
+  margin-top: 14px;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.stat-item {
+  flex: 1;
+  text-align: center;
+  padding: 12px 8px;
+  border-right: 1px solid var(--gray-200);
+}
+.stat-item:last-child { border-right: none; }
+.stat-label {
+  font-size: 11px;
+  color: var(--gray-400);
+  margin-bottom: 4px;
+}
+.stat-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gray-800);
+}
+
+/* Menu Tabs */
+.menu-tabs {
+  display: flex;
+  overflow-x: auto;
+  padding: 0 16px;
+  gap: 0;
+  position: sticky;
+  top: 0;
+  background: var(--white);
+  z-index: 10;
+  border-bottom: 1px solid var(--gray-100);
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.menu-tabs::-webkit-scrollbar { display: none; }
+.menu-tab {
+  padding: 14px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gray-400);
+  border: none;
+  background: none;
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 2.5px solid transparent;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.menu-tab.active {
+  color: var(--gray-900);
+  border-bottom-color: var(--gray-900);
+}
+
+/* Menu List */
+.menu-section { padding: 0 16px 120px; }
+.menu-category-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gray-900);
+  padding: 18px 0 12px;
+  border-bottom: 1px solid var(--gray-100);
+}
+.menu-item {
+  display: flex;
+  gap: 12px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--gray-50);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.menu-item:active { background: var(--gray-50); }
+.menu-item-info { flex: 1; }
+.menu-item-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin-bottom: 4px;
+}
+.menu-item-desc {
+  font-size: 12px;
+  color: var(--gray-400);
+  line-height: 1.4;
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.menu-item-price {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+.menu-item-img {
+  width: 90px;
+  height: 90px;
+  border-radius: var(--radius);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* Quantity Modal */
+.qty-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 300;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+}
+.qty-modal-overlay.open { display: flex; }
+.qty-modal {
+  background: var(--white);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  width: 100%;
+  max-width: 430px;
+  padding: 24px 20px 32px;
+  animation: slideUp 0.3s ease;
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.qty-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+.qty-modal-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+.qty-modal-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--gray-100);
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.qty-modal-price {
+  font-size: 16px;
+  color: var(--gray-600);
+  margin-bottom: 24px;
+}
+.qty-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+.qty-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--gray-200);
+  background: var(--white);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  color: var(--gray-600);
+}
+.qty-btn:hover { border-color: var(--primary); color: var(--primary); }
+.qty-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.qty-value {
+  font-size: 24px;
+  font-weight: 800;
+  min-width: 40px;
+  text-align: center;
+  color: var(--gray-900);
+}
+.qty-add-btn {
+  width: 100%;
+  padding: 16px;
+  border-radius: var(--radius);
+  border: none;
+  background: var(--primary);
+  color: var(--white);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s;
+}
+.qty-add-btn:hover { background: var(--primary-dark); }
+
+/* Cart Floating Bar */
+.cart-bar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  z-index: 150;
+  padding: 12px 16px;
+  background: transparent;
+  pointer-events: none;
+  display: none;
+}
+.cart-bar.show { display: block; }
+.cart-bar-inner {
+  background: var(--primary);
+  border-radius: var(--radius-lg);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: 0 4px 20px rgba(0,196,180,0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.cart-bar-inner:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0,196,180,0.5);
+}
+.cart-bar-inner:active { transform: scale(0.98); }
+.cart-count-badge {
+  background: var(--white);
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 800;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cart-bar-text {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--white);
+}
+.cart-bar-price {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--white);
+}
+
+/* Cart Sheet */
+.cart-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 400;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+}
+.cart-overlay.open { display: flex; }
+.cart-sheet {
+  background: var(--white);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  width: 100%;
+  max-width: 430px;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease;
+}
+.cart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 20px 12px;
+  border-bottom: 1px solid var(--gray-100);
+  position: sticky;
+  top: 0;
+  background: var(--white);
+  z-index: 2;
+}
+.cart-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--gray-900);
+}
+.cart-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--gray-100);
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cart-items { padding: 8px 20px; }
+.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--gray-50);
+}
+.cart-item-info { flex: 1; }
+.cart-item-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin-bottom: 4px;
+}
+.cart-item-price {
+  font-size: 13px;
+  color: var(--gray-500);
+}
+.cart-item-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.cart-qty-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gray-200);
+  background: var(--white);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  color: var(--gray-600);
+}
+.cart-qty-btn:hover { border-color: var(--primary); color: var(--primary); }
+.cart-item-qty {
+  font-size: 15px;
+  font-weight: 700;
+  min-width: 20px;
+  text-align: center;
+}
+.cart-item-total {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gray-900);
+  min-width: 70px;
+  text-align: right;
+}
+.cart-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--gray-400);
+  font-size: 14px;
+}
+.cart-footer {
+  padding: 16px 20px 28px;
+  border-top: 1px solid var(--gray-100);
+  position: sticky;
+  bottom: 0;
+  background: var(--white);
+}
+.cart-summary {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.cart-summary-label {
+  font-size: 14px;
+  color: var(--gray-500);
+}
+.cart-summary-value {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--gray-900);
+}
+.cart-order-btn {
+  width: 100%;
+  padding: 16px;
+  border-radius: var(--radius);
+  border: none;
+  background: var(--primary);
+  color: var(--white);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s;
+}
+.cart-order-btn:hover { background: var(--primary-dark); }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--gray-800);
+  color: var(--white);
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 500;
+  opacity: 0;
+  transition: all 0.3s;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Responsive */
+@media (min-width: 431px) {
+  body { background: var(--gray-100); }
+}
+@media (max-width: 360px) {
+  .cat-icon { width: 44px; height: 44px; font-size: 22px; border-radius: 12px; }
+  .banner-slider { height: 120px; }
+  .restaurant-img { height: 140px; }
+}
+</style>
+</head>
+<body>
+
+<div class="app-wrapper" id="app">
+  <!-- Header -->
+  <header class="header">
+    <div class="address-row">
+      <span class="address-icon">📍</span>
+      <span class="address-text">서울 강남구 테헤란로 123</span>
+      <span class="address-arrow">▼</span>
+      <div class="header-actions">
+        <button class="header-btn">🔔</button>
+      </div>
+    </div>
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="오늘 뭐 먹지? 검색해보세요">
+    </div>
+  </header>
+
+  <!-- Categories -->
+  <section class="categories">
+    <div class="categories-grid" id="categoryGrid"></div>
+  </section>
+
+  <!-- Banner Slider -->
+  <section class="banner-section">
+    <div class="banner-slider">
+      <div class="banner-track" id="bannerTrack"></div>
+      <div class="banner-dots" id="bannerDots"></div>
+      <div class="banner-arrows">
+        <button class="banner-arrow" onclick="slideBanner(-1)">‹</button>
+        <button class="banner-arrow" onclick="slideBanner(1)">›</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popular Restaurants -->
+  <section class="section">
+    <div class="section-header">
+      <h2 class="section-title">🔥 지금 인기있는</h2>
+      <button class="section-more">더보기</button>
+    </div>
+    <div class="restaurant-list" id="restaurantList"></div>
+  </section>
+</div>
+
+<!-- Detail Page -->
+<div class="detail-page" id="detailPage">
+  <div class="detail-page-inner" id="detailContent"></div>
+</div>
+
+<!-- Quantity Modal -->
+<div class="qty-modal-overlay" id="qtyModal">
+  <div class="qty-modal">
+    <div class="qty-modal-header">
+      <div class="qty-modal-name" id="qtyModalName"></div>
+      <button class="qty-modal-close" onclick="closeQtyModal()">✕</button>
+    </div>
+    <div class="qty-modal-price" id="qtyModalPrice"></div>
+    <div class="qty-controls">
+      <button class="qty-btn" onclick="changeQty(-1)" id="qtyMinus">−</button>
+      <span class="qty-value" id="qtyValue">1</span>
+      <button class="qty-btn" onclick="changeQty(1)">+</button>
+    </div>
+    <button class="qty-add-btn" id="qtyAddBtn" onclick="addToCart()">장바구니에 담기</button>
+  </div>
+</div>
+
+<!-- Cart Floating Bar -->
+<div class="cart-bar" id="cartBar">
+  <div class="cart-bar-inner" onclick="openCart()">
+    <div class="cart-count-badge" id="cartCountBadge">0</div>
+    <span class="cart-bar-text">장바구니 보기</span>
+    <span class="cart-bar-price" id="cartBarPrice">0원</span>
+  </div>
+</div>
+
+<!-- Cart Sheet -->
+<div class="cart-overlay" id="cartOverlay">
+  <div class="cart-sheet">
+    <div class="cart-header">
+      <h3 class="cart-title">장바구니</h3>
+      <button class="cart-close" onclick="closeCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-footer">
+      <div class="cart-summary">
+        <span class="cart-summary-label">총 주문금액</span>
+        <span class="cart-summary-value" id="cartTotal">0원</span>
+      </div>
+      <button class="cart-order-btn" onclick="placeOrder()">주문하기</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// === DATA ===
+const categories = [
+  { name: '한식', emoji: '🍚', bg: '#FEF3C7' },
+  { name: '중식', emoji: '🥟', bg: '#FECACA' },
+  { name: '일식', emoji: '🍣', bg: '#FED7AA' },
+  { name: '양식', emoji: '🍝', bg: '#BBF7D0' },
+  { name: '치킨', emoji: '🍗', bg: '#FDE68A' },
+  { name: '피자', emoji: '🍕', bg: '#FBCFE8' },
+  { name: '카페', emoji: '☕', bg: '#DDD6FE' },
+  { name: '분식', emoji: '🍢', bg: '#E0F2FE' },
+];
+
+const banners = [
+  { title: '첫 주문 3,000원 할인', sub: '신규 회원 한정 쿠폰', tag: 'EVENT', bg: 'linear-gradient(135deg, #00C4B4, #0891B2)', img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80' },
+  { title: '치킨 무료배달 축제', sub: '이번 주말 한정!', tag: 'HOT', bg: 'linear-gradient(135deg, #F59E0B, #EF4444)', img: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=600&q=80' },
+  { title: '점심특가 최대 50% 할인', sub: '매일 11시~14시', tag: 'LUNCH', bg: 'linear-gradient(135deg, #8B5CF6, #EC4899)', img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80' },
+];
+
+const restaurants = [
+  {
+    id: 1, name: '서울김치찌개', rating: 4.8, reviews: 2847, deliveryTime: '25~35분', minOrder: '12,000원',
+    tags: ['한식', '쿠폰'], desc: '30년 전통 어머니의 손맛, 정성 가득 한식 전문점',
+    img: 'https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=600&q=80',
+    menuCategories: ['인기메뉴', '찌개류', '밥류', '반찬'],
+    menus: [
+      { name: '김치찌개 (1인)', desc: '국내산 돼지고기와 묵은지로 끓인 깊은 맛', price: 9000, img: 'https://images.unsplash.com/photo-1583224964978-2257b960c3f3?w=300&q=80', cat: '인기메뉴' },
+      { name: '된장찌개 (1인)', desc: '시골 된장으로 구수하게 끓인 된장찌개', price: 8500, img: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=300&q=80', cat: '인기메뉴' },
+      { name: '순두부찌개', desc: '부드러운 순두부와 매콤한 양념의 조화', price: 8000, img: 'https://images.unsplash.com/photo-1590301157890-4810ed352733?w=300&q=80', cat: '찌개류' },
+      { name: '부대찌개 (2인)', desc: '햄, 소시지, 라면사리가 들어간 푸짐한 부대찌개', price: 22000, img: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=300&q=80', cat: '찌개류' },
+      { name: '제육볶음 정식', desc: '매콤달콤 제육볶음에 밥과 반찬 세트', price: 11000, img: 'https://images.unsplash.com/photo-1580959375944-abd7e991f971?w=300&q=80', cat: '밥류' },
+      { name: '비빔밥', desc: '신선한 나물과 고추장의 완벽한 비빔밥', price: 9500, img: 'https://images.unsplash.com/photo-1553163147-622ab57be1c7?w=300&q=80', cat: '밥류' },
+      { name: '계란말이', desc: '폭신폭신 두툼한 수제 계란말이', price: 7000, img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=300&q=80', cat: '반찬' },
+    ]
+  },
+  {
+    id: 2, name: '황금용 중화요리', rating: 4.6, reviews: 1523, deliveryTime: '30~40분', minOrder: '15,000원',
+    tags: ['중식'], desc: '정통 중화요리의 불맛을 그대로, 중국 셰프의 자신작',
+    img: 'https://images.unsplash.com/photo-1552611052-33e04de1b100?w=600&q=80',
+    menuCategories: ['인기메뉴', '면류', '밥류', '요리'],
+    menus: [
+      { name: '짜장면', desc: '춘장의 깊은 맛, 정통 짜장면', price: 7000, img: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=300&q=80', cat: '인기메뉴' },
+      { name: '짬뽕', desc: '매콤한 해물 짬뽕, 불맛이 일품', price: 8000, img: 'https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=300&q=80', cat: '인기메뉴' },
+      { name: '탕수육 (중)', desc: '바삭한 튀김과 새콤달콤 소스의 조화', price: 18000, img: 'https://images.unsplash.com/photo-1525755662778-989d0524087e?w=300&q=80', cat: '인기메뉴' },
+      { name: '볶음밥', desc: '고슬고슬 웍에 볶아낸 볶음밥', price: 8000, img: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=300&q=80', cat: '밥류' },
+      { name: '울면', desc: '걸쭉한 국물이 일품인 울면', price: 8500, img: 'https://images.unsplash.com/photo-1555126634-323283e090fa?w=300&q=80', cat: '면류' },
+      { name: '깐풍기', desc: '매콤달콤 바삭한 깐풍기', price: 20000, img: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=300&q=80', cat: '요리' },
+    ]
+  },
+  {
+    id: 3, name: '스시오마카세 하루', rating: 4.9, reviews: 956, deliveryTime: '20~30분', minOrder: '20,000원',
+    tags: ['일식', '쿠폰'], desc: '신선한 제철 해산물로 만든 프리미엄 초밥',
+    img: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600&q=80',
+    menuCategories: ['인기메뉴', '초밥', '롤', '사이드'],
+    menus: [
+      { name: '모둠초밥 12p', desc: '셰프 추천 제철 생선 모둠 초밥 12피스', price: 28000, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=300&q=80', cat: '인기메뉴' },
+      { name: '연어초밥 6p', desc: '노르웨이산 프리미엄 연어 초밥', price: 15000, img: 'https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?w=300&q=80', cat: '초밥' },
+      { name: '광어초밥 6p', desc: '제주산 싱싱한 광어 초밥', price: 16000, img: 'https://images.unsplash.com/photo-1583623025817-d180a2221d0a?w=300&q=80', cat: '초밥' },
+      { name: '캘리포니아롤', desc: '아보카도와 크랩스틱의 클래식 롤', price: 12000, img: 'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=300&q=80', cat: '롤' },
+      { name: '연어롤', desc: '연어와 크림치즈의 특제 롤', price: 13000, img: 'https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=300&q=80', cat: '롤' },
+      { name: '미소시루', desc: '정통 일본식 된장국', price: 3000, img: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=300&q=80', cat: '사이드' },
+    ]
+  },
+  {
+    id: 4, name: '파스타공방 리체', rating: 4.7, reviews: 2103, deliveryTime: '25~35분', minOrder: '14,000원',
+    tags: ['양식'], desc: '수제 생면으로 만든 정통 이탈리안 파스타',
+    img: 'https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?w=600&q=80',
+    menuCategories: ['인기메뉴', '파스타', '피자', '사이드'],
+    menus: [
+      { name: '까르보나라', desc: '진한 크림소스와 베이컨의 클래식 까르보나라', price: 13000, img: 'https://images.unsplash.com/photo-1612874742237-6526221588e3?w=300&q=80', cat: '인기메뉴' },
+      { name: '토마토 파스타', desc: '신선한 토마토로 만든 정통 마리나라', price: 12000, img: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=300&q=80', cat: '파스타' },
+      { name: '알리오올리오', desc: '마늘과 올리브오일의 심플한 조화', price: 11000, img: 'https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=300&q=80', cat: '파스타' },
+      { name: '마르게리타 피자', desc: '모짜렐라, 토마토, 바질의 정석', price: 15000, img: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=300&q=80', cat: '피자' },
+      { name: '시저 샐러드', desc: '로메인, 파마산, 크루통의 클래식 샐러드', price: 8000, img: 'https://images.unsplash.com/photo-1546793665-c74683f339c1?w=300&q=80', cat: '사이드' },
+    ]
+  },
+  {
+    id: 5, name: '바삭치킨 본점', rating: 4.5, reviews: 5621, deliveryTime: '30~45분', minOrder: '18,000원',
+    tags: ['치킨', '쿠폰'], desc: '두 번 튀겨 더 바삭한 국민 치킨',
+    img: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=600&q=80',
+    menuCategories: ['인기메뉴', '후라이드', '양념', '사이드'],
+    menus: [
+      { name: '후라이드 치킨', desc: '바삭바삭 기본에 충실한 후라이드', price: 18000, img: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=300&q=80', cat: '인기메뉴' },
+      { name: '양념치킨', desc: '매콤달콤 특제 양념 소스', price: 19000, img: 'https://images.unsplash.com/photo-1575932444877-5106bee2a599?w=300&q=80', cat: '인기메뉴' },
+      { name: '간장치킨', desc: '달콤 짭짤한 간장 소스 치킨', price: 19000, img: 'https://images.unsplash.com/photo-1608039829572-9b0189aa3c09?w=300&q=80', cat: '양념' },
+      { name: '반반치킨', desc: '후라이드 + 양념 반반', price: 19000, img: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=300&q=80', cat: '후라이드' },
+      { name: '치즈볼 (5개)', desc: '쭉 늘어나는 모짜렐라 치즈볼', price: 5000, img: 'https://images.unsplash.com/photo-1531749668029-2db88e4276c7?w=300&q=80', cat: '사이드' },
+      { name: '콜라 1.25L', desc: '시원한 콜라', price: 2500, img: 'https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=300&q=80', cat: '사이드' },
+    ]
+  },
+  {
+    id: 6, name: '나폴리 피자리아', rating: 4.7, reviews: 1872, deliveryTime: '25~40분', minOrder: '16,000원',
+    tags: ['피자'], desc: '화덕에서 구워낸 정통 나폴리 스타일 피자',
+    img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80',
+    menuCategories: ['인기메뉴', '클래식', '프리미엄', '음료'],
+    menus: [
+      { name: '페퍼로니 피자', desc: '고소한 치즈와 매콤한 페퍼로니', price: 17000, img: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?w=300&q=80', cat: '인기메뉴' },
+      { name: '마르게리타', desc: '심플한 토마토, 모짜렐라, 바질', price: 15000, img: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=300&q=80', cat: '클래식' },
+      { name: '고르곤졸라 피자', desc: '달콤한 꿀과 고르곤졸라의 만남', price: 19000, img: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300&q=80', cat: '프리미엄' },
+      { name: '콤비네이션', desc: '다양한 토핑이 올라간 넉넉한 피자', price: 20000, img: 'https://images.unsplash.com/photo-1594007654729-407eedc4be65?w=300&q=80', cat: '클래식' },
+      { name: '에이드', desc: '상큼한 레몬/자몽 에이드', price: 4000, img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed514?w=300&q=80', cat: '음료' },
+    ]
+  },
+];
+
+// === STATE ===
+let cart = [];
+let currentQtyItem = null;
+let currentQty = 1;
+let currentRestaurant = null;
+let bannerIndex = 0;
+let bannerInterval;
+
+// === RENDER ===
+function renderCategories() {
+  const grid = document.getElementById('categoryGrid');
+  grid.innerHTML = categories.map(c => `
+    <button class="cat-item" onclick="filterByCategory('${c.name}')">
+      <div class="cat-icon" style="background:${c.bg}">${c.emoji}</div>
+      <span class="cat-name">${c.name}</span>
+    </button>
+  `).join('');
+}
+
+function renderBanners() {
+  const track = document.getElementById('bannerTrack');
+  const dots = document.getElementById('bannerDots');
+  track.innerHTML = banners.map(b => `
+    <div class="banner-slide" style="background-image:url('${b.img}');background-size:cover;background-position:center">
+      <div class="banner-content">
+        <span class="banner-tag">${b.tag}</span>
+        <div class="banner-title">${b.title}</div>
+        <div class="banner-sub">${b.sub}</div>
+      </div>
+    </div>
+  `).join('');
+  dots.innerHTML = banners.map((_, i) => `
+    <button class="banner-dot${i === 0 ? ' active' : ''}" onclick="goToBanner(${i})"></button>
+  `).join('');
+  startBannerAutoplay();
+}
+
+function goToBanner(i) {
+  bannerIndex = i;
+  document.getElementById('bannerTrack').style.transform = `translateX(-${i * 100}%)`;
+  document.querySelectorAll('.banner-dot').forEach((d, idx) => d.classList.toggle('active', idx === i));
+}
+
+function slideBanner(dir) {
+  let next = bannerIndex + dir;
+  if (next < 0) next = banners.length - 1;
+  if (next >= banners.length) next = 0;
+  goToBanner(next);
+  resetBannerAutoplay();
+}
+
+function startBannerAutoplay() {
+  bannerInterval = setInterval(() => slideBanner(1), 3500);
+}
+function resetBannerAutoplay() {
+  clearInterval(bannerInterval);
+  startBannerAutoplay();
+}
+
+function renderRestaurants(list) {
+  const el = document.getElementById('restaurantList');
+  el.innerHTML = list.map(r => `
+    <div class="restaurant-card" onclick="openDetail(${r.id})">
+      <img class="restaurant-img" src="${r.img}" alt="${r.name}" loading="lazy">
+      <div class="restaurant-info">
+        <div class="restaurant-name">${r.name}</div>
+        <div class="restaurant-meta">
+          <span class="rating"><span class="star">★</span> ${r.rating}</span>
+          <span class="review-count">(${r.reviews.toLocaleString()})</span>
+          <span class="meta-dot"></span>
+          <span class="delivery-time">${r.deliveryTime}</span>
+          <span class="meta-dot"></span>
+          <span class="min-order">최소 ${r.minOrder}</span>
+        </div>
+        <div class="restaurant-tags">
+          ${r.tags.map(t => `<span class="tag${t === '쿠폰' ? ' coupon' : ''}">${t === '쿠폰' ? '🎟 쿠폰' : t}</span>`).join('')}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterByCategory(cat) {
+  const filtered = restaurants.filter(r => r.tags.includes(cat));
+  renderRestaurants(filtered.length ? filtered : restaurants);
+  showToast(filtered.length ? `${cat} 카테고리` : '전체 가게 보기');
+}
+
+// === DETAIL PAGE ===
+function openDetail(id) {
+  const r = restaurants.find(x => x.id === id);
+  if (!r) return;
+  currentRestaurant = r;
+  const detail = document.getElementById('detailContent');
+  const activeCat = r.menuCategories[0];
+  detail.innerHTML = `
+    <div class="detail-hero">
+      <img src="${r.img}" alt="${r.name}">
+      <button class="detail-back" onclick="closeDetail()">←</button>
+    </div>
+    <div class="detail-info">
+      <div class="detail-name">${r.name}</div>
+      <div class="detail-meta">
+        <span class="rating"><span class="star">★</span> ${r.rating}</span>
+        <span class="review-count">(${r.reviews.toLocaleString()})</span>
+      </div>
+      <div class="detail-desc">${r.desc}</div>
+      <div class="detail-stats">
+        <div class="stat-item">
+          <div class="stat-label">배달시간</div>
+          <div class="stat-value">${r.deliveryTime}</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">최소주문</div>
+          <div class="stat-value">${r.minOrder}</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">배달팁</div>
+          <div class="stat-value">무료</div>
+        </div>
+      </div>
+    </div>
+    <div class="menu-tabs" id="menuTabs">
+      ${r.menuCategories.map((c, i) => `<button class="menu-tab${i === 0 ? ' active' : ''}" onclick="switchMenuTab('${c}', this)">${c}</button>`).join('')}
+    </div>
+    <div class="menu-section" id="menuSection">
+      ${renderMenuItems(r, activeCat)}
+    </div>
+  `;
+  document.getElementById('detailPage').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function renderMenuItems(r, cat) {
+  const items = cat === r.menuCategories[0]
+    ? r.menus.filter(m => m.cat === cat)
+    : r.menus.filter(m => m.cat === cat);
+  let html = `<div class="menu-category-title">${cat}</div>`;
+  items.forEach((m, i) => {
+    html += `
+      <div class="menu-item" onclick="openQtyModal(${r.id}, ${i}, '${cat}')">
+        <div class="menu-item-info">
+          <div class="menu-item-name">${m.name}</div>
+          <div class="menu-item-desc">${m.desc}</div>
+          <div class="menu-item-price">${m.price.toLocaleString()}원</div>
+        </div>
+        <img class="menu-item-img" src="${m.img}" alt="${m.name}" loading="lazy">
+      </div>
+    `;
+  });
+  if (items.length === 0) html += '<div style="padding:30px;text-align:center;color:var(--gray-400)">메뉴 준비중입니다</div>';
+  return html;
+}
+
+function switchMenuTab(cat, tabEl) {
+  document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'));
+  tabEl.classList.add('active');
+  document.getElementById('menuSection').innerHTML = renderMenuItems(currentRestaurant, cat);
+}
+
+function closeDetail() {
+  document.getElementById('detailPage').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// === QUANTITY MODAL ===
+function openQtyModal(restaurantId, menuIndex, cat) {
+  const r = restaurants.find(x => x.id === restaurantId);
+  const menuItems = r.menus.filter(m => m.cat === cat);
+  const item = menuItems[menuIndex];
+  if (!item) return;
+  currentQtyItem = { ...item, restaurantId, restaurantName: r.name };
+  currentQty = 1;
+  document.getElementById('qtyModalName').textContent = item.name;
+  document.getElementById('qtyModalPrice').textContent = item.price.toLocaleString() + '원';
+  document.getElementById('qtyValue').textContent = '1';
+  document.getElementById('qtyMinus').disabled = true;
+  updateQtyAddBtn();
+  document.getElementById('qtyModal').classList.add('open');
+}
+
+function closeQtyModal() {
+  document.getElementById('qtyModal').classList.remove('open');
+  currentQtyItem = null;
+}
+
+function changeQty(d) {
+  currentQty = Math.max(1, currentQty + d);
+  document.getElementById('qtyValue').textContent = currentQty;
+  document.getElementById('qtyMinus').disabled = currentQty <= 1;
+  updateQtyAddBtn();
+}
+
+function updateQtyAddBtn() {
+  if (!currentQtyItem) return;
+  const total = currentQtyItem.price * currentQty;
+  document.getElementById('qtyAddBtn').textContent = `${total.toLocaleString()}원 담기`;
+}
+
+// === CART ===
+function addToCart() {
+  if (!currentQtyItem) return;
+  const existing = cart.find(c => c.name === currentQtyItem.name && c.restaurantName === currentQtyItem.restaurantName);
+  if (existing) {
+    existing.qty += currentQty;
+  } else {
+    cart.push({ ...currentQtyItem, qty: currentQty });
+  }
+  closeQtyModal();
+  updateCartBar();
+  showToast(`${currentQtyItem.name} ${currentQty}개 담았어요!`);
+}
+
+function updateCartBar() {
+  const bar = document.getElementById('cartBar');
+  const totalCount = cart.reduce((s, c) => s + c.qty, 0);
+  const totalPrice = cart.reduce((s, c) => s + c.price * c.qty, 0);
+  if (totalCount > 0) {
+    bar.classList.add('show');
+    document.getElementById('cartCountBadge').textContent = totalCount;
+    document.getElementById('cartBarPrice').textContent = totalPrice.toLocaleString() + '원';
+  } else {
+    bar.classList.remove('show');
+  }
+}
+
+function openCart() {
+  renderCartItems();
+  document.getElementById('cartOverlay').classList.add('open');
+}
+
+function closeCart() {
+  document.getElementById('cartOverlay').classList.remove('open');
+}
+
+function renderCartItems() {
+  const el = document.getElementById('cartItems');
+  if (cart.length === 0) {
+    el.innerHTML = '<div class="cart-empty">장바구니가 비어있어요</div>';
+    document.getElementById('cartTotal').textContent = '0원';
+    return;
+  }
+  el.innerHTML = cart.map((item, i) => `
+    <div class="cart-item">
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-price">${item.price.toLocaleString()}원</div>
+      </div>
+      <div class="cart-item-controls">
+        <button class="cart-qty-btn" onclick="updateCartQty(${i}, -1)">−</button>
+        <span class="cart-item-qty">${item.qty}</span>
+        <button class="cart-qty-btn" onclick="updateCartQty(${i}, 1)">+</button>
+      </div>
+      <div class="cart-item-total">${(item.price * item.qty).toLocaleString()}원</div>
+    </div>
+  `).join('');
+  const total = cart.reduce((s, c) => s + c.price * c.qty, 0);
+  document.getElementById('cartTotal').textContent = total.toLocaleString() + '원';
+}
+
+function updateCartQty(index, d) {
+  cart[index].qty += d;
+  if (cart[index].qty <= 0) cart.splice(index, 1);
+  renderCartItems();
+  updateCartBar();
+}
+
+function placeOrder() {
+  if (cart.length === 0) return;
+  const total = cart.reduce((s, c) => s + c.price * c.qty, 0);
+  cart = [];
+  closeCart();
+  updateCartBar();
+  showToast(`주문 완료! ${total.toLocaleString()}원`);
+}
+
+// === TOAST ===
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// === TOUCH SWIPE (Banner) ===
+let touchStartX = 0;
+document.addEventListener('DOMContentLoaded', () => {
+  const slider = document.querySelector('.banner-slider');
+  if (slider) {
+    slider.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+    slider.addEventListener('touchend', e => {
+      const diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 40) {
+        slideBanner(diff > 0 ? 1 : -1);
+      }
+    }, { passive: true });
+  }
+});
+
+// === CLOSE OVERLAYS on backdrop click ===
+document.getElementById('qtyModal').addEventListener('click', function(e) {
+  if (e.target === this) closeQtyModal();
+});
+document.getElementById('cartOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeCart();
+});
+
+// === INIT ===
+renderCategories();
+renderBanners();
+renderRestaurants(restaurants);
+</script>
+</body>
+</html>
