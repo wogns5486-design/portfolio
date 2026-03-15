@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>웹 개발자 포트폴리오 — 18개 프로젝트 · 3개 LIVE 서비스</title>
-  <meta name="description" content="18개 웹 프로젝트 + 3개 LIVE 서비스 — 랜딩페이지, 쇼핑몰, 대시보드, 풀스택 웹앱 개발 포트폴리오">
-  <meta property="og:title" content="웹 개발자 포트폴리오 — 18개 프로젝트 · 3개 LIVE 서비스">
-  <meta property="og:description" content="18개 웹 프로젝트 + 3개 LIVE 서비스 — 랜딩페이지, 쇼핑몰, 대시보드, 풀스택 웹앱 개발">
+  <title>ONESTEP — 웹·앱 개발, 합리적인 가격으로</title>
+  <meta name="description" content="시장 평균 30% 저렴, 18개 프로젝트 + 3개 LIVE 서비스. 기획부터 배포까지 원스텝.">
+  <meta property="og:title" content="ONESTEP — 웹·앱 개발 포트폴리오">
+  <meta property="og:description" content="시장 평균 30% 저렴, 18개 프로젝트 + 3개 LIVE 서비스. 기획부터 배포까지 원스텝.">
   <meta property="og:type" content="website">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -965,6 +965,105 @@
         padding: 16px 36px;
         font-size: 0.95rem;
       }
+
+      .hero-tags {
+        gap: 8px;
+      }
+
+      .hero-tag {
+        font-size: 0.72rem;
+        padding: 6px 12px;
+      }
+
+      .value-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ============================================
+       HERO KEYWORD TAGS
+       ============================================ */
+    .hero-tags {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 36px;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: 100px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--live);
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+
+    /* ============================================
+       VALUE PROPOSITION SECTION
+       ============================================ */
+    .value-section {
+      padding: 80px 0 20px;
+      word-break: keep-all;
+    }
+
+    .value-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-top: 40px;
+    }
+
+    .value-card {
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 32px 24px;
+      transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .value-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(129,140,248,0.25);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+
+    .value-icon {
+      font-size: 2rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .value-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .value-desc {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      line-height: 1.65;
+    }
+
+    @media (max-width: 900px) {
+      .value-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .value-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -975,9 +1074,15 @@
        ============================================ -->
   <section class="hero">
     <div class="hero-inner scroll-reveal">
-      <p class="hero-label">Web Developer</p>
-      <h1>Portfolio</h1>
-      <p class="hero-desc">기획부터 출시까지 원스텝 · 랜딩페이지, 쇼핑몰, 앱, SaaS, 결제연동, 웹앱</p>
+      <p class="hero-label">ONESTEP</p>
+      <h1>원하는 기능, 전부 만들어 드립니다</h1>
+      <p class="hero-desc">시장 평균보다 30% 합리적인 가격, 타협 없는 퀄리티.<br>기획부터 배포까지 한 번에.</p>
+      <div class="hero-tags">
+        <span class="hero-tag">&#10003; 평균 30% 저렴</span>
+        <span class="hero-tag">&#10003; 기능 무제한</span>
+        <span class="hero-tag">&#10003; 기획→배포 올인원</span>
+        <span class="hero-tag">&#10003; LIVE 서비스 3개 운영 중</span>
+      </div>
       <button onclick="copyEmail()" class="hero-cta">프로젝트 문의하기 <span>→</span></button>
     </div>
   </section>
@@ -990,17 +1095,51 @@
       <div class="stat-card scroll-reveal">
         <div class="stat-number" data-count="3">0</div>
         <div class="stat-label"><span class="stat-dot"></span>LIVE 서비스 운영 중</div>
-        <div class="stat-sublabel">실제 사용자가 이용하는 서비스</div>
+        <div class="stat-sublabel">실서비스 = 실력 증명</div>
       </div>
       <div class="stat-card scroll-reveal">
         <div class="stat-number" data-count="18">0</div>
         <div class="stat-label">완성 프로젝트</div>
-        <div class="stat-sublabel">다양한 산업군 경험</div>
+        <div class="stat-sublabel">다양한 산업군 대응</div>
       </div>
       <div class="stat-card scroll-reveal">
         <div class="stat-number" data-count-text="Full">F</div>
         <div class="stat-label">풀스택 개발</div>
-        <div class="stat-sublabel">프론트엔드 + 백엔드 + 배포</div>
+        <div class="stat-sublabel">추가 비용 없는 올인원</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       VALUE PROPOSITION
+       ============================================ -->
+  <section class="value-section">
+    <div class="container">
+      <div class="section-header scroll-reveal">
+        <p class="section-label">Why ONESTEP</p>
+        <h2 class="section-title">왜 ONESTEP인가요?</h2>
+      </div>
+      <div class="value-grid">
+        <div class="value-card scroll-reveal">
+          <span class="value-icon">💰</span>
+          <div class="value-title">합리적인 가격</div>
+          <div class="value-desc">시장 평균 대비 30% 저렴. 거품 없는 정직한 견적.</div>
+        </div>
+        <div class="value-card scroll-reveal">
+          <span class="value-icon">⚡</span>
+          <div class="value-title">원하는 기능 전부</div>
+          <div class="value-desc">로그인, 결제, 관리자 페이지, API 연동 — 빠지는 기능 없이.</div>
+        </div>
+        <div class="value-card scroll-reveal">
+          <span class="value-icon">🚀</span>
+          <div class="value-title">기획부터 배포까지</div>
+          <div class="value-desc">디자인, 개발, 서버, 도메인 세팅까지 원스텝으로.</div>
+        </div>
+        <div class="value-card scroll-reveal">
+          <span class="value-icon">✅</span>
+          <div class="value-title">검증된 실력</div>
+          <div class="value-desc">데모가 아닌 실제 LIVE 서비스 3개 운영 중.</div>
+        </div>
       </div>
     </div>
   </section>
@@ -1387,7 +1526,7 @@
           wogns5486@gmail.com
         </button>
       </div>
-      <p>&copy; 2025 Portfolio. All rights reserved.</p>
+      <p>&copy; 2025 ONESTEP. All rights reserved.</p>
     </div>
   </footer>
 
