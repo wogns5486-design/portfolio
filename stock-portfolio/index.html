@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>주식 포트폴리오 관리</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0e17;--bg2:#111827;--bg3:#1a2332;--bg4:#243044;
+  --text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;
+  --green:#22c55e;--green2:#16a34a;--green-bg:rgba(34,197,94,.1);
+  --red:#ef4444;--red2:#dc2626;--red-bg:rgba(239,68,68,.1);
+  --blue:#3b82f6;--accent:#8b5cf6;
+  --border:#1e293b;--border2:#334155;
+  --radius:12px;--radius-sm:8px;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+a{color:inherit;text-decoration:none}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+
+/* Layout */
+.app{max-width:1200px;margin:0 auto;padding:20px}
+header{text-align:center;padding:30px 0 20px}
+header h1{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,var(--green),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+header p{color:var(--text3);font-size:.85rem;margin-top:4px}
+
+/* Summary Cards */
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;transition:transform .2s,border-color .2s}
+.card:hover{transform:translateY(-2px);border-color:var(--border2)}
+.card-label{font-size:.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-bottom:6px}
+.card-value{font-size:1.5rem;font-weight:700}
+.card-sub{font-size:.8rem;margin-top:4px}
+.positive{color:var(--red)}
+.negative{color:var(--blue)}
+.neutral{color:var(--text2)}
+
+/* Section */
+.section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:24px;overflow:hidden}
+.section-header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border)}
+.section-title{font-size:1rem;font-weight:700}
+.section-body{padding:20px}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-primary{background:var(--green);color:#fff}
+.btn-primary:hover{background:var(--green2)}
+.btn-danger{background:var(--red);color:#fff}
+.btn-danger:hover{background:var(--red2)}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2)}
+.btn-ghost:hover{background:var(--bg3);color:var(--text)}
+.btn-sm{padding:5px 10px;font-size:.72rem}
+
+/* Table */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+thead th{text-align:left;padding:10px 12px;color:var(--text3);font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);white-space:nowrap}
+tbody td{padding:10px 12px;border-bottom:1px solid var(--border);white-space:nowrap}
+tbody tr:hover{background:var(--bg3)}
+tbody tr:last-child td{border-bottom:none}
+.ticker{font-weight:700;color:var(--green)}
+.align-r{text-align:right}
+
+/* Chart area */
+.chart-area{display:flex;align-items:center;justify-content:center;gap:30px;flex-wrap:wrap}
+.chart-container{position:relative;width:220px;height:220px}
+.chart-container canvas{width:100%!important;height:100%!important}
+.chart-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.chart-center-label{font-size:.7rem;color:var(--text3)}
+.chart-center-value{font-size:1.1rem;font-weight:700}
+.legend{display:flex;flex-direction:column;gap:8px}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:.8rem}
+.legend-color{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+.legend-pct{color:var(--text3);margin-left:auto;min-width:40px;text-align:right}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:1000;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-overlay.active{opacity:1;pointer-events:all}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);width:90%;max-width:440px;padding:24px;transform:translateY(20px);transition:transform .25s}
+.modal-overlay.active .modal{transform:translateY(0)}
+.modal h3{font-size:1rem;font-weight:700;margin-bottom:16px}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:.75rem;color:var(--text3);font-weight:600;margin-bottom:4px}
+.form-group input,.form-group select{width:100%;padding:10px 12px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:.85rem;outline:none;transition:border-color .2s}
+.form-group input:focus,.form-group select:focus{border-color:var(--green)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+
+/* History */
+.history-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.history-item:last-child{border-bottom:none}
+.history-badge{padding:3px 8px;border-radius:4px;font-size:.7rem;font-weight:700;text-transform:uppercase}
+.history-badge.buy{background:var(--red-bg);color:var(--red)}
+.history-badge.sell{background:var(--green-bg);color:var(--green)}
+.history-info{flex:1}
+.history-name{font-weight:600;font-size:.85rem}
+.history-detail{font-size:.75rem;color:var(--text3)}
+.history-date{font-size:.72rem;color:var(--text3)}
+
+/* Pulse animation for live prices */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.price-updating{animation:pulse .4s ease}
+
+/* Empty state */
+.empty{text-align:center;padding:40px 20px;color:var(--text3)}
+.empty-icon{font-size:2.5rem;margin-bottom:12px;opacity:.4}
+.empty p{font-size:.85rem}
+
+/* Responsive */
+@media(max-width:768px){
+  .app{padding:12px}
+  header h1{font-size:1.4rem}
+  .summary{grid-template-columns:1fr 1fr}
+  .card{padding:14px}
+  .card-value{font-size:1.2rem}
+  .chart-area{flex-direction:column}
+  .form-row{grid-template-columns:1fr}
+  table{font-size:.78rem}
+  thead th,tbody td{padding:8px}
+}
+@media(max-width:480px){
+  .summary{grid-template-columns:1fr}
+  .section-header{flex-direction:column;gap:10px;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>📊 주식 포트폴리오</h1>
+    <p>실시간 모의 시세 · 포트폴리오 관리</p>
+  </header>
+
+  <!-- Summary -->
+  <div class="summary">
+    <div class="card">
+      <div class="card-label">총 투자금</div>
+      <div class="card-value" id="totalInvested">₩0</div>
+    </div>
+    <div class="card">
+      <div class="card-label">총 평가금</div>
+      <div class="card-value" id="totalValue">₩0</div>
+    </div>
+    <div class="card">
+      <div class="card-label">총 수익</div>
+      <div class="card-value" id="totalProfit">₩0</div>
+      <div class="card-sub" id="totalProfitPct"></div>
+    </div>
+    <div class="card">
+      <div class="card-label">보유 종목수</div>
+      <div class="card-value" id="totalStocks">0</div>
+    </div>
+  </div>
+
+  <!-- Chart -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">포트폴리오 비중</div>
+    </div>
+    <div class="section-body">
+      <div class="chart-area" id="chartArea">
+        <div class="chart-container">
+          <canvas id="donutChart" width="440" height="440"></canvas>
+          <div class="chart-center">
+            <div class="chart-center-label">종목수</div>
+            <div class="chart-center-value" id="chartCenterCount">0</div>
+          </div>
+        </div>
+        <div class="legend" id="chartLegend"></div>
+      </div>
+      <div class="empty" id="chartEmpty" style="display:none">
+        <div class="empty-icon">📈</div>
+        <p>종목을 추가하면 비중 차트가 표시됩니다</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Holdings Table -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">보유 종목</div>
+      <button class="btn btn-primary" onclick="openModal('buy')">+ 매수</button>
+    </div>
+    <div class="section-body" style="padding:0">
+      <div class="table-wrap">
+        <table id="holdingsTable">
+          <thead>
+            <tr>
+              <th>종목명</th>
+              <th class="align-r">수량</th>
+              <th class="align-r">평균단가</th>
+              <th class="align-r">현재가</th>
+              <th class="align-r">평가금</th>
+              <th class="align-r">수익률</th>
+              <th class="align-r">액션</th>
+            </tr>
+          </thead>
+          <tbody id="holdingsBody"></tbody>
+        </table>
+      </div>
+      <div class="empty" id="holdingsEmpty" style="display:none;padding:30px">
+        <div class="empty-icon">💼</div>
+        <p>보유 종목이 없습니다. 매수 버튼으로 종목을 추가하세요.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trade History -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">거래 내역</div>
+      <button class="btn btn-ghost btn-sm" onclick="clearHistory()">초기화</button>
+    </div>
+    <div class="section-body" id="historyBody">
+      <div class="empty" id="historyEmpty">
+        <div class="empty-icon">📋</div>
+        <p>거래 내역이 없습니다</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <h3 id="modalTitle">매수 추가</h3>
+    <div class="form-group">
+      <label>종목명</label>
+      <input type="text" id="inputName" placeholder="예: 삼성전자">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>수량</label>
+        <input type="number" id="inputQty" min="1" placeholder="0">
+      </div>
+      <div class="form-group">
+        <label>단가 (₩)</label>
+        <input type="number" id="inputPrice" min="0" placeholder="0">
+      </div>
+    </div>
+    <div class="form-group" id="sellStockGroup" style="display:none">
+      <label>매도 종목 선택</label>
+      <select id="sellStockSelect"></select>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">취소</button>
+      <button class="btn btn-primary" id="modalSubmit" onclick="submitTrade()">매수</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── State ──
+let portfolio = JSON.parse(localStorage.getItem('sp_portfolio') || '[]');
+let history = JSON.parse(localStorage.getItem('sp_history') || '[]');
+let currentMode = 'buy';
+
+const COLORS = [
+  '#22c55e','#3b82f6','#f59e0b','#ef4444','#8b5cf6',
+  '#ec4899','#14b8a6','#f97316','#06b6d4','#a855f7',
+  '#84cc16','#e11d48','#0ea5e9','#d946ef','#10b981'
+];
+
+// ── Helpers ──
+function fmt(n){ return '₩' + Math.round(n).toLocaleString('ko-KR'); }
+function fmtPct(n){ return (n >= 0 ? '+' : '') + n.toFixed(2) + '%'; }
+function save(){
+  localStorage.setItem('sp_portfolio', JSON.stringify(portfolio));
+  localStorage.setItem('sp_history', JSON.stringify(history));
+}
+function profitClass(n){ return n > 0 ? 'positive' : n < 0 ? 'negative' : 'neutral'; }
+
+// ── Simulate Price Changes ──
+function simulatePrices(){
+  portfolio.forEach(s => {
+    const change = (Math.random() - 0.48) * 0.03; // slight upward bias
+    s.currentPrice = Math.max(100, Math.round(s.currentPrice * (1 + change)));
+  });
+  save();
+  render();
+}
+
+// ── Render ──
+function render(){
+  renderSummary();
+  renderHoldings();
+  renderChart();
+  renderHistory();
+}
+
+function renderSummary(){
+  let invested = 0, value = 0;
+  portfolio.forEach(s => {
+    invested += s.avgPrice * s.qty;
+    value += s.currentPrice * s.qty;
+  });
+  const profit = value - invested;
+  const pct = invested > 0 ? (profit / invested * 100) : 0;
+  document.getElementById('totalInvested').textContent = fmt(invested);
+  document.getElementById('totalValue').textContent = fmt(value);
+  const profitEl = document.getElementById('totalProfit');
+  profitEl.textContent = fmt(profit);
+  profitEl.className = 'card-value ' + profitClass(profit);
+  const pctEl = document.getElementById('totalProfitPct');
+  pctEl.textContent = fmtPct(pct);
+  pctEl.className = 'card-sub ' + profitClass(profit);
+  document.getElementById('totalStocks').textContent = portfolio.length;
+}
+
+function renderHoldings(){
+  const tbody = document.getElementById('holdingsBody');
+  const empty = document.getElementById('holdingsEmpty');
+  const table = document.getElementById('holdingsTable');
+  if(portfolio.length === 0){
+    table.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+  table.style.display = 'table';
+  empty.style.display = 'none';
+  tbody.innerHTML = portfolio.map((s, i) => {
+    const val = s.currentPrice * s.qty;
+    const profit = val - s.avgPrice * s.qty;
+    const pct = (s.currentPrice - s.avgPrice) / s.avgPrice * 100;
+    const cls = profitClass(profit);
+    return `<tr>
+      <td><span class="ticker">${s.name}</span></td>
+      <td class="align-r">${s.qty.toLocaleString()}</td>
+      <td class="align-r">${fmt(s.avgPrice)}</td>
+      <td class="align-r price-cell" id="price-${i}">${fmt(s.currentPrice)}</td>
+      <td class="align-r">${fmt(val)}</td>
+      <td class="align-r ${cls}">${fmtPct(pct)}</td>
+      <td class="align-r">
+        <button class="btn btn-ghost btn-sm" onclick="openModal('sell',${i})">매도</button>
+        <button class="btn btn-danger btn-sm" onclick="removeStock(${i})">삭제</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function renderChart(){
+  const canvas = document.getElementById('donutChart');
+  const ctx = canvas.getContext('2d');
+  const legend = document.getElementById('chartLegend');
+  const empty = document.getElementById('chartEmpty');
+  const chartArea = document.getElementById('chartArea');
+
+  if(portfolio.length === 0){
+    chartArea.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+  chartArea.style.display = 'flex';
+  empty.style.display = 'none';
+
+  const totalVal = portfolio.reduce((s, x) => s + x.currentPrice * x.qty, 0);
+  const data = portfolio.map((s, i) => ({
+    name: s.name,
+    value: s.currentPrice * s.qty,
+    pct: totalVal > 0 ? (s.currentPrice * s.qty / totalVal * 100) : 0,
+    color: COLORS[i % COLORS.length]
+  }));
+
+  document.getElementById('chartCenterCount').textContent = portfolio.length;
+
+  // Draw donut
+  const w = canvas.width, h = canvas.height;
+  const cx = w / 2, cy = h / 2;
+  const outerR = Math.min(cx, cy) - 10;
+  const innerR = outerR * 0.62;
+  ctx.clearRect(0, 0, w, h);
+
+  let startAngle = -Math.PI / 2;
+  data.forEach(d => {
+    const sliceAngle = (d.pct / 100) * Math.PI * 2;
+    ctx.beginPath();
+    ctx.arc(cx, cy, outerR, startAngle, startAngle + sliceAngle);
+    ctx.arc(cx, cy, innerR, startAngle + sliceAngle, startAngle, true);
+    ctx.closePath();
+    ctx.fillStyle = d.color;
+    ctx.fill();
+    startAngle += sliceAngle;
+  });
+
+  // Legend
+  legend.innerHTML = data.map(d =>
+    `<div class="legend-item">
+      <div class="legend-color" style="background:${d.color}"></div>
+      <span>${d.name}</span>
+      <span class="legend-pct">${d.pct.toFixed(1)}%</span>
+    </div>`
+  ).join('');
+}
+
+function renderHistory(){
+  const body = document.getElementById('historyBody');
+  const empty = document.getElementById('historyEmpty');
+  if(history.length === 0){
+    body.innerHTML = '';
+    body.appendChild(empty);
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  body.innerHTML = history.slice().reverse().slice(0, 50).map(h => {
+    const isBuy = h.type === 'buy';
+    return `<div class="history-item">
+      <span class="history-badge ${h.type}">${isBuy ? '매수' : '매도'}</span>
+      <div class="history-info">
+        <div class="history-name">${h.name}</div>
+        <div class="history-detail">${h.qty.toLocaleString()}주 × ${fmt(h.price)}</div>
+      </div>
+      <div class="history-date">${h.date}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── Modal ──
+function openModal(mode, idx){
+  currentMode = mode;
+  const overlay = document.getElementById('modalOverlay');
+  const title = document.getElementById('modalTitle');
+  const submit = document.getElementById('modalSubmit');
+  const nameInput = document.getElementById('inputName');
+  const sellGroup = document.getElementById('sellStockGroup');
+
+  if(mode === 'buy'){
+    title.textContent = '매수 추가';
+    submit.textContent = '매수';
+    submit.className = 'btn btn-primary';
+    nameInput.parentElement.style.display = 'block';
+    sellGroup.style.display = 'none';
+    nameInput.value = '';
+  } else {
+    title.textContent = '매도';
+    submit.textContent = '매도';
+    submit.className = 'btn btn-danger';
+    nameInput.parentElement.style.display = 'none';
+    sellGroup.style.display = 'block';
+    const sel = document.getElementById('sellStockSelect');
+    sel.innerHTML = portfolio.map((s, i) =>
+      `<option value="${i}" ${i === idx ? 'selected' : ''}>${s.name} (${s.qty}주)</option>`
+    ).join('');
+  }
+  document.getElementById('inputQty').value = '';
+  document.getElementById('inputPrice').value = '';
+  overlay.classList.add('active');
+}
+
+function closeModal(e){
+  if(e && e.target !== e.currentTarget) return;
+  document.getElementById('modalOverlay').classList.remove('active');
+}
+
+function submitTrade(){
+  const qty = parseInt(document.getElementById('inputQty').value);
+  const price = parseInt(document.getElementById('inputPrice').value);
+  if(!qty || qty <= 0 || !price || price <= 0){ alert('수량과 단가를 올바르게 입력하세요.'); return; }
+
+  const now = new Date();
+  const dateStr = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+  if(currentMode === 'buy'){
+    const name = document.getElementById('inputName').value.trim();
+    if(!name){ alert('종목명을 입력하세요.'); return; }
+    const existing = portfolio.find(s => s.name === name);
+    if(existing){
+      const totalCost = existing.avgPrice * existing.qty + price * qty;
+      existing.qty += qty;
+      existing.avgPrice = Math.round(totalCost / existing.qty);
+    } else {
+      portfolio.push({ name, qty, avgPrice: price, currentPrice: price });
+    }
+    history.push({ type:'buy', name, qty, price, date: dateStr });
+  } else {
+    const idx = parseInt(document.getElementById('sellStockSelect').value);
+    const stock = portfolio[idx];
+    if(qty > stock.qty){ alert(`보유 수량(${stock.qty}주)을 초과할 수 없습니다.`); return; }
+    stock.qty -= qty;
+    history.push({ type:'sell', name: stock.name, qty, price, date: dateStr });
+    if(stock.qty === 0) portfolio.splice(idx, 1);
+  }
+
+  save();
+  render();
+  document.getElementById('modalOverlay').classList.remove('active');
+}
+
+function removeStock(idx){
+  if(!confirm(`${portfolio[idx].name} 종목을 삭제하시겠습니까?`)) return;
+  portfolio.splice(idx, 1);
+  save();
+  render();
+}
+
+function clearHistory(){
+  if(!confirm('거래 내역을 모두 삭제하시겠습니까?')) return;
+  history = [];
+  save();
+  render();
+}
+
+// ── Init ──
+render();
+
+// Simulate price changes every 3 seconds
+setInterval(() => {
+  if(portfolio.length === 0) return;
+  simulatePrices();
+  // Flash animation on price cells
+  document.querySelectorAll('.price-cell').forEach(el => {
+    el.classList.add('price-updating');
+    setTimeout(() => el.classList.remove('price-updating'), 400);
+  });
+}, 3000);
+</script>
+</body>
+</html>
