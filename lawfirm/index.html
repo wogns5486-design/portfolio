@@ -973,6 +973,8 @@ select.form-control option { background: var(--navy); color: var(--white); }
   .stats-grid { grid-template-columns: 1fr; }
   .hero-buttons { flex-direction: column; align-items: center; }
   .hero-buttons .btn { width: 100%; justify-content: center; }
+  .hero-emergency { padding: 14px 18px; gap: 12px; }
+  .lawyer-card { padding: 32px 20px 28px; }
 }
 </style>
 </head>
@@ -987,6 +989,7 @@ select.form-control option { background: var(--navy); color: var(--white); }
     </a>
     <nav class="nav">
       <a href="#about">법인소개</a>
+      <a href="#lawyers">변호사 소개</a>
       <a href="#practice">전문분야</a>
       <a href="#cases">성공사례</a>
       <a href="#consult">온라인상담</a>
@@ -1005,6 +1008,7 @@ select.form-control option { background: var(--navy); color: var(--white); }
 <!-- MOBILE NAV -->
 <div class="mobile-nav" id="mobileNav">
   <a href="#about" onclick="closeMobile()">법인소개</a>
+  <a href="#lawyers" onclick="closeMobile()">변호사 소개</a>
   <a href="#practice" onclick="closeMobile()">전문분야</a>
   <a href="#cases" onclick="closeMobile()">성공사례</a>
   <a href="#consult" onclick="closeMobile()">온라인상담</a>
@@ -1021,7 +1025,7 @@ select.form-control option { background: var(--navy); color: var(--white); }
   <div class="hero-content">
     <div class="hero-badge">24시간 긴급 상담 가능</div>
     <h1>당신의 권리를<br><span>끝까지</span> 지킵니다</h1>
-    <p class="hero-sub">성범죄·마약 사건 전문 변호사가 함께합니다.<br>풍부한 경험과 깊은 법률 지식으로 최선의 결과를 이끌어 냅니다.</p>
+    <p class="hero-sub">성범죄·마약 사건 전문 변호사가 함께합니다.<br>풍부한 경험과 깊은 법률 지식으로 최선의 결과를 이끌어냅니다.</p>
     <div class="hero-buttons">
       <a href="#consult" class="btn btn-primary">무료 상담 신청</a>
       <a href="#cases" class="btn btn-outline">성공사례 보기</a>
@@ -1045,7 +1049,7 @@ select.form-control option { background: var(--navy); color: var(--white); }
       <div class="about-text reveal">
         <span class="section-label">About Us</span>
         <h3>대한민국 형사 전문<br>법무법인 정의입니다</h3>
-        <p>법무법인 정의는 <strong>성범죄 및 마약 사건</strong>을 전문으로 하는 형사 전문 법무법인입니다. 2015년 설립 이래, 의뢰인의 권리 보호를 최우선 가치로 삼아 수천 건의 형사 사건을 성공적으로 수행해 왔습니다.</p>
+        <p>법무법인 정의는 <strong>성범죄 및 마약 사건</strong>을 전문으로 하는 형사 전문 법무법인입니다. 2015년 설립 이래, 의뢰인의 권리 보호를 최우선 가치로 삼아 수천 건의 형사 사건을 성공적으로 수행해왔습니다.</p>
         <p>전직 검사 출신 변호사를 포함한 최정예 법률 전문가들이 사건의 초기 단계부터 최종 판결까지 체계적으로 대응하며, <strong>의뢰인 한 분 한 분께 맞춤형 전략</strong>을 수립하여 최선의 결과를 도출합니다.</p>
         <p>24시간 긴급 상담 체계를 갖추고 있어, 어떤 상황에서도 신속하게 법률 조력을 받으실 수 있습니다.</p>
       </div>
@@ -1133,7 +1137,7 @@ select.form-control option { background: var(--navy); color: var(--white); }
     <div class="section-header reveal">
       <span class="section-label">Practice Areas</span>
       <h2 class="section-title">전문 분야</h2>
-      <p class="section-desc">각 분야별 최고의 전문성으로 최선의 결과를 이끌어 냅니다</p>
+      <p class="section-desc">각 분야별 최고의 전문성으로 최선의 결과를 이끌어냅니다</p>
       <div class="divider"></div>
     </div>
     <div class="practice-cards">
@@ -1304,17 +1308,17 @@ select.form-control option { background: var(--navy); color: var(--white); }
         <form id="consultForm" onsubmit="handleSubmit(event)">
           <div class="form-row">
             <div class="form-group">
-              <label>이름 <span class="required">*</span></label>
-              <input type="text" class="form-control" placeholder="홍길동" required>
+              <label for="consult-name">이름 <span class="required">*</span></label>
+              <input type="text" id="consult-name" name="name" class="form-control" placeholder="홍길동" required>
             </div>
             <div class="form-group">
-              <label>연락처 <span class="required">*</span></label>
-              <input type="tel" class="form-control" placeholder="010-0000-0000" required>
+              <label for="consult-contact">연락처 <span class="required">*</span></label>
+              <input type="tel" id="consult-contact" name="contact" class="form-control" placeholder="010-0000-0000" required>
             </div>
           </div>
           <div class="form-group">
-            <label>상담 분야 <span class="required">*</span></label>
-            <select class="form-control" required>
+            <label for="consult-field">상담 분야 <span class="required">*</span></label>
+            <select id="consult-field" name="field" class="form-control" required>
               <option value="" disabled selected>상담 분야를 선택해주세요</option>
               <option value="성범죄">성범죄 관련 상담</option>
               <option value="마약">마약 관련 상담</option>
@@ -1322,8 +1326,8 @@ select.form-control option { background: var(--navy); color: var(--white); }
             </select>
           </div>
           <div class="form-group">
-            <label>사건 개요 <span class="required">*</span></label>
-            <textarea class="form-control" placeholder="사건의 개략적인 내용을 기재해주세요. 상세한 내용은 상담 시 말씀해 주셔도 됩니다." required></textarea>
+            <label for="consult-description">사건 개요 <span class="required">*</span></label>
+            <textarea id="consult-description" name="description" class="form-control" placeholder="사건의 개략적인 내용을 기재해주세요. 상세한 내용은 상담 시 말씀해 주셔도 됩니다." required></textarea>
           </div>
           <label class="form-agree">
             <input type="checkbox" required>
@@ -1441,7 +1445,7 @@ select.form-control option { background: var(--navy); color: var(--white); }
         <a href="#practice">전문분야</a>
         <a href="#cases">성공사례</a>
         <a href="#consult">온라인상담</a>
-        <a href="#">개인정보처리방침</a>
+        <a href="javascript:void(0)" onclick="alert('개인정보처리방침은 실제 운영 시 별도 페이지로 제공됩니다.')">개인정보처리방침</a>
       </div>
     </div>
     <div class="footer-bottom">
@@ -1454,7 +1458,6 @@ select.form-control option { background: var(--navy); color: var(--white); }
 <script>
 /* ===== HEADER SCROLL ===== */
 const header = document.getElementById('header');
-let lastScroll = 0;
 window.addEventListener('scroll', () => {
   header.classList.toggle('scrolled', window.scrollY > 50);
 });
@@ -1491,6 +1494,10 @@ function closeMobile() {
 /* ===== COUNT UP ===== */
 function animateCount(el) {
   const target = parseInt(el.dataset.target);
+  if (target >= 2000) {
+    el.textContent = target.toLocaleString();
+    return;
+  }
   const duration = 2000;
   const start = performance.now();
   const startVal = target > 100 ? target - 80 : 0;
@@ -1560,6 +1567,16 @@ document.querySelectorAll('.case-filter').forEach(btn => {
 function handleSubmit(e) {
   e.preventDefault();
   const form = e.target;
+  const data = {
+    name: form.querySelector('#consult-name').value,
+    contact: form.querySelector('#consult-contact').value,
+    field: form.querySelector('#consult-field').value,
+    description: form.querySelector('#consult-description').value,
+    date: new Date().toISOString()
+  };
+  const consultations = JSON.parse(localStorage.getItem('lawfirm_consultations') || '[]');
+  consultations.push(data);
+  localStorage.setItem('lawfirm_consultations', JSON.stringify(consultations));
   const btn = form.querySelector('.btn-submit');
   btn.textContent = '접수 완료!';
   btn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
