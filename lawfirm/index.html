@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>법무법인 정의 | 성범죄·마약 전문</title>
+<meta name="description" content="법무법인 정의 - 성범죄, 마약 사건 전문 변호사가 당신의 권리를 끝까지 지킵니다. 24시간 긴급 상담 가능.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  color: #e2e8f0;
+  background: #0a0f1a;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+img { max-width: 100%; display: block; }
+button, input, select, textarea { font-family: inherit; }
+
+/* ===== CSS VARIABLES ===== */
+:root {
+  --navy: #0f172a;
+  --navy-deep: #060a14;
+  --navy-light: #1e293b;
+  --gold: #D4A853;
+  --gold-light: #e8c97a;
+  --gold-dark: #b8923f;
+  --white: #f8fafc;
+  --gray: #94a3b8;
+  --gray-light: #cbd5e1;
+  --section-padding: 100px 0;
+  --container: 1200px;
+  --radius: 12px;
+  --shadow: 0 4px 30px rgba(0,0,0,0.3);
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.container {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ===== HEADER ===== */
+.header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(10, 15, 26, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(212, 168, 83, 0.08);
+  transition: var(--transition);
+}
+.header.scrolled {
+  background: rgba(10, 15, 26, 0.97);
+  border-bottom-color: rgba(212, 168, 83, 0.2);
+  box-shadow: 0 2px 40px rgba(0,0,0,0.4);
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 76px;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 900;
+  font-size: 1.3rem;
+  color: var(--white);
+  letter-spacing: -0.5px;
+}
+.logo-icon {
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  color: var(--navy);
+  font-weight: 900;
+}
+.nav { display: flex; align-items: center; gap: 8px; }
+.nav a {
+  padding: 8px 16px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--gray-light);
+  border-radius: 8px;
+  transition: var(--transition);
+  position: relative;
+}
+.nav a:hover, .nav a.active {
+  color: var(--gold);
+  background: rgba(212, 168, 83, 0.08);
+}
+.header-phone {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--gold);
+}
+.header-phone svg { width: 18px; height: 18px; }
+.mobile-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}
+.mobile-toggle span {
+  width: 24px; height: 2px;
+  background: var(--white);
+  border-radius: 2px;
+  transition: var(--transition);
+}
+
+/* ===== HERO ===== */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(212, 168, 83, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(30, 41, 59, 0.8) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(212, 168, 83, 0.04) 0%, transparent 40%),
+    linear-gradient(180deg, #060a14 0%, #0f172a 40%, #0a1025 70%, #060a14 100%);
+}
+.hero-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 100px, rgba(212,168,83,0.02) 100px, rgba(212,168,83,0.02) 101px),
+    repeating-linear-gradient(90deg, transparent, transparent 100px, rgba(212,168,83,0.02) 100px, rgba(212,168,83,0.02) 101px);
+}
+.hero-bg::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(212,168,83,0.06) 0%, transparent 70%);
+  animation: heroPulse 6s ease-in-out infinite;
+}
+@keyframes heroPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+  50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 800px;
+  padding: 0 24px;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  background: rgba(212, 168, 83, 0.1);
+  border: 1px solid rgba(212, 168, 83, 0.25);
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--gold);
+  margin-bottom: 28px;
+  backdrop-filter: blur(10px);
+}
+.hero-badge::before {
+  content: '';
+  width: 8px; height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  animation: blink 2s ease-in-out infinite;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.hero h1 {
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-weight: 900;
+  color: var(--white);
+  line-height: 1.25;
+  margin-bottom: 20px;
+  letter-spacing: -1px;
+}
+.hero h1 span { color: var(--gold); }
+.hero-sub {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: var(--gray);
+  margin-bottom: 40px;
+  font-weight: 300;
+  line-height: 1.8;
+}
+.hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 36px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  transition: var(--transition);
+  cursor: pointer;
+  border: none;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: var(--navy);
+  box-shadow: 0 4px 25px rgba(212, 168, 83, 0.3);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 35px rgba(212, 168, 83, 0.45);
+}
+.btn-outline {
+  background: transparent;
+  color: var(--white);
+  border: 1.5px solid rgba(255,255,255,0.2);
+}
+.btn-outline:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(212, 168, 83, 0.05);
+  transform: translateY(-2px);
+}
+.hero-emergency {
+  margin-top: 50px;
+  padding: 20px 32px;
+  background: rgba(212, 168, 83, 0.06);
+  border: 1px solid rgba(212, 168, 83, 0.15);
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  backdrop-filter: blur(10px);
+}
+.hero-emergency-icon {
+  width: 48px; height: 48px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.hero-emergency-text small {
+  font-size: 0.82rem;
+  color: var(--gray);
+  display: block;
+}
+.hero-emergency-text strong {
+  font-size: 1.5rem;
+  color: var(--gold);
+  letter-spacing: 1px;
+}
+
+/* ===== SECTION COMMON ===== */
+.section { padding: var(--section-padding); position: relative; }
+.section-header { text-align: center; margin-bottom: 64px; }
+.section-label {
+  display: inline-block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 16px;
+}
+.section-title {
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  font-weight: 900;
+  color: var(--white);
+  margin-bottom: 16px;
+  letter-spacing: -0.5px;
+}
+.section-desc {
+  font-size: 1.05rem;
+  color: var(--gray);
+  max-width: 600px;
+  margin: 0 auto;
+  font-weight: 300;
+}
+.divider {
+  width: 60px; height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-dark));
+  margin: 20px auto 0;
+  border-radius: 3px;
+}
+
+/* ===== ABOUT ===== */
+.about { background: var(--navy); }
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+.about-text h3 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 20px;
+}
+.about-text p {
+  color: var(--gray);
+  font-size: 1rem;
+  line-height: 1.9;
+  margin-bottom: 16px;
+}
+.about-text p strong { color: var(--gold); font-weight: 700; }
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.stat-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(212, 168, 83, 0.1);
+  border-radius: var(--radius);
+  padding: 32px 24px;
+  text-align: center;
+  transition: var(--transition);
+}
+.stat-card:hover {
+  border-color: rgba(212, 168, 83, 0.3);
+  background: rgba(212, 168, 83, 0.04);
+  transform: translateY(-4px);
+}
+.stat-number {
+  font-size: 2.6rem;
+  font-weight: 900;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.stat-unit { font-size: 1.2rem; font-weight: 700; }
+.stat-label {
+  font-size: 0.88rem;
+  color: var(--gray);
+  font-weight: 400;
+}
+
+/* ===== LAWYERS ===== */
+.lawyers { background: var(--navy-deep); }
+.lawyers-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+.lawyer-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 48px 32px 36px;
+  text-align: center;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.lawyer-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-dark));
+  opacity: 0;
+  transition: var(--transition);
+}
+.lawyer-card:hover {
+  border-color: rgba(212, 168, 83, 0.2);
+  transform: translateY(-6px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
+.lawyer-card:hover::before { opacity: 1; }
+.lawyer-avatar {
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  margin: 0 auto 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--navy);
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  box-shadow: 0 8px 30px rgba(212, 168, 83, 0.2);
+}
+.lawyer-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+.lawyer-title {
+  font-size: 0.88rem;
+  color: var(--gold);
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+.lawyer-specialty {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.lawyer-specialty span {
+  padding: 4px 12px;
+  background: rgba(212, 168, 83, 0.08);
+  border: 1px solid rgba(212, 168, 83, 0.15);
+  border-radius: 20px;
+  font-size: 0.78rem;
+  color: var(--gold-light);
+}
+.lawyer-info {
+  text-align: left;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding-top: 20px;
+}
+.lawyer-info li {
+  font-size: 0.85rem;
+  color: var(--gray);
+  padding: 4px 0;
+  padding-left: 16px;
+  position: relative;
+}
+.lawyer-info li::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 12px;
+  width: 5px; height: 5px;
+  background: var(--gold);
+  border-radius: 50%;
+  opacity: 0.6;
+}
+
+/* ===== PRACTICE AREAS ===== */
+.practice { background: var(--navy); }
+.practice-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+.practice-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: var(--transition);
+}
+.practice-card:hover {
+  border-color: rgba(212, 168, 83, 0.2);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+.practice-card-header {
+  padding: 36px 32px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  cursor: pointer;
+  transition: var(--transition);
+  user-select: none;
+}
+.practice-card-header:hover { background: rgba(212, 168, 83, 0.03); }
+.practice-icon {
+  width: 64px; height: 64px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+.practice-icon.sex { background: linear-gradient(135deg, rgba(212,168,83,0.15), rgba(212,168,83,0.05)); }
+.practice-icon.drug { background: linear-gradient(135deg, rgba(100,149,237,0.15), rgba(100,149,237,0.05)); }
+.practice-card-header h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+.practice-card-header p {
+  font-size: 0.9rem;
+  color: var(--gray);
+  line-height: 1.6;
+}
+.practice-toggle {
+  margin-left: auto;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+.practice-toggle svg {
+  width: 16px; height: 16px;
+  stroke: var(--gray);
+  transition: var(--transition);
+}
+.practice-card.open .practice-toggle { background: rgba(212,168,83,0.15); }
+.practice-card.open .practice-toggle svg { transform: rotate(180deg); stroke: var(--gold); }
+.practice-detail {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.practice-detail-inner {
+  padding: 0 32px 36px;
+}
+.practice-law {
+  padding: 16px 20px;
+  background: rgba(212, 168, 83, 0.04);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 24px;
+  font-size: 0.88rem;
+  color: var(--gray-light);
+}
+.practice-law strong { color: var(--gold); display: block; margin-bottom: 4px; font-size: 0.82rem; }
+.practice-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.practice-list li {
+  font-size: 0.9rem;
+  color: var(--gray);
+  padding: 8px 0 8px 24px;
+  position: relative;
+}
+.practice-list li::before {
+  content: ''; position: absolute;
+  left: 0; top: 16px;
+  width: 12px; height: 1px;
+  background: var(--gold);
+}
+
+/* ===== CASES ===== */
+.cases { background: var(--navy-deep); }
+.case-filters {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 48px;
+}
+.case-filter {
+  padding: 10px 24px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 50px;
+  background: transparent;
+  color: var(--gray);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.case-filter:hover { border-color: rgba(212,168,83,0.3); color: var(--gold); }
+.case-filter.active {
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: var(--navy);
+  border-color: transparent;
+  font-weight: 700;
+}
+.cases-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.case-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 32px 28px;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+}
+.case-card:hover {
+  border-color: rgba(212,168,83,0.2);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+}
+.case-card.hidden { display: none; }
+.case-tag {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  width: fit-content;
+}
+.case-tag.sex-tag { background: rgba(212,168,83,0.12); color: var(--gold); }
+.case-tag.drug-tag { background: rgba(100,149,237,0.12); color: #6495ed; }
+.case-result {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+  width: fit-content;
+}
+.case-result.win { background: rgba(34,197,94,0.1); color: #22c55e; }
+.case-result.reduce { background: rgba(59,130,246,0.1); color: #3b82f6; }
+.case-result.innocent { background: rgba(168,85,247,0.1); color: #a855f7; }
+.case-card h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+.case-card p {
+  font-size: 0.88rem;
+  color: var(--gray);
+  line-height: 1.7;
+  flex: 1;
+}
+
+/* ===== CONSULT ===== */
+.consult { background: var(--navy); position: relative; }
+.consult::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 40%;
+  height: 100%;
+  background: radial-gradient(ellipse at right, rgba(212,168,83,0.04), transparent 70%);
+  pointer-events: none;
+}
+.consult-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 60px;
+  align-items: start;
+}
+.consult-info h3 {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--white);
+  margin-bottom: 20px;
+  line-height: 1.35;
+}
+.consult-info h3 span { color: var(--gold); }
+.consult-info > p {
+  color: var(--gray);
+  line-height: 1.8;
+  margin-bottom: 32px;
+}
+.consult-features { display: flex; flex-direction: column; gap: 20px; }
+.consult-feature {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+.consult-feature-icon {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  background: rgba(212,168,83,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.1rem;
+}
+.consult-feature h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+.consult-feature p {
+  font-size: 0.85rem;
+  color: var(--gray);
+}
+.consult-form-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 44px;
+  position: relative;
+}
+.form-group { margin-bottom: 20px; }
+.form-group label {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--gray-light);
+  margin-bottom: 8px;
+}
+.form-group label .required { color: var(--gold); margin-left: 2px; }
+.form-control {
+  width: 100%;
+  padding: 14px 18px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  color: var(--white);
+  font-size: 0.95rem;
+  transition: var(--transition);
+  outline: none;
+}
+.form-control::placeholder { color: rgba(148,163,184,0.5); }
+.form-control:focus {
+  border-color: var(--gold);
+  background: rgba(212,168,83,0.04);
+  box-shadow: 0 0 0 3px rgba(212,168,83,0.1);
+}
+textarea.form-control { min-height: 120px; resize: vertical; }
+select.form-control {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+}
+select.form-control option { background: var(--navy); color: var(--white); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-agree {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 24px;
+  cursor: pointer;
+}
+.form-agree input[type="checkbox"] {
+  width: 18px; height: 18px;
+  accent-color: var(--gold);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.form-agree span {
+  font-size: 0.82rem;
+  color: var(--gray);
+  line-height: 1.5;
+}
+.form-agree a { color: var(--gold); text-decoration: underline; }
+.btn-submit {
+  width: 100%;
+  padding: 16px;
+  font-size: 1rem;
+}
+.form-notice {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 0.82rem;
+  color: var(--gray);
+}
+
+/* ===== LOCATION ===== */
+.location { background: var(--navy-deep); }
+.location-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+.location-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 40px;
+}
+.location-card h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.location-card h3 span {
+  width: 32px; height: 32px;
+  background: rgba(212,168,83,0.1);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+.contact-list { display: flex; flex-direction: column; gap: 20px; }
+.contact-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.contact-item-icon {
+  width: 40px; height: 40px;
+  background: rgba(212,168,83,0.08);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--gold);
+  font-size: 0.9rem;
+}
+.contact-item-text small {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--gray);
+  margin-bottom: 2px;
+}
+.contact-item-text span {
+  font-size: 0.95rem;
+  color: var(--white);
+  font-weight: 500;
+}
+.transport-list { display: flex; flex-direction: column; gap: 18px; }
+.transport-item { display: flex; gap: 14px; align-items: flex-start; }
+.transport-badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  min-width: 50px;
+  text-align: center;
+}
+.transport-badge.subway { background: rgba(59,130,246,0.15); color: #3b82f6; }
+.transport-badge.bus { background: rgba(34,197,94,0.15); color: #22c55e; }
+.transport-item-text {
+  font-size: 0.9rem;
+  color: var(--gray-light);
+  line-height: 1.6;
+}
+.transport-item-text strong { color: var(--white); font-weight: 600; }
+
+/* ===== FOOTER ===== */
+.footer {
+  background: #050810;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding: 48px 0 32px;
+}
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+.footer-brand { max-width: 400px; }
+.footer-brand .logo { margin-bottom: 16px; }
+.footer-brand p { font-size: 0.82rem; color: var(--gray); line-height: 1.7; }
+.footer-links { display: flex; gap: 32px; }
+.footer-links a {
+  font-size: 0.85rem;
+  color: var(--gray);
+  transition: var(--transition);
+}
+.footer-links a:hover { color: var(--gold); }
+.footer-bottom {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: rgba(148,163,184,0.6);
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* ===== SCROLL ANIMATIONS ===== */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ===== MOBILE NAV ===== */
+.mobile-nav {
+  display: none;
+  position: fixed;
+  top: 76px; left: 0; right: 0; bottom: 0;
+  background: rgba(10, 15, 26, 0.98);
+  backdrop-filter: blur(20px);
+  z-index: 999;
+  padding: 32px 24px;
+  flex-direction: column;
+  gap: 8px;
+}
+.mobile-nav.open { display: flex; }
+.mobile-nav a {
+  padding: 16px 20px;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--gray-light);
+  border-radius: 10px;
+  transition: var(--transition);
+}
+.mobile-nav a:hover { background: rgba(212,168,83,0.08); color: var(--gold); }
+.mobile-nav-phone {
+  margin-top: 24px;
+  padding: 20px;
+  background: rgba(212,168,83,0.08);
+  border-radius: 12px;
+  text-align: center;
+}
+.mobile-nav-phone small { display: block; color: var(--gray); font-size: 0.82rem; margin-bottom: 4px; }
+.mobile-nav-phone strong { font-size: 1.3rem; color: var(--gold); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .about-grid { grid-template-columns: 1fr; gap: 40px; }
+  .lawyers-grid { grid-template-columns: repeat(2, 1fr); }
+  .practice-cards { grid-template-columns: 1fr; }
+  .cases-grid { grid-template-columns: repeat(2, 1fr); }
+  .consult-wrapper { grid-template-columns: 1fr; }
+  .location-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .nav { display: none; }
+  .header-phone { display: none; }
+  .mobile-toggle { display: flex; }
+  .hero-emergency { flex-direction: column; text-align: center; }
+  .lawyers-grid { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; }
+  .cases-grid { grid-template-columns: 1fr; }
+  .case-filters { flex-wrap: wrap; }
+  .form-row { grid-template-columns: 1fr; }
+  .footer-inner { flex-direction: column; }
+  .footer-links { flex-direction: column; gap: 12px; }
+  .footer-bottom { flex-direction: column; text-align: center; }
+  .practice-list { grid-template-columns: 1fr; }
+  .consult-form-card { padding: 28px 20px; }
+  .section { padding: 70px 0; }
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+  .stat-card { padding: 24px 16px; }
+  .stat-number { font-size: 2rem; }
+}
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .hero-buttons { flex-direction: column; align-items: center; }
+  .hero-buttons .btn { width: 100%; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header" id="header">
+  <div class="container header-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon">JI</div>
+      법무법인 정의
+    </a>
+    <nav class="nav">
+      <a href="#about">법인소개</a>
+      <a href="#practice">전문분야</a>
+      <a href="#cases">성공사례</a>
+      <a href="#consult">온라인상담</a>
+      <a href="#location">오시는길</a>
+    </nav>
+    <a href="tel:02-1234-5678" class="header-phone">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      02-1234-5678
+    </a>
+    <button class="mobile-toggle" id="mobileToggle" aria-label="메뉴 열기">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="#about" onclick="closeMobile()">법인소개</a>
+  <a href="#practice" onclick="closeMobile()">전문분야</a>
+  <a href="#cases" onclick="closeMobile()">성공사례</a>
+  <a href="#consult" onclick="closeMobile()">온라인상담</a>
+  <a href="#location" onclick="closeMobile()">오시는길</a>
+  <div class="mobile-nav-phone">
+    <small>24시간 긴급 상담</small>
+    <strong>02-1234-5678</strong>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge">24시간 긴급 상담 가능</div>
+    <h1>당신의 권리를<br><span>끝까지</span> 지킵니다</h1>
+    <p class="hero-sub">성범죄·마약 사건 전문 변호사가 함께합니다.<br>풍부한 경험과 깊은 법률 지식으로 최선의 결과를 이끌어 냅니다.</p>
+    <div class="hero-buttons">
+      <a href="#consult" class="btn btn-primary">무료 상담 신청</a>
+      <a href="#cases" class="btn btn-outline">성공사례 보기</a>
+    </div>
+    <div class="hero-emergency">
+      <div class="hero-emergency-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </div>
+      <div class="hero-emergency-text">
+        <small>24시간 긴급 상담 전화</small>
+        <strong>02-1234-5678</strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section about" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <span class="section-label">About Us</span>
+        <h3>대한민국 형사 전문<br>법무법인 정의입니다</h3>
+        <p>법무법인 정의는 <strong>성범죄 및 마약 사건</strong>을 전문으로 하는 형사 전문 법무법인입니다. 2015년 설립 이래, 의뢰인의 권리 보호를 최우선 가치로 삼아 수천 건의 형사 사건을 성공적으로 수행해 왔습니다.</p>
+        <p>전직 검사 출신 변호사를 포함한 최정예 법률 전문가들이 사건의 초기 단계부터 최종 판결까지 체계적으로 대응하며, <strong>의뢰인 한 분 한 분께 맞춤형 전략</strong>을 수립하여 최선의 결과를 도출합니다.</p>
+        <p>24시간 긴급 상담 체계를 갖추고 있어, 어떤 상황에서도 신속하게 법률 조력을 받으실 수 있습니다.</p>
+      </div>
+      <div class="stats-grid reveal reveal-delay-2">
+        <div class="stat-card">
+          <div class="stat-number"><span class="count-up" data-target="2015">0</span><span class="stat-unit">년</span></div>
+          <div class="stat-label">법인 설립</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number"><span class="count-up" data-target="12">0</span><span class="stat-unit">명</span></div>
+          <div class="stat-label">전문 변호사</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number"><span class="count-up" data-target="94">0</span><span class="stat-unit">%</span></div>
+          <div class="stat-label">의뢰인 만족 승소율</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number"><span class="count-up" data-target="5000">0</span><span class="stat-unit">+</span></div>
+          <div class="stat-label">누적 상담 건수</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LAWYERS -->
+<section class="section lawyers" id="lawyers">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Our Lawyers</span>
+      <h2 class="section-title">전문 변호사 소개</h2>
+      <p class="section-desc">풍부한 경험과 전문 지식을 갖춘 변호사들이 함께합니다</p>
+      <div class="divider"></div>
+    </div>
+    <div class="lawyers-grid">
+      <div class="lawyer-card reveal reveal-delay-1">
+        <div class="lawyer-avatar">김</div>
+        <div class="lawyer-name">김정훈</div>
+        <div class="lawyer-title">대표 변호사 (전직 검사)</div>
+        <div class="lawyer-specialty">
+          <span>성범죄</span><span>마약</span><span>형사항소</span>
+        </div>
+        <ul class="lawyer-info">
+          <li>서울대학교 법학전문대학원 졸업</li>
+          <li>前 서울중앙지방검찰청 검사</li>
+          <li>대한변호사협회 형사법 전문변호사</li>
+          <li>형사 사건 2,000건 이상 수행</li>
+        </ul>
+      </div>
+      <div class="lawyer-card reveal reveal-delay-2">
+        <div class="lawyer-avatar">박</div>
+        <div class="lawyer-name">박서연</div>
+        <div class="lawyer-title">파트너 변호사</div>
+        <div class="lawyer-specialty">
+          <span>성범죄</span><span>디지털성범죄</span><span>피해자변호</span>
+        </div>
+        <ul class="lawyer-info">
+          <li>고려대학교 법학전문대학원 졸업</li>
+          <li>前 법률구조공단 변호사</li>
+          <li>성범죄 전문 변호 500건 이상</li>
+          <li>디지털성범죄 대응 전문가</li>
+        </ul>
+      </div>
+      <div class="lawyer-card reveal reveal-delay-3">
+        <div class="lawyer-avatar">이</div>
+        <div class="lawyer-name">이도현</div>
+        <div class="lawyer-title">파트너 변호사</div>
+        <div class="lawyer-specialty">
+          <span>마약</span><span>조직범죄</span><span>국제형사</span>
+        </div>
+        <ul class="lawyer-info">
+          <li>연세대학교 법학전문대학원 졸업</li>
+          <li>前 대검찰청 마약과 수사관</li>
+          <li>마약 사건 전문 변호 800건 이상</li>
+          <li>국제 마약 사건 대응 전문가</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRACTICE AREAS -->
+<section class="section practice" id="practice">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Practice Areas</span>
+      <h2 class="section-title">전문 분야</h2>
+      <p class="section-desc">각 분야별 최고의 전문성으로 최선의 결과를 이끌어 냅니다</p>
+      <div class="divider"></div>
+    </div>
+    <div class="practice-cards">
+      <!-- 성범죄 -->
+      <div class="practice-card reveal reveal-delay-1" id="practiceSex">
+        <div class="practice-card-header" onclick="togglePractice('practiceSex')">
+          <div class="practice-icon sex">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#D4A853" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div>
+            <h3>성범죄 전문</h3>
+            <p>성범죄 사건의 특수성을 이해하고, 의뢰인의 권리를 철저히 보호합니다</p>
+          </div>
+          <div class="practice-toggle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+        </div>
+        <div class="practice-detail">
+          <div class="practice-detail-inner">
+            <div class="practice-law">
+              <strong>관련 법률</strong>
+              성폭력범죄의 처벌 등에 관한 특례법, 아동·청소년의 성보호에 관한 법률, 형법 제32장 강간과 추행의 죄
+            </div>
+            <ul class="practice-list">
+              <li>강간·강제추행 사건 변호</li>
+              <li>준강간·준강제추행 사건</li>
+              <li>카메라 등 이용 촬영 (몰카)</li>
+              <li>통신매체 이용 음란</li>
+              <li>디지털 성범죄 (딥페이크 등)</li>
+              <li>아동·청소년 대상 성범죄</li>
+              <li>성매매 관련 사건</li>
+              <li>스토킹·데이트 폭력</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- 마약 -->
+      <div class="practice-card reveal reveal-delay-2" id="practiceDrug">
+        <div class="practice-card-header" onclick="togglePractice('practiceDrug')">
+          <div class="practice-icon drug">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6495ed" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>
+          </div>
+          <div>
+            <h3>마약 사건 전문</h3>
+            <p>마약 관련 법률의 복잡성을 꿰뚫는 전문적인 변호를 제공합니다</p>
+          </div>
+          <div class="practice-toggle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+        </div>
+        <div class="practice-detail">
+          <div class="practice-detail-inner">
+            <div class="practice-law">
+              <strong>관련 법률</strong>
+              마약류 관리에 관한 법률, 마약류 불법거래 방지에 관한 특례법, 특정범죄 가중처벌 등에 관한 법률
+            </div>
+            <ul class="practice-list">
+              <li>마약류 투약·소지 사건</li>
+              <li>마약류 매매·알선 사건</li>
+              <li>대마 관련 사건</li>
+              <li>향정신성의약품 사건</li>
+              <li>국제 마약 밀수·밀매</li>
+              <li>인터넷·다크웹 마약 거래</li>
+              <li>마약 재활·치료보호 지원</li>
+              <li>수사기관 대응 및 접견</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CASES -->
+<section class="section cases" id="cases">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Success Cases</span>
+      <h2 class="section-title">성공 사례</h2>
+      <p class="section-desc">실력으로 증명한 법무법인 정의의 대표 성공 사례</p>
+      <div class="divider"></div>
+    </div>
+    <div class="case-filters reveal">
+      <button class="case-filter active" data-filter="all">전체</button>
+      <button class="case-filter" data-filter="sex">성범죄</button>
+      <button class="case-filter" data-filter="drug">마약</button>
+    </div>
+    <div class="cases-grid">
+      <div class="case-card reveal reveal-delay-1" data-category="sex">
+        <span class="case-tag sex-tag">성범죄</span>
+        <div class="case-result innocent">무죄 판결</div>
+        <h4>강제추행 혐의 무죄 판결</h4>
+        <p>직장 내 강제추행 혐의로 기소된 의뢰인에 대해 CCTV 영상 분석 및 목격자 증언 확보를 통해 무죄 판결을 이끌어냈습니다.</p>
+      </div>
+      <div class="case-card reveal reveal-delay-2" data-category="drug">
+        <span class="case-tag drug-tag">마약</span>
+        <div class="case-result reduce">대폭 감형</div>
+        <h4>마약류 투약 혐의 집행유예</h4>
+        <p>필로폰 투약 혐의 의뢰인에 대해 자발적 치료 프로그램 참여와 반성을 입증하여 실형에서 집행유예로 감형을 이끌어냈습니다.</p>
+      </div>
+      <div class="case-card reveal reveal-delay-3" data-category="sex">
+        <span class="case-tag sex-tag">성범죄</span>
+        <div class="case-result win">승소</div>
+        <h4>디지털 성범죄 피해 구제</h4>
+        <p>불법 촬영물 유포 피해자를 대리하여 가해자에 대한 형사 처벌과 민사 손해배상 1억 2천만원을 이끌어냈습니다.</p>
+      </div>
+      <div class="case-card reveal reveal-delay-1" data-category="drug">
+        <span class="case-tag drug-tag">마약</span>
+        <div class="case-result innocent">무죄 판결</div>
+        <h4>마약 매매 알선 혐의 무죄</h4>
+        <p>단순 지인 관계를 마약 매매 알선으로 기소된 사건에서 통화 기록 및 금융 거래 분석을 통해 무죄를 입증하였습니다.</p>
+      </div>
+      <div class="case-card reveal reveal-delay-2" data-category="sex">
+        <span class="case-tag sex-tag">성범죄</span>
+        <div class="case-result reduce">감형</div>
+        <h4>준강간 혐의 대폭 감형</h4>
+        <p>준강간 혐의로 징역 5년을 구형받은 의뢰인에 대해 합의 경위 및 정황 증거를 제시하여 징역 1년 6월로 대폭 감형하였습니다.</p>
+      </div>
+      <div class="case-card reveal reveal-delay-3" data-category="drug">
+        <span class="case-tag drug-tag">마약</span>
+        <div class="case-result win">승소</div>
+        <h4>국제 마약 밀수 혐의 방어</h4>
+        <p>해외 택배를 통한 마약 밀수 혐의 사건에서 의뢰인의 인식 부재를 입증하여 불기소 처분을 이끌어냈습니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONSULT -->
+<section class="section consult" id="consult">
+  <div class="container">
+    <div class="consult-wrapper">
+      <div class="consult-info reveal">
+        <span class="section-label">Consultation</span>
+        <h3>지금 바로<br><span>무료 상담</span>을<br>신청하세요</h3>
+        <p>사건의 상황을 자세히 파악한 후, 최적의 법률 전략을 수립하여 안내드립니다. 모든 상담 내용은 철저히 비밀이 보장됩니다.</p>
+        <div class="consult-features">
+          <div class="consult-feature">
+            <div class="consult-feature-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D4A853" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            </div>
+            <div>
+              <h4>24시간 긴급 대응</h4>
+              <p>야간·주말·공휴일에도 긴급 상담이 가능합니다</p>
+            </div>
+          </div>
+          <div class="consult-feature">
+            <div class="consult-feature-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D4A853" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div>
+              <h4>비밀 보장</h4>
+              <p>상담 내용은 변호사-의뢰인 비밀유지 원칙에 따라 보호됩니다</p>
+            </div>
+          </div>
+          <div class="consult-feature">
+            <div class="consult-feature-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D4A853" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div>
+              <h4>전문 변호사 직접 상담</h4>
+              <p>해당 분야 전문 변호사가 직접 상담을 진행합니다</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="consult-form-card reveal reveal-delay-2">
+        <form id="consultForm" onsubmit="handleSubmit(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label>이름 <span class="required">*</span></label>
+              <input type="text" class="form-control" placeholder="홍길동" required>
+            </div>
+            <div class="form-group">
+              <label>연락처 <span class="required">*</span></label>
+              <input type="tel" class="form-control" placeholder="010-0000-0000" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>상담 분야 <span class="required">*</span></label>
+            <select class="form-control" required>
+              <option value="" disabled selected>상담 분야를 선택해주세요</option>
+              <option value="성범죄">성범죄 관련 상담</option>
+              <option value="마약">마약 관련 상담</option>
+              <option value="기타형사">기타 형사 사건 상담</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>사건 개요 <span class="required">*</span></label>
+            <textarea class="form-control" placeholder="사건의 개략적인 내용을 기재해주세요. 상세한 내용은 상담 시 말씀해 주셔도 됩니다." required></textarea>
+          </div>
+          <label class="form-agree">
+            <input type="checkbox" required>
+            <span><a href="#">개인정보 수집 및 이용</a>에 동의합니다. 수집된 정보는 상담 목적으로만 사용되며, 상담 종료 후 즉시 파기됩니다.</span>
+          </label>
+          <button type="submit" class="btn btn-primary btn-submit">무료 상담 신청하기</button>
+          <p class="form-notice">접수 후 24시간 내 전문 변호사가 직접 연락드리겠습니다</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOCATION -->
+<section class="section location" id="location">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Location</span>
+      <h2 class="section-title">오시는 길</h2>
+      <p class="section-desc">법무법인 정의에 방문을 환영합니다</p>
+      <div class="divider"></div>
+    </div>
+    <div class="location-grid">
+      <div class="location-card reveal reveal-delay-1">
+        <h3><span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4A853" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </span>연락처 안내</h3>
+        <div class="contact-list">
+          <div class="contact-item">
+            <div class="contact-item-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div class="contact-item-text">
+              <small>주소</small>
+              <span>서울특별시 서초구 서초대로 264, 정의빌딩 12층</span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 2.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </div>
+            <div class="contact-item-text">
+              <small>대표 전화</small>
+              <span>02-1234-5678</span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div class="contact-item-text">
+              <small>팩스</small>
+              <span>02-1234-5679</span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div class="contact-item-text">
+              <small>이메일</small>
+              <span>contact@jungui-law.co.kr</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="location-card reveal reveal-delay-2">
+        <h3><span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4A853" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 7V5a4 4 0 0 0-8 0v2"/></svg>
+        </span>교통편 안내</h3>
+        <div class="transport-list">
+          <div class="transport-item">
+            <span class="transport-badge subway">2호선</span>
+            <div class="transport-item-text">
+              <strong>서초역</strong> 3번 출구에서 도보 3분<br>출구 직진 후 첫 번째 사거리에서 좌회전
+            </div>
+          </div>
+          <div class="transport-item">
+            <span class="transport-badge subway">3호선</span>
+            <div class="transport-item-text">
+              <strong>교대역</strong> 5번 출구에서 도보 7분<br>서초대로 방향으로 직진
+            </div>
+          </div>
+          <div class="transport-item">
+            <span class="transport-badge bus">버스</span>
+            <div class="transport-item-text">
+              <strong>서초역 정류장</strong> 하차<br>간선: 140, 401, 406, 740<br>지선: 4412, 서초07
+            </div>
+          </div>
+          <div class="transport-item">
+            <span class="transport-badge" style="background:rgba(148,163,184,0.1);color:var(--gray-light);">주차</span>
+            <div class="transport-item-text">
+              <strong>정의빌딩 지하주차장</strong> 이용 가능<br>상담 시 2시간 무료 주차 지원
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo">
+          <div class="logo-icon">JI</div>
+          법무법인 정의
+        </div>
+        <p>서울특별시 서초구 서초대로 264, 정의빌딩 12층<br>대표변호사 김정훈 | 사업자등록번호 123-45-67890</p>
+      </div>
+      <div class="footer-links">
+        <a href="#about">법인소개</a>
+        <a href="#practice">전문분야</a>
+        <a href="#cases">성공사례</a>
+        <a href="#consult">온라인상담</a>
+        <a href="#">개인정보처리방침</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2025 법무법인 정의. All rights reserved.</span>
+      <span>본 사이트의 내용은 법률적 조언이 아닌 일반적인 정보 제공 목적입니다.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ===== HEADER SCROLL ===== */
+const header = document.getElementById('header');
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+  header.classList.toggle('scrolled', window.scrollY > 50);
+});
+
+/* ===== MOBILE NAV ===== */
+const mobileToggle = document.getElementById('mobileToggle');
+const mobileNav = document.getElementById('mobileNav');
+let mobileOpen = false;
+mobileToggle.addEventListener('click', () => {
+  mobileOpen = !mobileOpen;
+  mobileNav.classList.toggle('open', mobileOpen);
+  document.body.style.overflow = mobileOpen ? 'hidden' : '';
+  const spans = mobileToggle.querySelectorAll('span');
+  if (mobileOpen) {
+    spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+    spans[1].style.opacity = '0';
+    spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+  } else {
+    spans[0].style.transform = '';
+    spans[1].style.opacity = '';
+    spans[2].style.transform = '';
+  }
+});
+function closeMobile() {
+  mobileOpen = false;
+  mobileNav.classList.remove('open');
+  document.body.style.overflow = '';
+  const spans = mobileToggle.querySelectorAll('span');
+  spans[0].style.transform = '';
+  spans[1].style.opacity = '';
+  spans[2].style.transform = '';
+}
+
+/* ===== COUNT UP ===== */
+function animateCount(el) {
+  const target = parseInt(el.dataset.target);
+  const duration = 2000;
+  const start = performance.now();
+  const startVal = target > 100 ? target - 80 : 0;
+  function update(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(startVal + (target - startVal) * eased);
+    el.textContent = target >= 1000 ? current.toLocaleString() : current;
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+/* ===== SCROLL REVEAL (IntersectionObserver) ===== */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      // count-up
+      entry.target.querySelectorAll('.count-up').forEach(el => {
+        if (!el.dataset.animated) {
+          el.dataset.animated = 'true';
+          animateCount(el);
+        }
+      });
+    }
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+/* ===== PRACTICE TOGGLE ===== */
+function togglePractice(id) {
+  const card = document.getElementById(id);
+  const detail = card.querySelector('.practice-detail');
+  const isOpen = card.classList.contains('open');
+  // close all
+  document.querySelectorAll('.practice-card').forEach(c => {
+    c.classList.remove('open');
+    c.querySelector('.practice-detail').style.maxHeight = '0';
+  });
+  if (!isOpen) {
+    card.classList.add('open');
+    detail.style.maxHeight = detail.scrollHeight + 'px';
+  }
+}
+
+/* ===== CASE FILTER ===== */
+document.querySelectorAll('.case-filter').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.case-filter').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    document.querySelectorAll('.case-card').forEach(card => {
+      if (filter === 'all' || card.dataset.category === filter) {
+        card.classList.remove('hidden');
+        card.style.display = '';
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+  });
+});
+
+/* ===== FORM SUBMIT ===== */
+function handleSubmit(e) {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('.btn-submit');
+  btn.textContent = '접수 완료!';
+  btn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+  btn.style.color = '#fff';
+  btn.disabled = true;
+  setTimeout(() => {
+    form.reset();
+    btn.textContent = '무료 상담 신청하기';
+    btn.style.background = '';
+    btn.style.color = '';
+    btn.disabled = false;
+  }, 3000);
+}
+
+/* ===== ACTIVE NAV HIGHLIGHT ===== */
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(section => {
+    const top = section.offsetTop - 120;
+    if (window.scrollY >= top) current = section.getAttribute('id');
+  });
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === '#' + current) link.classList.add('active');
+  });
+});
+</script>
+
+</body>
+</html>
