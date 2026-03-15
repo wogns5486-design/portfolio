@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>마인드맵 - MindFlow</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #f8f9fc;
+  --surface: #ffffff;
+  --text: #1a1d29;
+  --text-secondary: #6b7084;
+  --border: #e2e5f1;
+  --primary: #4f6ef7;
+  --primary-hover: #3b5ae0;
+  --shadow: 0 2px 12px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+  --radius: 12px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  user-select: none;
+}
+
+/* Toolbar */
+.toolbar {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 8px 16px;
+  box-shadow: var(--shadow-lg);
+  z-index: 100;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.toolbar-brand {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--primary);
+  margin-right: 8px;
+  white-space: nowrap;
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
+  margin: 0 4px;
+}
+
+.toolbar button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.toolbar button:hover {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.toolbar button svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.zoom-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.zoom-controls button {
+  padding: 8px 10px;
+}
+
+.zoom-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  min-width: 40px;
+  text-align: center;
+}
+
+/* Canvas */
+#canvas-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  cursor: grab;
+}
+
+#canvas-container.grabbing {
+  cursor: grabbing;
+}
+
+#canvas-container.connecting {
+  cursor: crosshair;
+}
+
+svg#lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+#nodes-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  z-index: 2;
+}
+
+/* Nodes */
+.mind-node {
+  position: absolute;
+  min-width: 120px;
+  max-width: 260px;
+  padding: 14px 20px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow);
+  cursor: grab;
+  transition: box-shadow 0.2s, border-color 0.2s;
+  z-index: 10;
+  text-align: center;
+}
+
+.mind-node:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.mind-node.selected {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79,110,247,0.18), var(--shadow-lg);
+}
+
+.mind-node.root {
+  min-width: 160px;
+  padding: 18px 28px;
+  font-weight: 700;
+  font-size: 16px;
+  border-width: 3px;
+}
+
+.mind-node.dragging {
+  cursor: grabbing;
+  opacity: 0.9;
+  z-index: 50;
+}
+
+.node-text {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text);
+  outline: none;
+  min-height: 1em;
+  word-break: break-word;
+}
+
+.node-text:focus {
+  cursor: text;
+}
+
+.node-text[contenteditable="true"]:focus {
+  background: rgba(79,110,247,0.04);
+  border-radius: 4px;
+  padding: 2px 4px;
+  margin: -2px -4px;
+}
+
+/* Add child button on hover */
+.node-add-btn {
+  position: absolute;
+  bottom: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  border: 2px solid var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s, transform 0.15s;
+  z-index: 20;
+  box-shadow: var(--shadow);
+  line-height: 1;
+}
+
+.mind-node:hover .node-add-btn {
+  opacity: 1;
+}
+
+.node-add-btn:hover {
+  transform: translateX(-50%) scale(1.15);
+}
+
+/* Delete node button */
+.node-delete-btn {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #ef4444;
+  color: #fff;
+  border: 2px solid var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 20;
+  box-shadow: var(--shadow);
+  line-height: 1;
+}
+
+.mind-node:hover .node-delete-btn {
+  opacity: 1;
+}
+
+.mind-node.root .node-delete-btn {
+  display: none;
+}
+
+/* Color picker popup */
+.color-picker-popup {
+  position: fixed;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: var(--shadow-lg);
+  z-index: 200;
+  display: none;
+}
+
+.color-picker-popup.active {
+  display: block;
+}
+
+.color-picker-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+
+.color-swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.color-swatch:hover {
+  transform: scale(1.15);
+}
+
+.color-swatch.active {
+  border-color: var(--text);
+}
+
+/* Context menu */
+.context-menu {
+  position: fixed;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: var(--shadow-lg);
+  z-index: 200;
+  display: none;
+  min-width: 180px;
+}
+
+.context-menu.active {
+  display: block;
+}
+
+.context-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--text);
+  transition: background 0.1s;
+}
+
+.context-menu-item:hover {
+  background: rgba(79,110,247,0.06);
+}
+
+.context-menu-item.danger {
+  color: #ef4444;
+}
+
+.context-menu-item svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--text);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  z-index: 300;
+  transition: transform 0.3s ease;
+  box-shadow: var(--shadow-lg);
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Help hint */
+.help-hint {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  box-shadow: var(--shadow);
+  z-index: 50;
+  line-height: 1.6;
+}
+
+.help-hint kbd {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 11px;
+  font-family: inherit;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .toolbar {
+    top: 8px;
+    padding: 6px 10px;
+    gap: 4px;
+    max-width: calc(100% - 16px);
+    border-radius: 14px;
+  }
+  .toolbar-brand { font-size: 13px; margin-right: 4px; }
+  .toolbar button { padding: 6px 10px; font-size: 12px; }
+  .toolbar button span.btn-label { display: none; }
+  .toolbar-divider { margin: 0 2px; }
+  .help-hint { display: none; }
+}
+
+@media (max-width: 480px) {
+  .toolbar { gap: 3px; padding: 5px 8px; }
+  .toolbar button { padding: 6px 8px; }
+  .zoom-label { min-width: 32px; font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Toolbar -->
+<div class="toolbar">
+  <span class="toolbar-brand">MindFlow</span>
+  <div class="toolbar-divider"></div>
+  <button id="btn-add" title="자식 노드 추가 (Tab)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    <span class="btn-label">추가</span>
+  </button>
+  <button id="btn-color" title="색상 변경">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18"/></svg>
+    <span class="btn-label">색상</span>
+  </button>
+  <button id="btn-delete" title="노드 삭제 (Delete)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+    <span class="btn-label">삭제</span>
+  </button>
+  <div class="toolbar-divider"></div>
+  <div class="zoom-controls">
+    <button id="btn-zoom-out" title="축소">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+    <span class="zoom-label" id="zoom-label">100%</span>
+    <button id="btn-zoom-in" title="확대">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+    <button id="btn-zoom-fit" title="화면에 맞추기">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+    </button>
+  </div>
+  <div class="toolbar-divider"></div>
+  <button id="btn-export" title="PNG 내보내기">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    <span class="btn-label">PNG</span>
+  </button>
+  <button id="btn-clear" title="전체 삭제">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M10 11v6M14 11v6M5 6l1 14h12l1-14"/></svg>
+    <span class="btn-label">초기화</span>
+  </button>
+</div>
+
+<!-- Color Picker -->
+<div class="color-picker-popup" id="color-picker">
+  <div class="color-picker-title">노드 색상 선택</div>
+  <div class="color-grid" id="color-grid"></div>
+</div>
+
+<!-- Context Menu -->
+<div class="context-menu" id="context-menu">
+  <div class="context-menu-item" data-action="add-child">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    자식 노드 추가
+  </div>
+  <div class="context-menu-item" data-action="edit">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    텍스트 편집
+  </div>
+  <div class="context-menu-item" data-action="color">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>
+    색상 변경
+  </div>
+  <div class="context-menu-item danger" data-action="delete">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+    삭제
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Help -->
+<div class="help-hint">
+  <kbd>Tab</kbd> 자식 추가 &nbsp; <kbd>Delete</kbd> 삭제 &nbsp; <kbd>F2</kbd> 편집<br>
+  <kbd>Ctrl+스크롤</kbd> 줌 &nbsp; 드래그: 캔버스/노드 이동
+</div>
+
+<!-- Canvas -->
+<div id="canvas-container">
+  <svg id="lines"></svg>
+  <div id="nodes-layer"></div>
+</div>
+
+<script>
+(() => {
+  // ─── State ───
+  const NODE_COLORS = [
+    '#4f6ef7', '#7c5cfc', '#e54d8a', '#ef7b45', '#f5b731',
+    '#2dbb6f', '#17b8c2', '#6b7084', '#1a1d29', '#a78bfa',
+    '#ec4899', '#f97316', '#84cc16', '#06b6d4', '#8b5cf6'
+  ];
+
+  let nodes = {};
+  let selectedId = null;
+  let nextId = 1;
+
+  // View transform
+  let viewX = 0, viewY = 0, viewScale = 1;
+
+  // Drag state
+  let isDraggingNode = false;
+  let isDraggingCanvas = false;
+  let dragNodeId = null;
+  let dragStartX = 0, dragStartY = 0;
+  let dragNodeStartX = 0, dragNodeStartY = 0;
+  let canvasDragStartX = 0, canvasDragStartY = 0;
+  let viewStartX = 0, viewStartY = 0;
+
+  // DOM
+  const container = document.getElementById('canvas-container');
+  const linesSvg = document.getElementById('lines');
+  const nodesLayer = document.getElementById('nodes-layer');
+  const colorPicker = document.getElementById('color-picker');
+  const colorGrid = document.getElementById('color-grid');
+  const contextMenu = document.getElementById('context-menu');
+  const toastEl = document.getElementById('toast');
+  const zoomLabel = document.getElementById('zoom-label');
+
+  // ─── Init ───
+  function init() {
+    buildColorPicker();
+    loadFromStorage();
+    if (Object.keys(nodes).length === 0) {
+      createDefaultMap();
+    }
+    renderAll();
+    bindEvents();
+  }
+
+  function createDefaultMap() {
+    const cx = window.innerWidth / 2;
+    const cy = window.innerHeight / 2;
+    const rootId = addNode(null, '중심 주제', cx, cy, '#4f6ef7', true);
+    addNode(rootId, '아이디어 1', cx + 250, cy - 120, '#7c5cfc');
+    addNode(rootId, '아이디어 2', cx + 250, cy + 120, '#2dbb6f');
+    addNode(rootId, '아이디어 3', cx - 250, cy, '#e54d8a');
+  }
+
+  // ─── Node CRUD ───
+  function addNode(parentId, text, x, y, color, isRoot) {
+    const id = 'n' + nextId++;
+    nodes[id] = {
+      id, parentId, text,
+      x: x || 0, y: y || 0,
+      color: color || '#4f6ef7',
+      isRoot: !!isRoot,
+      children: []
+    };
+    if (parentId && nodes[parentId]) {
+      nodes[parentId].children.push(id);
+    }
+    saveToStorage();
+    return id;
+  }
+
+  function deleteNode(id) {
+    const node = nodes[id];
+    if (!node || node.isRoot) return;
+    // Remove from parent
+    if (node.parentId && nodes[node.parentId]) {
+      const parent = nodes[node.parentId];
+      parent.children = parent.children.filter(c => c !== id);
+    }
+    // Recursively delete children
+    const toDelete = [];
+    function collect(nid) {
+      toDelete.push(nid);
+      if (nodes[nid]) {
+        nodes[nid].children.forEach(collect);
+      }
+    }
+    collect(id);
+    toDelete.forEach(nid => delete nodes[nid]);
+    if (selectedId === id) selectedId = null;
+    saveToStorage();
+    renderAll();
+  }
+
+  function addChildToNode(parentId) {
+    const parent = nodes[parentId];
+    if (!parent) return;
+    const angle = (parent.children.length * 0.8) - 1;
+    const dist = 200;
+    const nx = parent.x + Math.cos(angle) * dist;
+    const ny = parent.y + Math.sin(angle) * dist;
+    const colorIdx = (Object.keys(nodes).length) % NODE_COLORS.length;
+    const newId = addNode(parentId, '새 노드', nx, ny, NODE_COLORS[colorIdx]);
+    selectedId = newId;
+    renderAll();
+    // Focus text for editing
+    setTimeout(() => {
+      const el = document.querySelector(`[data-id="${newId}"] .node-text`);
+      if (el) {
+        el.setAttribute('contenteditable', 'true');
+        el.focus();
+        document.execCommand('selectAll', false, null);
+      }
+    }, 50);
+  }
+
+  // ─── Render ───
+  function renderAll() {
+    renderNodes();
+    renderLines();
+    updateTransform();
+  }
+
+  function updateTransform() {
+    const t = `translate(${viewX}px, ${viewY}px) scale(${viewScale})`;
+    nodesLayer.style.transform = t;
+    linesSvg.style.transform = t;
+    linesSvg.style.transformOrigin = '0 0';
+    nodesLayer.style.transformOrigin = '0 0';
+    zoomLabel.textContent = Math.round(viewScale * 100) + '%';
+  }
+
+  function renderNodes() {
+    nodesLayer.innerHTML = '';
+    Object.values(nodes).forEach(node => {
+      const el = document.createElement('div');
+      el.className = 'mind-node' + (node.isRoot ? ' root' : '') + (node.id === selectedId ? ' selected' : '');
+      el.dataset.id = node.id;
+      el.style.left = node.x + 'px';
+      el.style.top = node.y + 'px';
+      el.style.transform = 'translate(-50%, -50%)';
+      el.style.borderColor = node.color;
+      if (node.isRoot) {
+        el.style.background = node.color;
+        el.style.color = '#fff';
+      } else {
+        el.style.background = node.color + '0d';
+      }
+
+      const textEl = document.createElement('div');
+      textEl.className = 'node-text';
+      textEl.textContent = node.text;
+      if (node.isRoot) textEl.style.color = '#fff';
+      else textEl.style.color = darkenColor(node.color, 0.3);
+      el.appendChild(textEl);
+
+      // Add child button
+      const addBtn = document.createElement('div');
+      addBtn.className = 'node-add-btn';
+      addBtn.innerHTML = '+';
+      addBtn.addEventListener('mousedown', e => { e.stopPropagation(); });
+      addBtn.addEventListener('click', e => { e.stopPropagation(); addChildToNode(node.id); });
+      el.appendChild(addBtn);
+
+      // Delete button (not for root)
+      if (!node.isRoot) {
+        const delBtn = document.createElement('div');
+        delBtn.className = 'node-delete-btn';
+        delBtn.innerHTML = '×';
+        delBtn.addEventListener('mousedown', e => { e.stopPropagation(); });
+        delBtn.addEventListener('click', e => { e.stopPropagation(); deleteNode(node.id); });
+        el.appendChild(delBtn);
+      }
+
+      // Events
+      el.addEventListener('mousedown', e => onNodeMouseDown(e, node.id));
+      el.addEventListener('dblclick', e => onNodeDblClick(e, node.id));
+      el.addEventListener('contextmenu', e => onNodeContext(e, node.id));
+      el.addEventListener('touchstart', e => onNodeTouchStart(e, node.id), { passive: false });
+
+      nodesLayer.appendChild(el);
+    });
+  }
+
+  function renderLines() {
+    linesSvg.innerHTML = '';
+    Object.values(nodes).forEach(node => {
+      if (!node.parentId || !nodes[node.parentId]) return;
+      const parent = nodes[node.parentId];
+      const line = createCurvePath(parent.x, parent.y, node.x, node.y, node.color);
+      linesSvg.appendChild(line);
+    });
+  }
+
+  function createCurvePath(x1, y1, x2, y2, color) {
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    const dx = x2 - x1;
+    const midX = x1 + dx * 0.5;
+    const d = `M ${x1} ${y1} C ${midX} ${y1}, ${midX} ${y2}, ${x2} ${y2}`;
+    path.setAttribute('d', d);
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', color || '#c8cce0');
+    path.setAttribute('stroke-width', '2.5');
+    path.setAttribute('stroke-linecap', 'round');
+    path.setAttribute('opacity', '0.5');
+    return path;
+  }
+
+  // ─── Interaction: Node Drag ───
+  function onNodeMouseDown(e, id) {
+    if (e.button === 2) return; // right-click handled by context
+    if (e.target.closest('.node-add-btn') || e.target.closest('.node-delete-btn')) return;
+    e.stopPropagation();
+    closePopups();
+
+    selectedId = id;
+    renderAll();
+
+    // Check if text is being edited
+    const textEl = e.target.closest('.node-text');
+    if (textEl && textEl.getAttribute('contenteditable') === 'true') return;
+
+    isDraggingNode = true;
+    dragNodeId = id;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    dragNodeStartX = nodes[id].x;
+    dragNodeStartY = nodes[id].y;
+
+    const el = document.querySelector(`[data-id="${id}"]`);
+    if (el) el.classList.add('dragging');
+  }
+
+  function onNodeTouchStart(e, id) {
+    if (e.touches.length !== 1) return;
+    e.preventDefault();
+    e.stopPropagation();
+    closePopups();
+    selectedId = id;
+
+    isDraggingNode = true;
+    dragNodeId = id;
+    const t = e.touches[0];
+    dragStartX = t.clientX;
+    dragStartY = t.clientY;
+    dragNodeStartX = nodes[id].x;
+    dragNodeStartY = nodes[id].y;
+    renderAll();
+  }
+
+  // ─── Interaction: Canvas Pan ───
+  container.addEventListener('mousedown', e => {
+    if (e.target !== container && e.target !== linesSvg && !e.target.closest('#canvas-container > svg')) return;
+    closePopups();
+    selectedId = null;
+    isDraggingCanvas = true;
+    canvasDragStartX = e.clientX;
+    canvasDragStartY = e.clientY;
+    viewStartX = viewX;
+    viewStartY = viewY;
+    container.classList.add('grabbing');
+    renderAll();
+  });
+
+  // Touch pan
+  let touchPanId = null;
+  container.addEventListener('touchstart', e => {
+    if (isDraggingNode) return;
+    if (e.touches.length === 1) {
+      isDraggingCanvas = true;
+      const t = e.touches[0];
+      canvasDragStartX = t.clientX;
+      canvasDragStartY = t.clientY;
+      viewStartX = viewX;
+      viewStartY = viewY;
+    }
+  }, { passive: true });
+
+  // Move
+  window.addEventListener('mousemove', onPointerMove);
+  window.addEventListener('touchmove', e => {
+    if (e.touches.length === 1) {
+      const t = e.touches[0];
+      onPointerMoveXY(t.clientX, t.clientY);
+    }
+  }, { passive: false });
+
+  function onPointerMove(e) {
+    onPointerMoveXY(e.clientX, e.clientY);
+  }
+
+  function onPointerMoveXY(cx, cy) {
+    if (isDraggingNode && dragNodeId) {
+      const dx = (cx - dragStartX) / viewScale;
+      const dy = (cy - dragStartY) / viewScale;
+      nodes[dragNodeId].x = dragNodeStartX + dx;
+      nodes[dragNodeId].y = dragNodeStartY + dy;
+      renderAll();
+    } else if (isDraggingCanvas) {
+      viewX = viewStartX + (cx - canvasDragStartX);
+      viewY = viewStartY + (cy - canvasDragStartY);
+      updateTransform();
+    }
+  }
+
+  // Up
+  window.addEventListener('mouseup', onPointerUp);
+  window.addEventListener('touchend', onPointerUp);
+
+  function onPointerUp() {
+    if (isDraggingNode) {
+      const el = document.querySelector(`[data-id="${dragNodeId}"]`);
+      if (el) el.classList.remove('dragging');
+      isDraggingNode = false;
+      dragNodeId = null;
+      saveToStorage();
+    }
+    if (isDraggingCanvas) {
+      isDraggingCanvas = false;
+      container.classList.remove('grabbing');
+    }
+  }
+
+  // ─── Double-click to edit ───
+  function onNodeDblClick(e, id) {
+    e.stopPropagation();
+    const el = document.querySelector(`[data-id="${id}"] .node-text`);
+    if (!el) return;
+    el.setAttribute('contenteditable', 'true');
+    el.focus();
+    document.execCommand('selectAll', false, null);
+
+    function finishEdit() {
+      el.removeAttribute('contenteditable');
+      const newText = el.textContent.trim() || '노드';
+      nodes[id].text = newText;
+      el.textContent = newText;
+      saveToStorage();
+      el.removeEventListener('blur', finishEdit);
+      el.removeEventListener('keydown', onKey);
+    }
+
+    function onKey(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        finishEdit();
+      }
+      if (e.key === 'Escape') {
+        el.textContent = nodes[id].text;
+        finishEdit();
+      }
+    }
+
+    el.addEventListener('blur', finishEdit);
+    el.addEventListener('keydown', onKey);
+  }
+
+  // ─── Context Menu ───
+  function onNodeContext(e, id) {
+    e.preventDefault();
+    e.stopPropagation();
+    selectedId = id;
+    renderAll();
+
+    contextMenu.style.left = e.clientX + 'px';
+    contextMenu.style.top = e.clientY + 'px';
+    contextMenu.classList.add('active');
+    contextMenu.dataset.nodeId = id;
+  }
+
+  contextMenu.addEventListener('click', e => {
+    const item = e.target.closest('.context-menu-item');
+    if (!item) return;
+    const action = item.dataset.action;
+    const id = contextMenu.dataset.nodeId;
+    contextMenu.classList.remove('active');
+
+    if (action === 'add-child') addChildToNode(id);
+    if (action === 'edit') onNodeDblClick(e, id);
+    if (action === 'color') openColorPicker(id);
+    if (action === 'delete') deleteNode(id);
+  });
+
+  // ─── Color Picker ───
+  function buildColorPicker() {
+    NODE_COLORS.forEach(c => {
+      const swatch = document.createElement('div');
+      swatch.className = 'color-swatch';
+      swatch.style.background = c;
+      swatch.dataset.color = c;
+      swatch.addEventListener('click', () => {
+        if (!selectedId || !nodes[selectedId]) return;
+        nodes[selectedId].color = c;
+        saveToStorage();
+        renderAll();
+        colorPicker.classList.remove('active');
+        toast('색상이 변경되었습니다');
+      });
+      colorGrid.appendChild(swatch);
+    });
+  }
+
+  function openColorPicker(id) {
+    if (id) selectedId = id;
+    if (!selectedId) { toast('노드를 먼저 선택하세요'); return; }
+    const nodeEl = document.querySelector(`[data-id="${selectedId}"]`);
+    if (!nodeEl) return;
+    const rect = nodeEl.getBoundingClientRect();
+    colorPicker.style.left = rect.right + 8 + 'px';
+    colorPicker.style.top = rect.top + 'px';
+    // Keep in viewport
+    const cpRect = colorPicker.getBoundingClientRect();
+    if (rect.right + 200 > window.innerWidth) {
+      colorPicker.style.left = (rect.left - 200) + 'px';
+    }
+    colorPicker.classList.add('active');
+  }
+
+  // ─── Zoom ───
+  container.addEventListener('wheel', e => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.08 : 0.08;
+    const newScale = Math.min(3, Math.max(0.2, viewScale + delta));
+
+    // Zoom toward mouse
+    const rect = container.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+
+    viewX = mx - (mx - viewX) * (newScale / viewScale);
+    viewY = my - (my - viewY) * (newScale / viewScale);
+    viewScale = newScale;
+
+    updateTransform();
+  }, { passive: false });
+
+  document.getElementById('btn-zoom-in').addEventListener('click', () => {
+    viewScale = Math.min(3, viewScale + 0.15);
+    updateTransform();
+  });
+
+  document.getElementById('btn-zoom-out').addEventListener('click', () => {
+    viewScale = Math.max(0.2, viewScale - 0.15);
+    updateTransform();
+  });
+
+  document.getElementById('btn-zoom-fit').addEventListener('click', zoomToFit);
+
+  function zoomToFit() {
+    const nodeList = Object.values(nodes);
+    if (nodeList.length === 0) return;
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    nodeList.forEach(n => {
+      minX = Math.min(minX, n.x - 150);
+      minY = Math.min(minY, n.y - 60);
+      maxX = Math.max(maxX, n.x + 150);
+      maxY = Math.max(maxY, n.y + 60);
+    });
+    const bw = maxX - minX;
+    const bh = maxY - minY;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const padding = 100;
+
+    viewScale = Math.min(2, Math.min((vw - padding * 2) / bw, (vh - padding * 2) / bh));
+    viewScale = Math.max(0.2, viewScale);
+    const cx = (minX + maxX) / 2;
+    const cy = (minY + maxY) / 2;
+    viewX = vw / 2 - cx * viewScale;
+    viewY = vh / 2 - cy * viewScale;
+    updateTransform();
+  }
+
+  // ─── Toolbar Buttons ───
+  document.getElementById('btn-add').addEventListener('click', () => {
+    if (!selectedId) { toast('노드를 먼저 선택하세요'); return; }
+    addChildToNode(selectedId);
+  });
+
+  document.getElementById('btn-color').addEventListener('click', () => {
+    openColorPicker();
+  });
+
+  document.getElementById('btn-delete').addEventListener('click', () => {
+    if (!selectedId) { toast('노드를 먼저 선택하세요'); return; }
+    if (nodes[selectedId] && nodes[selectedId].isRoot) { toast('중심 노드는 삭제할 수 없습니다'); return; }
+    deleteNode(selectedId);
+    toast('노드가 삭제되었습니다');
+  });
+
+  document.getElementById('btn-clear').addEventListener('click', () => {
+    if (!confirm('모든 노드를 삭제하고 초기화하시겠습니까?')) return;
+    nodes = {};
+    selectedId = null;
+    nextId = 1;
+    viewX = 0; viewY = 0; viewScale = 1;
+    createDefaultMap();
+    renderAll();
+    zoomToFit();
+    toast('초기화되었습니다');
+  });
+
+  // ─── Keyboard ───
+  document.addEventListener('keydown', e => {
+    // Don't handle if editing text
+    if (e.target.closest('[contenteditable="true"]')) return;
+
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      if (selectedId) addChildToNode(selectedId);
+    }
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+      if (selectedId && nodes[selectedId] && !nodes[selectedId].isRoot) {
+        deleteNode(selectedId);
+        toast('노드가 삭제되었습니다');
+      }
+    }
+    if (e.key === 'F2') {
+      if (selectedId) onNodeDblClick(e, selectedId);
+    }
+    if (e.key === 'Escape') {
+      selectedId = null;
+      closePopups();
+      renderAll();
+    }
+  });
+
+  // ─── Close popups ───
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.color-picker-popup') && !e.target.closest('#btn-color')) {
+      colorPicker.classList.remove('active');
+    }
+    if (!e.target.closest('.context-menu')) {
+      contextMenu.classList.remove('active');
+    }
+  });
+
+  function closePopups() {
+    colorPicker.classList.remove('active');
+    contextMenu.classList.remove('active');
+  }
+
+  // ─── PNG Export ───
+  document.getElementById('btn-export').addEventListener('click', exportPNG);
+
+  async function exportPNG() {
+    toast('PNG 내보내기 중...');
+
+    const nodeList = Object.values(nodes);
+    if (nodeList.length === 0) return;
+
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    nodeList.forEach(n => {
+      minX = Math.min(minX, n.x - 160);
+      minY = Math.min(minY, n.y - 60);
+      maxX = Math.max(maxX, n.x + 160);
+      maxY = Math.max(maxY, n.y + 60);
+    });
+
+    const pad = 60;
+    const w = maxX - minX + pad * 2;
+    const h = maxY - minY + pad * 2;
+    const offX = -minX + pad;
+    const offY = -minY + pad;
+
+    const canvas = document.createElement('canvas');
+    const dpr = 2;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+
+    // Background
+    ctx.fillStyle = '#f8f9fc';
+    ctx.fillRect(0, 0, w, h);
+
+    // Draw lines
+    nodeList.forEach(node => {
+      if (!node.parentId || !nodes[node.parentId]) return;
+      const parent = nodes[node.parentId];
+      const x1 = parent.x + offX, y1 = parent.y + offY;
+      const x2 = node.x + offX, y2 = node.y + offY;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      const mx = (x1 + x2) / 2;
+      ctx.bezierCurveTo(mx, y1, mx, y2, x2, y2);
+      ctx.strokeStyle = node.color + '80';
+      ctx.lineWidth = 2.5;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+    });
+
+    // Draw nodes
+    nodeList.forEach(node => {
+      const nx = node.x + offX;
+      const ny = node.y + offY;
+      const tw = Math.max(120, ctx.measureText(node.text).width + 48);
+      const th = node.isRoot ? 54 : 44;
+      const rx = tw / 2, ry = th / 2;
+
+      ctx.beginPath();
+      roundRect(ctx, nx - rx, ny - ry, tw, th, 12);
+      if (node.isRoot) {
+        ctx.fillStyle = node.color;
+      } else {
+        ctx.fillStyle = node.color + '15';
+      }
+      ctx.fill();
+      ctx.strokeStyle = node.color;
+      ctx.lineWidth = node.isRoot ? 3 : 2;
+      ctx.stroke();
+
+      ctx.fillStyle = node.isRoot ? '#ffffff' : darkenColor(node.color, 0.3);
+      ctx.font = (node.isRoot ? '700 16px' : '500 14px') + ' Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(node.text, nx, ny);
+    });
+
+    // Download
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'mindmap.png';
+      a.click();
+      URL.revokeObjectURL(url);
+      toast('PNG 파일이 저장되었습니다');
+    });
+  }
+
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+  }
+
+  // ─── LocalStorage ───
+  function saveToStorage() {
+    try {
+      localStorage.setItem('mindflow-data', JSON.stringify({ nodes, nextId }));
+    } catch (e) {}
+  }
+
+  function loadFromStorage() {
+    try {
+      const raw = localStorage.getItem('mindflow-data');
+      if (raw) {
+        const data = JSON.parse(raw);
+        nodes = data.nodes || {};
+        nextId = data.nextId || 1;
+      }
+    } catch (e) {
+      nodes = {};
+    }
+  }
+
+  // ─── Utils ───
+  function darkenColor(hex, amount) {
+    hex = hex.replace('#', '');
+    if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+    const r = Math.max(0, parseInt(hex.substr(0, 2), 16) * (1 - amount));
+    const g = Math.max(0, parseInt(hex.substr(2, 2), 16) * (1 - amount));
+    const b = Math.max(0, parseInt(hex.substr(4, 2), 16) * (1 - amount));
+    return `rgb(${Math.round(r)},${Math.round(g)},${Math.round(b)})`;
+  }
+
+  let toastTimeout;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => toastEl.classList.remove('show'), 2200);
+  }
+
+  function bindEvents() {
+    // Initial zoom to fit
+    setTimeout(zoomToFit, 100);
+  }
+
+  // Start
+  init();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>서울 지하철 노선 검색</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --navy: #1B2A4A;
+  --navy-light: #2C3E6B;
+  --navy-dark: #0F1D35;
+  --white: #FFFFFF;
+  --gray-50: #F8F9FC;
+  --gray-100: #F0F2F7;
+  --gray-200: #E2E5ED;
+  --gray-300: #C8CDD8;
+  --gray-400: #9BA3B5;
+  --gray-500: #6B7280;
+  --gray-600: #4B5563;
+  --accent: #3B82F6;
+  --accent-light: #60A5FA;
+  --accent-dark: #2563EB;
+  --success: #10B981;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  --line1: #0052A4;
+  --line2: #00A84D;
+  --line3: #EF7C1C;
+  --line4: #00A5DE;
+  --line5: #996CAC;
+  --line6: #CD7C2F;
+  --line7: #747F00;
+  --line8: #E6186C;
+  --line9: #BB8336;
+  --shadow-sm: 0 1px 3px rgba(27,42,74,0.08);
+  --shadow-md: 0 4px 12px rgba(27,42,74,0.1);
+  --shadow-lg: 0 8px 30px rgba(27,42,74,0.12);
+  --shadow-xl: 0 12px 40px rgba(27,42,74,0.16);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--gray-50);
+  color: var(--navy);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+  color: var(--white);
+  padding: 24px 20px 28px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 50%, rgba(59,130,246,0.15) 0%, transparent 50%);
+  pointer-events: none;
+}
+.header h1 {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  position: relative;
+}
+.header h1 .icon { margin-right: 8px; font-size: 24px; }
+.header p {
+  font-size: 13px;
+  opacity: 0.7;
+  margin-top: 4px;
+  font-weight: 400;
+  position: relative;
+}
+
+/* Container */
+.container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 16px 100px;
+}
+
+/* Search Card */
+.search-card {
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  padding: 24px 20px;
+  margin-top: -16px;
+  position: relative;
+  box-shadow: var(--shadow-lg);
+}
+
+.input-group {
+  position: relative;
+  margin-bottom: 12px;
+}
+.input-group label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--gray-400);
+  margin-bottom: 6px;
+}
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.input-wrapper .input-icon {
+  position: absolute;
+  left: 14px;
+  font-size: 16px;
+  color: var(--gray-400);
+  pointer-events: none;
+  z-index: 1;
+}
+.input-wrapper input {
+  width: 100%;
+  padding: 14px 44px 14px 42px;
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--navy);
+  background: var(--gray-50);
+  transition: all 0.2s;
+  outline: none;
+}
+.input-wrapper input:focus {
+  border-color: var(--accent);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+}
+.input-wrapper input::placeholder {
+  color: var(--gray-400);
+  font-weight: 400;
+}
+.input-clear {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--gray-400);
+  cursor: pointer;
+  padding: 4px;
+  display: none;
+  line-height: 1;
+}
+.input-clear.visible { display: block; }
+
+.swap-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 2px solid var(--gray-200);
+  border-radius: 50%;
+  background: var(--white);
+  cursor: pointer;
+  margin: -4px auto 8px;
+  transition: all 0.2s;
+  font-size: 16px;
+  color: var(--gray-500);
+  position: relative;
+  z-index: 2;
+}
+.swap-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: rotate(180deg);
+}
+
+.search-btn {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 8px;
+  letter-spacing: -0.2px;
+}
+.search-btn:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+.search-btn:active { transform: translateY(0); }
+
+/* Autocomplete */
+.autocomplete-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  z-index: 100;
+  max-height: 220px;
+  overflow-y: auto;
+  display: none;
+  margin-top: 4px;
+}
+.autocomplete-list.active { display: block; }
+.autocomplete-item {
+  padding: 12px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.15s;
+}
+.autocomplete-item:hover,
+.autocomplete-item.selected {
+  background: var(--gray-50);
+}
+.autocomplete-item .line-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.autocomplete-item .fav-star {
+  margin-left: auto;
+  color: var(--warning);
+  font-size: 12px;
+}
+
+/* Section Titles */
+.section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 28px 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-title .icon { font-size: 18px; }
+
+/* Result Card */
+.result-area { display: none; }
+.result-area.active { display: block; }
+
+.route-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 12px;
+  border-left: 4px solid var(--accent);
+  animation: slideUp 0.3s ease;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.route-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.route-type {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: rgba(59,130,246,0.1);
+  color: var(--accent-dark);
+}
+.route-time {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--navy);
+}
+.route-time span {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--gray-500);
+}
+
+.route-stats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--gray-100);
+}
+.route-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.route-stat .label {
+  font-size: 11px;
+  color: var(--gray-400);
+  font-weight: 600;
+}
+.route-stat .value {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.route-path {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.route-stop {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  position: relative;
+  padding: 8px 0;
+}
+.route-stop-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 3px solid var(--accent);
+  background: var(--white);
+  flex-shrink: 0;
+  margin-top: 3px;
+  position: relative;
+  z-index: 2;
+}
+.route-stop-dot.start { background: var(--accent); }
+.route-stop-dot.end { background: var(--navy); border-color: var(--navy); }
+.route-stop-dot.transfer { background: var(--warning); border-color: var(--warning); }
+.route-stop:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 22px;
+  bottom: -8px;
+  width: 2px;
+  background: var(--gray-200);
+  z-index: 1;
+}
+.route-stop-info {
+  flex: 1;
+}
+.route-stop-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--navy);
+}
+.route-stop-detail {
+  font-size: 12px;
+  color: var(--gray-500);
+  margin-top: 2px;
+}
+.route-stop-line-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  border-radius: 10px;
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+/* Favorites & History */
+.fav-history-area { margin-top: 8px; }
+
+.station-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.station-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--navy);
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
+}
+.station-chip:hover {
+  border-color: var(--accent);
+  background: rgba(59,130,246,0.04);
+}
+.station-chip .remove-chip {
+  font-size: 14px;
+  color: var(--gray-400);
+  cursor: pointer;
+  margin-left: 2px;
+  line-height: 1;
+}
+.station-chip .remove-chip:hover { color: var(--danger); }
+
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--white);
+  border-radius: var(--radius-md);
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
+}
+.history-item:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+.history-icon {
+  font-size: 18px;
+  color: var(--gray-400);
+}
+.history-text {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+}
+.history-text span { color: var(--accent); font-weight: 600; }
+.history-remove {
+  font-size: 16px;
+  color: var(--gray-400);
+  cursor: pointer;
+  padding: 4px;
+  background: none;
+  border: none;
+  line-height: 1;
+}
+.history-remove:hover { color: var(--danger); }
+
+.empty-state {
+  text-align: center;
+  padding: 24px 16px;
+  color: var(--gray-400);
+  font-size: 13px;
+}
+.empty-state .icon { font-size: 28px; margin-bottom: 8px; display: block; }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--navy);
+  color: var(--white);
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: var(--shadow-xl);
+  z-index: 1000;
+  transition: transform 0.3s ease;
+  white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* Loading */
+.loading-spinner {
+  display: none;
+  text-align: center;
+  padding: 30px;
+}
+.loading-spinner.active { display: block; }
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--gray-200);
+  border-top: 3px solid var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 12px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-spinner p { font-size: 13px; color: var(--gray-500); }
+
+/* No result */
+.no-result {
+  text-align: center;
+  padding: 40px 20px;
+  display: none;
+}
+.no-result.active { display: block; }
+.no-result .icon { font-size: 40px; margin-bottom: 12px; }
+.no-result p { color: var(--gray-500); font-size: 14px; }
+
+/* Responsive */
+@media (max-width: 400px) {
+  .header h1 { font-size: 19px; }
+  .search-card { padding: 20px 16px; }
+  .route-stats { gap: 12px; }
+}
+@media (min-width: 768px) {
+  .container { padding-bottom: 60px; }
+  .header { padding: 32px 20px 36px; }
+  .header h1 { font-size: 26px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1><span class="icon">🚇</span>서울 지하철 노선 검색</h1>
+  <p>출발역과 도착역을 입력하세요</p>
+</div>
+
+<div class="container">
+  <!-- Search -->
+  <div class="search-card">
+    <div class="input-group" id="startGroup">
+      <label>출발역</label>
+      <div class="input-wrapper">
+        <span class="input-icon">📍</span>
+        <input type="text" id="startInput" placeholder="출발역을 입력하세요" autocomplete="off">
+        <button class="input-clear" id="startClear" onclick="clearInput('start')">×</button>
+      </div>
+      <div class="autocomplete-list" id="startAutocomplete"></div>
+    </div>
+
+    <button class="swap-btn" onclick="swapStations()" title="출발역/도착역 교환">⇅</button>
+
+    <div class="input-group" id="endGroup">
+      <label>도착역</label>
+      <div class="input-wrapper">
+        <span class="input-icon">📌</span>
+        <input type="text" id="endInput" placeholder="도착역을 입력하세요" autocomplete="off">
+        <button class="input-clear" id="endClear" onclick="clearInput('end')">×</button>
+      </div>
+      <div class="autocomplete-list" id="endAutocomplete"></div>
+    </div>
+
+    <button class="search-btn" onclick="searchRoute()">🔍 경로 검색</button>
+  </div>
+
+  <!-- Result -->
+  <div class="result-area" id="resultArea">
+    <div class="section-title"><span class="icon">📋</span>검색 결과</div>
+    <div class="loading-spinner" id="loadingSpinner">
+      <div class="spinner"></div>
+      <p>최적 경로를 찾고 있습니다...</p>
+    </div>
+    <div id="resultCards"></div>
+    <div class="no-result" id="noResult">
+      <div class="icon">😅</div>
+      <p>경로를 찾을 수 없습니다.<br>역 이름을 확인해 주세요.</p>
+    </div>
+  </div>
+
+  <!-- Favorites & History -->
+  <div class="fav-history-area">
+    <div class="section-title"><span class="icon">⭐</span>즐겨찾기 역</div>
+    <div id="favList" class="station-chip-list">
+      <div class="empty-state" id="favEmpty"><span class="icon">⭐</span>즐겨찾기한 역이 없습니다<br>검색 결과에서 역을 즐겨찾기하세요</div>
+    </div>
+
+    <div class="section-title"><span class="icon">🕐</span>최근 검색</div>
+    <div id="historyList">
+      <div class="empty-state" id="historyEmpty"><span class="icon">🔍</span>최근 검색 기록이 없습니다</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── 서울 주요역 30개 데이터 ───
+const stations = [
+  { name: '서울역', lines: [1,4], id: 'seoul' },
+  { name: '시청', lines: [1,2], id: 'cityhall' },
+  { name: '종각', lines: [1], id: 'jonggak' },
+  { name: '종로3가', lines: [1,3,5], id: 'jongro3' },
+  { name: '동대문', lines: [1,4], id: 'dongdaemun' },
+  { name: '을지로입구', lines: [2], id: 'euljiro' },
+  { name: '을지로3가', lines: [2,3], id: 'euljiro3' },
+  { name: '교대', lines: [2,3], id: 'gyodae' },
+  { name: '강남', lines: [2], id: 'gangnam' },
+  { name: '잠실', lines: [2,8], id: 'jamsil' },
+  { name: '홍대입구', lines: [2], id: 'hongdae' },
+  { name: '신도림', lines: [1,2], id: 'sindorim' },
+  { name: '사당', lines: [2,4], id: 'sadang' },
+  { name: '충무로', lines: [3,4], id: 'chungmuro' },
+  { name: '약수', lines: [3,6], id: 'yaksu' },
+  { name: '고속터미널', lines: [3,7,9], id: 'gosok' },
+  { name: '동대문역사문화공원', lines: [2,4,5], id: 'ddp' },
+  { name: '왕십리', lines: [2,5], id: 'wangsimni' },
+  { name: '영등포구청', lines: [2,5], id: 'ydp' },
+  { name: '광화문', lines: [5], id: 'gwanghwamun' },
+  { name: '여의도', lines: [5,9], id: 'yeouido' },
+  { name: '삼성', lines: [2], id: 'samsung' },
+  { name: '선릉', lines: [2], id: 'seolleung' },
+  { name: '건대입구', lines: [2,7], id: 'kondae' },
+  { name: '합정', lines: [2,6], id: 'hapjeong' },
+  { name: '이태원', lines: [6], id: 'itaewon' },
+  { name: '노량진', lines: [1,9], id: 'noryangjin' },
+  { name: '용산', lines: [1], id: 'yongsan' },
+  { name: '디지털미디어시티', lines: [6], id: 'dmc' },
+  { name: '구로', lines: [1], id: 'guro' }
+];
+
+// ─── 노선 색상 ───
+const lineColors = {
+  1: '#0052A4', 2: '#00A84D', 3: '#EF7C1C', 4: '#00A5DE',
+  5: '#996CAC', 6: '#CD7C2F', 7: '#747F00', 8: '#E6186C', 9: '#BB8336'
+};
+
+// ─── 인접 그래프 (역간 소요시간 분) ───
+const graph = {
+  'seoul': { 'cityhall': {time:2,line:1}, 'yongsan': {time:3,line:1}, 'dongdaemun': {time:6,line:4}, 'chungmuro': {time:3,line:4} },
+  'cityhall': { 'seoul': {time:2,line:1}, 'jonggak': {time:2,line:1}, 'euljiro': {time:2,line:2}, 'sindorim': {time:14,line:2} },
+  'jonggak': { 'cityhall': {time:2,line:1}, 'jongro3': {time:2,line:1} },
+  'jongro3': { 'jonggak': {time:2,line:1}, 'dongdaemun': {time:3,line:1}, 'euljiro3': {time:2,line:3}, 'gwanghwamun': {time:4,line:5} },
+  'dongdaemun': { 'jongro3': {time:3,line:1}, 'seoul': {time:6,line:4}, 'ddp': {time:2,line:4} },
+  'euljiro': { 'cityhall': {time:2,line:2}, 'euljiro3': {time:2,line:2} },
+  'euljiro3': { 'euljiro': {time:2,line:2}, 'ddp': {time:2,line:2}, 'jongro3': {time:2,line:3}, 'chungmuro': {time:2,line:3} },
+  'gyodae': { 'sadang': {time:5,line:2}, 'gangnam': {time:3,line:2}, 'gosok': {time:3,line:3}, 'chungmuro': {time:10,line:3} },
+  'gangnam': { 'gyodae': {time:3,line:2}, 'seolleung': {time:3,line:2}, 'samsung': {time:5,line:2} },
+  'jamsil': { 'samsung': {time:5,line:2}, 'kondae': {time:7,line:2}, 'gosok': {time:14,line:8} },
+  'hongdae': { 'hapjeong': {time:2,line:2}, 'sindorim': {time:10,line:2} },
+  'sindorim': { 'hongdae': {time:10,line:2}, 'cityhall': {time:14,line:2}, 'guro': {time:3,line:1}, 'ydp': {time:5,line:2} },
+  'sadang': { 'gyodae': {time:5,line:2}, 'seoul': {time:12,line:4}, 'chungmuro': {time:8,line:4} },
+  'chungmuro': { 'euljiro3': {time:2,line:3}, 'gyodae': {time:10,line:3}, 'seoul': {time:3,line:4}, 'ddp': {time:2,line:4}, 'sadang': {time:8,line:4}, 'yaksu': {time:4,line:3} },
+  'yaksu': { 'chungmuro': {time:4,line:3}, 'gyodae': {time:8,line:3}, 'itaewon': {time:5,line:6}, 'hapjeong': {time:10,line:6} },
+  'gosok': { 'gyodae': {time:3,line:3}, 'yeouido': {time:12,line:9}, 'kondae': {time:16,line:7}, 'jamsil': {time:14,line:8} },
+  'ddp': { 'euljiro3': {time:2,line:2}, 'wangsimni': {time:4,line:2}, 'dongdaemun': {time:2,line:4}, 'chungmuro': {time:2,line:4}, 'gwanghwamun': {time:7,line:5} },
+  'wangsimni': { 'ddp': {time:4,line:2}, 'kondae': {time:5,line:2}, 'gwanghwamun': {time:10,line:5} },
+  'ydp': { 'sindorim': {time:5,line:2}, 'hapjeong': {time:7,line:2}, 'yeouido': {time:4,line:5} },
+  'gwanghwamun': { 'jongro3': {time:4,line:5}, 'ddp': {time:7,line:5}, 'yeouido': {time:8,line:5}, 'wangsimni': {time:10,line:5} },
+  'yeouido': { 'gwanghwamun': {time:8,line:5}, 'ydp': {time:4,line:5}, 'gosok': {time:12,line:9}, 'noryangjin': {time:3,line:9} },
+  'samsung': { 'gangnam': {time:5,line:2}, 'jamsil': {time:5,line:2}, 'seolleung': {time:2,line:2} },
+  'seolleung': { 'samsung': {time:2,line:2}, 'gangnam': {time:3,line:2} },
+  'kondae': { 'wangsimni': {time:5,line:2}, 'jamsil': {time:7,line:2}, 'gosok': {time:16,line:7} },
+  'hapjeong': { 'hongdae': {time:2,line:2}, 'ydp': {time:7,line:2}, 'yaksu': {time:10,line:6}, 'dmc': {time:6,line:6} },
+  'itaewon': { 'yaksu': {time:5,line:6}, 'hapjeong': {time:7,line:6} },
+  'noryangjin': { 'yeouido': {time:3,line:9}, 'guro': {time:5,line:1}, 'yongsan': {time:4,line:1} },
+  'yongsan': { 'seoul': {time:3,line:1}, 'noryangjin': {time:4,line:1} },
+  'dmc': { 'hapjeong': {time:6,line:6} },
+  'guro': { 'sindorim': {time:3,line:1}, 'noryangjin': {time:5,line:1} }
+};
+
+// ─── State ───
+let favorites = JSON.parse(localStorage.getItem('subway_fav') || '[]');
+let history = JSON.parse(localStorage.getItem('subway_history') || '[]');
+let selectedStart = null;
+let selectedEnd = null;
+let acIndex = -1;
+
+// ─── Init ───
+document.addEventListener('DOMContentLoaded', () => {
+  renderFavorites();
+  renderHistory();
+  setupAutocomplete('startInput', 'startAutocomplete', 'startClear', 'start');
+  setupAutocomplete('endInput', 'endAutocomplete', 'endClear', 'end');
+});
+
+// ─── Autocomplete ───
+function setupAutocomplete(inputId, listId, clearId, type) {
+  const input = document.getElementById(inputId);
+  const list = document.getElementById(listId);
+  const clear = document.getElementById(clearId);
+
+  input.addEventListener('input', () => {
+    const val = input.value.trim();
+    clear.classList.toggle('visible', val.length > 0);
+    if (type === 'start') selectedStart = null;
+    else selectedEnd = null;
+    if (val.length === 0) { list.classList.remove('active'); acIndex = -1; return; }
+    const matches = stations.filter(s => s.name.includes(val));
+    if (matches.length === 0) { list.classList.remove('active'); return; }
+    acIndex = -1;
+    renderAutocomplete(list, matches, input, type);
+    list.classList.add('active');
+  });
+
+  input.addEventListener('keydown', (e) => {
+    const items = list.querySelectorAll('.autocomplete-item');
+    if (!list.classList.contains('active') || items.length === 0) {
+      if (e.key === 'Enter') { searchRoute(); e.preventDefault(); }
+      return;
+    }
+    if (e.key === 'ArrowDown') { e.preventDefault(); acIndex = Math.min(acIndex + 1, items.length - 1); highlightAc(items); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); acIndex = Math.max(acIndex - 1, 0); highlightAc(items); }
+    else if (e.key === 'Enter') { e.preventDefault(); if (acIndex >= 0) items[acIndex].click(); else searchRoute(); }
+    else if (e.key === 'Escape') { list.classList.remove('active'); }
+  });
+
+  input.addEventListener('focus', () => {
+    if (input.value.trim().length > 0) {
+      const matches = stations.filter(s => s.name.includes(input.value.trim()));
+      if (matches.length > 0) { renderAutocomplete(list, matches, input, type); list.classList.add('active'); }
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('#' + inputId) && !e.target.closest('#' + listId)) {
+      list.classList.remove('active');
+    }
+  });
+}
+
+function renderAutocomplete(list, matches, input, type) {
+  list.innerHTML = matches.map(s => {
+    const isFav = favorites.includes(s.name);
+    const badges = s.lines.map(l => `<span class="line-badge" style="background:${lineColors[l]}">${l}</span>`).join('');
+    return `<div class="autocomplete-item" data-name="${s.name}" data-id="${s.id}">
+      ${badges}<span>${s.name}</span>${isFav ? '<span class="fav-star">★</span>' : ''}
+    </div>`;
+  }).join('');
+  list.querySelectorAll('.autocomplete-item').forEach(item => {
+    item.addEventListener('click', () => {
+      input.value = item.dataset.name;
+      if (type === 'start') selectedStart = item.dataset.id;
+      else selectedEnd = item.dataset.id;
+      list.classList.remove('active');
+      document.getElementById(type === 'start' ? 'startClear' : 'endClear').classList.add('visible');
+    });
+  });
+}
+
+function highlightAc(items) {
+  items.forEach((it, i) => it.classList.toggle('selected', i === acIndex));
+  if (acIndex >= 0) items[acIndex].scrollIntoView({ block: 'nearest' });
+}
+
+function clearInput(type) {
+  const input = document.getElementById(type + 'Input');
+  input.value = '';
+  input.focus();
+  document.getElementById(type + 'Clear').classList.remove('visible');
+  document.getElementById(type + 'Autocomplete').classList.remove('active');
+  if (type === 'start') selectedStart = null; else selectedEnd = null;
+}
+
+function swapStations() {
+  const si = document.getElementById('startInput');
+  const ei = document.getElementById('endInput');
+  const tmp = si.value; si.value = ei.value; ei.value = tmp;
+  const tmpId = selectedStart; selectedStart = selectedEnd; selectedEnd = tmpId;
+  document.getElementById('startClear').classList.toggle('visible', si.value.length > 0);
+  document.getElementById('endClear').classList.toggle('visible', ei.value.length > 0);
+}
+
+// ─── Dijkstra 경로 탐색 ───
+function findRoute(startId, endId) {
+  const dist = {};
+  const prev = {};
+  const visited = new Set();
+  const pq = [];
+
+  Object.keys(graph).forEach(n => { dist[n] = Infinity; prev[n] = null; });
+  dist[startId] = 0;
+  pq.push({ node: startId, cost: 0 });
+
+  while (pq.length > 0) {
+    pq.sort((a, b) => a.cost - b.cost);
+    const { node } = pq.shift();
+    if (visited.has(node)) continue;
+    visited.add(node);
+    if (node === endId) break;
+    if (!graph[node]) continue;
+    for (const [neighbor, edge] of Object.entries(graph[node])) {
+      const prevLine = prev[node] ? prev[node].line : null;
+      const transferPenalty = (prevLine && prevLine !== edge.line) ? 3 : 0;
+      const newDist = dist[node] + edge.time + transferPenalty;
+      if (newDist < dist[neighbor]) {
+        dist[neighbor] = newDist;
+        prev[neighbor] = { from: node, line: edge.line, time: edge.time };
+        pq.push({ node: neighbor, cost: newDist });
+      }
+    }
+  }
+
+  if (dist[endId] === Infinity) return null;
+
+  const path = [];
+  let cur = endId;
+  while (prev[cur]) {
+    path.unshift({ station: cur, line: prev[cur].line, time: prev[cur].time });
+    cur = prev[cur].from;
+  }
+  path.unshift({ station: startId, line: path[0]?.line || 1, time: 0 });
+
+  let transfers = 0;
+  let totalTime = 0;
+  for (let i = 1; i < path.length; i++) {
+    totalTime += path[i].time;
+    if (path[i].line !== path[i-1].line) { transfers++; totalTime += 3; }
+  }
+
+  return { path, totalTime, transfers };
+}
+
+function getStationById(id) { return stations.find(s => s.id === id); }
+function getStationByName(name) { return stations.find(s => s.name === name); }
+
+// ─── 경로 검색 ───
+function searchRoute() {
+  const startName = document.getElementById('startInput').value.trim();
+  const endName = document.getElementById('endInput').value.trim();
+
+  if (!startName || !endName) { showToast('출발역과 도착역을 모두 입력하세요'); return; }
+
+  const startStation = getStationByName(startName);
+  const endStation = getStationByName(endName);
+  if (!startStation) { showToast('출발역을 찾을 수 없습니다'); return; }
+  if (!endStation) { showToast('도착역을 찾을 수 없습니다'); return; }
+  if (startStation.id === endStation.id) { showToast('출발역과 도착역이 같습니다'); return; }
+
+  const resultArea = document.getElementById('resultArea');
+  const loading = document.getElementById('loadingSpinner');
+  const resultCards = document.getElementById('resultCards');
+  const noResult = document.getElementById('noResult');
+
+  resultArea.classList.add('active');
+  loading.classList.add('active');
+  resultCards.innerHTML = '';
+  noResult.classList.remove('active');
+
+  setTimeout(() => {
+    loading.classList.remove('active');
+    const route = findRoute(startStation.id, endStation.id);
+
+    if (!route) {
+      noResult.classList.add('active');
+      return;
+    }
+
+    const fare = 1250 + Math.max(0, Math.floor((route.totalTime - 10) / 5)) * 100;
+    addHistory(startName, endName);
+
+    // 최적 경로
+    resultCards.innerHTML = buildRouteCard('최적 경로', route, fare, startName, endName);
+
+    // 두 번째 경로 (환승 우선)
+    const altRoute = findAlternativeRoute(startStation.id, endStation.id, route);
+    if (altRoute && altRoute.totalTime !== route.totalTime) {
+      const altFare = 1250 + Math.max(0, Math.floor((altRoute.totalTime - 10) / 5)) * 100;
+      resultCards.innerHTML += buildRouteCard(altRoute.transfers < route.transfers ? '최소 환승' : '대체 경로', altRoute, altFare, startName, endName);
+    }
+
+    resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 600);
+}
+
+function findAlternativeRoute(startId, endId, primaryRoute) {
+  // 간단한 대체 경로: transfer penalty를 높여서 환승 최소화
+  const dist = {};
+  const prev = {};
+  const visited = new Set();
+  const pq = [];
+
+  Object.keys(graph).forEach(n => { dist[n] = Infinity; prev[n] = null; });
+  dist[startId] = 0;
+  pq.push({ node: startId, cost: 0 });
+
+  while (pq.length > 0) {
+    pq.sort((a, b) => a.cost - b.cost);
+    const { node } = pq.shift();
+    if (visited.has(node)) continue;
+    visited.add(node);
+    if (node === endId) break;
+    if (!graph[node]) continue;
+    for (const [neighbor, edge] of Object.entries(graph[node])) {
+      const prevLine = prev[node] ? prev[node].line : null;
+      const transferPenalty = (prevLine && prevLine !== edge.line) ? 15 : 0;
+      const newDist = dist[node] + edge.time + transferPenalty;
+      if (newDist < dist[neighbor]) {
+        dist[neighbor] = newDist;
+        prev[neighbor] = { from: node, line: edge.line, time: edge.time };
+        pq.push({ node: neighbor, cost: newDist });
+      }
+    }
+  }
+
+  if (dist[endId] === Infinity) return null;
+
+  const path = [];
+  let cur = endId;
+  while (prev[cur]) {
+    path.unshift({ station: cur, line: prev[cur].line, time: prev[cur].time });
+    cur = prev[cur].from;
+  }
+  path.unshift({ station: startId, line: path[0]?.line || 1, time: 0 });
+
+  let transfers = 0;
+  let totalTime = 0;
+  for (let i = 1; i < path.length; i++) {
+    totalTime += path[i].time;
+    if (path[i].line !== path[i-1].line) transfers++;
+  }
+
+  return { path, totalTime, transfers };
+}
+
+function buildRouteCard(label, route, fare, startName, endName) {
+  const stopsHtml = route.path.map((stop, i) => {
+    const station = getStationById(stop.station);
+    const isStart = i === 0;
+    const isEnd = i === route.path.length - 1;
+    const isTransfer = !isStart && !isEnd && i > 0 && route.path[i+1] && stop.line !== route.path[i+1].line;
+    const dotClass = isStart ? 'start' : isEnd ? 'end' : isTransfer ? 'transfer' : '';
+    const detail = isStart ? '출발' : isEnd ? '도착' : isTransfer ? '환승' : '';
+    const isFav = favorites.includes(station.name);
+
+    return `<div class="route-stop">
+      <div class="route-stop-dot ${dotClass}"></div>
+      <div class="route-stop-info">
+        <div class="route-stop-name">${station.name}
+          <span style="cursor:pointer;font-size:14px;margin-left:4px;color:${isFav ? '#F59E0B' : '#C8CDD8'}"
+            onclick="toggleFav('${station.name}')">${isFav ? '★' : '☆'}</span>
+        </div>
+        ${detail ? `<div class="route-stop-detail">${detail}</div>` : ''}
+        <div class="route-stop-line-badge" style="background:${lineColors[stop.line]}">${stop.line}호선</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  return `<div class="route-card">
+    <div class="route-header">
+      <span class="route-type">${label}</span>
+      <div class="route-time">${route.totalTime}<span>분</span></div>
+    </div>
+    <div class="route-stats">
+      <div class="route-stat"><span class="label">환승</span><span class="value">${route.transfers}회</span></div>
+      <div class="route-stat"><span class="label">요금</span><span class="value">${fare.toLocaleString()}원</span></div>
+      <div class="route-stat"><span class="label">정거장</span><span class="value">${route.path.length}개</span></div>
+    </div>
+    <div class="route-path">${stopsHtml}</div>
+  </div>`;
+}
+
+// ─── 즐겨찾기 ───
+function toggleFav(name) {
+  const idx = favorites.indexOf(name);
+  if (idx >= 0) { favorites.splice(idx, 1); showToast(`${name} 즐겨찾기 해제`); }
+  else { favorites.push(name); showToast(`${name} 즐겨찾기 추가`); }
+  localStorage.setItem('subway_fav', JSON.stringify(favorites));
+  renderFavorites();
+  // 결과가 표시 중이면 다시 그리기
+  const resultCards = document.getElementById('resultCards');
+  if (resultCards.innerHTML) {
+    const stars = resultCards.querySelectorAll('.route-stop-name span');
+    stars.forEach(star => {
+      const stName = star.parentElement.textContent.trim().replace(/[★☆]/g, '').trim();
+      const isFav = favorites.includes(stName);
+      star.style.color = isFav ? '#F59E0B' : '#C8CDD8';
+      star.textContent = isFav ? '★' : '☆';
+    });
+  }
+}
+
+function renderFavorites() {
+  const container = document.getElementById('favList');
+  const empty = document.getElementById('favEmpty');
+  if (favorites.length === 0) { container.innerHTML = ''; container.appendChild(createEmptyState('favEmpty', '⭐', '즐겨찾기한 역이 없습니다')); return; }
+  container.innerHTML = favorites.map(name =>
+    `<div class="station-chip" onclick="fillStation('${name}')">
+      <span style="color:var(--warning)">★</span>${name}
+      <span class="remove-chip" onclick="event.stopPropagation();removeFav('${name}')">×</span>
+    </div>`
+  ).join('');
+}
+
+function removeFav(name) {
+  favorites = favorites.filter(f => f !== name);
+  localStorage.setItem('subway_fav', JSON.stringify(favorites));
+  renderFavorites();
+  showToast(`${name} 즐겨찾기 해제`);
+}
+
+function fillStation(name) {
+  const si = document.getElementById('startInput');
+  const ei = document.getElementById('endInput');
+  if (!si.value) {
+    si.value = name;
+    selectedStart = getStationByName(name)?.id;
+    document.getElementById('startClear').classList.add('visible');
+    ei.focus();
+  } else {
+    ei.value = name;
+    selectedEnd = getStationByName(name)?.id;
+    document.getElementById('endClear').classList.add('visible');
+  }
+}
+
+function createEmptyState(id, icon, text) {
+  const div = document.createElement('div');
+  div.className = 'empty-state';
+  div.id = id;
+  div.innerHTML = `<span class="icon">${icon}</span>${text}`;
+  return div;
+}
+
+// ─── 최근 검색 ───
+function addHistory(from, to) {
+  const entry = { from, to, time: Date.now() };
+  history = history.filter(h => !(h.from === from && h.to === to));
+  history.unshift(entry);
+  if (history.length > 10) history.pop();
+  localStorage.setItem('subway_history', JSON.stringify(history));
+  renderHistory();
+}
+
+function renderHistory() {
+  const container = document.getElementById('historyList');
+  if (history.length === 0) {
+    container.innerHTML = '';
+    container.appendChild(createEmptyState('historyEmpty', '🔍', '최근 검색 기록이 없습니다'));
+    return;
+  }
+  container.innerHTML = history.map((h, i) =>
+    `<div class="history-item" onclick="loadHistory(${i})">
+      <span class="history-icon">🕐</span>
+      <div class="history-text"><span>${h.from}</span> → <span>${h.to}</span></div>
+      <button class="history-remove" onclick="event.stopPropagation();removeHistory(${i})">×</button>
+    </div>`
+  ).join('');
+}
+
+function loadHistory(i) {
+  const h = history[i];
+  document.getElementById('startInput').value = h.from;
+  document.getElementById('endInput').value = h.to;
+  selectedStart = getStationByName(h.from)?.id;
+  selectedEnd = getStationByName(h.to)?.id;
+  document.getElementById('startClear').classList.add('visible');
+  document.getElementById('endClear').classList.add('visible');
+  searchRoute();
+}
+
+function removeHistory(i) {
+  history.splice(i, 1);
+  localStorage.setItem('subway_history', JSON.stringify(history));
+  renderHistory();
+}
+
+// ─── Toast ───
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
+}
+</script>
+</body>
+</html>

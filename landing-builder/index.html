@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>랜딩페이지 빌더</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --primary: #4F46E5;
+  --primary-light: #818CF8;
+  --primary-dark: #3730A3;
+  --bg: #F9FAFB;
+  --surface: #FFFFFF;
+  --surface-alt: #F3F4F6;
+  --text: #111827;
+  --text-secondary: #6B7280;
+  --border: #E5E7EB;
+  --radius: 12px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.06);
+  --transition: 0.2s ease;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* ── 레이아웃 ── */
+.app { display: flex; height: 100vh; }
+
+.sidebar {
+  width: 300px;
+  min-width: 300px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.sidebar-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar-header h1 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.sidebar-header .logo {
+  width: 32px;
+  height: 32px;
+  background: var(--primary);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.sidebar-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.sidebar-body::-webkit-scrollbar { width: 4px; }
+.sidebar-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+}
+
+.preview-area {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-alt);
+}
+
+.preview-toolbar {
+  padding: 12px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.preview-toolbar .device-btns {
+  display: flex;
+  gap: 4px;
+}
+
+.preview-toolbar .device-btn {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--text-secondary);
+  transition: var(--transition);
+}
+
+.preview-toolbar .device-btn.active,
+.preview-toolbar .device-btn:hover {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.preview-frame-wrap {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+  overflow: auto;
+}
+
+.preview-frame-wrap iframe {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  transition: width 0.3s ease;
+  width: 100%;
+  height: 100%;
+}
+
+.preview-frame-wrap.tablet iframe { width: 768px; }
+.preview-frame-wrap.mobile iframe { width: 375px; }
+
+/* ── 사이드바 컴포넌트 ── */
+.panel-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+
+.panel-title:first-child { margin-top: 0; }
+
+/* 섹션 추가 버튼 그리드 */
+.add-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.add-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 8px;
+  background: var(--surface-alt);
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: var(--transition);
+}
+
+.add-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: #EEF2FF;
+}
+
+.add-btn svg { width: 22px; height: 22px; }
+
+/* 섹션 리스트 (정렬 가능) */
+.section-list { display: flex; flex-direction: column; gap: 6px; }
+
+.section-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: grab;
+  font-size: 13px;
+  font-weight: 500;
+  transition: var(--transition);
+  user-select: none;
+}
+
+.section-item:hover { border-color: var(--primary-light); }
+.section-item.dragging { opacity: 0.5; border-color: var(--primary); }
+.section-item .grip { color: var(--text-secondary); flex-shrink: 0; }
+
+.section-item .section-label { flex: 1; }
+
+.section-item .section-actions {
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.section-item:hover .section-actions { opacity: 1; }
+
+.section-item .act-btn {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: var(--transition);
+}
+
+.section-item .act-btn:hover { background: var(--border); color: var(--text); }
+.section-item .act-btn.del:hover { background: #FEE2E2; color: #DC2626; }
+
+/* 테마 선택 */
+.theme-grid {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.theme-swatch {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  border: 2.5px solid transparent;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-swatch::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 50%;
+}
+
+.theme-swatch:hover { transform: scale(1.1); }
+.theme-swatch.active { border-color: var(--text); box-shadow: var(--shadow); }
+
+/* 하단 버튼 */
+.action-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--text);
+}
+
+.action-btn:hover { background: var(--surface-alt); }
+
+.action-btn.primary {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.action-btn.primary:hover { background: var(--primary-dark); }
+
+/* 토스트 */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--text);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 9999;
+  transition: transform 0.3s ease;
+  pointer-events: none;
+}
+
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* 반응형 - 작은 화면 */
+@media (max-width: 768px) {
+  .sidebar { width: 260px; min-width: 260px; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- 사이드바 -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">LB</div>
+      <h1>랜딩페이지 빌더</h1>
+    </div>
+    <div class="sidebar-body">
+      <div class="panel-title">섹션 추가</div>
+      <div class="add-grid">
+        <button class="add-btn" onclick="addSection('hero')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="13" y2="14"/></svg>
+          히어로
+        </button>
+        <button class="add-btn" onclick="addSection('features')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          특징
+        </button>
+        <button class="add-btn" onclick="addSection('pricing')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="9" y1="10" x2="9" y2="20"/><line x1="15" y1="10" x2="15" y2="20"/></svg>
+          가격
+        </button>
+        <button class="add-btn" onclick="addSection('cta')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="8" width="16" height="8" rx="4"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+          CTA
+        </button>
+        <button class="add-btn" onclick="addSection('footer')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="3" y1="16" x2="21" y2="16"/></svg>
+          푸터
+        </button>
+      </div>
+
+      <div class="panel-title">섹션 순서</div>
+      <div class="section-list" id="sectionList"></div>
+
+      <div class="panel-title">색상 테마</div>
+      <div class="theme-grid" id="themeGrid"></div>
+    </div>
+    <div class="sidebar-footer">
+      <button class="action-btn" onclick="resetAll()">초기화</button>
+      <button class="action-btn primary" onclick="exportHTML()">HTML 내보내기</button>
+    </div>
+  </aside>
+
+  <!-- 미리보기 -->
+  <main class="preview-area">
+    <div class="preview-toolbar">
+      <div class="device-btns">
+        <button class="device-btn active" onclick="setDevice('desktop',this)">데스크톱</button>
+        <button class="device-btn" onclick="setDevice('tablet',this)">태블릿</button>
+        <button class="device-btn" onclick="setDevice('mobile',this)">모바일</button>
+      </div>
+      <span style="font-size:13px;color:var(--text-secondary)">텍스트를 클릭하면 직접 편집할 수 있습니다</span>
+    </div>
+    <div class="preview-frame-wrap" id="previewWrap">
+      <iframe id="previewFrame" frameborder="0"></iframe>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================================================================
+   상태
+================================================================ */
+const THEMES = [
+  { name: '인디고', primary: '#4F46E5', primaryLight: '#818CF8', gradient: 'linear-gradient(135deg,#4F46E5,#7C3AED)' },
+  { name: '에메랄드', primary: '#059669', primaryLight: '#34D399', gradient: 'linear-gradient(135deg,#059669,#0D9488)' },
+  { name: '로즈', primary: '#E11D48', primaryLight: '#FB7185', gradient: 'linear-gradient(135deg,#E11D48,#F43F5E)' },
+  { name: '앰버', primary: '#D97706', primaryLight: '#FBBF24', gradient: 'linear-gradient(135deg,#D97706,#F59E0B)' },
+  { name: '슬레이트', primary: '#475569', primaryLight: '#94A3B8', gradient: 'linear-gradient(135deg,#475569,#64748B)' },
+];
+
+let state = {
+  sections: [],
+  themeIdx: 0,
+  counter: 0,
+};
+
+/* ================================================================
+   테마 스와치 렌더
+================================================================ */
+function renderThemeSwatches() {
+  const grid = document.getElementById('themeGrid');
+  grid.innerHTML = THEMES.map((t, i) => `
+    <div class="theme-swatch ${i === state.themeIdx ? 'active' : ''}"
+         style="background:${t.gradient}"
+         title="${t.name}"
+         onclick="selectTheme(${i})"></div>
+  `).join('');
+}
+
+function selectTheme(i) {
+  state.themeIdx = i;
+  renderThemeSwatches();
+  renderPreview();
+}
+
+/* ================================================================
+   섹션 CRUD
+================================================================ */
+const SECTION_DEFAULTS = {
+  hero: {
+    type: 'hero',
+    label: '히어로',
+    data: {
+      title: '당신의 비즈니스를 한 단계 끌어올리세요',
+      subtitle: '혁신적인 솔루션으로 성장을 가속화하는 가장 스마트한 방법입니다.',
+      btnText: '무료로 시작하기',
+    }
+  },
+  features: {
+    type: 'features',
+    label: '특징',
+    data: {
+      heading: '왜 우리를 선택해야 할까요?',
+      items: [
+        { icon: '&#x26A1;', title: '빠른 속도', desc: '최적화된 성능으로 눈 깜짝할 사이에 결과를 확인하세요.' },
+        { icon: '&#x1F6E1;', title: '안전한 보안', desc: '엔터프라이즈급 보안으로 데이터를 안전하게 보호합니다.' },
+        { icon: '&#x1F4CA;', title: '상세한 분석', desc: '실시간 대시보드로 핵심 지표를 한눈에 파악하세요.' },
+      ]
+    }
+  },
+  pricing: {
+    type: 'pricing',
+    label: '가격',
+    data: {
+      heading: '합리적인 요금제',
+      plans: [
+        { name: '스타터', price: '무료', features: ['기본 기능', '1GB 저장 공간', '이메일 지원'], highlight: false },
+        { name: '프로', price: '₩29,000/월', features: ['모든 기능', '50GB 저장 공간', '우선 지원', 'API 액세스'], highlight: true },
+        { name: '엔터프라이즈', price: '문의', features: ['무제한 기능', '무제한 저장 공간', '전담 매니저', '맞춤 개발'], highlight: false },
+      ]
+    }
+  },
+  cta: {
+    type: 'cta',
+    label: 'CTA',
+    data: {
+      title: '지금 바로 시작하세요',
+      subtitle: '14일 무료 체험, 신용카드 없이 바로 이용 가능합니다.',
+      btnText: '무료 체험 시작',
+    }
+  },
+  footer: {
+    type: 'footer',
+    label: '푸터',
+    data: {
+      brand: 'MyBrand',
+      copy: '2026 MyBrand. All rights reserved.',
+      links: ['이용약관', '개인정보처리방침', '고객센터'],
+    }
+  },
+};
+
+function addSection(type) {
+  const tpl = JSON.parse(JSON.stringify(SECTION_DEFAULTS[type]));
+  tpl.id = 'sec_' + (++state.counter);
+  state.sections.push(tpl);
+  renderSectionList();
+  renderPreview();
+  showToast(`${tpl.label} 섹션이 추가되었습니다`);
+}
+
+function removeSection(id) {
+  state.sections = state.sections.filter(s => s.id !== id);
+  renderSectionList();
+  renderPreview();
+}
+
+function moveSection(id, dir) {
+  const idx = state.sections.findIndex(s => s.id === id);
+  const target = idx + dir;
+  if (target < 0 || target >= state.sections.length) return;
+  [state.sections[idx], state.sections[target]] = [state.sections[target], state.sections[idx]];
+  renderSectionList();
+  renderPreview();
+}
+
+/* ================================================================
+   사이드바 섹션 리스트 렌더
+================================================================ */
+function renderSectionList() {
+  const list = document.getElementById('sectionList');
+  if (!state.sections.length) {
+    list.innerHTML = '<p style="font-size:13px;color:var(--text-secondary);text-align:center;padding:16px 0;">섹션을 추가해 주세요</p>';
+    return;
+  }
+  list.innerHTML = state.sections.map((s, i) => `
+    <div class="section-item" draggable="true" data-id="${s.id}">
+      <span class="grip">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><circle cx="4" cy="3" r="1.2"/><circle cx="10" cy="3" r="1.2"/><circle cx="4" cy="7" r="1.2"/><circle cx="10" cy="7" r="1.2"/><circle cx="4" cy="11" r="1.2"/><circle cx="10" cy="11" r="1.2"/></svg>
+      </span>
+      <span class="section-label">${s.label}</span>
+      <span class="section-actions">
+        <button class="act-btn" title="위로" onclick="moveSection('${s.id}',-1)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+        </button>
+        <button class="act-btn" title="아래로" onclick="moveSection('${s.id}',1)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <button class="act-btn del" title="삭제" onclick="removeSection('${s.id}')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </span>
+    </div>
+  `).join('');
+
+  /* 드래그 앤 드롭 */
+  initDragDrop();
+}
+
+function initDragDrop() {
+  const items = document.querySelectorAll('.section-item');
+  let dragId = null;
+
+  items.forEach(item => {
+    item.addEventListener('dragstart', e => {
+      dragId = item.dataset.id;
+      item.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    item.addEventListener('dragend', () => {
+      item.classList.remove('dragging');
+      dragId = null;
+    });
+    item.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    });
+    item.addEventListener('drop', e => {
+      e.preventDefault();
+      if (!dragId || dragId === item.dataset.id) return;
+      const fromIdx = state.sections.findIndex(s => s.id === dragId);
+      const toIdx = state.sections.findIndex(s => s.id === item.dataset.id);
+      const [moved] = state.sections.splice(fromIdx, 1);
+      state.sections.splice(toIdx, 0, moved);
+      renderSectionList();
+      renderPreview();
+    });
+  });
+}
+
+/* ================================================================
+   미리보기 렌더링
+================================================================ */
+function renderPreview() {
+  const theme = THEMES[state.themeIdx];
+  const iframe = document.getElementById('previewFrame');
+  const doc = iframe.contentDocument || iframe.contentWindow.document;
+
+  const sectionsHTML = state.sections.map(s => buildSectionHTML(s, theme)).join('\n');
+
+  const html = `<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  color:#111827;
+  line-height:1.6;
+  background:#fff;
+}
+[contenteditable]:hover { outline: 2px dashed ${theme.primaryLight}; outline-offset: 2px; border-radius: 4px; }
+[contenteditable]:focus { outline: 2px solid ${theme.primary}; outline-offset: 2px; border-radius: 4px; }
+
+/* hero */
+.hero { padding:100px 24px 80px; text-align:center; background:${theme.gradient}; color:#fff; }
+.hero h1 { font-size:clamp(28px,5vw,52px); font-weight:800; margin-bottom:20px; max-width:720px; margin-left:auto; margin-right:auto; line-height:1.2; }
+.hero p { font-size:clamp(16px,2vw,20px); opacity:0.9; max-width:560px; margin:0 auto 36px; }
+.hero .btn { display:inline-block; padding:16px 36px; background:#fff; color:${theme.primary}; font-weight:700; font-size:16px; border-radius:50px; text-decoration:none; transition:transform 0.2s,box-shadow 0.2s; cursor:pointer; border:none; font-family:inherit; }
+.hero .btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.18); }
+
+/* features */
+.features { padding:80px 24px; background:#F9FAFB; }
+.features h2 { text-align:center; font-size:clamp(24px,3.5vw,36px); font-weight:800; margin-bottom:48px; color:#111827; }
+.features-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:28px; max-width:960px; margin:0 auto; }
+.feature-card { background:#fff; border-radius:16px; padding:32px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.06); transition:transform 0.2s,box-shadow 0.2s; }
+.feature-card:hover { transform:translateY(-4px); box-shadow:0 12px 24px rgba(0,0,0,0.08); }
+.feature-icon { font-size:36px; margin-bottom:16px; display:block; }
+.feature-card h3 { font-size:18px; font-weight:700; margin-bottom:8px; color:#111827; }
+.feature-card p { font-size:14px; color:#6B7280; }
+
+/* pricing */
+.pricing { padding:80px 24px; background:#fff; }
+.pricing h2 { text-align:center; font-size:clamp(24px,3.5vw,36px); font-weight:800; margin-bottom:48px; color:#111827; }
+.pricing-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:24px; max-width:960px; margin:0 auto; }
+.price-card { border:1px solid #E5E7EB; border-radius:16px; padding:36px 28px; text-align:center; transition:transform 0.2s,box-shadow 0.2s; background:#fff; }
+.price-card:hover { transform:translateY(-4px); box-shadow:0 12px 24px rgba(0,0,0,0.08); }
+.price-card.highlight { border:2px solid ${theme.primary}; box-shadow:0 8px 32px ${theme.primary}22; position:relative; }
+.price-card.highlight::before { content:'인기'; position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:${theme.primary}; color:#fff; font-size:12px; font-weight:700; padding:4px 16px; border-radius:50px; }
+.price-card h3 { font-size:20px; font-weight:700; margin-bottom:8px; color:#111827; }
+.price-card .price { font-size:32px; font-weight:800; color:${theme.primary}; margin-bottom:20px; display:block; }
+.price-card ul { list-style:none; margin-bottom:24px; }
+.price-card li { padding:6px 0; font-size:14px; color:#6B7280; }
+.price-card li::before { content:'\\2713'; margin-right:8px; color:${theme.primary}; font-weight:700; }
+.price-card .card-btn { display:inline-block; padding:12px 28px; border-radius:50px; font-weight:600; font-size:14px; text-decoration:none; cursor:pointer; border:2px solid ${theme.primary}; color:${theme.primary}; background:transparent; transition:0.2s; font-family:inherit; }
+.price-card.highlight .card-btn { background:${theme.primary}; color:#fff; border-color:${theme.primary}; }
+.price-card .card-btn:hover { background:${theme.primary}; color:#fff; }
+
+/* cta */
+.cta { padding:80px 24px; text-align:center; background:${theme.gradient}; color:#fff; }
+.cta h2 { font-size:clamp(24px,4vw,40px); font-weight:800; margin-bottom:16px; }
+.cta p { font-size:clamp(15px,2vw,18px); opacity:0.9; max-width:520px; margin:0 auto 32px; }
+.cta .btn { display:inline-block; padding:16px 36px; background:#fff; color:${theme.primary}; font-weight:700; font-size:16px; border-radius:50px; text-decoration:none; cursor:pointer; border:none; font-family:inherit; transition:transform 0.2s,box-shadow 0.2s; }
+.cta .btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.18); }
+
+/* footer */
+.footer { padding:40px 24px; background:#111827; color:#9CA3AF; text-align:center; font-size:14px; }
+.footer .brand { font-size:18px; font-weight:700; color:#fff; margin-bottom:12px; }
+.footer-links { display:flex; justify-content:center; gap:24px; margin-bottom:16px; flex-wrap:wrap; }
+.footer-links span { cursor:pointer; transition:0.2s; }
+.footer-links span:hover { color:#fff; }
+</style>
+</head>
+<body>
+${sectionsHTML}
+<script>
+document.addEventListener('input', function(e) {
+  if (e.target.hasAttribute('contenteditable')) {
+    const id = e.target.closest('[data-section-id]')?.dataset.sectionId;
+    const field = e.target.dataset.field;
+    if (id && field) {
+      window.parent.postMessage({ type:'edit', id, field, value: e.target.innerHTML }, '*');
+    }
+  }
+});
+<\/script>
+</body>
+</html>`;
+
+  doc.open();
+  doc.write(html);
+  doc.close();
+}
+
+function buildSectionHTML(sec, theme) {
+  const d = sec.data;
+  switch (sec.type) {
+    case 'hero':
+      return `<section class="hero" data-section-id="${sec.id}">
+  <h1 contenteditable="true" data-field="title">${d.title}</h1>
+  <p contenteditable="true" data-field="subtitle">${d.subtitle}</p>
+  <button class="btn" contenteditable="true" data-field="btnText">${d.btnText}</button>
+</section>`;
+
+    case 'features':
+      return `<section class="features" data-section-id="${sec.id}">
+  <h2 contenteditable="true" data-field="heading">${d.heading}</h2>
+  <div class="features-grid">
+    ${d.items.map((item, i) => `<div class="feature-card">
+      <span class="feature-icon">${item.icon}</span>
+      <h3 contenteditable="true" data-field="items.${i}.title">${item.title}</h3>
+      <p contenteditable="true" data-field="items.${i}.desc">${item.desc}</p>
+    </div>`).join('\n    ')}
+  </div>
+</section>`;
+
+    case 'pricing':
+      return `<section class="pricing" data-section-id="${sec.id}">
+  <h2 contenteditable="true" data-field="heading">${d.heading}</h2>
+  <div class="pricing-grid">
+    ${d.plans.map((plan, i) => `<div class="price-card${plan.highlight ? ' highlight' : ''}">
+      <h3 contenteditable="true" data-field="plans.${i}.name">${plan.name}</h3>
+      <span class="price" contenteditable="true" data-field="plans.${i}.price">${plan.price}</span>
+      <ul>${plan.features.map((f, fi) => `<li contenteditable="true" data-field="plans.${i}.features.${fi}">${f}</li>`).join('')}</ul>
+      <button class="card-btn">선택하기</button>
+    </div>`).join('\n    ')}
+  </div>
+</section>`;
+
+    case 'cta':
+      return `<section class="cta" data-section-id="${sec.id}">
+  <h2 contenteditable="true" data-field="title">${d.title}</h2>
+  <p contenteditable="true" data-field="subtitle">${d.subtitle}</p>
+  <button class="btn" contenteditable="true" data-field="btnText">${d.btnText}</button>
+</section>`;
+
+    case 'footer':
+      return `<footer class="footer" data-section-id="${sec.id}">
+  <div class="brand" contenteditable="true" data-field="brand">${d.brand}</div>
+  <div class="footer-links">${d.links.map((l, i) => `<span contenteditable="true" data-field="links.${i}">${l}</span>`).join('')}</div>
+  <p contenteditable="true" data-field="copy">${d.copy}</p>
+</footer>`;
+
+    default: return '';
+  }
+}
+
+/* iframe에서 편집된 내용을 state에 반영 */
+window.addEventListener('message', e => {
+  if (e.data?.type !== 'edit') return;
+  const sec = state.sections.find(s => s.id === e.data.id);
+  if (!sec) return;
+  setNestedValue(sec.data, e.data.field, e.data.value);
+});
+
+function setNestedValue(obj, path, val) {
+  const keys = path.split('.');
+  let cur = obj;
+  for (let i = 0; i < keys.length - 1; i++) {
+    const k = isNaN(keys[i]) ? keys[i] : parseInt(keys[i]);
+    cur = cur[k];
+  }
+  const last = isNaN(keys[keys.length - 1]) ? keys[keys.length - 1] : parseInt(keys[keys.length - 1]);
+  cur[last] = val;
+}
+
+/* ================================================================
+   디바이스 전환
+================================================================ */
+function setDevice(mode, btn) {
+  document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const wrap = document.getElementById('previewWrap');
+  wrap.className = 'preview-frame-wrap';
+  if (mode !== 'desktop') wrap.classList.add(mode);
+}
+
+/* ================================================================
+   HTML 내보내기
+================================================================ */
+function exportHTML() {
+  if (!state.sections.length) { showToast('내보낼 섹션이 없습니다'); return; }
+  const theme = THEMES[state.themeIdx];
+  const iframe = document.getElementById('previewFrame');
+  const doc = iframe.contentDocument || iframe.contentWindow.document;
+
+  /* contenteditable 제거한 클린 HTML */
+  const clone = doc.documentElement.cloneNode(true);
+  clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+  clone.querySelectorAll('[data-field]').forEach(el => el.removeAttribute('data-field'));
+  clone.querySelectorAll('[data-section-id]').forEach(el => el.removeAttribute('data-section-id'));
+  /* 인라인 스크립트 제거 */
+  clone.querySelectorAll('script').forEach(el => el.remove());
+  /* hover outline CSS 제거 */
+  const styles = clone.querySelectorAll('style');
+  styles.forEach(st => {
+    st.textContent = st.textContent
+      .replace(/\[contenteditable\]:hover\s*\{[^}]*\}/g, '')
+      .replace(/\[contenteditable\]:focus\s*\{[^}]*\}/g, '');
+  });
+
+  const output = '<!DOCTYPE html>\n<html lang="ko">\n' + clone.innerHTML + '\n</html>';
+
+  const blob = new Blob([output], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'landing-page.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast('HTML 파일이 다운로드되었습니다');
+}
+
+/* ================================================================
+   초기화
+================================================================ */
+function resetAll() {
+  if (!confirm('모든 섹션을 삭제하시겠습니까?')) return;
+  state.sections = [];
+  state.counter = 0;
+  renderSectionList();
+  renderPreview();
+  showToast('초기화 완료');
+}
+
+/* ================================================================
+   토스트
+================================================================ */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+/* ================================================================
+   초기 렌더
+================================================================ */
+renderThemeSwatches();
+renderSectionList();
+renderPreview();
+</script>
+</body>
+</html>

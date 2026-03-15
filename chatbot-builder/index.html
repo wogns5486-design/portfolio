@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>노코드 챗봇 빌더</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#2563eb;--primary-hover:#1d4ed8;--primary-light:#dbeafe;--primary-bg:#eff6ff;
+  --bg:#f8fafc;--white:#fff;--gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;
+  --gray-300:#d1d5db;--gray-400:#9ca3af;--gray-500:#6b7280;--gray-600:#4b5563;
+  --gray-700:#374151;--gray-800:#1f2937;--gray-900:#111827;
+  --success:#10b981;--danger:#ef4444;--warning:#f59e0b;
+  --shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05);
+  --shadow-xl:0 20px 25px -5px rgba(0,0,0,.1),0 10px 10px -5px rgba(0,0,0,.04);
+  --radius:12px;--radius-sm:8px;--radius-full:9999px;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--gray-800);min-height:100vh}
+button{font-family:inherit;cursor:pointer;border:none;outline:none}
+input,textarea,select{font-family:inherit;outline:none}
+
+/* Layout */
+.app{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:320px;background:var(--white);border-right:1px solid var(--gray-200);display:flex;flex-direction:column;flex-shrink:0;transition:transform .3s}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+/* Header */
+.header{background:var(--white);border-bottom:1px solid var(--gray-200);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.header-left{display:flex;align-items:center;gap:12px}
+.logo{width:36px;height:36px;background:var(--primary);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px}
+.header h1{font-size:18px;font-weight:700;color:var(--gray-900)}
+.header-actions{display:flex;gap:8px}
+.btn{padding:8px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-hover)}
+.btn-outline{background:var(--white);color:var(--gray-700);border:1px solid var(--gray-300)}.btn-outline:hover{background:var(--gray-50);border-color:var(--gray-400)}
+.btn-danger{background:var(--danger);color:#fff}.btn-danger:hover{background:#dc2626}
+.btn-success{background:var(--success);color:#fff}.btn-success:hover{background:#059669}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-icon{width:36px;height:36px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);background:var(--white);border:1px solid var(--gray-300);color:var(--gray-600)}
+.btn-icon:hover{background:var(--gray-50)}
+.menu-toggle{display:none}
+
+/* Sidebar */
+.sidebar-header{padding:16px;border-bottom:1px solid var(--gray-200)}
+.sidebar-header h2{font-size:14px;font-weight:600;color:var(--gray-900);margin-bottom:12px}
+.greeting-input{width:100%;padding:10px 12px;border:1px solid var(--gray-300);border-radius:var(--radius-sm);font-size:13px;resize:none;height:64px;transition:border-color .2s}
+.greeting-input:focus{border-color:var(--primary)}
+.greeting-label{font-size:12px;color:var(--gray-500);margin-bottom:6px;display:block;font-weight:500}
+
+.sidebar-content{flex:1;overflow-y:auto;padding:16px}
+.sidebar-content h3{font-size:13px;font-weight:600;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+.scenario-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.scenario-card{background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:12px;cursor:pointer;transition:all .2s;position:relative}
+.scenario-card:hover{border-color:var(--primary);background:var(--primary-bg)}
+.scenario-card.active{border-color:var(--primary);background:var(--primary-light);box-shadow:0 0 0 2px rgba(37,99,235,.15)}
+.scenario-card .name{font-size:13px;font-weight:600;color:var(--gray-800);margin-bottom:2px}
+.scenario-card .desc{font-size:11px;color:var(--gray-500)}
+.scenario-card .step-count{font-size:11px;color:var(--primary);font-weight:500;margin-top:4px}
+.scenario-card .delete-btn{position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:50%;background:transparent;color:var(--gray-400);font-size:14px;display:flex;align-items:center;justify-content:center;opacity:0;transition:.2s}
+.scenario-card:hover .delete-btn{opacity:1}
+.scenario-card .delete-btn:hover{background:var(--danger);color:#fff}
+.add-scenario-btn{width:100%;padding:10px;border:2px dashed var(--gray-300);border-radius:var(--radius-sm);background:transparent;color:var(--gray-500);font-size:13px;font-weight:500;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.add-scenario-btn:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-bg)}
+
+/* Sidebar footer */
+.sidebar-footer{padding:12px 16px;border-top:1px solid var(--gray-200);display:flex;gap:8px}
+.sidebar-footer .btn{flex:1;justify-content:center}
+
+/* Editor Panel */
+.editor{flex:1;display:flex;overflow:hidden}
+.editor-panel{flex:1;overflow-y:auto;padding:24px}
+.editor-panel h2{font-size:18px;font-weight:700;color:var(--gray-900);margin-bottom:4px}
+.editor-subtitle{font-size:13px;color:var(--gray-500);margin-bottom:20px}
+
+.step-list{display:flex;flex-direction:column;gap:16px}
+.step-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);transition:all .2s}
+.step-card:hover{box-shadow:var(--shadow-lg)}
+.step-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.step-number{width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.step-actions{display:flex;gap:6px}
+.field-group{margin-bottom:14px}
+.field-group:last-child{margin-bottom:0}
+.field-label{font-size:12px;font-weight:600;color:var(--gray-600);margin-bottom:6px;display:block}
+.field-input{width:100%;padding:10px 12px;border:1px solid var(--gray-300);border-radius:var(--radius-sm);font-size:13px;transition:border-color .2s}
+.field-input:focus{border-color:var(--primary)}
+textarea.field-input{resize:vertical;min-height:60px}
+
+/* Button options */
+.button-options{display:flex;flex-direction:column;gap:8px}
+.button-option-row{display:flex;gap:8px;align-items:center}
+.button-option-row .field-input{flex:1}
+.button-option-row .remove-opt{width:32px;height:32px;border-radius:var(--radius-sm);background:var(--gray-100);color:var(--gray-500);font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.2s}
+.button-option-row .remove-opt:hover{background:var(--danger);color:#fff}
+.add-option-btn{padding:8px;border:1px dashed var(--gray-300);border-radius:var(--radius-sm);background:transparent;color:var(--gray-500);font-size:12px;font-weight:500;transition:.2s}
+.add-option-btn:hover{border-color:var(--primary);color:var(--primary)}
+
+.add-step-btn{width:100%;padding:14px;border:2px dashed var(--gray-300);border-radius:var(--radius);background:transparent;color:var(--gray-500);font-size:14px;font-weight:500;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px}
+.add-step-btn:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-bg)}
+
+.empty-state{text-align:center;padding:60px 20px;color:var(--gray-400)}
+.empty-state svg{width:64px;height:64px;margin-bottom:16px;opacity:.4}
+.empty-state h3{font-size:16px;font-weight:600;color:var(--gray-600);margin-bottom:8px}
+.empty-state p{font-size:13px;margin-bottom:20px}
+
+/* Preview Panel */
+.preview-panel{width:400px;border-left:1px solid var(--gray-200);background:var(--gray-50);display:flex;flex-direction:column;flex-shrink:0}
+.preview-header{padding:16px;border-bottom:1px solid var(--gray-200);background:var(--white);display:flex;align-items:center;justify-content:space-between}
+.preview-header h3{font-size:14px;font-weight:600;color:var(--gray-900)}
+.preview-chat{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.preview-input-area{padding:12px 16px;border-top:1px solid var(--gray-200);background:var(--white);display:flex;gap:8px}
+.preview-input{flex:1;padding:10px 14px;border:1px solid var(--gray-300);border-radius:var(--radius-full);font-size:13px;transition:border-color .2s}
+.preview-input:focus{border-color:var(--primary)}
+.send-btn{width:38px;height:38px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;transition:.2s;flex-shrink:0}
+.send-btn:hover{background:var(--primary-hover)}
+
+/* Chat bubbles */
+.chat-msg{max-width:85%;animation:fadeUp .3s ease}
+.chat-msg.bot{align-self:flex-start}
+.chat-msg.user{align-self:flex-end}
+.chat-bubble{padding:10px 14px;border-radius:16px;font-size:13px;line-height:1.5;word-break:break-word}
+.bot .chat-bubble{background:var(--white);border:1px solid var(--gray-200);border-bottom-left-radius:4px;color:var(--gray-800)}
+.user .chat-bubble{background:var(--primary);color:#fff;border-bottom-right-radius:4px}
+.chat-buttons{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chat-btn{padding:7px 14px;border-radius:var(--radius-full);border:1px solid var(--primary);background:var(--white);color:var(--primary);font-size:12px;font-weight:500;transition:.2s;cursor:pointer}
+.chat-btn:hover{background:var(--primary);color:#fff}
+.typing-indicator{display:flex;gap:4px;padding:12px 16px}
+.typing-indicator span{width:6px;height:6px;border-radius:50%;background:var(--gray-400);animation:typingDot 1.4s infinite}
+.typing-indicator span:nth-child(2){animation-delay:.2s}
+.typing-indicator span:nth-child(3){animation-delay:.4s}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes typingDot{0%,60%,100%{opacity:.3;transform:scale(.8)}30%{opacity:1;transform:scale(1.1)}}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:1000;opacity:0;visibility:hidden;transition:.2s}
+.modal-overlay.show{opacity:1;visibility:visible}
+.modal{background:var(--white);border-radius:var(--radius);padding:24px;width:90%;max-width:440px;box-shadow:var(--shadow-xl);transform:scale(.95);transition:.2s}
+.modal-overlay.show .modal{transform:scale(1)}
+.modal h3{font-size:16px;font-weight:700;margin-bottom:16px;color:var(--gray-900)}
+.modal .field-group{margin-bottom:14px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--gray-800);color:#fff;padding:12px 20px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;opacity:0;transition:.3s;z-index:2000;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Responsive */
+@media(max-width:1024px){
+  .preview-panel{width:340px}
+}
+@media(max-width:768px){
+  .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:100;transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:99;display:none}
+  .sidebar-overlay.show{display:block}
+  .menu-toggle{display:flex}
+  .editor{flex-direction:column}
+  .preview-panel{width:100%;border-left:none;border-top:1px solid var(--gray-200);max-height:50vh}
+  .editor-panel{padding:16px}
+}
+@media(max-width:480px){
+  .header h1{font-size:15px}
+  .header-actions .btn span{display:none}
+  .step-card{padding:14px}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- Sidebar Overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2>인사말 설정</h2>
+      <label class="greeting-label">챗봇 시작 시 보여줄 메시지</label>
+      <textarea class="greeting-input" id="greetingInput" placeholder="안녕하세요! 무엇을 도와드릴까요?" oninput="saveGreeting()"></textarea>
+    </div>
+    <div class="sidebar-content">
+      <h3>시나리오 목록</h3>
+      <div class="scenario-list" id="scenarioList"></div>
+      <button class="add-scenario-btn" onclick="openNewScenarioModal()">+ 새 시나리오 추가</button>
+    </div>
+    <div class="sidebar-footer">
+      <button class="btn btn-outline btn-sm" onclick="exportData()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        <span>내보내기</span>
+      </button>
+      <button class="btn btn-outline btn-sm" onclick="importData()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+        <span>불러오기</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <button class="btn-icon menu-toggle" onclick="toggleSidebar()">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+        </button>
+        <div class="logo">C</div>
+        <h1>노코드 챗봇 빌더</h1>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-outline btn-sm" onclick="loadDemoScenarios()">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16v16H4zM9 9h6M9 13h4"/></svg>
+          <span>데모 불러오기</span>
+        </button>
+        <button class="btn btn-primary btn-sm" onclick="resetPreview()">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15"/></svg>
+          <span>미리보기 초기화</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Editor + Preview -->
+    <div class="editor">
+      <!-- Editor Panel -->
+      <div class="editor-panel" id="editorPanel">
+        <div class="empty-state" id="emptyState">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          <h3>시나리오를 선택하세요</h3>
+          <p>왼쪽 목록에서 시나리오를 선택하거나<br>새로 만들어보세요</p>
+          <button class="btn btn-primary" onclick="loadDemoScenarios()">데모 시나리오 불러오기</button>
+        </div>
+        <div id="editorContent" style="display:none">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+            <h2 id="editorTitle"></h2>
+            <button class="btn btn-outline btn-sm" onclick="editScenarioName()" title="이름 변경">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+          </div>
+          <p class="editor-subtitle" id="editorDesc"></p>
+          <div class="step-list" id="stepList"></div>
+          <button class="add-step-btn" onclick="addStep()">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            새 질문-답변 추가
+          </button>
+        </div>
+      </div>
+
+      <!-- Preview Panel -->
+      <div class="preview-panel">
+        <div class="preview-header">
+          <h3>미리보기 채팅</h3>
+          <button class="btn btn-outline btn-sm" onclick="resetPreview()">초기화</button>
+        </div>
+        <div class="preview-chat" id="previewChat"></div>
+        <div class="preview-input-area">
+          <input type="text" class="preview-input" id="previewInput" placeholder="메시지를 입력하세요..." onkeydown="if(event.key==='Enter')sendMessage()">
+          <button class="send-btn" onclick="sendMessage()">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- New Scenario Modal -->
+<div class="modal-overlay" id="scenarioModal">
+  <div class="modal">
+    <h3 id="modalTitle">새 시나리오 만들기</h3>
+    <div class="field-group">
+      <label class="field-label">시나리오 이름</label>
+      <input type="text" class="field-input" id="scenarioNameInput" placeholder="예: 상품 문의 안내">
+    </div>
+    <div class="field-group">
+      <label class="field-label">설명 (선택)</label>
+      <input type="text" class="field-input" id="scenarioDescInput" placeholder="예: 고객이 상품에 대해 문의할 때">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">취소</button>
+      <button class="btn btn-primary" id="modalConfirmBtn" onclick="createScenario()">만들기</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Hidden file input for import -->
+<input type="file" id="fileInput" accept=".json" style="display:none" onchange="handleImport(event)">
+
+<script>
+// ========== State ==========
+let state = {
+  greeting: '안녕하세요! 무엇을 도와드릴까요? 아래 버튼을 눌러 원하는 항목을 선택해주세요.',
+  scenarios: [],
+  activeScenarioId: null
+};
+
+const STORAGE_KEY = 'chatbot-builder-data';
+
+// ========== Demo Data ==========
+const DEMO_SCENARIOS = [
+  {
+    id: 'd1', name: '상품 문의 안내', desc: '고객이 상품에 대해 문의할 때',
+    steps: [
+      { id: 's1', question: '어떤 상품이 궁금하신가요?', answer: '선택하신 상품에 대해 안내드리겠습니다.', buttons: ['베스트셀러', '신상품', '할인 상품'] },
+      { id: 's2', question: '추가로 궁금하신 점이 있으신가요?', answer: '더 필요한 정보가 있으시면 말씀해주세요!', buttons: ['배송 안내', '교환/환불', '상담사 연결'] },
+      { id: 's3', question: '', answer: '상담사에게 연결 중입니다. 잠시만 기다려주세요.', buttons: [] }
+    ]
+  },
+  {
+    id: 'd2', name: '예약 접수', desc: '방문 예약을 도와주는 시나리오',
+    steps: [
+      { id: 's4', question: '어떤 서비스를 예약하시겠어요?', answer: '원하시는 서비스를 선택해주세요.', buttons: ['컨설팅', '체험 수업', '시설 투어'] },
+      { id: 's5', question: '원하시는 날짜는 언제인가요?', answer: '아래에서 시간대를 선택해주세요.', buttons: ['오전 (10~12시)', '오후 (13~17시)', '저녁 (18~20시)'] },
+      { id: 's6', question: '', answer: '예약이 접수되었습니다! 확인 문자가 곧 발송됩니다. 감사합니다.', buttons: ['처음으로 돌아가기'] }
+    ]
+  },
+  {
+    id: 'd3', name: 'FAQ 자동응답', desc: '자주 묻는 질문에 자동으로 답변',
+    steps: [
+      { id: 's7', question: '자주 묻는 질문을 확인해보세요!', answer: '궁금한 항목을 선택해주세요.', buttons: ['영업시간', '주차 안내', '오시는 길', '전화번호'] },
+      { id: 's8', question: '', answer: '영업시간은 평일 09:00~18:00, 토요일 10:00~14:00입니다. 일요일과 공휴일은 휴무입니다.', buttons: ['다른 질문하기', '상담사 연결'] },
+      { id: 's9', question: '', answer: '도움이 되셨나요? 추가 문의사항이 있으시면 언제든 말씀해주세요!', buttons: ['처음으로'] }
+    ]
+  }
+];
+
+// ========== Init ==========
+function init() {
+  loadState();
+  renderScenarioList();
+  document.getElementById('greetingInput').value = state.greeting;
+  if (state.activeScenarioId) selectScenario(state.activeScenarioId);
+  resetPreview();
+}
+
+// ========== Storage ==========
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) state = JSON.parse(saved);
+  } catch(e) {}
+}
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+function saveGreeting() {
+  state.greeting = document.getElementById('greetingInput').value;
+  saveState();
+}
+
+// ========== Scenarios ==========
+function renderScenarioList() {
+  const list = document.getElementById('scenarioList');
+  list.innerHTML = '';
+  state.scenarios.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'scenario-card' + (s.id === state.activeScenarioId ? ' active' : '');
+    div.innerHTML = `
+      <div class="name">${escHtml(s.name)}</div>
+      <div class="desc">${escHtml(s.desc || '설명 없음')}</div>
+      <div class="step-count">${s.steps.length}개 단계</div>
+      <button class="delete-btn" onclick="event.stopPropagation();deleteScenario('${s.id}')" title="삭제">&times;</button>
+    `;
+    div.onclick = () => selectScenario(s.id);
+    list.appendChild(div);
+  });
+}
+
+function selectScenario(id) {
+  state.activeScenarioId = id;
+  saveState();
+  renderScenarioList();
+  renderEditor();
+  // close sidebar on mobile
+  if (window.innerWidth <= 768) toggleSidebar(false);
+}
+
+function getActiveScenario() {
+  return state.scenarios.find(s => s.id === state.activeScenarioId);
+}
+
+function openNewScenarioModal() {
+  document.getElementById('modalTitle').textContent = '새 시나리오 만들기';
+  document.getElementById('scenarioNameInput').value = '';
+  document.getElementById('scenarioDescInput').value = '';
+  document.getElementById('modalConfirmBtn').textContent = '만들기';
+  document.getElementById('modalConfirmBtn').onclick = createScenario;
+  document.getElementById('scenarioModal').classList.add('show');
+  setTimeout(() => document.getElementById('scenarioNameInput').focus(), 100);
+}
+
+function createScenario() {
+  const name = document.getElementById('scenarioNameInput').value.trim();
+  if (!name) { showToast('시나리오 이름을 입력하세요'); return; }
+  const scenario = {
+    id: 'sc_' + Date.now(),
+    name,
+    desc: document.getElementById('scenarioDescInput').value.trim(),
+    steps: []
+  };
+  state.scenarios.push(scenario);
+  saveState();
+  closeModal();
+  selectScenario(scenario.id);
+  showToast('시나리오가 추가되었습니다');
+}
+
+function editScenarioName() {
+  const sc = getActiveScenario();
+  if (!sc) return;
+  document.getElementById('modalTitle').textContent = '시나리오 수정';
+  document.getElementById('scenarioNameInput').value = sc.name;
+  document.getElementById('scenarioDescInput').value = sc.desc || '';
+  document.getElementById('modalConfirmBtn').textContent = '저장';
+  document.getElementById('modalConfirmBtn').onclick = () => {
+    const name = document.getElementById('scenarioNameInput').value.trim();
+    if (!name) { showToast('이름을 입력하세요'); return; }
+    sc.name = name;
+    sc.desc = document.getElementById('scenarioDescInput').value.trim();
+    saveState();
+    closeModal();
+    renderScenarioList();
+    renderEditor();
+    showToast('수정되었습니다');
+  };
+  document.getElementById('scenarioModal').classList.add('show');
+  setTimeout(() => document.getElementById('scenarioNameInput').focus(), 100);
+}
+
+function deleteScenario(id) {
+  if (!confirm('이 시나리오를 삭제하시겠습니까?')) return;
+  state.scenarios = state.scenarios.filter(s => s.id !== id);
+  if (state.activeScenarioId === id) {
+    state.activeScenarioId = null;
+    document.getElementById('editorContent').style.display = 'none';
+    document.getElementById('emptyState').style.display = '';
+  }
+  saveState();
+  renderScenarioList();
+  showToast('시나리오가 삭제되었습니다');
+}
+
+function closeModal() {
+  document.getElementById('scenarioModal').classList.remove('show');
+}
+
+// ========== Editor ==========
+function renderEditor() {
+  const sc = getActiveScenario();
+  if (!sc) {
+    document.getElementById('editorContent').style.display = 'none';
+    document.getElementById('emptyState').style.display = '';
+    return;
+  }
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('editorContent').style.display = '';
+  document.getElementById('editorTitle').textContent = sc.name;
+  document.getElementById('editorDesc').textContent = sc.desc || '설명 없음';
+
+  const list = document.getElementById('stepList');
+  list.innerHTML = '';
+  sc.steps.forEach((step, i) => {
+    const div = document.createElement('div');
+    div.className = 'step-card';
+    div.innerHTML = `
+      <div class="step-header">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="step-number">${i + 1}</div>
+          <span style="font-size:13px;font-weight:600;color:var(--gray-700)">단계 ${i + 1}</span>
+        </div>
+        <div class="step-actions">
+          ${i > 0 ? `<button class="btn-icon btn-sm" onclick="moveStep(${i},-1)" title="위로"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg></button>` : ''}
+          ${i < sc.steps.length - 1 ? `<button class="btn-icon btn-sm" onclick="moveStep(${i},1)" title="아래로"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>` : ''}
+          <button class="btn-icon btn-sm" onclick="deleteStep(${i})" title="삭제" style="color:var(--danger)"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">봇 질문 (비워두면 바로 답변)</label>
+        <input type="text" class="field-input" value="${escAttr(step.question)}" placeholder="예: 어떤 서비스가 필요하신가요?" oninput="updateStep(${i},'question',this.value)">
+      </div>
+      <div class="field-group">
+        <label class="field-label">봇 답변</label>
+        <textarea class="field-input" placeholder="답변 메시지를 입력하세요" oninput="updateStep(${i},'answer',this.value)">${escHtml(step.answer)}</textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">버튼 옵션 (선택)</label>
+        <div class="button-options" id="btns_${i}">
+          ${(step.buttons || []).map((b, bi) => `
+            <div class="button-option-row">
+              <input type="text" class="field-input" value="${escAttr(b)}" placeholder="버튼 텍스트" oninput="updateButton(${i},${bi},this.value)">
+              <button class="remove-opt" onclick="removeButton(${i},${bi})">&times;</button>
+            </div>
+          `).join('')}
+        </div>
+        <button class="add-option-btn" onclick="addButton(${i})" style="margin-top:8px">+ 버튼 추가</button>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function addStep() {
+  const sc = getActiveScenario();
+  if (!sc) return;
+  sc.steps.push({ id: 'st_' + Date.now(), question: '', answer: '', buttons: [] });
+  saveState();
+  renderEditor();
+  renderScenarioList();
+  // scroll to bottom
+  const panel = document.getElementById('editorPanel');
+  setTimeout(() => panel.scrollTop = panel.scrollHeight, 50);
+}
+
+function deleteStep(i) {
+  const sc = getActiveScenario();
+  if (!sc) return;
+  sc.steps.splice(i, 1);
+  saveState();
+  renderEditor();
+  renderScenarioList();
+}
+
+function moveStep(i, dir) {
+  const sc = getActiveScenario();
+  if (!sc) return;
+  const j = i + dir;
+  [sc.steps[i], sc.steps[j]] = [sc.steps[j], sc.steps[i]];
+  saveState();
+  renderEditor();
+}
+
+function updateStep(i, field, value) {
+  const sc = getActiveScenario();
+  if (!sc) return;
+  sc.steps[i][field] = value;
+  saveState();
+}
+
+function addButton(stepIdx) {
+  const sc = getActiveScenario();
+  if (!sc) return;
+  if (!sc.steps[stepIdx].buttons) sc.steps[stepIdx].buttons = [];
+  sc.steps[stepIdx].buttons.push('');
+  saveState();
+  renderEditor();
+}
+
+function removeButton(stepIdx, btnIdx) {
+  const sc = getActiveScenario();
+  if (!sc) return;
+  sc.steps[stepIdx].buttons.splice(btnIdx, 1);
+  saveState();
+  renderEditor();
+}
+
+function updateButton(stepIdx, btnIdx, value) {
+  const sc = getActiveScenario();
+  if (!sc) return;
+  sc.steps[stepIdx].buttons[btnIdx] = value;
+  saveState();
+}
+
+// ========== Preview Chat ==========
+let chatState = { stepIndex: {}, waitingInput: false, currentScenario: null, currentStep: 0 };
+
+function resetPreview() {
+  const chat = document.getElementById('previewChat');
+  chat.innerHTML = '';
+  chatState = { waitingInput: false, currentScenario: null, currentStep: 0 };
+  document.getElementById('previewInput').value = '';
+
+  // Show greeting
+  const greeting = state.greeting || '안녕하세요!';
+  addBotMessage(greeting);
+
+  // Show scenario selection buttons if scenarios exist
+  if (state.scenarios.length > 0) {
+    const names = state.scenarios.map(s => s.name);
+    addBotButtons(names);
+  }
+}
+
+function addBotMessage(text) {
+  const chat = document.getElementById('previewChat');
+  const div = document.createElement('div');
+  div.className = 'chat-msg bot';
+  div.innerHTML = `<div class="chat-bubble">${escHtml(text)}</div>`;
+  chat.appendChild(div);
+  scrollChat();
+}
+
+function addUserMessage(text) {
+  const chat = document.getElementById('previewChat');
+  const div = document.createElement('div');
+  div.className = 'chat-msg user';
+  div.innerHTML = `<div class="chat-bubble">${escHtml(text)}</div>`;
+  chat.appendChild(div);
+  scrollChat();
+}
+
+function addBotButtons(buttons) {
+  if (!buttons || buttons.length === 0) return;
+  const chat = document.getElementById('previewChat');
+  const div = document.createElement('div');
+  div.className = 'chat-msg bot';
+  div.innerHTML = `<div class="chat-buttons">${buttons.filter(b => b).map(b => `<button class="chat-btn" onclick="handleButtonClick('${escAttr(b)}')">${escHtml(b)}</button>`).join('')}</div>`;
+  chat.appendChild(div);
+  scrollChat();
+}
+
+function addTypingThenMessage(text, buttons) {
+  const chat = document.getElementById('previewChat');
+  const typing = document.createElement('div');
+  typing.className = 'chat-msg bot';
+  typing.innerHTML = `<div class="chat-bubble"><div class="typing-indicator"><span></span><span></span><span></span></div></div>`;
+  chat.appendChild(typing);
+  scrollChat();
+  setTimeout(() => {
+    typing.remove();
+    addBotMessage(text);
+    if (buttons && buttons.length > 0) addBotButtons(buttons);
+  }, 600);
+}
+
+function scrollChat() {
+  const chat = document.getElementById('previewChat');
+  setTimeout(() => chat.scrollTop = chat.scrollHeight, 50);
+}
+
+function handleButtonClick(text) {
+  // Disable all buttons
+  document.querySelectorAll('.chat-buttons').forEach(el => {
+    el.querySelectorAll('.chat-btn').forEach(btn => {
+      btn.disabled = true;
+      btn.style.opacity = '0.5';
+      btn.style.cursor = 'default';
+    });
+  });
+
+  addUserMessage(text);
+
+  // Check if it's a scenario selection
+  if (!chatState.currentScenario) {
+    const sc = state.scenarios.find(s => s.name === text);
+    if (sc) {
+      chatState.currentScenario = sc;
+      chatState.currentStep = 0;
+      processCurrentStep();
+      return;
+    }
+  }
+
+  // Handle "처음으로" / "처음으로 돌아가기"
+  if (text.includes('처음으로')) {
+    setTimeout(() => resetPreview(), 400);
+    return;
+  }
+
+  // Process next step
+  chatState.currentStep++;
+  processCurrentStep();
+}
+
+function processCurrentStep() {
+  const sc = chatState.currentScenario;
+  if (!sc || chatState.currentStep >= sc.steps.length) {
+    addTypingThenMessage('대화가 끝났습니다. 감사합니다!', ['처음으로 돌아가기']);
+    chatState.currentScenario = null;
+    return;
+  }
+  const step = sc.steps[chatState.currentStep];
+  if (step.question) {
+    addTypingThenMessage(step.question, step.buttons);
+  } else if (step.answer) {
+    addTypingThenMessage(step.answer, step.buttons);
+    if (!step.buttons || step.buttons.length === 0) {
+      chatState.currentStep++;
+      if (chatState.currentStep < sc.steps.length) {
+        setTimeout(() => processCurrentStep(), 1000);
+      }
+    }
+  }
+}
+
+function sendMessage() {
+  const input = document.getElementById('previewInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  addUserMessage(text);
+
+  // If no active scenario, try to match
+  if (!chatState.currentScenario) {
+    const sc = state.scenarios.find(s => s.name.includes(text) || text.includes(s.name));
+    if (sc) {
+      chatState.currentScenario = sc;
+      chatState.currentStep = 0;
+      processCurrentStep();
+      return;
+    }
+    addTypingThenMessage('죄송합니다, 해당하는 시나리오를 찾지 못했습니다. 아래 버튼을 이용해주세요.', state.scenarios.map(s => s.name));
+    return;
+  }
+
+  // Move to next step
+  chatState.currentStep++;
+  processCurrentStep();
+}
+
+// ========== Demo ==========
+function loadDemoScenarios() {
+  if (state.scenarios.length > 0) {
+    if (!confirm('기존 시나리오가 모두 초기화됩니다. 계속하시겠습니까?')) return;
+  }
+  state.scenarios = JSON.parse(JSON.stringify(DEMO_SCENARIOS));
+  state.greeting = '안녕하세요! 무엇을 도와드릴까요? 아래 버튼을 눌러 원하는 항목을 선택해주세요.';
+  state.activeScenarioId = null;
+  document.getElementById('greetingInput').value = state.greeting;
+  saveState();
+  renderScenarioList();
+  document.getElementById('editorContent').style.display = 'none';
+  document.getElementById('emptyState').style.display = '';
+  resetPreview();
+  showToast('데모 시나리오 3개가 로드되었습니다');
+}
+
+// ========== Import / Export ==========
+function exportData() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'chatbot-scenarios.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('파일이 다운로드되었습니다');
+}
+
+function importData() {
+  document.getElementById('fileInput').click();
+}
+
+function handleImport(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (data.scenarios) {
+        state = data;
+        saveState();
+        document.getElementById('greetingInput').value = state.greeting || '';
+        state.activeScenarioId = null;
+        renderScenarioList();
+        document.getElementById('editorContent').style.display = 'none';
+        document.getElementById('emptyState').style.display = '';
+        resetPreview();
+        showToast('데이터를 불러왔습니다');
+      } else {
+        showToast('올바른 형식의 파일이 아닙니다');
+      }
+    } catch(err) {
+      showToast('파일을 읽을 수 없습니다');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+// ========== Sidebar Toggle ==========
+function toggleSidebar(forceOpen) {
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sidebarOverlay');
+  const isOpen = sb.classList.contains('open');
+  if (forceOpen === false || isOpen) {
+    sb.classList.remove('open');
+    ov.classList.remove('show');
+  } else {
+    sb.classList.add('open');
+    ov.classList.add('show');
+  }
+}
+
+// ========== Utils ==========
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escAttr(s) { return String(s).replace(/&/g,'&amp;').replace(/'/g,'&#39;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Close modal on overlay click
+document.getElementById('scenarioModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// Keyboard shortcut: Escape closes modal
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeModal();
+});
+
+// Init
+init();
+</script>
+</body>
+</html>

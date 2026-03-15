@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>색상 팔레트 생성기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#f5f7fa;color:#1a1a2e;min-height:100vh;display:flex;flex-direction:column}
+
+/* Header */
+.header{background:#fff;border-bottom:1px solid #e2e8f0;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.header h1{font-size:1.4rem;font-weight:700;color:#1a1a2e}
+.header h1 span{color:#6366f1}
+.header-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* Buttons */
+.btn{padding:8px 16px;border:none;border-radius:8px;font-family:'Inter',sans-serif;font-size:.85rem;font-weight:500;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:#6366f1;color:#fff}
+.btn-primary:hover{background:#4f46e5}
+.btn-secondary{background:#e2e8f0;color:#475569}
+.btn-secondary:hover{background:#cbd5e1}
+.btn-save{background:#10b981;color:#fff}
+.btn-save:hover{background:#059669}
+.btn-danger{background:#ef4444;color:#fff}
+.btn-danger:hover{background:#dc2626}
+.btn-sm{padding:6px 10px;font-size:.75rem}
+
+/* Harmony Select */
+.harmony-select{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;font-family:'Inter',sans-serif;font-size:.85rem;background:#fff;color:#475569;cursor:pointer}
+.harmony-select:focus{outline:none;border-color:#6366f1}
+
+/* Palette Area */
+.palette-container{flex:1;display:flex;flex-direction:column}
+.palette-row{flex:1;display:flex;min-height:0}
+.color-panel{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;cursor:pointer;transition:flex .3s}
+.color-panel:hover{flex:1.15}
+.color-panel.locked::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(0,0,0,.03) 10px,rgba(0,0,0,.03) 20px);pointer-events:none}
+
+/* Color Info */
+.color-info{background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-radius:12px;padding:16px;text-align:center;pointer-events:auto;min-width:160px;box-shadow:0 4px 20px rgba(0,0,0,.08)}
+.color-hex{font-size:1.3rem;font-weight:700;letter-spacing:.5px;margin-bottom:4px;cursor:pointer;transition:color .2s}
+.color-hex:hover{opacity:.7}
+.color-rgb,.color-hsl{font-size:.75rem;color:#64748b;cursor:pointer;padding:2px 0;transition:opacity .2s}
+.color-rgb:hover,.color-hsl:hover{opacity:.6}
+
+/* Lock Button */
+.lock-btn{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.85);backdrop-filter:blur(4px);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.lock-btn:hover{transform:scale(1.1)}
+.lock-btn.locked{background:#6366f1;color:#fff}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a1a2e;color:#fff;padding:12px 24px;border-radius:10px;font-size:.85rem;font-weight:500;z-index:1000;transition:transform .3s ease;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* Saved Palettes */
+.saved-section{background:#fff;border-top:1px solid #e2e8f0;padding:16px 24px;max-height:240px;overflow-y:auto}
+.saved-section h3{font-size:.9rem;font-weight:600;color:#475569;margin-bottom:12px}
+.saved-list{display:flex;flex-wrap:wrap;gap:10px}
+.saved-item{display:flex;align-items:center;gap:6px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:6px 10px;cursor:pointer;transition:all .2s}
+.saved-item:hover{border-color:#6366f1;box-shadow:0 2px 8px rgba(99,102,241,.15)}
+.saved-swatch{width:20px;height:20px;border-radius:4px;border:1px solid rgba(0,0,0,.08)}
+.saved-delete{width:22px;height:22px;border:none;background:transparent;color:#94a3b8;cursor:pointer;font-size:.8rem;border-radius:4px;display:flex;align-items:center;justify-content:center;margin-left:4px}
+.saved-delete:hover{background:#fee2e2;color:#ef4444}
+
+/* Preview Section */
+.preview-section{background:#fff;border-top:1px solid #e2e8f0;padding:16px 24px}
+.preview-section h3{font-size:.9rem;font-weight:600;color:#475569;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.preview-tabs{display:flex;gap:6px;margin-bottom:12px}
+.preview-tab{padding:6px 14px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;font-size:.78rem;font-weight:500;cursor:pointer;color:#64748b;font-family:'Inter',sans-serif}
+.preview-tab.active{background:#6366f1;color:#fff;border-color:#6366f1}
+.preview-card{border-radius:12px;padding:20px;display:flex;gap:16px;flex-wrap:wrap;align-items:center;transition:all .3s}
+.preview-card .swatch-row{display:flex;gap:8px}
+.preview-card .swatch{width:40px;height:40px;border-radius:8px}
+.preview-card .text-sample h4{font-size:1rem;font-weight:600;margin-bottom:4px}
+.preview-card .text-sample p{font-size:.82rem;opacity:.7}
+.preview-card .btn-sample{padding:8px 20px;border:none;border-radius:8px;font-weight:600;font-size:.82rem;cursor:default}
+
+/* Keyboard hint */
+.kbd-hint{font-size:.72rem;color:#94a3b8;display:flex;align-items:center;gap:4px}
+.kbd{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;font-size:.7rem;font-weight:600;color:#64748b}
+
+/* Responsive */
+@media(max-width:768px){
+  .header{padding:12px 16px}
+  .header h1{font-size:1.1rem}
+  .palette-row{flex-direction:column}
+  .color-panel{min-height:120px}
+  .color-info{padding:10px;min-width:130px}
+  .color-hex{font-size:1rem}
+  .saved-section,.preview-section{padding:12px 16px}
+  .kbd-hint{display:none}
+}
+@media(max-width:480px){
+  .header-actions{width:100%;justify-content:space-between}
+  .btn{padding:7px 12px;font-size:.78rem}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1><span>&#9632;</span> 색상 팔레트 생성기</h1>
+  <div class="header-actions">
+    <select class="harmony-select" id="harmonyMode" title="조화 모드">
+      <option value="random">랜덤</option>
+      <option value="complementary">보색</option>
+      <option value="analogous">유사색</option>
+      <option value="triadic">삼원색</option>
+      <option value="split-complementary">분할보색</option>
+      <option value="monochromatic">단색조</option>
+    </select>
+    <button class="btn btn-primary" id="generateBtn" onclick="generate()">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+      생성
+    </button>
+    <button class="btn btn-save" onclick="savePalette()">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      저장
+    </button>
+    <span class="kbd-hint"><span class="kbd">Space</span> 생성 &nbsp;<span class="kbd">1-5</span> 잠금</span>
+  </div>
+</div>
+
+<div class="palette-container">
+  <div class="palette-row" id="paletteRow"></div>
+</div>
+
+<div class="preview-section" id="previewSection">
+  <h3>미리보기</h3>
+  <div class="preview-tabs">
+    <button class="preview-tab active" onclick="setPreview('light')">라이트</button>
+    <button class="preview-tab" onclick="setPreview('dark')">다크</button>
+  </div>
+  <div class="preview-card" id="previewCard"></div>
+</div>
+
+<div class="saved-section" id="savedSection" style="display:none">
+  <h3>저장된 팔레트 (<span id="savedCount">0</span>)</h3>
+  <div class="saved-list" id="savedList"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const PANEL_COUNT = 5;
+let colors = [];
+let locked = [false, false, false, false, false];
+let previewMode = 'light';
+
+// Color Utilities
+function randomHue() { return Math.random() * 360; }
+function hslToHex(h, s, l) {
+  h = ((h % 360) + 360) % 360;
+  s /= 100; l /= 100;
+  const a = s * Math.min(l, 1 - l);
+  const f = n => {
+    const k = (n + h / 30) % 12;
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * Math.max(0, Math.min(1, color))).toString(16).padStart(2, '0');
+  };
+  return `#${f(0)}${f(8)}${f(4)}`;
+}
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return {r, g, b};
+}
+function rgbToHsl(r, g, b) {
+  r /= 255; g /= 255; b /= 255;
+  const max = Math.max(r,g,b), min = Math.min(r,g,b), d = max - min;
+  let h = 0, s = 0, l = (max + min) / 2;
+  if (d !== 0) {
+    s = l > .5 ? d / (2 - max - min) : d / (max + min);
+    switch(max) {
+      case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+      case g: h = ((b - r) / d + 2) / 6; break;
+      case b: h = ((r - g) / d + 4) / 6; break;
+    }
+  }
+  return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+}
+function luminance(hex) {
+  const {r, g, b} = hexToRgb(hex);
+  return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+}
+function textColor(hex) {
+  return luminance(hex) > 0.55 ? '#1a1a2e' : '#ffffff';
+}
+
+// Harmony Generators
+function generateColors(mode) {
+  const baseHue = randomHue();
+  const results = [];
+  switch(mode) {
+    case 'complementary': {
+      const s = 60 + Math.random() * 25, l = 45 + Math.random() * 20;
+      results.push(hslToHex(baseHue, s, l));
+      results.push(hslToHex(baseHue, s - 10, l + 15));
+      results.push(hslToHex(baseHue + 180, s, l));
+      results.push(hslToHex(baseHue + 180, s - 10, l + 15));
+      results.push(hslToHex(baseHue + 90, s - 20, l + 10));
+      break;
+    }
+    case 'analogous': {
+      const s = 55 + Math.random() * 30;
+      for (let i = 0; i < 5; i++) {
+        results.push(hslToHex(baseHue + (i - 2) * 25, s, 40 + i * 8));
+      }
+      break;
+    }
+    case 'triadic': {
+      const s = 60 + Math.random() * 25, l = 48 + Math.random() * 15;
+      results.push(hslToHex(baseHue, s, l));
+      results.push(hslToHex(baseHue, s - 15, l + 18));
+      results.push(hslToHex(baseHue + 120, s, l));
+      results.push(hslToHex(baseHue + 240, s, l));
+      results.push(hslToHex(baseHue + 240, s - 15, l + 18));
+      break;
+    }
+    case 'split-complementary': {
+      const s = 60 + Math.random() * 25, l = 48 + Math.random() * 15;
+      results.push(hslToHex(baseHue, s, l));
+      results.push(hslToHex(baseHue, s - 10, l + 20));
+      results.push(hslToHex(baseHue + 150, s, l));
+      results.push(hslToHex(baseHue + 210, s, l));
+      results.push(hslToHex(baseHue + 180, s - 20, l + 10));
+      break;
+    }
+    case 'monochromatic': {
+      const s = 50 + Math.random() * 35;
+      for (let i = 0; i < 5; i++) {
+        results.push(hslToHex(baseHue, s, 25 + i * 14));
+      }
+      break;
+    }
+    default: // random
+      for (let i = 0; i < 5; i++) {
+        results.push(hslToHex(Math.random() * 360, 45 + Math.random() * 40, 35 + Math.random() * 40));
+      }
+  }
+  return results;
+}
+
+// Generate Palette
+function generate() {
+  const mode = document.getElementById('harmonyMode').value;
+  const newColors = generateColors(mode);
+  for (let i = 0; i < PANEL_COUNT; i++) {
+    if (!locked[i]) colors[i] = newColors[i];
+  }
+  render();
+  updatePreview();
+}
+
+// Render Palette
+function render() {
+  const row = document.getElementById('paletteRow');
+  row.innerHTML = '';
+  colors.forEach((hex, i) => {
+    const tc = textColor(hex);
+    const {r, g, b} = hexToRgb(hex);
+    const hsl = rgbToHsl(r, g, b);
+    const panel = document.createElement('div');
+    panel.className = 'color-panel' + (locked[i] ? ' locked' : '');
+    panel.style.background = hex;
+    panel.innerHTML = `
+      <button class="lock-btn ${locked[i] ? 'locked' : ''}" onclick="event.stopPropagation();toggleLock(${i})" title="${locked[i] ? '잠금 해제' : '잠금'}">
+        ${locked[i] ? '&#128274;' : '&#128275;'}
+      </button>
+      <div class="color-info">
+        <div class="color-hex" onclick="event.stopPropagation();copyText('${hex}')" title="클릭하여 복사">${hex.toUpperCase()}</div>
+        <div class="color-rgb" onclick="event.stopPropagation();copyText('rgb(${r}, ${g}, ${b})')" title="클릭하여 복사">RGB(${r}, ${g}, ${b})</div>
+        <div class="color-hsl" onclick="event.stopPropagation();copyText('hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)')" title="클릭하여 복사">HSL(${hsl.h}, ${hsl.s}%, ${hsl.l}%)</div>
+      </div>
+    `;
+    row.appendChild(panel);
+  });
+}
+
+// Lock
+function toggleLock(i) {
+  locked[i] = !locked[i];
+  render();
+}
+
+// Copy
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(() => showToast(`${text} 복사됨!`));
+}
+
+// Toast
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+// Preview
+function setPreview(mode) {
+  previewMode = mode;
+  document.querySelectorAll('.preview-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  updatePreview();
+}
+function updatePreview() {
+  const card = document.getElementById('previewCard');
+  const isDark = previewMode === 'dark';
+  const bg = isDark ? '#1a1a2e' : '#ffffff';
+  const fg = isDark ? '#f1f5f9' : '#1a1a2e';
+  const sub = isDark ? '#94a3b8' : '#64748b';
+  card.style.background = bg;
+  card.style.color = fg;
+  card.innerHTML = `
+    <div class="swatch-row">
+      ${colors.map(c => `<div class="swatch" style="background:${c}"></div>`).join('')}
+    </div>
+    <div class="text-sample">
+      <h4 style="color:${colors[0]}">제목 텍스트 예시</h4>
+      <p style="color:${sub}">본문 텍스트가 이렇게 보입니다. 색상 조합을 미리 확인하세요.</p>
+    </div>
+    <button class="btn-sample" style="background:${colors[2]};color:${textColor(colors[2])}">버튼 예시</button>
+  `;
+}
+
+// Save / Load
+function savePalette() {
+  const saved = JSON.parse(localStorage.getItem('palettes') || '[]');
+  saved.unshift([...colors]);
+  if (saved.length > 30) saved.pop();
+  localStorage.setItem('palettes', JSON.stringify(saved));
+  renderSaved();
+  showToast('팔레트가 저장되었습니다!');
+}
+function deletePalette(idx) {
+  const saved = JSON.parse(localStorage.getItem('palettes') || '[]');
+  saved.splice(idx, 1);
+  localStorage.setItem('palettes', JSON.stringify(saved));
+  renderSaved();
+  showToast('팔레트가 삭제되었습니다.');
+}
+function loadPalette(idx) {
+  const saved = JSON.parse(localStorage.getItem('palettes') || '[]');
+  if (saved[idx]) {
+    colors = [...saved[idx]];
+    locked = [false, false, false, false, false];
+    render();
+    updatePreview();
+    showToast('팔레트를 불러왔습니다.');
+  }
+}
+function renderSaved() {
+  const saved = JSON.parse(localStorage.getItem('palettes') || '[]');
+  const section = document.getElementById('savedSection');
+  const list = document.getElementById('savedList');
+  document.getElementById('savedCount').textContent = saved.length;
+  if (saved.length === 0) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  list.innerHTML = saved.map((pal, idx) => `
+    <div class="saved-item" onclick="loadPalette(${idx})" title="클릭하여 불러오기">
+      ${pal.map(c => `<div class="saved-swatch" style="background:${c}"></div>`).join('')}
+      <button class="saved-delete" onclick="event.stopPropagation();deletePalette(${idx})" title="삭제">&times;</button>
+    </div>
+  `).join('');
+}
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'SELECT') return;
+  if (e.code === 'Space') { e.preventDefault(); generate(); }
+  if (e.key >= '1' && e.key <= '5') toggleLock(parseInt(e.key) - 1);
+});
+
+// Init
+generate();
+renderSaved();
+</script>
+</body>
+</html>

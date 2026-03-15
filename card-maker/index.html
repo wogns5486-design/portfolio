@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>명함 메이커 - 온라인 명함 제작 도구</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #f5f7fa;
+  --surface: #ffffff;
+  --border: #e2e8f0;
+  --text: #1a202c;
+  --text-secondary: #64748b;
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --accent: #06b6d4;
+  --radius: 12px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 25px rgba(0,0,0,0.08), 0 4px 10px rgba(0,0,0,0.04);
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* Header */
+.header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow);
+}
+.header h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.header h1 svg { width: 24px; height: 24px; }
+.header p { font-size: 0.8rem; color: var(--text-secondary); }
+
+/* Layout */
+.app {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 0;
+  min-height: calc(100vh - 65px);
+}
+
+/* Sidebar */
+.sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  height: calc(100vh - 65px);
+  position: sticky;
+  top: 65px;
+}
+.sidebar-inner { padding: 24px; }
+
+.section-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  margin-top: 20px;
+}
+.section-title:first-child { margin-top: 0; }
+
+.form-group {
+  margin-bottom: 14px;
+}
+.form-group label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: var(--surface);
+  color: var(--text);
+}
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+}
+.form-group textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+/* Color picker row */
+.color-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.color-picker-wrap {
+  position: relative;
+  width: 40px;
+  height: 36px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1.5px solid var(--border);
+  flex-shrink: 0;
+}
+.color-picker-wrap input[type="color"] {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: calc(100% + 8px);
+  height: calc(100% + 8px);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+.color-row input[type="text"] {
+  flex: 1;
+}
+
+/* Template selector */
+.template-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.template-card {
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--surface);
+}
+.template-card:hover {
+  border-color: var(--primary);
+  background: #f0efff;
+}
+.template-card.active {
+  border-color: var(--primary);
+  background: #ede9fe;
+  box-shadow: 0 0 0 2px rgba(79,70,229,0.2);
+}
+.template-card .tmpl-preview {
+  width: 100%;
+  aspect-ratio: 9/5;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+.template-card .tmpl-name {
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+.btn-outline {
+  background: transparent;
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
+}
+.btn-outline:hover { background: #f0efff; }
+
+.btn-group {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+}
+.btn-group .btn { flex: 1; }
+
+/* Preview area */
+.preview-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  gap: 24px;
+  background: var(--bg);
+}
+
+.face-toggle {
+  display: flex;
+  background: var(--surface);
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  overflow: hidden;
+}
+.face-toggle button {
+  padding: 8px 24px;
+  border: none;
+  background: transparent;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+.face-toggle button.active {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* Card preview */
+.card-container {
+  perspective: 1200px;
+}
+.card-preview {
+  width: 540px;
+  height: 310px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.6s ease;
+  transform-style: preserve-3d;
+}
+.card-preview.flipped { transform: rotateY(180deg); }
+.card-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: 16px;
+  overflow: hidden;
+}
+.card-back {
+  transform: rotateY(180deg);
+}
+
+/* =============== Template 1: 모던 =============== */
+.tmpl-modern .card-front {
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 36px 40px;
+  position: relative;
+}
+.tmpl-modern .card-front::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 6px;
+  background: var(--card-color, #4f46e5);
+}
+.tmpl-modern .card-front .card-name {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+.tmpl-modern .card-front .card-title {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--card-color, #4f46e5);
+  margin-bottom: 4px;
+}
+.tmpl-modern .card-front .card-company {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 18px;
+}
+.tmpl-modern .card-front .card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.tmpl-modern .card-front .card-detail {
+  font-size: 0.72rem;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tmpl-modern .card-front .card-detail svg {
+  width: 14px; height: 14px;
+  flex-shrink: 0;
+  color: var(--card-color, #4f46e5);
+}
+.tmpl-modern .card-back {
+  background: var(--card-color, #4f46e5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+}
+.tmpl-modern .card-back .back-company {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #fff;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+.tmpl-modern .card-back .back-tagline {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.8);
+  font-weight: 400;
+}
+
+/* =============== Template 2: 클래식 =============== */
+.tmpl-classic .card-front {
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 30px 40px;
+  position: relative;
+}
+.tmpl-classic .card-front::before,
+.tmpl-classic .card-front::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 4px;
+  background: var(--card-color, #4f46e5);
+}
+.tmpl-classic .card-front::before { top: 0; }
+.tmpl-classic .card-front::after { bottom: 0; }
+.tmpl-classic .card-front .card-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+.tmpl-classic .card-front .card-title {
+  font-size: 0.82rem;
+  color: var(--card-color, #4f46e5);
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+.tmpl-classic .card-front .card-company {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+.tmpl-classic .card-front .divider {
+  width: 50px;
+  height: 2px;
+  background: var(--card-color, #4f46e5);
+  margin-bottom: 14px;
+  border-radius: 2px;
+}
+.tmpl-classic .card-front .card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: center;
+}
+.tmpl-classic .card-front .card-detail {
+  font-size: 0.72rem;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.tmpl-classic .card-front .card-detail svg {
+  width: 13px; height: 13px;
+  color: var(--card-color, #4f46e5);
+}
+.tmpl-classic .card-back {
+  background: linear-gradient(135deg, var(--card-color, #4f46e5), color-mix(in srgb, var(--card-color, #4f46e5) 70%, #000));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+}
+.tmpl-classic .card-back::before {
+  content: '';
+  position: absolute;
+  inset: 16px;
+  border: 1.5px solid rgba(255,255,255,0.25);
+  border-radius: 8px;
+}
+.tmpl-classic .card-back .back-company {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+}
+.tmpl-classic .card-back .back-tagline {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.7);
+}
+
+/* =============== Template 3: 볼드 =============== */
+.tmpl-bold .card-front {
+  background: var(--card-color, #4f46e5);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  position: relative;
+  overflow: hidden;
+}
+.tmpl-bold .card-front::after {
+  content: '';
+  position: absolute;
+  right: -40px; top: -40px;
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+}
+.tmpl-bold .card-front .left-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 30px;
+  color: #fff;
+}
+.tmpl-bold .card-front .card-name {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 2px;
+}
+.tmpl-bold .card-front .card-title {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.85);
+  font-weight: 400;
+  margin-bottom: 2px;
+}
+.tmpl-bold .card-front .card-company {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.65);
+}
+.tmpl-bold .card-front .right-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 30px 30px 30px 0;
+  gap: 5px;
+}
+.tmpl-bold .card-front .card-detail {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.9);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tmpl-bold .card-front .card-detail svg {
+  width: 13px; height: 13px;
+  color: rgba(255,255,255,0.7);
+}
+.tmpl-bold .card-back {
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+}
+.tmpl-bold .card-back .back-company {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--card-color, #4f46e5);
+}
+.tmpl-bold .card-back .back-tagline {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+/* Download tip */
+.download-tip {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-align: center;
+  margin-top: -8px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .app {
+    grid-template-columns: 1fr;
+  }
+  .sidebar {
+    position: static;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .preview-area { padding: 24px 16px; }
+  .card-preview { width: 100%; max-width: 540px; height: auto; aspect-ratio: 540/310; }
+}
+@media (max-width: 580px) {
+  .header h1 { font-size: 1.05rem; }
+  .sidebar-inner { padding: 16px; }
+  .card-preview { border-radius: 10px; }
+  .template-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .face-toggle button { padding: 7px 16px; font-size: 0.8rem; }
+}
+
+/* Canvas (offscreen) */
+#offscreen-canvas { position: fixed; left: -9999px; top: -9999px; pointer-events: none; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div>
+    <h1>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+      명함 메이커
+    </h1>
+    <p>나만의 명함을 디자인하고 PNG로 다운로드하세요</p>
+  </div>
+</header>
+
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+      <div class="section-title">템플릿 선택</div>
+      <div class="template-grid">
+        <div class="template-card active" data-template="modern" onclick="setTemplate('modern')">
+          <div class="tmpl-preview" style="background:linear-gradient(135deg,#4f46e5 4px,#fff 4px);border:1px solid #e2e8f0;"></div>
+          <div class="tmpl-name">모던</div>
+        </div>
+        <div class="template-card" data-template="classic" onclick="setTemplate('classic')">
+          <div class="tmpl-preview" style="background:#fff;border-top:3px solid #4f46e5;border-bottom:3px solid #4f46e5;border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0;"></div>
+          <div class="tmpl-name">클래식</div>
+        </div>
+        <div class="template-card" data-template="bold" onclick="setTemplate('bold')">
+          <div class="tmpl-preview" style="background:linear-gradient(135deg,#4f46e5,#6366f1);"></div>
+          <div class="tmpl-name">볼드</div>
+        </div>
+      </div>
+
+      <div class="section-title">기본 정보</div>
+      <div class="form-group">
+        <label for="name">이름 *</label>
+        <input type="text" id="name" placeholder="홍길동" value="홍길동">
+      </div>
+      <div class="form-group">
+        <label for="title">직함</label>
+        <input type="text" id="title" placeholder="시니어 디자이너" value="시니어 디자이너">
+      </div>
+      <div class="form-group">
+        <label for="company">회사명</label>
+        <input type="text" id="company" placeholder="크리에이티브 스튜디오" value="크리에이티브 스튜디오">
+      </div>
+
+      <div class="section-title">연락처</div>
+      <div class="form-group">
+        <label for="phone">전화번호</label>
+        <input type="tel" id="phone" placeholder="010-1234-5678" value="010-1234-5678">
+      </div>
+      <div class="form-group">
+        <label for="email">이메일</label>
+        <input type="email" id="email" placeholder="hello@example.com" value="hello@example.com">
+      </div>
+      <div class="form-group">
+        <label for="address">주소</label>
+        <input type="text" id="address" placeholder="서울시 강남구 역삼동 123" value="서울시 강남구 역삼동 123">
+      </div>
+
+      <div class="section-title">스타일</div>
+      <div class="form-group">
+        <label>로고 / 브랜드 색상</label>
+        <div class="color-row">
+          <div class="color-picker-wrap">
+            <input type="color" id="colorPicker" value="#4f46e5">
+          </div>
+          <input type="text" id="colorText" value="#4f46e5" maxlength="7" placeholder="#4f46e5">
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="downloadCard('front')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          앞면 PNG
+        </button>
+        <button class="btn btn-outline" onclick="downloadCard('back')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          뒷면 PNG
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Preview -->
+  <main class="preview-area">
+    <div class="face-toggle">
+      <button class="active" onclick="showFace('front')">앞면</button>
+      <button onclick="showFace('back')">뒷면</button>
+    </div>
+
+    <div class="card-container">
+      <div class="card-preview tmpl-modern" id="cardPreview">
+        <!-- Front -->
+        <div class="card-face card-front" id="cardFront"></div>
+        <!-- Back -->
+        <div class="card-face card-back" id="cardBack"></div>
+      </div>
+    </div>
+
+    <p class="download-tip">좌측 패널에서 정보를 입력하면 실시간으로 미리보기가 업데이트됩니다</p>
+  </main>
+</div>
+
+<!-- Offscreen canvas for download -->
+<canvas id="offscreen-canvas"></canvas>
+
+<script>
+// State
+let currentTemplate = 'modern';
+let currentFace = 'front';
+
+// Elements
+const cardPreview = document.getElementById('cardPreview');
+const cardFront = document.getElementById('cardFront');
+const cardBack = document.getElementById('cardBack');
+
+const fields = ['name','title','company','phone','email','address'];
+
+// SVG icons
+const icons = {
+  phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+  email: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',
+  address: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>'
+};
+
+function getValues() {
+  const vals = {};
+  fields.forEach(f => vals[f] = document.getElementById(f).value);
+  vals.color = document.getElementById('colorPicker').value;
+  return vals;
+}
+
+function detailHTML(icon, value) {
+  if (!value) return '';
+  return `<div class="card-detail">${icons[icon] || ''}${value}</div>`;
+}
+
+function renderCard() {
+  const v = getValues();
+  cardPreview.style.setProperty('--card-color', v.color);
+  cardPreview.className = 'card-preview tmpl-' + currentTemplate;
+  if (currentFace === 'back') cardPreview.classList.add('flipped');
+
+  // Front
+  if (currentTemplate === 'modern') {
+    cardFront.innerHTML = `
+      <div class="card-name">${v.name || '이름'}</div>
+      <div class="card-title">${v.title || ''}</div>
+      <div class="card-company">${v.company || ''}</div>
+      <div class="card-details">
+        ${detailHTML('phone', v.phone)}
+        ${detailHTML('email', v.email)}
+        ${detailHTML('address', v.address)}
+      </div>`;
+  } else if (currentTemplate === 'classic') {
+    cardFront.innerHTML = `
+      <div class="card-name">${v.name || '이름'}</div>
+      <div class="card-title">${v.title || ''}</div>
+      <div class="card-company">${v.company || ''}</div>
+      <div class="divider"></div>
+      <div class="card-details">
+        ${detailHTML('phone', v.phone)}
+        ${detailHTML('email', v.email)}
+        ${detailHTML('address', v.address)}
+      </div>`;
+  } else if (currentTemplate === 'bold') {
+    cardFront.innerHTML = `
+      <div class="left-col">
+        <div class="card-name">${v.name || '이름'}</div>
+        <div class="card-title">${v.title || ''}</div>
+        <div class="card-company">${v.company || ''}</div>
+      </div>
+      <div class="right-col">
+        ${detailHTML('phone', v.phone)}
+        ${detailHTML('email', v.email)}
+        ${detailHTML('address', v.address)}
+      </div>`;
+  }
+
+  // Back
+  cardBack.innerHTML = `
+    <div class="back-company">${v.company || v.name || '회사명'}</div>
+    <div class="back-tagline">${v.title ? v.title : ''}</div>`;
+}
+
+function setTemplate(tmpl) {
+  currentTemplate = tmpl;
+  document.querySelectorAll('.template-card').forEach(c => c.classList.toggle('active', c.dataset.template === tmpl));
+  renderCard();
+}
+
+function showFace(face) {
+  currentFace = face;
+  document.querySelectorAll('.face-toggle button').forEach((b, i) => {
+    b.classList.toggle('active', (face === 'front' && i === 0) || (face === 'back' && i === 1));
+  });
+  cardPreview.classList.toggle('flipped', face === 'back');
+}
+
+// Color sync
+document.getElementById('colorPicker').addEventListener('input', function() {
+  document.getElementById('colorText').value = this.value;
+  renderCard();
+});
+document.getElementById('colorText').addEventListener('input', function() {
+  const hex = this.value;
+  if (/^#[0-9A-Fa-f]{6}$/.test(hex)) {
+    document.getElementById('colorPicker').value = hex;
+    renderCard();
+  }
+});
+
+// Live update
+fields.forEach(f => {
+  document.getElementById(f).addEventListener('input', renderCard);
+});
+
+// Download
+function downloadCard(face) {
+  const v = getValues();
+  const scale = 2;
+  const W = 540 * scale;
+  const H = 310 * scale;
+  const canvas = document.getElementById('offscreen-canvas');
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(scale, scale);
+
+  const color = v.color || '#4f46e5';
+
+  if (face === 'front') {
+    drawFront(ctx, v, color);
+  } else {
+    drawBack(ctx, v, color);
+  }
+
+  const link = document.createElement('a');
+  link.download = `명함_${face === 'front' ? '앞면' : '뒷면'}_${v.name || 'card'}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function drawFront(ctx, v, color) {
+  // Background
+  roundRect(ctx, 0, 0, 540, 310, 16);
+  if (currentTemplate === 'bold') {
+    ctx.fillStyle = color;
+  } else {
+    ctx.fillStyle = '#ffffff';
+  }
+  ctx.fill();
+
+  if (currentTemplate === 'modern') {
+    // Left accent bar
+    ctx.fillStyle = color;
+    ctx.fillRect(0, 0, 6, 310);
+
+    ctx.fillStyle = '#1a202c';
+    ctx.font = '800 28px Inter, sans-serif';
+    ctx.fillText(v.name || '이름', 40, 95);
+
+    ctx.fillStyle = color;
+    ctx.font = '500 15px Inter, sans-serif';
+    ctx.fillText(v.title || '', 40, 118);
+
+    ctx.fillStyle = '#64748b';
+    ctx.font = '400 14px Inter, sans-serif';
+    ctx.fillText(v.company || '', 40, 140);
+
+    let y = 180;
+    ctx.fillStyle = '#475569';
+    ctx.font = '400 13px Inter, sans-serif';
+    [v.phone, v.email, v.address].forEach(val => {
+      if (val) { ctx.fillText(val, 40, y); y += 22; }
+    });
+  } else if (currentTemplate === 'classic') {
+    // Top/bottom bars
+    ctx.fillStyle = color;
+    ctx.fillRect(0, 0, 540, 4);
+    ctx.fillRect(0, 306, 540, 4);
+
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#1a202c';
+    ctx.font = '700 26px Inter, sans-serif';
+    ctx.fillText(v.name || '이름', 270, 90);
+
+    ctx.fillStyle = color;
+    ctx.font = '500 15px Inter, sans-serif';
+    ctx.fillText(v.title || '', 270, 113);
+
+    ctx.fillStyle = '#64748b';
+    ctx.font = '400 14px Inter, sans-serif';
+    ctx.fillText(v.company || '', 270, 135);
+
+    // Divider
+    ctx.fillStyle = color;
+    roundRect(ctx, 245, 152, 50, 2, 1);
+    ctx.fill();
+
+    let y = 185;
+    ctx.fillStyle = '#475569';
+    ctx.font = '400 13px Inter, sans-serif';
+    [v.phone, v.email, v.address].forEach(val => {
+      if (val) { ctx.fillText(val, 270, y); y += 22; }
+    });
+    ctx.textAlign = 'left';
+  } else if (currentTemplate === 'bold') {
+    // Circle deco
+    ctx.fillStyle = 'rgba(255,255,255,0.08)';
+    ctx.beginPath();
+    ctx.arc(500, -10, 100, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Left col
+    ctx.fillStyle = '#fff';
+    ctx.font = '800 26px Inter, sans-serif';
+    ctx.fillText(v.name || '이름', 30, 120);
+
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.font = '400 14px Inter, sans-serif';
+    ctx.fillText(v.title || '', 30, 146);
+
+    ctx.fillStyle = 'rgba(255,255,255,0.65)';
+    ctx.font = '400 13px Inter, sans-serif';
+    ctx.fillText(v.company || '', 30, 168);
+
+    // Right col
+    let y = 120;
+    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    ctx.font = '400 12px Inter, sans-serif';
+    [v.phone, v.email, v.address].forEach(val => {
+      if (val) { ctx.fillText(val, 300, y); y += 24; }
+    });
+  }
+}
+
+function drawBack(ctx, v, color) {
+  roundRect(ctx, 0, 0, 540, 310, 16);
+
+  if (currentTemplate === 'bold') {
+    ctx.fillStyle = '#ffffff';
+    ctx.fill();
+    ctx.textAlign = 'center';
+    ctx.fillStyle = color;
+    ctx.font = '800 34px Inter, sans-serif';
+    ctx.fillText(v.company || v.name || '회사명', 270, 155);
+    ctx.fillStyle = '#64748b';
+    ctx.font = '400 14px Inter, sans-serif';
+    ctx.fillText(v.title || '', 270, 185);
+  } else if (currentTemplate === 'classic') {
+    // Gradient fill
+    const grad = ctx.createLinearGradient(0, 0, 540, 310);
+    grad.addColorStop(0, color);
+    grad.addColorStop(1, darkenColor(color, 30));
+    ctx.fillStyle = grad;
+    ctx.fill();
+    // Inner border
+    ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+    ctx.lineWidth = 1.5;
+    roundRect(ctx, 16, 16, 508, 278, 8);
+    ctx.stroke();
+
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#fff';
+    ctx.font = '700 30px Inter, sans-serif';
+    ctx.fillText(v.company || v.name || '회사명', 270, 152);
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.font = '400 14px Inter, sans-serif';
+    ctx.fillText(v.title || '', 270, 182);
+  } else {
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#fff';
+    ctx.font = '800 34px Inter, sans-serif';
+    ctx.fillText(v.company || v.name || '회사명', 270, 150);
+    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+    ctx.font = '400 14px Inter, sans-serif';
+    ctx.fillText(v.title || '', 270, 182);
+  }
+  ctx.textAlign = 'left';
+}
+
+function darkenColor(hex, amount) {
+  let r = parseInt(hex.slice(1, 3), 16);
+  let g = parseInt(hex.slice(3, 5), 16);
+  let b = parseInt(hex.slice(5, 7), 16);
+  r = Math.max(0, r - amount);
+  g = Math.max(0, g - amount);
+  b = Math.max(0, b - amount);
+  return `rgb(${r},${g},${b})`;
+}
+
+// Initial render
+renderCard();
+</script>
+</body>
+</html>
