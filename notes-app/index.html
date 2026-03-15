@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notes - 메모 앱</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #f8f9fa;
+  --sidebar-bg: #ffffff;
+  --editor-bg: #ffffff;
+  --border: #e5e7eb;
+  --text: #1a1a1a;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --accent: #2563eb;
+  --accent-light: #dbeafe;
+  --hover: #f3f4f6;
+  --active: #e8ecf1;
+  --pin-color: #f59e0b;
+  --danger: #ef4444;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --radius: 8px;
+  --sidebar-width: 280px;
+  --folder-width: 220px;
+  --transition: 0.15s ease;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Layout */
+.app {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Folder Panel */
+.folder-panel {
+  width: var(--folder-width);
+  min-width: var(--folder-width);
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+}
+
+.folder-header {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.folder-header h2 {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+}
+
+.btn-icon {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-size: 16px;
+  transition: all var(--transition);
+}
+
+.btn-icon:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+
+.folder-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.folder-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all var(--transition);
+  font-size: 13px;
+  color: var(--text);
+  position: relative;
+}
+
+.folder-item:hover {
+  background: var(--hover);
+}
+
+.folder-item.active {
+  background: var(--accent-light);
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.folder-item .folder-icon {
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.folder-item .folder-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.folder-item .folder-count {
+  font-size: 11px;
+  color: var(--text-muted);
+  background: var(--hover);
+  padding: 1px 6px;
+  border-radius: 10px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.folder-item.active .folder-count {
+  background: rgba(37, 99, 235, 0.15);
+  color: var(--accent);
+}
+
+.folder-item .folder-actions {
+  display: none;
+  gap: 2px;
+}
+
+.folder-item:hover .folder-actions {
+  display: flex;
+}
+
+.folder-item:hover .folder-count {
+  display: none;
+}
+
+.folder-actions button {
+  width: 22px;
+  height: 22px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.folder-actions button:hover {
+  background: var(--active);
+  color: var(--text);
+}
+
+.folder-actions button.delete-btn:hover {
+  color: var(--danger);
+}
+
+/* Notes Panel (Sidebar) */
+.notes-panel {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  z-index: 5;
+}
+
+.notes-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 6px 12px;
+  transition: border-color var(--transition);
+}
+
+.search-box:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.search-box .search-icon {
+  color: var(--text-muted);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.search-box input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--text);
+  width: 100%;
+}
+
+.search-box input::placeholder {
+  color: var(--text-muted);
+}
+
+.notes-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.notes-toolbar .note-count {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.btn-new-note {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.btn-new-note:hover {
+  background: #1d4ed8;
+}
+
+.notes-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 8px;
+}
+
+.note-item {
+  padding: 12px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all var(--transition);
+  border: 1px solid transparent;
+  margin-bottom: 2px;
+  position: relative;
+}
+
+.note-item:hover {
+  background: var(--hover);
+}
+
+.note-item.active {
+  background: var(--accent-light);
+  border-color: rgba(37, 99, 235, 0.2);
+}
+
+.note-item .note-title {
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-right: 20px;
+}
+
+.note-item .note-preview {
+  font-size: 12px;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.note-item .note-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.note-item .pin-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: var(--pin-color);
+  font-size: 12px;
+}
+
+.note-item .note-folder-tag {
+  font-size: 10px;
+  background: var(--hover);
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 20px;
+}
+
+.empty-state .empty-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+.empty-state p {
+  font-size: 13px;
+}
+
+/* Editor Panel */
+.editor-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--editor-bg);
+  min-width: 0;
+}
+
+.editor-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.editor-toolbar .toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+
+.editor-toolbar .toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+  margin: 0 4px;
+}
+
+.btn-toolbar {
+  padding: 5px 8px;
+  border: none;
+  background: transparent;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+
+.btn-toolbar:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+
+.btn-toolbar.active {
+  background: var(--accent-light);
+  color: var(--accent);
+}
+
+.btn-toolbar.pin-active {
+  color: var(--pin-color);
+}
+
+.btn-toolbar.danger:hover {
+  background: #fef2f2;
+  color: var(--danger);
+}
+
+.editor-title-row {
+  padding: 20px 32px 0;
+}
+
+.editor-title-row input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  background: transparent;
+}
+
+.editor-title-row input::placeholder {
+  color: var(--text-muted);
+}
+
+.editor-folder-select {
+  padding: 8px 32px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.editor-folder-select label {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.editor-folder-select select {
+  border: 1px solid var(--border);
+  background: var(--bg);
+  border-radius: 5px;
+  padding: 3px 8px;
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--text-secondary);
+  outline: none;
+  cursor: pointer;
+}
+
+.editor-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
+.editor-write {
+  flex: 1;
+  padding: 16px 32px 32px;
+  overflow-y: auto;
+}
+
+.editor-write textarea {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: 'Inter', monospace;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text);
+  background: transparent;
+}
+
+.editor-write textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.editor-preview {
+  flex: 1;
+  padding: 16px 32px 32px;
+  overflow-y: auto;
+  display: none;
+}
+
+.editor-preview.visible {
+  display: block;
+}
+
+.editor-write.half {
+  flex: 1;
+  border-right: 1px solid var(--border);
+}
+
+.editor-preview.half {
+  flex: 1;
+  display: block;
+}
+
+/* Markdown Preview Styles */
+.md-preview h1 { font-size: 1.8em; font-weight: 700; margin: 0.6em 0 0.4em; border-bottom: 2px solid var(--border); padding-bottom: 0.3em; }
+.md-preview h2 { font-size: 1.4em; font-weight: 600; margin: 0.5em 0 0.3em; border-bottom: 1px solid var(--border); padding-bottom: 0.2em; }
+.md-preview h3 { font-size: 1.15em; font-weight: 600; margin: 0.5em 0 0.3em; }
+.md-preview p { margin: 0.5em 0; }
+.md-preview ul, .md-preview ol { padding-left: 1.5em; margin: 0.5em 0; }
+.md-preview li { margin: 0.2em 0; }
+.md-preview code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; font-family: 'Courier New', monospace; }
+.md-preview pre { background: #1e293b; color: #e2e8f0; padding: 16px; border-radius: var(--radius); overflow-x: auto; margin: 0.8em 0; }
+.md-preview pre code { background: none; padding: 0; color: inherit; }
+.md-preview blockquote { border-left: 3px solid var(--accent); padding: 8px 16px; margin: 0.8em 0; background: var(--accent-light); border-radius: 0 var(--radius) var(--radius) 0; color: var(--text-secondary); }
+.md-preview hr { border: none; border-top: 1px solid var(--border); margin: 1em 0; }
+.md-preview strong { font-weight: 600; }
+.md-preview em { font-style: italic; }
+.md-preview a { color: var(--accent); text-decoration: none; }
+.md-preview a:hover { text-decoration: underline; }
+.md-preview img { max-width: 100%; border-radius: var(--radius); }
+.md-preview table { border-collapse: collapse; width: 100%; margin: 0.8em 0; }
+.md-preview th, .md-preview td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
+.md-preview th { background: var(--bg); font-weight: 600; }
+.md-preview .task-list-item { list-style: none; margin-left: -1.5em; }
+.md-preview .task-list-item input { margin-right: 6px; }
+.md-preview del { text-decoration: line-through; color: var(--text-muted); }
+
+/* Editor empty state */
+.editor-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
+.editor-empty .empty-icon {
+  font-size: 56px;
+  margin-bottom: 16px;
+  opacity: 0.3;
+}
+
+.editor-empty h3 {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.editor-empty p {
+  font-size: 13px;
+}
+
+/* Context Menu */
+.context-menu {
+  position: fixed;
+  background: var(--sidebar-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  padding: 4px;
+  z-index: 100;
+  min-width: 160px;
+  display: none;
+}
+
+.context-menu.visible {
+  display: block;
+}
+
+.context-menu button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--text);
+  text-align: left;
+  transition: background var(--transition);
+}
+
+.context-menu button:hover {
+  background: var(--hover);
+}
+
+.context-menu button.danger {
+  color: var(--danger);
+}
+
+.context-menu button.danger:hover {
+  background: #fef2f2;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  display: none;
+}
+
+.modal-overlay.visible {
+  display: flex;
+}
+
+.modal {
+  background: var(--sidebar-bg);
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  padding: 24px;
+  min-width: 320px;
+  max-width: 400px;
+}
+
+.modal h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.modal input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color var(--transition);
+}
+
+.modal input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.btn-modal {
+  padding: 7px 16px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.btn-modal:hover {
+  background: var(--hover);
+}
+
+.btn-modal.primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.btn-modal.primary:hover {
+  background: #1d4ed8;
+}
+
+/* Mobile Toggle */
+.mobile-toggle {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 50;
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 50%;
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  font-size: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .folder-panel {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 30;
+    box-shadow: var(--shadow-md);
+  }
+  .folder-panel.open { transform: translateX(0); }
+
+  .notes-panel {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 20;
+    box-shadow: var(--shadow-md);
+  }
+  .notes-panel.open { transform: translateX(0); }
+
+  .mobile-toggle { display: flex; }
+
+  .editor-title-row { padding: 16px 16px 0; }
+  .editor-folder-select { padding: 8px 16px; }
+  .editor-write { padding: 12px 16px 24px; }
+  .editor-preview { padding: 12px 16px 24px; }
+}
+
+@media (max-width: 600px) {
+  .notes-panel { width: 100%; min-width: 100%; }
+  .folder-panel { width: 85%; min-width: auto; }
+}
+
+/* Backdrop for mobile */
+.mobile-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.2);
+  z-index: 15;
+}
+
+.mobile-backdrop.visible {
+  display: block;
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- Folder Panel -->
+  <aside class="folder-panel" id="folderPanel">
+    <div class="folder-header">
+      <h2>폴더</h2>
+      <button class="btn-icon" onclick="showNewFolderModal()" title="새 폴더">+</button>
+    </div>
+    <div class="folder-list" id="folderList"></div>
+  </aside>
+
+  <!-- Notes Panel -->
+  <aside class="notes-panel" id="notesPanel">
+    <div class="notes-header">
+      <div class="search-box">
+        <span class="search-icon">&#128269;</span>
+        <input type="text" id="searchInput" placeholder="메모 검색..." oninput="renderNotes()">
+      </div>
+    </div>
+    <div class="notes-toolbar">
+      <span class="note-count" id="noteCount">0개의 메모</span>
+      <button class="btn-new-note" onclick="createNote()">+ 새 메모</button>
+    </div>
+    <div class="notes-list" id="notesList"></div>
+  </aside>
+
+  <!-- Editor Panel -->
+  <main class="editor-panel" id="editorPanel">
+    <div class="editor-empty" id="editorEmpty">
+      <div class="empty-icon">&#128221;</div>
+      <h3>메모를 선택하세요</h3>
+      <p>왼쪽 목록에서 메모를 선택하거나 새 메모를 만드세요</p>
+    </div>
+
+    <div id="editorContent" style="display:none; flex-direction:column; flex:1; overflow:hidden;">
+      <div class="editor-toolbar">
+        <div class="toolbar-left">
+          <button class="btn-toolbar" onclick="insertMd('**','**')" title="굵게"><b>B</b></button>
+          <button class="btn-toolbar" onclick="insertMd('*','*')" title="기울임"><i>I</i></button>
+          <button class="btn-toolbar" onclick="insertMd('~~','~~')" title="취소선"><del>S</del></button>
+          <button class="btn-toolbar" onclick="insertMd('`','`')" title="인라인 코드">&lt;/&gt;</button>
+          <div class="toolbar-divider"></div>
+          <button class="btn-toolbar" onclick="insertLine('# ')" title="제목 1">H1</button>
+          <button class="btn-toolbar" onclick="insertLine('## ')" title="제목 2">H2</button>
+          <button class="btn-toolbar" onclick="insertLine('### ')" title="제목 3">H3</button>
+          <div class="toolbar-divider"></div>
+          <button class="btn-toolbar" onclick="insertLine('- ')" title="목록">&#8226;</button>
+          <button class="btn-toolbar" onclick="insertLine('- [ ] ')" title="체크리스트">&#9744;</button>
+          <button class="btn-toolbar" onclick="insertLine('> ')" title="인용">&#10077;</button>
+        </div>
+        <div class="toolbar-right">
+          <button class="btn-toolbar" id="btnPin" onclick="togglePin()" title="핀 고정">&#128204;</button>
+          <div class="toolbar-divider"></div>
+          <button class="btn-toolbar" id="btnEdit" onclick="setViewMode('edit')" title="편집">편집</button>
+          <button class="btn-toolbar" id="btnSplit" onclick="setViewMode('split')" title="분할">분할</button>
+          <button class="btn-toolbar" id="btnPreview" onclick="setViewMode('preview')" title="미리보기">미리보기</button>
+          <div class="toolbar-divider"></div>
+          <button class="btn-toolbar danger" onclick="deleteCurrentNote()" title="삭제">&#128465;</button>
+        </div>
+      </div>
+
+      <div class="editor-title-row">
+        <input type="text" id="editorTitle" placeholder="제목 없음" oninput="onTitleChange()">
+      </div>
+
+      <div class="editor-folder-select">
+        <label>폴더:</label>
+        <select id="editorFolder" onchange="onFolderChange()"></select>
+      </div>
+
+      <div class="editor-body">
+        <div class="editor-write" id="editorWrite">
+          <textarea id="editorTextarea" placeholder="마크다운으로 메모를 작성하세요..." oninput="onContentChange()"></textarea>
+        </div>
+        <div class="editor-preview md-preview" id="editorPreview"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Mobile toggle button -->
+<button class="mobile-toggle" id="mobileToggle" onclick="toggleMobileSidebar()">&#9776;</button>
+<div class="mobile-backdrop" id="mobileBackdrop" onclick="closeMobileSidebar()"></div>
+
+<!-- Context Menu -->
+<div class="context-menu" id="contextMenu"></div>
+
+<!-- New Folder Modal -->
+<div class="modal-overlay" id="folderModal">
+  <div class="modal">
+    <h3 id="folderModalTitle">새 폴더</h3>
+    <input type="text" id="folderNameInput" placeholder="폴더 이름" onkeydown="if(event.key==='Enter')saveFolderModal()">
+    <div class="modal-actions">
+      <button class="btn-modal" onclick="closeFolderModal()">취소</button>
+      <button class="btn-modal primary" onclick="saveFolderModal()">저장</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Data ──
+const STORAGE_KEY = 'notes-app-data';
+let data = loadData();
+let activeNoteId = null;
+let activeFolderId = '__all__';
+let viewMode = 'edit';
+let saveTimer = null;
+let editingFolderId = null;
+
+function defaultData() {
+  return {
+    folders: [
+      { id: '__all__', name: '전체 메모', icon: '&#128196;', system: true },
+      { id: '__pinned__', name: '핀 고정', icon: '&#128204;', system: true },
+      { id: genId(), name: '개인', icon: '&#128193;' },
+      { id: genId(), name: '업무', icon: '&#128188;' },
+    ],
+    notes: []
+  };
+}
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const d = JSON.parse(raw);
+      if (d.folders && d.notes) return d;
+    }
+  } catch(e) {}
+  return defaultData();
+}
+
+function saveData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function genId() {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2, 6);
+}
+
+// ── Folders ──
+function getUserFolders() {
+  return data.folders.filter(f => !f.system);
+}
+
+function renderFolders() {
+  const list = document.getElementById('folderList');
+  let html = '';
+
+  data.folders.forEach(f => {
+    const count = f.id === '__all__'
+      ? data.notes.length
+      : f.id === '__pinned__'
+        ? data.notes.filter(n => n.pinned).length
+        : data.notes.filter(n => n.folderId === f.id).length;
+
+    const isActive = activeFolderId === f.id;
+    const actionsHtml = f.system ? '' : `
+      <div class="folder-actions">
+        <button onclick="event.stopPropagation();showRenameFolderModal('${f.id}')" title="이름 변경">&#9998;</button>
+        <button class="delete-btn" onclick="event.stopPropagation();deleteFolder('${f.id}')" title="삭제">&#10005;</button>
+      </div>`;
+
+    html += `
+      <div class="folder-item ${isActive ? 'active' : ''}" onclick="selectFolder('${f.id}')">
+        <span class="folder-icon">${f.icon || '&#128193;'}</span>
+        <span class="folder-name">${f.name}</span>
+        <span class="folder-count">${count}</span>
+        ${actionsHtml}
+      </div>`;
+  });
+
+  list.innerHTML = html;
+  updateFolderSelect();
+}
+
+function selectFolder(fid) {
+  activeFolderId = fid;
+  renderFolders();
+  renderNotes();
+  closeMobileSidebar();
+}
+
+function showNewFolderModal() {
+  editingFolderId = null;
+  document.getElementById('folderModalTitle').textContent = '새 폴더';
+  document.getElementById('folderNameInput').value = '';
+  document.getElementById('folderModal').classList.add('visible');
+  document.getElementById('folderNameInput').focus();
+}
+
+function showRenameFolderModal(fid) {
+  editingFolderId = fid;
+  const folder = data.folders.find(f => f.id === fid);
+  document.getElementById('folderModalTitle').textContent = '폴더 이름 변경';
+  document.getElementById('folderNameInput').value = folder ? folder.name : '';
+  document.getElementById('folderModal').classList.add('visible');
+  document.getElementById('folderNameInput').focus();
+}
+
+function closeFolderModal() {
+  document.getElementById('folderModal').classList.remove('visible');
+  editingFolderId = null;
+}
+
+function saveFolderModal() {
+  const name = document.getElementById('folderNameInput').value.trim();
+  if (!name) return;
+
+  if (editingFolderId) {
+    const folder = data.folders.find(f => f.id === editingFolderId);
+    if (folder) folder.name = name;
+  } else {
+    data.folders.push({ id: genId(), name, icon: '&#128193;' });
+  }
+
+  saveData();
+  closeFolderModal();
+  renderFolders();
+}
+
+function deleteFolder(fid) {
+  if (!confirm('이 폴더를 삭제하시겠습니까?\n폴더 안의 메모는 삭제되지 않습니다.')) return;
+  data.notes.forEach(n => { if (n.folderId === fid) n.folderId = null; });
+  data.folders = data.folders.filter(f => f.id !== fid);
+  if (activeFolderId === fid) activeFolderId = '__all__';
+  saveData();
+  renderFolders();
+  renderNotes();
+}
+
+function updateFolderSelect() {
+  const sel = document.getElementById('editorFolder');
+  const userFolders = getUserFolders();
+  sel.innerHTML = '<option value="">폴더 없음</option>' +
+    userFolders.map(f => `<option value="${f.id}">${f.name}</option>`).join('');
+
+  if (activeNoteId) {
+    const note = data.notes.find(n => n.id === activeNoteId);
+    if (note) sel.value = note.folderId || '';
+  }
+}
+
+// ── Notes ──
+function getFilteredNotes() {
+  const query = document.getElementById('searchInput').value.toLowerCase().trim();
+  let notes = [...data.notes];
+
+  // Filter by folder
+  if (activeFolderId === '__pinned__') {
+    notes = notes.filter(n => n.pinned);
+  } else if (activeFolderId !== '__all__') {
+    notes = notes.filter(n => n.folderId === activeFolderId);
+  }
+
+  // Filter by search
+  if (query) {
+    notes = notes.filter(n =>
+      (n.title || '').toLowerCase().includes(query) ||
+      (n.content || '').toLowerCase().includes(query)
+    );
+  }
+
+  // Sort: pinned first, then by updated
+  notes.sort((a, b) => {
+    if (a.pinned && !b.pinned) return -1;
+    if (!a.pinned && b.pinned) return 1;
+    return b.updatedAt - a.updatedAt;
+  });
+
+  return notes;
+}
+
+function renderNotes() {
+  const notes = getFilteredNotes();
+  const list = document.getElementById('notesList');
+  const countEl = document.getElementById('noteCount');
+  countEl.textContent = `${notes.length}개의 메모`;
+
+  if (notes.length === 0) {
+    list.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">&#128466;</div>
+        <p>메모가 없습니다</p>
+      </div>`;
+    return;
+  }
+
+  list.innerHTML = notes.map(n => {
+    const isActive = n.id === activeNoteId;
+    const title = n.title || '제목 없음';
+    const preview = (n.content || '').replace(/[#*`>\-\[\]]/g, '').substring(0, 60);
+    const date = formatDate(n.updatedAt);
+    const folder = data.folders.find(f => f.id === n.folderId);
+    const folderTag = folder && activeFolderId === '__all__'
+      ? `<span class="note-folder-tag">${folder.name}</span>` : '';
+    const pinBadge = n.pinned ? '<span class="pin-badge">&#128204;</span>' : '';
+
+    return `
+      <div class="note-item ${isActive ? 'active' : ''}"
+           onclick="selectNote('${n.id}')"
+           oncontextmenu="showNoteContext(event, '${n.id}')">
+        ${pinBadge}
+        <div class="note-title">${escHtml(title)}</div>
+        <div class="note-preview">${escHtml(preview) || '내용 없음'}</div>
+        <div class="note-meta">
+          <span>${date}</span>
+          ${folderTag}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function createNote() {
+  const folderId = (activeFolderId !== '__all__' && activeFolderId !== '__pinned__')
+    ? activeFolderId : (getUserFolders()[0]?.id || null);
+
+  const note = {
+    id: genId(),
+    title: '',
+    content: '',
+    folderId,
+    pinned: false,
+    createdAt: Date.now(),
+    updatedAt: Date.now()
+  };
+
+  data.notes.unshift(note);
+  saveData();
+  selectNote(note.id);
+  renderFolders();
+  renderNotes();
+
+  setTimeout(() => {
+    document.getElementById('editorTitle').focus();
+  }, 50);
+
+  closeMobileSidebar();
+}
+
+function selectNote(nid) {
+  activeNoteId = nid;
+  const note = data.notes.find(n => n.id === nid);
+  if (!note) return;
+
+  document.getElementById('editorEmpty').style.display = 'none';
+  document.getElementById('editorContent').style.display = 'flex';
+
+  document.getElementById('editorTitle').value = note.title || '';
+  document.getElementById('editorTextarea').value = note.content || '';
+  document.getElementById('editorFolder').value = note.folderId || '';
+
+  updatePinButton();
+  updatePreview();
+  renderNotes();
+}
+
+function deleteCurrentNote() {
+  if (!activeNoteId) return;
+  const note = data.notes.find(n => n.id === activeNoteId);
+  const title = note?.title || '제목 없음';
+  if (!confirm(`"${title}" 메모를 삭제하시겠습니까?`)) return;
+
+  data.notes = data.notes.filter(n => n.id !== activeNoteId);
+  activeNoteId = null;
+  saveData();
+
+  document.getElementById('editorContent').style.display = 'none';
+  document.getElementById('editorEmpty').style.display = 'flex';
+
+  renderFolders();
+  renderNotes();
+}
+
+function deleteNote(nid) {
+  const note = data.notes.find(n => n.id === nid);
+  const title = note?.title || '제목 없음';
+  if (!confirm(`"${title}" 메모를 삭제하시겠습니까?`)) return;
+
+  data.notes = data.notes.filter(n => n.id !== nid);
+  if (activeNoteId === nid) {
+    activeNoteId = null;
+    document.getElementById('editorContent').style.display = 'none';
+    document.getElementById('editorEmpty').style.display = 'flex';
+  }
+  saveData();
+  renderFolders();
+  renderNotes();
+}
+
+function togglePin() {
+  if (!activeNoteId) return;
+  const note = data.notes.find(n => n.id === activeNoteId);
+  if (note) {
+    note.pinned = !note.pinned;
+    note.updatedAt = Date.now();
+    saveData();
+    updatePinButton();
+    renderFolders();
+    renderNotes();
+  }
+}
+
+function togglePinNote(nid) {
+  const note = data.notes.find(n => n.id === nid);
+  if (note) {
+    note.pinned = !note.pinned;
+    note.updatedAt = Date.now();
+    saveData();
+    if (nid === activeNoteId) updatePinButton();
+    renderFolders();
+    renderNotes();
+  }
+}
+
+function updatePinButton() {
+  const btn = document.getElementById('btnPin');
+  const note = data.notes.find(n => n.id === activeNoteId);
+  if (note?.pinned) {
+    btn.classList.add('pin-active');
+    btn.title = '핀 해제';
+  } else {
+    btn.classList.remove('pin-active');
+    btn.title = '핀 고정';
+  }
+}
+
+// ── Editor Events ──
+function onTitleChange() {
+  if (!activeNoteId) return;
+  const note = data.notes.find(n => n.id === activeNoteId);
+  if (note) {
+    note.title = document.getElementById('editorTitle').value;
+    note.updatedAt = Date.now();
+    scheduleSave();
+  }
+}
+
+function onContentChange() {
+  if (!activeNoteId) return;
+  const note = data.notes.find(n => n.id === activeNoteId);
+  if (note) {
+    note.content = document.getElementById('editorTextarea').value;
+    note.updatedAt = Date.now();
+    scheduleSave();
+    updatePreview();
+  }
+}
+
+function onFolderChange() {
+  if (!activeNoteId) return;
+  const note = data.notes.find(n => n.id === activeNoteId);
+  if (note) {
+    note.folderId = document.getElementById('editorFolder').value || null;
+    note.updatedAt = Date.now();
+    saveData();
+    renderFolders();
+    renderNotes();
+  }
+}
+
+function scheduleSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    saveData();
+    renderNotes();
+  }, 300);
+}
+
+// ── View Modes ──
+function setViewMode(mode) {
+  viewMode = mode;
+  const writeEl = document.getElementById('editorWrite');
+  const previewEl = document.getElementById('editorPreview');
+
+  document.getElementById('btnEdit').classList.toggle('active', mode === 'edit');
+  document.getElementById('btnSplit').classList.toggle('active', mode === 'split');
+  document.getElementById('btnPreview').classList.toggle('active', mode === 'preview');
+
+  writeEl.classList.remove('half');
+  previewEl.classList.remove('half', 'visible');
+
+  if (mode === 'edit') {
+    writeEl.style.display = 'block';
+    previewEl.style.display = 'none';
+  } else if (mode === 'preview') {
+    writeEl.style.display = 'none';
+    previewEl.classList.add('visible');
+    previewEl.style.display = 'block';
+  } else {
+    writeEl.style.display = 'block';
+    writeEl.classList.add('half');
+    previewEl.classList.add('half');
+    previewEl.style.display = 'block';
+  }
+
+  updatePreview();
+}
+
+// ── Markdown ──
+function parseMarkdown(text) {
+  if (!text) return '<p style="color:var(--text-muted)">내용이 없습니다</p>';
+
+  let html = escHtml(text);
+
+  // Code blocks
+  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
+
+  // Headers
+  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+
+  // Horizontal rule
+  html = html.replace(/^---$/gm, '<hr>');
+
+  // Bold, italic, strikethrough, inline code
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  html = html.replace(/~~(.+?)~~/g, '<del>$1</del>');
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+  // Links and images
+  html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+
+  // Blockquote
+  html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+
+  // Task list
+  html = html.replace(/^- \[x\] (.+)$/gm, '<li class="task-list-item"><input type="checkbox" checked disabled> $1</li>');
+  html = html.replace(/^- \[ \] (.+)$/gm, '<li class="task-list-item"><input type="checkbox" disabled> $1</li>');
+
+  // Unordered list
+  html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
+
+  // Ordered list
+  html = html.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+
+  // Wrap consecutive <li> in <ul>
+  html = html.replace(/((?:<li[^>]*>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
+
+  // Paragraphs
+  html = html.replace(/\n\n/g, '</p><p>');
+  html = html.replace(/\n/g, '<br>');
+
+  // Clean up
+  html = '<p>' + html + '</p>';
+  html = html.replace(/<p><(h[1-3]|hr|ul|ol|pre|blockquote)/g, '<$1');
+  html = html.replace(/<\/(h[1-3]|hr|ul|ol|pre|blockquote)><\/p>/g, '</$1>');
+  html = html.replace(/<p><\/p>/g, '');
+
+  return html;
+}
+
+function updatePreview() {
+  const content = document.getElementById('editorTextarea').value;
+  document.getElementById('editorPreview').innerHTML = parseMarkdown(content);
+}
+
+// ── Toolbar Insert ──
+function insertMd(before, after) {
+  const ta = document.getElementById('editorTextarea');
+  const start = ta.selectionStart;
+  const end = ta.selectionEnd;
+  const text = ta.value;
+  const selected = text.substring(start, end);
+
+  ta.value = text.substring(0, start) + before + selected + after + text.substring(end);
+  ta.selectionStart = start + before.length;
+  ta.selectionEnd = start + before.length + selected.length;
+  ta.focus();
+  onContentChange();
+}
+
+function insertLine(prefix) {
+  const ta = document.getElementById('editorTextarea');
+  const start = ta.selectionStart;
+  const text = ta.value;
+  const lineStart = text.lastIndexOf('\n', start - 1) + 1;
+
+  ta.value = text.substring(0, lineStart) + prefix + text.substring(lineStart);
+  ta.selectionStart = ta.selectionEnd = lineStart + prefix.length;
+  ta.focus();
+  onContentChange();
+}
+
+// ── Context Menu ──
+function showNoteContext(e, nid) {
+  e.preventDefault();
+  const note = data.notes.find(n => n.id === nid);
+  if (!note) return;
+
+  const menu = document.getElementById('contextMenu');
+  const pinText = note.pinned ? '핀 해제' : '핀 고정';
+
+  menu.innerHTML = `
+    <button onclick="togglePinNote('${nid}');hideContextMenu()">&#128204; ${pinText}</button>
+    <button class="danger" onclick="deleteNote('${nid}');hideContextMenu()">&#128465; 삭제</button>
+  `;
+
+  menu.style.left = e.clientX + 'px';
+  menu.style.top = e.clientY + 'px';
+  menu.classList.add('visible');
+}
+
+function hideContextMenu() {
+  document.getElementById('contextMenu').classList.remove('visible');
+}
+
+document.addEventListener('click', hideContextMenu);
+
+// ── Mobile ──
+let mobileState = 0; // 0: closed, 1: folders, 2: notes
+
+function toggleMobileSidebar() {
+  mobileState = (mobileState + 1) % 3;
+  const fp = document.getElementById('folderPanel');
+  const np = document.getElementById('notesPanel');
+  const bd = document.getElementById('mobileBackdrop');
+
+  fp.classList.remove('open');
+  np.classList.remove('open');
+  bd.classList.remove('visible');
+
+  if (mobileState === 1) {
+    np.classList.add('open');
+    bd.classList.add('visible');
+  } else if (mobileState === 2) {
+    fp.classList.add('open');
+    bd.classList.add('visible');
+  }
+}
+
+function closeMobileSidebar() {
+  mobileState = 0;
+  document.getElementById('folderPanel').classList.remove('open');
+  document.getElementById('notesPanel').classList.remove('open');
+  document.getElementById('mobileBackdrop').classList.remove('visible');
+}
+
+// ── Utilities ──
+function escHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function formatDate(ts) {
+  const d = new Date(ts);
+  const now = new Date();
+  const diff = now - d;
+
+  if (diff < 60000) return '방금 전';
+  if (diff < 3600000) return `${Math.floor(diff / 60000)}분 전`;
+  if (diff < 86400000) return `${Math.floor(diff / 3600000)}시간 전`;
+
+  const sameYear = d.getFullYear() === now.getFullYear();
+  if (sameYear) {
+    return `${d.getMonth() + 1}월 ${d.getDate()}일`;
+  }
+  return `${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()}`;
+}
+
+// ── Keyboard Shortcuts ──
+document.addEventListener('keydown', (e) => {
+  // Ctrl+N: new note
+  if (e.ctrlKey && e.key === 'n') {
+    e.preventDefault();
+    createNote();
+  }
+  // Ctrl+/: search focus
+  if (e.ctrlKey && e.key === '/') {
+    e.preventDefault();
+    document.getElementById('searchInput').focus();
+  }
+  // Escape: close modals
+  if (e.key === 'Escape') {
+    closeFolderModal();
+    hideContextMenu();
+  }
+});
+
+// ── Init ──
+function init() {
+  renderFolders();
+  renderNotes();
+  setViewMode('edit');
+
+  // Select first note if exists
+  if (data.notes.length > 0) {
+    selectNote(data.notes[0].id);
+  }
+}
+
+init();
+</script>
+</body>
+</html>
