@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>팜마켓 - 산지직송 농산물 쇼핑몰</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --green-50: #f0fdf4;
+  --green-100: #dcfce7;
+  --green-200: #bbf7d0;
+  --green-500: #22c55e;
+  --green-600: #16a34a;
+  --green-700: #15803d;
+  --green-800: #166534;
+  --green-900: #14532d;
+  --orange-500: #f97316;
+  --orange-600: #ea580c;
+  --red-500: #ef4444;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  --white: #ffffff;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.04);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+  --transition: 0.2s ease;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--gray-50);
+  color: var(--gray-800);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ── Header ── */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-sm);
+}
+
+.header-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--green-700);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.logo svg { flex-shrink: 0; }
+
+.nav-categories {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.nav-categories button {
+  background: none;
+  border: none;
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--gray-600);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.nav-categories button:hover,
+.nav-categories button.active {
+  background: var(--green-50);
+  color: var(--green-700);
+}
+
+.search-bar {
+  flex: 1;
+  max-width: 400px;
+  position: relative;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 10px 16px 10px 42px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  background: var(--gray-50);
+  transition: var(--transition);
+  outline: none;
+}
+
+.search-bar input:focus {
+  border-color: var(--green-500);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(34,197,94,0.15);
+}
+
+.search-bar svg {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gray-400);
+}
+
+.cart-btn {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  color: var(--gray-600);
+  flex-shrink: 0;
+}
+
+.cart-btn:hover { background: var(--green-50); color: var(--green-700); }
+
+.cart-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: var(--red-500);
+  color: var(--white);
+  font-size: 0.65rem;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  display: none;
+}
+
+.cart-badge.show { display: flex; }
+
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  color: var(--gray-600);
+}
+
+/* ── Hero ── */
+.hero {
+  position: relative;
+  height: 420px;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--green-800), var(--green-600));
+}
+
+.hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.55;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 24px;
+  background: linear-gradient(to top, rgba(0,0,0,0.3), transparent);
+}
+
+.hero-overlay h1 {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: 12px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.hero-overlay p {
+  font-size: 1.15rem;
+  color: rgba(255,255,255,0.9);
+  max-width: 520px;
+  margin-bottom: 28px;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+.hero-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  background: var(--green-600);
+  color: var(--white);
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: inherit;
+  box-shadow: 0 4px 12px rgba(22,163,74,0.4);
+}
+
+.hero-btn:hover {
+  background: var(--green-700);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(22,163,74,0.5);
+}
+
+/* ── Category Grid ── */
+.section {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 48px 24px;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+}
+
+.category-card {
+  background: var(--white);
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 24px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.category-card:hover {
+  border-color: var(--green-500);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.category-icon {
+  font-size: 2.2rem;
+  margin-bottom: 8px;
+}
+
+.category-card span {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--gray-700);
+}
+
+/* ── Product Grid ── */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.product-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--gray-200);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.product-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-3px);
+}
+
+.product-img-wrap {
+  position: relative;
+  width: 100%;
+  padding-top: 100%;
+  overflow: hidden;
+  background: var(--gray-100);
+}
+
+.product-img-wrap img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-img-wrap img { transform: scale(1.05); }
+
+.badge-free-ship {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: var(--green-600);
+  color: var(--white);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.badge-discount {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--red-500);
+  color: var(--white);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 999px;
+}
+
+.product-info {
+  padding: 16px;
+}
+
+.product-farm {
+  font-size: 0.78rem;
+  color: var(--gray-400);
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.product-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--gray-800);
+  margin-bottom: 8px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.product-price {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.price-sale {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+
+.price-original {
+  font-size: 0.82rem;
+  color: var(--gray-400);
+  text-decoration: line-through;
+}
+
+.price-percent {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--red-500);
+}
+
+.product-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: var(--gray-500);
+}
+
+.product-rating .stars { color: #facc15; letter-spacing: -1px; }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.25s ease;
+  padding: 24px;
+}
+
+.modal-overlay.open { opacity: 1; visibility: visible; }
+
+.modal {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  max-width: 820px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  transform: translateY(20px) scale(0.97);
+  transition: 0.25s ease;
+}
+
+.modal-overlay.open .modal { transform: translateY(0) scale(1); }
+
+.modal-img {
+  width: 100%;
+  height: 100%;
+  min-height: 360px;
+  object-fit: cover;
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+}
+
+.modal-body {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: var(--white);
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  z-index: 1;
+}
+
+.modal-close:hover { background: var(--gray-100); }
+
+.modal-farm { font-size: 0.82rem; color: var(--green-600); font-weight: 600; }
+.modal-name { font-size: 1.35rem; font-weight: 700; color: var(--gray-900); }
+
+.modal-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.modal-meta dt { color: var(--gray-400); }
+.modal-meta dd { color: var(--gray-700); font-weight: 500; }
+
+.modal-desc {
+  font-size: 0.9rem;
+  color: var(--gray-600);
+  line-height: 1.7;
+  border-top: 1px solid var(--gray-200);
+  padding-top: 16px;
+}
+
+.modal-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.modal-price-row .price-percent { font-size: 1.3rem; }
+.modal-price-row .price-sale { font-size: 1.5rem; }
+.modal-price-row .price-original { font-size: 0.95rem; }
+
+.qty-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.qty-row label { font-size: 0.9rem; font-weight: 600; color: var(--gray-700); }
+
+.qty-control {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.qty-control button {
+  width: 36px;
+  height: 36px;
+  background: var(--gray-50);
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--gray-600);
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+.qty-control button:hover { background: var(--gray-200); }
+
+.qty-control span {
+  width: 48px;
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.modal-add-cart {
+  width: 100%;
+  padding: 14px;
+  background: var(--green-600);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: inherit;
+  margin-top: auto;
+}
+
+.modal-add-cart:hover { background: var(--green-700); }
+
+/* ── Cart Sidebar ── */
+.cart-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 300;
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.25s ease;
+}
+
+.cart-overlay.open { opacity: 1; visibility: visible; }
+
+.cart-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 400px;
+  max-width: 90vw;
+  height: 100vh;
+  background: var(--white);
+  z-index: 301;
+  transform: translateX(100%);
+  transition: 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-panel.open { transform: translateX(0); }
+
+.cart-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cart-header h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cart-header-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--gray-500);
+  font-size: 1.3rem;
+  transition: var(--transition);
+}
+
+.cart-header-close:hover { color: var(--gray-800); }
+
+.cart-items {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 24px;
+}
+
+.cart-empty {
+  text-align: center;
+  padding: 48px 0;
+  color: var(--gray-400);
+}
+
+.cart-empty svg { margin-bottom: 12px; }
+.cart-empty p { font-size: 0.9rem; }
+
+.cart-item {
+  display: flex;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.cart-item img {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.cart-item-info { flex: 1; min-width: 0; }
+
+.cart-item-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gray-800);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cart-item-price {
+  font-size: 0.82rem;
+  color: var(--gray-500);
+  margin-top: 2px;
+}
+
+.cart-item-qty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.cart-item-qty button {
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--gray-200);
+  background: var(--white);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--gray-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.cart-item-qty button:hover { background: var(--gray-100); }
+.cart-item-qty span { font-size: 0.85rem; font-weight: 600; min-width: 20px; text-align: center; }
+
+.cart-item-remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--gray-300);
+  font-size: 1rem;
+  padding: 4px;
+  transition: var(--transition);
+  align-self: flex-start;
+}
+
+.cart-item-remove:hover { color: var(--red-500); }
+
+.cart-footer {
+  padding: 20px 24px;
+  border-top: 1px solid var(--gray-200);
+  background: var(--gray-50);
+}
+
+.cart-total {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.cart-total .total-price { color: var(--green-700); font-size: 1.2rem; }
+
+.cart-checkout {
+  width: 100%;
+  padding: 14px;
+  background: var(--green-600);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+.cart-checkout:hover { background: var(--green-700); }
+
+/* ── Footer ── */
+.footer {
+  background: var(--gray-900);
+  color: var(--gray-400);
+  padding: 48px 24px 32px;
+  margin-top: 48px;
+}
+
+.footer-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+}
+
+.footer-brand .logo { color: var(--green-500); font-size: 1.3rem; margin-bottom: 12px; }
+
+.footer-brand p { font-size: 0.85rem; line-height: 1.7; max-width: 300px; }
+
+.footer h4 {
+  color: var(--white);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.footer ul { list-style: none; }
+
+.footer ul li {
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+}
+
+.footer ul li a {
+  color: var(--gray-400);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.footer ul li a:hover { color: var(--white); }
+
+.footer-bottom {
+  max-width: 1280px;
+  margin: 32px auto 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--gray-700);
+  text-align: center;
+  font-size: 0.8rem;
+}
+
+/* ── Toast ── */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--gray-800);
+  color: var(--white);
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-xl);
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.3s ease;
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toast.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .product-grid { grid-template-columns: repeat(3, 1fr); }
+  .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+}
+
+@media (max-width: 768px) {
+  .nav-categories { display: none; }
+  .mobile-menu-btn { display: block; }
+  .hero { height: 320px; }
+  .hero-overlay h1 { font-size: 2rem; }
+  .hero-overlay p { font-size: 1rem; }
+  .category-grid { grid-template-columns: repeat(3, 1fr); }
+  .product-grid { grid-template-columns: repeat(2, 1fr); }
+  .modal { grid-template-columns: 1fr; max-width: 480px; }
+  .modal-img { max-height: 260px; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+  .footer-inner { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .header-inner { padding: 0 16px; gap: 12px; }
+  .logo { font-size: 1.25rem; }
+  .search-bar input { font-size: 0.85rem; padding: 8px 12px 8px 36px; }
+  .section { padding: 32px 16px; }
+  .category-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .category-card { padding: 16px 10px; }
+  .product-grid { gap: 12px; }
+  .product-info { padding: 12px; }
+}
+
+/* scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a9 9 0 0 0-9 9c0 3.9 3.1 7.1 5 9 .8.8 2.2 2 4 2s3.2-1.2 4-2c1.9-1.9 5-5.1 5-9a9 9 0 0 0-9-9z"/><path d="M12 2v10"/><path d="M8 6c2 1 4 1 4 1s2 0 4-1"/></svg>
+      팜마켓
+    </a>
+    <nav class="nav-categories" id="navCategories">
+      <button class="active" data-cat="all">전체</button>
+      <button data-cat="fruit">과일</button>
+      <button data-cat="veg">채소</button>
+      <button data-cat="grain">쌀/잡곡</button>
+      <button data-cat="meat">축산</button>
+      <button data-cat="seafood">수산</button>
+      <button data-cat="processed">가공식품</button>
+    </nav>
+    <div class="search-bar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="농산물 검색..." />
+    </div>
+    <button class="cart-btn" id="cartBtn" aria-label="장바구니 열기">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      <span class="cart-badge" id="cartBadge">0</span>
+    </button>
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="메뉴">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <img class="hero-img" src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=1400&q=80" alt="신선한 과일" />
+  <div class="hero-overlay">
+    <h1>산지에서 식탁까지, 신선하게</h1>
+    <p>전국 농가에서 직접 보내드리는 제철 농산물을 만나보세요. 중간 유통 없이 산지직송으로 더 신선하고, 더 합리적입니다.</p>
+    <button class="hero-btn" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      지금 쇼핑하기
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- Categories -->
+<section class="section">
+  <h2 class="section-title">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--green-600)" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    카테고리
+  </h2>
+  <div class="category-grid" id="categoryGrid"></div>
+</section>
+
+<!-- Products -->
+<section class="section" id="products">
+  <h2 class="section-title">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--green-600)" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    인기 상품
+  </h2>
+  <div class="product-grid" id="productGrid"></div>
+</section>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalContent" style="position:relative;">
+    <button class="modal-close" id="modalClose">&times;</button>
+    <img class="modal-img" id="modalImg" src="" alt="" />
+    <div class="modal-body">
+      <span class="modal-farm" id="modalFarm"></span>
+      <h3 class="modal-name" id="modalName"></h3>
+      <dl class="modal-meta">
+        <dt>용량</dt><dd id="modalWeight"></dd>
+        <dt>원산지</dt><dd id="modalOrigin"></dd>
+        <dt>배송</dt><dd id="modalShipping"></dd>
+        <dt>평점</dt><dd id="modalRating"></dd>
+      </dl>
+      <p class="modal-desc" id="modalDesc"></p>
+      <div class="modal-price-row">
+        <span class="price-percent" id="modalPercent"></span>
+        <span class="price-sale" id="modalSalePrice"></span>
+        <span class="price-original" id="modalOrigPrice"></span>
+      </div>
+      <div class="qty-row">
+        <label>수량</label>
+        <div class="qty-control">
+          <button id="qtyMinus">-</button>
+          <span id="qtyValue">1</span>
+          <button id="qtyPlus">+</button>
+        </div>
+      </div>
+      <button class="modal-add-cart" id="modalAddCart">장바구니 담기</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cart Sidebar -->
+<div class="cart-overlay" id="cartOverlay"></div>
+<aside class="cart-panel" id="cartPanel">
+  <div class="cart-header">
+    <h2>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      장바구니
+    </h2>
+    <button class="cart-header-close" id="cartClose">&times;</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span>총 결제금액</span>
+      <span class="total-price" id="cartTotal">0원</span>
+    </div>
+    <button class="cart-checkout" id="cartCheckout">주문하기</button>
+  </div>
+</aside>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a9 9 0 0 0-9 9c0 3.9 3.1 7.1 5 9 .8.8 2.2 2 4 2s3.2-1.2 4-2c1.9-1.9 5-5.1 5-9a9 9 0 0 0-9-9z"/><path d="M12 2v10"/><path d="M8 6c2 1 4 1 4 1s2 0 4-1"/></svg>
+        팜마켓
+      </div>
+      <p>전국 산지에서 직접 보내드리는 신선한 농산물 직거래 쇼핑몰입니다. 건강한 먹거리를 합리적인 가격에 만나보세요.</p>
+    </div>
+    <div>
+      <h4>고객센터</h4>
+      <ul>
+        <li><a href="#">자주 묻는 질문</a></li>
+        <li><a href="#">1:1 문의</a></li>
+        <li><a href="#">배송 안내</a></li>
+        <li><a href="#">교환/반품</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>회사 정보</h4>
+      <ul>
+        <li><a href="#">회사 소개</a></li>
+        <li><a href="#">입점 안내</a></li>
+        <li><a href="#">제휴 문의</a></li>
+        <li><a href="#">채용 정보</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>이용 안내</h4>
+      <ul>
+        <li><a href="#">이용약관</a></li>
+        <li><a href="#">개인정보처리방침</a></li>
+        <li><a href="#">사업자정보확인</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    &copy; 2026 팜마켓. All rights reserved. | 사업자등록번호: 123-45-67890
+  </div>
+</footer>
+
+<script>
+// ── Data ──
+const categories = [
+  { id: 'fruit', icon: '🍎', name: '과일' },
+  { id: 'veg', icon: '🥬', name: '채소' },
+  { id: 'grain', icon: '🌾', name: '쌀/잡곡' },
+  { id: 'meat', icon: '🥩', name: '축산' },
+  { id: 'seafood', icon: '🦐', name: '수산' },
+  { id: 'processed', icon: '🫙', name: '가공식품' },
+];
+
+const products = [
+  {
+    id: 1, cat: 'fruit', name: '성주 꿀참외 3kg', farm: '성주 해뜰농장',
+    price: 28000, sale: 19900, img: 'https://images.unsplash.com/photo-1587049016823-69ef9d68f4b0?w=400&q=80',
+    rating: 4.9, reviews: 1247, weight: '3kg (9~12과)', origin: '경북 성주',
+    desc: '당도 14Brix 이상의 성주 꿀참외입니다. 아삭한 식감과 달콤한 과즙이 일품인 제철 과일을 산지에서 직접 보내드립니다.',
+    freeShip: true
+  },
+  {
+    id: 2, cat: 'fruit', name: '나주 신고배 5kg', farm: '나주 햇살과수원',
+    price: 35000, sale: 27900, img: 'https://images.unsplash.com/photo-1514756331096-242fdeb70d4a?w=400&q=80',
+    rating: 4.8, reviews: 863, weight: '5kg (7~9과)', origin: '전남 나주',
+    desc: '전남 나주 명품 신고배입니다. 과즙이 풍부하고 시원한 맛이 특징이며, 선물용으로도 인기가 높습니다.',
+    freeShip: true
+  },
+  {
+    id: 3, cat: 'veg', name: '무농약 새싹채소 세트', farm: '파주 그린팜',
+    price: 15000, sale: 11900, img: 'https://images.unsplash.com/photo-1556801712-76c8eb07bbc9?w=400&q=80',
+    rating: 4.7, reviews: 542, weight: '200g x 4팩', origin: '경기 파주',
+    desc: '무농약 인증 새싹채소 4종 세트입니다. 브로콜리새싹, 무순, 알파파, 적무순을 한 번에 즐겨보세요.',
+    freeShip: true
+  },
+  {
+    id: 4, cat: 'veg', name: '제주 유기농 당근 3kg', farm: '제주 푸른밭농원',
+    price: 18000, sale: 13500, img: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=400&q=80',
+    rating: 4.6, reviews: 378, weight: '3kg', origin: '제주도',
+    desc: '제주 화산토에서 자란 유기농 당근입니다. 비타민A가 풍부하고 자연 그대로의 단맛이 살아있습니다.',
+    freeShip: false
+  },
+  {
+    id: 5, cat: 'grain', name: '이천 쌀 10kg (2024년산)', farm: '이천 황금들녘',
+    price: 45000, sale: 38900, img: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&q=80',
+    rating: 4.9, reviews: 2156, weight: '10kg', origin: '경기 이천',
+    desc: '임금님 진상미로 유명한 이천 쌀입니다. 찰기가 뛰어나고 윤기가 흘러 밥맛이 최고입니다.',
+    freeShip: true
+  },
+  {
+    id: 6, cat: 'grain', name: '오색 잡곡 선물세트', farm: '영월 산골농부',
+    price: 32000, sale: 24900, img: 'https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=400&q=80',
+    rating: 4.7, reviews: 431, weight: '500g x 5종', origin: '강원 영월',
+    desc: '찰흑미, 찰보리, 수수, 기장, 차조 5종 잡곡 선물세트입니다. 건강한 밥상을 위한 최고의 선택.',
+    freeShip: true
+  },
+  {
+    id: 7, cat: 'meat', name: '한우 1++ 등심 500g', farm: '횡성 한우마을',
+    price: 89000, sale: 69900, img: 'https://images.unsplash.com/photo-1603048297172-c92544798d5a?w=400&q=80',
+    rating: 4.9, reviews: 976, weight: '500g', origin: '강원 횡성',
+    desc: '횡성 1++ 등급 한우 등심입니다. 최상급 마블링으로 입에서 녹는 식감을 경험하세요. 진공 포장 냉장 배송.',
+    freeShip: true
+  },
+  {
+    id: 8, cat: 'meat', name: '제주 흑돼지 삼겹살 1kg', farm: '제주 오름목장',
+    price: 38000, sale: 29900, img: 'https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=400&q=80',
+    rating: 4.8, reviews: 1583, weight: '1kg', origin: '제주도',
+    desc: '제주산 흑돼지 삼겹살입니다. 쫄깃한 식감과 고소한 풍미가 일반 삼겹살과 차원이 다릅니다.',
+    freeShip: true
+  },
+  {
+    id: 9, cat: 'seafood', name: '완도 전복 1kg (중)', farm: '완도 해풍수산',
+    price: 55000, sale: 42900, img: 'https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?w=400&q=80',
+    rating: 4.8, reviews: 723, weight: '1kg (8~10미)', origin: '전남 완도',
+    desc: '완도 청정해역에서 양식한 활전복입니다. 쫄깃한 식감과 깊은 바다향을 느낄 수 있습니다.',
+    freeShip: true
+  },
+  {
+    id: 10, cat: 'seafood', name: '통영 생굴 1kg', farm: '통영 바다향수산',
+    price: 25000, sale: 19800, img: 'https://images.unsplash.com/photo-1510130387422-82bed34b37e9?w=400&q=80',
+    rating: 4.7, reviews: 892, weight: '1kg (탈각)', origin: '경남 통영',
+    desc: '통영 청정해역의 싱싱한 생굴입니다. 바다의 우유라 불리는 굴을 산지 직송으로 보내드립니다.',
+    freeShip: false
+  },
+  {
+    id: 11, cat: 'processed', name: '전통 고추장 1kg', farm: '순창 장마을',
+    price: 22000, sale: 17900, img: 'https://images.unsplash.com/photo-1635701949235-662d0ecbcd66?w=400&q=80',
+    rating: 4.9, reviews: 1834, weight: '1kg', origin: '전북 순창',
+    desc: '순창 전통 방식으로 숙성한 고추장입니다. 국산 고춧가루와 찹쌀, 메주로 정성껏 담갔습니다.',
+    freeShip: true
+  },
+  {
+    id: 12, cat: 'processed', name: '꿀 선물세트 (아카시아+밤꿀)', farm: '지리산 벌꿀농장',
+    price: 48000, sale: 39900, img: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400&q=80',
+    rating: 4.8, reviews: 567, weight: '500g x 2병', origin: '경남 하동',
+    desc: '지리산 자락의 청정 환경에서 채취한 순수 꿀 선물세트입니다. 아카시아꿀과 밤꿀을 함께 담았습니다.',
+    freeShip: true
+  },
+];
+
+// ── State ──
+let cart = [];
+let currentFilter = 'all';
+let modalQty = 1;
+let currentProduct = null;
+
+// ── DOM ──
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => document.querySelectorAll(s);
+
+// ── Render Categories ──
+function renderCategories() {
+  const grid = $('#categoryGrid');
+  grid.innerHTML = categories.map(c => `
+    <div class="category-card" data-cat="${c.id}">
+      <div class="category-icon">${c.icon}</div>
+      <span>${c.name}</span>
+    </div>
+  `).join('');
+
+  grid.querySelectorAll('.category-card').forEach(card => {
+    card.addEventListener('click', () => {
+      filterByCategory(card.dataset.cat);
+    });
+  });
+}
+
+// ── Render Products ──
+function renderProducts(list) {
+  const grid = $('#productGrid');
+  grid.innerHTML = list.map(p => {
+    const discount = Math.round((1 - p.sale / p.price) * 100);
+    const stars = '★'.repeat(Math.floor(p.rating)) + (p.rating % 1 >= 0.5 ? '☆' : '');
+    return `
+      <div class="product-card" data-id="${p.id}">
+        <div class="product-img-wrap">
+          <img src="${p.img}" alt="${p.name}" loading="lazy" />
+          ${p.freeShip ? '<span class="badge-free-ship">무료배송</span>' : ''}
+          ${discount > 0 ? `<span class="badge-discount">${discount}%</span>` : ''}
+        </div>
+        <div class="product-info">
+          <p class="product-farm">${p.farm}</p>
+          <p class="product-name">${p.name}</p>
+          <div class="product-price">
+            <span class="price-percent">${discount}%</span>
+            <span class="price-sale">${p.sale.toLocaleString()}원</span>
+            <span class="price-original">${p.price.toLocaleString()}원</span>
+          </div>
+          <div class="product-rating">
+            <span class="stars">${stars}</span>
+            <span>${p.rating}</span>
+            <span>(${p.reviews.toLocaleString()})</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  grid.querySelectorAll('.product-card').forEach(card => {
+    card.addEventListener('click', () => openModal(+card.dataset.id));
+  });
+}
+
+// ── Filter ──
+function filterByCategory(cat) {
+  currentFilter = cat;
+  // Update nav buttons
+  $$('#navCategories button').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.cat === cat);
+  });
+
+  const filtered = cat === 'all' ? products : products.filter(p => p.cat === cat);
+  renderProducts(filtered);
+
+  $('#products').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ── Search ──
+$('#searchInput').addEventListener('input', (e) => {
+  const q = e.target.value.toLowerCase().trim();
+  const list = products.filter(p =>
+    p.name.toLowerCase().includes(q) ||
+    p.farm.toLowerCase().includes(q) ||
+    p.cat.includes(q)
+  );
+  renderProducts(list);
+});
+
+// ── Nav category buttons ──
+$$('#navCategories button').forEach(btn => {
+  btn.addEventListener('click', () => filterByCategory(btn.dataset.cat));
+});
+
+// ── Modal ──
+function openModal(id) {
+  currentProduct = products.find(p => p.id === id);
+  if (!currentProduct) return;
+  const p = currentProduct;
+  const discount = Math.round((1 - p.sale / p.price) * 100);
+
+  $('#modalImg').src = p.img;
+  $('#modalImg').alt = p.name;
+  $('#modalFarm').textContent = p.farm;
+  $('#modalName').textContent = p.name;
+  $('#modalWeight').textContent = p.weight;
+  $('#modalOrigin').textContent = p.origin;
+  $('#modalShipping').textContent = p.freeShip ? '무료배송' : '3,000원';
+  $('#modalRating').textContent = `★ ${p.rating} (${p.reviews.toLocaleString()}개 리뷰)`;
+  $('#modalDesc').textContent = p.desc;
+  $('#modalPercent').textContent = discount + '%';
+  $('#modalSalePrice').textContent = p.sale.toLocaleString() + '원';
+  $('#modalOrigPrice').textContent = p.price.toLocaleString() + '원';
+
+  modalQty = 1;
+  $('#qtyValue').textContent = '1';
+  $('#modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  $('#modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+$('#modalClose').addEventListener('click', closeModal);
+$('#modalOverlay').addEventListener('click', (e) => {
+  if (e.target === $('#modalOverlay')) closeModal();
+});
+
+$('#qtyMinus').addEventListener('click', () => {
+  if (modalQty > 1) { modalQty--; $('#qtyValue').textContent = modalQty; }
+});
+
+$('#qtyPlus').addEventListener('click', () => {
+  if (modalQty < 99) { modalQty++; $('#qtyValue').textContent = modalQty; }
+});
+
+$('#modalAddCart').addEventListener('click', () => {
+  if (!currentProduct) return;
+  addToCart(currentProduct, modalQty);
+  closeModal();
+});
+
+// ── Cart ──
+function addToCart(product, qty) {
+  const existing = cart.find(c => c.id === product.id);
+  if (existing) {
+    existing.qty += qty;
+  } else {
+    cart.push({ ...product, qty });
+  }
+  updateCartUI();
+  showToast(`${product.name}이(가) 장바구니에 담겼습니다.`);
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(c => c.id !== id);
+  updateCartUI();
+}
+
+function changeCartQty(id, delta) {
+  const item = cart.find(c => c.id === id);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty < 1) item.qty = 1;
+  updateCartUI();
+}
+
+function updateCartUI() {
+  const badge = $('#cartBadge');
+  const totalItems = cart.reduce((s, c) => s + c.qty, 0);
+  badge.textContent = totalItems;
+  badge.classList.toggle('show', totalItems > 0);
+
+  const container = $('#cartItems');
+  if (cart.length === 0) {
+    container.innerHTML = `
+      <div class="cart-empty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--gray-300)" stroke-width="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <p>장바구니가 비어있습니다</p>
+      </div>`;
+  } else {
+    container.innerHTML = cart.map(c => `
+      <div class="cart-item">
+        <img src="${c.img}" alt="${c.name}" />
+        <div class="cart-item-info">
+          <p class="cart-item-name">${c.name}</p>
+          <p class="cart-item-price">${(c.sale * c.qty).toLocaleString()}원</p>
+          <div class="cart-item-qty">
+            <button onclick="changeCartQty(${c.id}, -1)">-</button>
+            <span>${c.qty}</span>
+            <button onclick="changeCartQty(${c.id}, 1)">+</button>
+          </div>
+        </div>
+        <button class="cart-item-remove" onclick="removeFromCart(${c.id})">&times;</button>
+      </div>
+    `).join('');
+  }
+
+  const total = cart.reduce((s, c) => s + c.sale * c.qty, 0);
+  $('#cartTotal').textContent = total.toLocaleString() + '원';
+}
+
+function openCart() {
+  $('#cartOverlay').classList.add('open');
+  $('#cartPanel').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCart() {
+  $('#cartOverlay').classList.remove('open');
+  $('#cartPanel').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+$('#cartBtn').addEventListener('click', openCart);
+$('#cartClose').addEventListener('click', closeCart);
+$('#cartOverlay').addEventListener('click', closeCart);
+
+$('#cartCheckout').addEventListener('click', () => {
+  if (cart.length === 0) {
+    showToast('장바구니에 상품을 담아주세요.');
+    return;
+  }
+  showToast('주문이 완료되었습니다! 감사합니다.');
+  cart = [];
+  updateCartUI();
+  closeCart();
+});
+
+// ── Mobile Menu ──
+$('#mobileMenuBtn').addEventListener('click', () => {
+  const nav = $('#navCategories');
+  nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
+  nav.style.position = 'absolute';
+  nav.style.top = '68px';
+  nav.style.left = '0';
+  nav.style.right = '0';
+  nav.style.background = 'var(--white)';
+  nav.style.padding = '12px 16px';
+  nav.style.flexWrap = 'wrap';
+  nav.style.borderBottom = '1px solid var(--gray-200)';
+  nav.style.zIndex = '99';
+  nav.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+});
+
+// ── Toast ──
+let toastTimer;
+function showToast(msg) {
+  const t = $('#toast');
+  t.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> ${msg}`;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── Keyboard ──
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeModal();
+    closeCart();
+  }
+});
+
+// ── Init ──
+renderCategories();
+renderProducts(products);
+updateCartUI();
+</script>
+</body>
+</html>
