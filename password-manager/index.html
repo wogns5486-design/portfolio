@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>비밀번호 관리자</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0f0a;--bg2:#111a11;--bg3:#1a2a1a;--bg4:#223322;
+  --green:#00e676;--green2:#00c853;--green3:#69f0ae;--green-dim:#1b5e20;
+  --text:#e0e0e0;--text2:#9e9e9e;--text3:#616161;
+  --red:#ff5252;--orange:#ffab40;--yellow:#ffd740;
+  --border:#2a3a2a;--modal-bg:rgba(0,0,0,.7);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{color:var(--green);text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;outline:none}
+input,select,textarea{font-family:inherit;outline:none;border:none;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:14px;width:100%;transition:border .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--green)}
+textarea{resize:vertical;min-height:60px}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%239e9e9e' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+::selection{background:var(--green);color:var(--bg)}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--green-dim);border-radius:3px}
+
+/* Login */
+.login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.login-box{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:48px 40px;width:100%;max-width:400px;text-align:center}
+.login-box .icon{font-size:48px;margin-bottom:16px}
+.login-box h1{font-size:22px;font-weight:700;margin-bottom:6px;color:var(--green)}
+.login-box p{font-size:13px;color:var(--text2);margin-bottom:28px}
+.login-box input{margin-bottom:16px;text-align:center;font-size:16px;letter-spacing:4px}
+.login-box .error{color:var(--red);font-size:12px;margin-bottom:12px;display:none}
+.btn{padding:12px 24px;border-radius:8px;font-weight:600;font-size:14px;transition:all .2s}
+.btn-primary{background:var(--green);color:var(--bg);width:100%}
+.btn-primary:hover{background:var(--green2);transform:translateY(-1px)}
+.btn-secondary{background:var(--bg3);color:var(--text)}
+.btn-secondary:hover{background:var(--bg4)}
+.btn-danger{background:rgba(255,82,82,.15);color:var(--red)}
+.btn-danger:hover{background:rgba(255,82,82,.25)}
+.btn-sm{padding:8px 14px;font-size:12px;border-radius:6px}
+.btn-icon{background:none;color:var(--text2);padding:8px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center}
+.btn-icon:hover{background:var(--bg3);color:var(--green)}
+
+/* App */
+.app{display:none;min-height:100vh}
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;position:sticky;top:0;z-index:50}
+.header-left{display:flex;align-items:center;gap:12px}
+.header-left .logo{color:var(--green);font-weight:700;font-size:18px;display:flex;align-items:center;gap:8px}
+.header-right{display:flex;align-items:center;gap:8px}
+.header-right .count{font-size:12px;color:var(--text2);background:var(--bg3);padding:4px 10px;border-radius:12px}
+
+.toolbar{padding:16px 24px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.search-box{position:relative;flex:1;min-width:200px}
+.search-box input{padding-left:38px}
+.search-box svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none}
+.filter-select{width:auto;min-width:140px;flex-shrink:0}
+
+.main{padding:0 24px 40px}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;transition:all .2s;position:relative}
+.card:hover{border-color:var(--green-dim);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,230,118,.06)}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.card-site{font-weight:600;font-size:16px;color:var(--green3);display:flex;align-items:center;gap:8px}
+.card-site .favicon{width:20px;height:20px;border-radius:4px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--green)}
+.card-category{font-size:11px;padding:3px 8px;border-radius:10px;background:var(--green-dim);color:var(--green3);font-weight:500}
+.card-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:13px}
+.card-row .label{color:var(--text3);min-width:60px;flex-shrink:0}
+.card-row .value{color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.card-row .pw{font-family:'Courier New',monospace;letter-spacing:1px}
+.card-actions{display:flex;gap:6px;justify-content:flex-end;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.card-memo{font-size:12px;color:var(--text2);margin-top:8px;line-height:1.5}
+
+.empty{text-align:center;padding:80px 20px;color:var(--text3)}
+.empty svg{margin-bottom:16px;opacity:.4}
+.empty p{font-size:14px;margin-bottom:8px}
+
+/* FAB */
+.fab{position:fixed;bottom:28px;right:28px;width:56px;height:56px;border-radius:16px;background:var(--green);color:var(--bg);font-size:28px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,230,118,.3);transition:all .2s;z-index:40}
+.fab:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(0,230,118,.4)}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:var(--modal-bg);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;backdrop-filter:blur(4px)}
+.modal-overlay.active{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;padding:28px}
+.modal h2{font-size:18px;font-weight:700;margin-bottom:20px;color:var(--green)}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.form-row{display:flex;gap:12px}
+.form-row .form-group{flex:1}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:24px}
+
+/* Password Generator */
+.pw-gen{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px}
+.pw-gen-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.pw-gen-header span{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px}
+.pw-gen-output{display:flex;gap:8px;margin-bottom:14px}
+.pw-gen-output input{font-family:'Courier New',monospace;font-size:15px;letter-spacing:1px;flex:1}
+.pw-gen-options{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.pw-gen-options label{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text2);cursor:pointer}
+.pw-gen-options input[type="checkbox"]{width:auto;accent-color:var(--green)}
+.range-wrap{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.range-wrap label{font-size:13px;color:var(--text2);min-width:80px}
+.range-wrap input[type="range"]{flex:1;accent-color:var(--green);border:none;padding:0}
+.range-wrap .range-val{font-size:14px;font-weight:600;color:var(--green);min-width:24px;text-align:center}
+
+/* Strength */
+.strength-bar{height:4px;border-radius:2px;background:var(--bg3);margin-top:8px;overflow:hidden}
+.strength-bar .fill{height:100%;border-radius:2px;transition:width .3s,background .3s}
+.strength-label{font-size:11px;margin-top:4px;font-weight:500}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg3);color:var(--text);padding:12px 24px;border-radius:10px;font-size:13px;font-weight:500;border:1px solid var(--border);z-index:200;opacity:0;transition:all .3s}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* Responsive */
+@media(max-width:768px){
+  .header{padding:12px 16px;flex-wrap:wrap}
+  .toolbar{padding:12px 16px}
+  .main{padding:0 16px 100px}
+  .card-grid{grid-template-columns:1fr}
+  .modal{padding:20px}
+  .login-box{padding:32px 24px}
+  .form-row{flex-direction:column;gap:0}
+  .fab{bottom:20px;right:20px;width:50px;height:50px;font-size:24px;border-radius:14px}
+}
+</style>
+</head>
+<body>
+
+<!-- Login -->
+<div class="login-wrap" id="loginScreen">
+  <div class="login-box">
+    <div class="icon">&#128274;</div>
+    <h1>비밀번호 관리자</h1>
+    <p>마스터 비밀번호를 입력하세요</p>
+    <input type="password" id="masterPwInput" placeholder="••••••••" autofocus>
+    <div class="error" id="loginError">비밀번호가 올바르지 않습니다</div>
+    <button class="btn btn-primary" onclick="tryLogin()">잠금 해제</button>
+  </div>
+</div>
+
+<!-- App -->
+<div class="app" id="app">
+  <header class="header">
+    <div class="header-left">
+      <div class="logo">&#128274; PassVault</div>
+    </div>
+    <div class="header-right">
+      <span class="count" id="countBadge">0개</span>
+      <button class="btn btn-sm btn-secondary" onclick="exportData()">내보내기</button>
+      <button class="btn btn-sm btn-danger" onclick="logout()">잠금</button>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <div class="search-box">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" placeholder="사이트명, 아이디로 검색...">
+    </div>
+    <select class="filter-select" id="categoryFilter">
+      <option value="">전체 카테고리</option>
+      <option value="소셜미디어">소셜미디어</option>
+      <option value="이메일">이메일</option>
+      <option value="쇼핑">쇼핑</option>
+      <option value="금융">금융</option>
+      <option value="업무">업무</option>
+      <option value="게임">게임</option>
+      <option value="기타">기타</option>
+    </select>
+  </div>
+
+  <div class="main">
+    <div class="card-grid" id="cardGrid"></div>
+    <div class="empty" id="emptyState" style="display:none">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      <p>저장된 계정이 없습니다</p>
+      <p style="font-size:12px">+ 버튼을 눌러 첫 번째 계정을 추가하세요</p>
+    </div>
+  </div>
+
+  <button class="fab" onclick="openModal()">+</button>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2 id="modalTitle">계정 추가</h2>
+    <input type="hidden" id="editId">
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>사이트명 *</label>
+        <input type="text" id="fSite" placeholder="예: Google">
+      </div>
+      <div class="form-group">
+        <label>카테고리</label>
+        <select id="fCategory">
+          <option value="기타">기타</option>
+          <option value="소셜미디어">소셜미디어</option>
+          <option value="이메일">이메일</option>
+          <option value="쇼핑">쇼핑</option>
+          <option value="금융">금융</option>
+          <option value="업무">업무</option>
+          <option value="게임">게임</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>아이디 *</label>
+      <input type="text" id="fUsername" placeholder="이메일 또는 아이디">
+    </div>
+
+    <div class="form-group">
+      <label>비밀번호 *</label>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="fPassword" placeholder="비밀번호 입력" style="flex:1">
+      </div>
+      <div class="strength-bar"><div class="fill" id="strengthFill"></div></div>
+      <div class="strength-label" id="strengthLabel"></div>
+    </div>
+
+    <!-- Password Generator -->
+    <div class="pw-gen">
+      <div class="pw-gen-header">
+        <span>비밀번호 생성기</span>
+        <button class="btn btn-sm btn-secondary" onclick="applyGenerated()">적용</button>
+      </div>
+      <div class="pw-gen-output">
+        <input type="text" id="genOutput" readonly placeholder="생성된 비밀번호">
+        <button class="btn btn-sm btn-secondary" onclick="generatePassword()">생성</button>
+      </div>
+      <div class="range-wrap">
+        <label>길이</label>
+        <input type="range" id="genLength" min="6" max="64" value="16">
+        <span class="range-val" id="genLengthVal">16</span>
+      </div>
+      <div class="pw-gen-options">
+        <label><input type="checkbox" id="genUpper" checked> 대문자</label>
+        <label><input type="checkbox" id="genNumbers" checked> 숫자</label>
+        <label><input type="checkbox" id="genSymbols" checked> 특수문자</label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>URL</label>
+      <input type="text" id="fUrl" placeholder="https://example.com">
+    </div>
+
+    <div class="form-group">
+      <label>메모</label>
+      <textarea id="fMemo" placeholder="추가 메모 (선택사항)"></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal()">취소</button>
+      <button class="btn btn-primary" onclick="saveEntry()" style="width:auto">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirm -->
+<div class="modal-overlay" id="deleteOverlay">
+  <div class="modal" style="max-width:380px;text-align:center">
+    <h2 style="color:var(--red)">계정 삭제</h2>
+    <p style="margin-bottom:24px;color:var(--text2);font-size:14px">이 계정을 정말 삭제하시겠습니까?<br>이 작업은 되돌릴 수 없습니다.</p>
+    <div class="modal-actions" style="justify-content:center">
+      <button class="btn btn-secondary" onclick="closeDelete()">취소</button>
+      <button class="btn btn-danger" onclick="confirmDelete()">삭제</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const MASTER_PW = 'master1234';
+const STORAGE_KEY = 'passvault_data';
+let entries = [];
+let deleteTargetId = null;
+
+// --- Auth ---
+function tryLogin() {
+  const input = document.getElementById('masterPwInput');
+  if (input.value === MASTER_PW) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadData();
+    render();
+  } else {
+    const err = document.getElementById('loginError');
+    err.style.display = 'block';
+    input.value = '';
+    input.focus();
+    setTimeout(() => err.style.display = 'none', 2000);
+  }
+}
+document.getElementById('masterPwInput').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+
+function logout() {
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('loginScreen').style.display = '';
+  document.getElementById('masterPwInput').value = '';
+  document.getElementById('masterPwInput').focus();
+}
+
+// --- Data ---
+function loadData() {
+  try { entries = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { entries = []; }
+}
+function saveData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+}
+function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+// --- Render ---
+function render() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const cat = document.getElementById('categoryFilter').value;
+  let filtered = entries.filter(e => {
+    const matchSearch = !search || e.site.toLowerCase().includes(search) || e.username.toLowerCase().includes(search);
+    const matchCat = !cat || e.category === cat;
+    return matchSearch && matchCat;
+  });
+
+  const grid = document.getElementById('cardGrid');
+  const empty = document.getElementById('emptyState');
+  document.getElementById('countBadge').textContent = entries.length + '개';
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  grid.innerHTML = filtered.map(e => `
+    <div class="card">
+      <div class="card-top">
+        <div class="card-site">
+          <span class="favicon">${e.site.charAt(0).toUpperCase()}</span>
+          ${esc(e.site)}
+        </div>
+        <span class="card-category">${esc(e.category || '기타')}</span>
+      </div>
+      <div class="card-row">
+        <span class="label">아이디</span>
+        <span class="value">${esc(e.username)}</span>
+        <button class="btn-icon" title="복사" onclick="copyText('${esc(e.username)}','아이디')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        </button>
+      </div>
+      <div class="card-row">
+        <span class="label">비밀번호</span>
+        <span class="value pw" id="pw-${e.id}">${'•'.repeat(Math.min(e.password.length, 12))}</span>
+        <button class="btn-icon" title="보기/숨기기" onclick="togglePw('${e.id}','${esc(e.password)}')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+        <button class="btn-icon" title="복사" onclick="copyText('${esc(e.password)}','비밀번호')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        </button>
+      </div>
+      ${e.url ? `<div class="card-row"><span class="label">URL</span><span class="value"><a href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.url)}</a></span></div>` : ''}
+      ${e.memo ? `<div class="card-memo">${esc(e.memo)}</div>` : ''}
+      <div class="card-actions">
+        <button class="btn btn-sm btn-secondary" onclick="editEntry('${e.id}')">수정</button>
+        <button class="btn btn-sm btn-danger" onclick="openDelete('${e.id}')">삭제</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function esc(s) { if (!s) return ''; const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+const pwVisibility = {};
+function togglePw(id, pw) {
+  const el = document.getElementById('pw-' + id);
+  pwVisibility[id] = !pwVisibility[id];
+  el.textContent = pwVisibility[id] ? pw : '•'.repeat(Math.min(pw.length, 12));
+}
+
+// --- Clipboard ---
+function copyText(text, label) {
+  navigator.clipboard.writeText(text).then(() => showToast(label + '가 클립보드에 복사되었습니다'));
+}
+
+// --- Modal ---
+function openModal(id) {
+  document.getElementById('modalOverlay').classList.add('active');
+  document.getElementById('modalTitle').textContent = id ? '계정 수정' : '계정 추가';
+  document.getElementById('editId').value = id || '';
+  if (id) {
+    const e = entries.find(x => x.id === id);
+    if (e) {
+      document.getElementById('fSite').value = e.site;
+      document.getElementById('fUsername').value = e.username;
+      document.getElementById('fPassword').value = e.password;
+      document.getElementById('fCategory').value = e.category || '기타';
+      document.getElementById('fUrl').value = e.url || '';
+      document.getElementById('fMemo').value = e.memo || '';
+      updateStrength(e.password);
+    }
+  } else {
+    ['fSite','fUsername','fPassword','fUrl','fMemo'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('fCategory').value = '기타';
+    document.getElementById('strengthFill').style.width = '0';
+    document.getElementById('strengthLabel').textContent = '';
+  }
+  generatePassword();
+}
+
+function closeModal() { document.getElementById('modalOverlay').classList.remove('active'); }
+function editEntry(id) { openModal(id); }
+
+function saveEntry() {
+  const site = document.getElementById('fSite').value.trim();
+  const username = document.getElementById('fUsername').value.trim();
+  const password = document.getElementById('fPassword').value.trim();
+  const category = document.getElementById('fCategory').value;
+  const url = document.getElementById('fUrl').value.trim();
+  const memo = document.getElementById('fMemo').value.trim();
+
+  if (!site || !username || !password) { showToast('필수 항목을 입력하세요'); return; }
+
+  const editId = document.getElementById('editId').value;
+  if (editId) {
+    const idx = entries.findIndex(e => e.id === editId);
+    if (idx > -1) entries[idx] = { ...entries[idx], site, username, password, category, url, memo, updatedAt: Date.now() };
+    showToast('계정이 수정되었습니다');
+  } else {
+    entries.unshift({ id: genId(), site, username, password, category, url, memo, createdAt: Date.now(), updatedAt: Date.now() });
+    showToast('계정이 추가되었습니다');
+  }
+  saveData();
+  closeModal();
+  render();
+}
+
+// --- Delete ---
+function openDelete(id) { deleteTargetId = id; document.getElementById('deleteOverlay').classList.add('active'); }
+function closeDelete() { document.getElementById('deleteOverlay').classList.remove('active'); deleteTargetId = null; }
+function confirmDelete() {
+  entries = entries.filter(e => e.id !== deleteTargetId);
+  saveData();
+  closeDelete();
+  render();
+  showToast('계정이 삭제되었습니다');
+}
+
+// --- Password Generator ---
+function generatePassword() {
+  const len = parseInt(document.getElementById('genLength').value);
+  const upper = document.getElementById('genUpper').checked;
+  const nums = document.getElementById('genNumbers').checked;
+  const syms = document.getElementById('genSymbols').checked;
+  let chars = 'abcdefghijklmnopqrstuvwxyz';
+  if (upper) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  if (nums) chars += '0123456789';
+  if (syms) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+  let pw = '';
+  for (let i = 0; i < len; i++) pw += chars[Math.floor(Math.random() * chars.length)];
+  document.getElementById('genOutput').value = pw;
+}
+
+function applyGenerated() {
+  const pw = document.getElementById('genOutput').value;
+  if (pw) { document.getElementById('fPassword').value = pw; updateStrength(pw); }
+}
+
+document.getElementById('genLength').addEventListener('input', function() {
+  document.getElementById('genLengthVal').textContent = this.value;
+  generatePassword();
+});
+
+// --- Strength ---
+function getStrength(pw) {
+  let score = 0;
+  if (pw.length >= 8) score++;
+  if (pw.length >= 12) score++;
+  if (pw.length >= 16) score++;
+  if (/[A-Z]/.test(pw)) score++;
+  if (/[0-9]/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+  if (score <= 2) return { level: '약함', color: 'var(--red)', pct: 33 };
+  if (score <= 4) return { level: '보통', color: 'var(--orange)', pct: 66 };
+  return { level: '강함', color: 'var(--green)', pct: 100 };
+}
+
+function updateStrength(pw) {
+  const s = getStrength(pw);
+  document.getElementById('strengthFill').style.width = s.pct + '%';
+  document.getElementById('strengthFill').style.background = s.color;
+  document.getElementById('strengthLabel').textContent = s.level;
+  document.getElementById('strengthLabel').style.color = s.color;
+}
+
+document.getElementById('fPassword').addEventListener('input', function() { updateStrength(this.value); });
+
+// --- Export ---
+function exportData() {
+  const blob = new Blob([JSON.stringify(entries, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'passvault-backup.json';
+  a.click();
+  showToast('백업 파일이 다운로드됩니다');
+}
+
+// --- Toast ---
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// --- Search / Filter ---
+document.getElementById('searchInput').addEventListener('input', render);
+document.getElementById('categoryFilter').addEventListener('change', render);
+
+// Close modal on overlay click
+document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+document.getElementById('deleteOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) closeDelete(); });
+
+// Esc key
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal(); closeDelete(); }
+});
+</script>
+</body>
+</html>

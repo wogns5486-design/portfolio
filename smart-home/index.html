@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>스마트홈 대시보드</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0f1117;--surface:#1a1d27;--card:#222639;--card-hover:#2a2f45;
+  --border:#2e3347;--text:#e4e6ef;--text-muted:#8b8fa3;
+  --primary:#6c5ce7;--primary-glow:rgba(108,92,231,.25);
+  --success:#00cec9;--warning:#fdcb6e;--danger:#ff7675;
+  --blue:#74b9ff;--orange:#e17055;--pink:#fd79a8;
+  --radius:14px;--radius-sm:10px;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+button{cursor:pointer;font-family:inherit}
+
+/* Header */
+.header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 32px;border-bottom:1px solid var(--border);
+  background:rgba(15,17,23,.8);backdrop-filter:blur(20px);
+  position:sticky;top:0;z-index:100;
+}
+.header h1{font-size:1.4rem;font-weight:700;display:flex;align-items:center;gap:10px}
+.header h1 span{font-size:1.6rem}
+.header-right{display:flex;align-items:center;gap:16px}
+.status-badge{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(0,206,201,.12);color:var(--success);
+  padding:6px 14px;border-radius:20px;font-size:.8rem;font-weight:500;
+}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--success);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.datetime{text-align:right;font-size:.78rem;color:var(--text-muted)}
+
+/* Layout */
+.dashboard{display:grid;grid-template-columns:1fr 320px;gap:0;min-height:calc(100vh - 73px)}
+.main{padding:24px 28px;overflow-y:auto}
+.sidebar{
+  border-left:1px solid var(--border);padding:24px;
+  background:var(--surface);overflow-y:auto;
+}
+
+/* Tabs */
+.tabs{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap}
+.tab{
+  padding:10px 20px;border-radius:var(--radius-sm);border:none;
+  background:transparent;color:var(--text-muted);font-size:.85rem;font-weight:500;
+  transition:all .25s;
+}
+.tab:hover{background:var(--card);color:var(--text)}
+.tab.active{background:var(--primary);color:#fff;box-shadow:0 4px 15px var(--primary-glow)}
+
+/* Sensor Strip */
+.sensor-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:24px}
+.sensor-card{
+  background:var(--card);border-radius:var(--radius);padding:18px 20px;
+  border:1px solid var(--border);display:flex;align-items:center;gap:14px;
+}
+.sensor-icon{font-size:1.8rem;width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center}
+.sensor-icon.temp{background:rgba(255,118,117,.12)}
+.sensor-icon.humid{background:rgba(116,185,255,.12)}
+.sensor-icon.dust{background:rgba(253,203,110,.12)}
+.sensor-icon.air{background:rgba(0,206,201,.12)}
+.sensor-info .label{font-size:.75rem;color:var(--text-muted);margin-bottom:2px}
+.sensor-info .value{font-size:1.35rem;font-weight:700}
+.sensor-info .value .unit{font-size:.8rem;font-weight:400;color:var(--text-muted);margin-left:2px}
+
+/* Device Grid */
+.devices-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.device-card{
+  background:var(--card);border-radius:var(--radius);padding:20px;
+  border:1px solid var(--border);transition:all .3s;position:relative;overflow:hidden;
+}
+.device-card:hover{border-color:rgba(108,92,231,.4);transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,.3)}
+.device-card.active{border-color:var(--primary);background:linear-gradient(135deg,var(--card),rgba(108,92,231,.08))}
+.device-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.device-icon{font-size:1.6rem;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(108,92,231,.1)}
+.device-card.active .device-icon{background:rgba(108,92,231,.2)}
+.device-name{font-weight:600;font-size:.92rem;margin-bottom:2px}
+.device-status{font-size:.75rem;color:var(--text-muted)}
+.device-card.active .device-status{color:var(--success)}
+
+/* Toggle */
+.toggle{
+  width:46px;height:26px;border-radius:13px;border:none;
+  background:#3a3e52;position:relative;transition:background .3s;
+}
+.toggle::after{
+  content:'';position:absolute;width:20px;height:20px;border-radius:50%;
+  background:#fff;top:3px;left:3px;transition:transform .3s;
+}
+.toggle.on{background:var(--primary)}
+.toggle.on::after{transform:translateX(20px)}
+
+/* Slider */
+.slider-wrap{margin-top:12px}
+.slider-wrap label{font-size:.72rem;color:var(--text-muted);display:flex;justify-content:space-between;margin-bottom:6px}
+input[type=range]{
+  -webkit-appearance:none;width:100%;height:6px;border-radius:3px;
+  background:#3a3e52;outline:none;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+  background:var(--primary);cursor:pointer;box-shadow:0 2px 8px var(--primary-glow);
+}
+
+/* Temp Control */
+.temp-control{display:flex;align-items:center;gap:12px;margin-top:12px}
+.temp-btn{
+  width:32px;height:32px;border-radius:50%;border:1px solid var(--border);
+  background:var(--card);color:var(--text);font-size:1.1rem;
+  display:flex;align-items:center;justify-content:center;transition:all .2s;
+}
+.temp-btn:hover{background:var(--primary);border-color:var(--primary)}
+.temp-display{font-size:1.5rem;font-weight:700;min-width:55px;text-align:center}
+.temp-display .unit{font-size:.85rem;font-weight:400;color:var(--text-muted)}
+
+/* Sidebar */
+.sidebar-section{margin-bottom:28px}
+.sidebar-title{font-size:.8rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px}
+
+/* Energy Chart */
+.chart-container{background:var(--card);border-radius:var(--radius);padding:16px;border:1px solid var(--border)}
+.chart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.chart-header h3{font-size:.9rem;font-weight:600}
+.chart-value{font-size:1.2rem;font-weight:700;color:var(--primary)}
+canvas{width:100%!important;border-radius:8px}
+
+/* Camera */
+.camera-list{display:flex;flex-direction:column;gap:10px}
+.camera-item{
+  background:var(--card);border-radius:var(--radius-sm);padding:14px;
+  border:1px solid var(--border);display:flex;align-items:center;gap:12px;
+}
+.camera-dot{width:9px;height:9px;border-radius:50%}
+.camera-dot.online{background:var(--success);box-shadow:0 0 8px rgba(0,206,201,.5)}
+.camera-dot.offline{background:var(--danger)}
+.camera-info{flex:1}
+.camera-name{font-size:.82rem;font-weight:500}
+.camera-status{font-size:.7rem;color:var(--text-muted)}
+
+/* Scenes */
+.scene-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.scene-btn{
+  padding:14px 10px;border-radius:var(--radius-sm);border:1px solid var(--border);
+  background:var(--card);color:var(--text);font-size:.78rem;font-weight:500;
+  text-align:center;transition:all .2s;
+}
+.scene-btn:hover{border-color:var(--primary);background:rgba(108,92,231,.08)}
+.scene-btn .icon{font-size:1.3rem;margin-bottom:4px;display:block}
+
+/* Responsive */
+@media(max-width:1024px){
+  .dashboard{grid-template-columns:1fr}
+  .sidebar{border-left:none;border-top:1px solid var(--border)}
+}
+@media(max-width:640px){
+  .header{padding:16px 18px;flex-wrap:wrap;gap:10px}
+  .main{padding:18px 14px}
+  .sidebar{padding:18px 14px}
+  .sensor-strip{grid-template-columns:1fr 1fr}
+  .devices-grid{grid-template-columns:1fr}
+  .tabs{gap:4px}
+  .tab{padding:8px 14px;font-size:.8rem}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <h1><span>🏠</span> 스마트홈</h1>
+  <div class="header-right">
+    <div class="status-badge"><span class="status-dot"></span> 연결됨</div>
+    <div class="datetime"><div id="date"></div><div id="time" style="font-size:1rem;font-weight:600;color:var(--text)"></div></div>
+  </div>
+</header>
+
+<div class="dashboard">
+  <main class="main">
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" data-room="living">🛋️ 거실</button>
+      <button class="tab" data-room="bedroom">🛏️ 침실</button>
+      <button class="tab" data-room="kitchen">🍳 주방</button>
+      <button class="tab" data-room="bathroom">🚿 욕실</button>
+    </div>
+
+    <!-- Sensors -->
+    <div class="sensor-strip">
+      <div class="sensor-card">
+        <div class="sensor-icon temp">🌡️</div>
+        <div class="sensor-info"><div class="label">실내 온도</div><div class="value" id="s-temp">24.5<span class="unit">°C</span></div></div>
+      </div>
+      <div class="sensor-card">
+        <div class="sensor-icon humid">💧</div>
+        <div class="sensor-info"><div class="label">습도</div><div class="value" id="s-humid">52<span class="unit">%</span></div></div>
+      </div>
+      <div class="sensor-card">
+        <div class="sensor-icon dust">🌫️</div>
+        <div class="sensor-info"><div class="label">미세먼지</div><div class="value" id="s-dust">32<span class="unit">㎍/㎥</span></div></div>
+      </div>
+      <div class="sensor-card">
+        <div class="sensor-icon air">🍃</div>
+        <div class="sensor-info"><div class="label">공기질</div><div class="value" id="s-air" style="color:var(--success)">좋음</div></div>
+      </div>
+    </div>
+
+    <!-- Devices -->
+    <div class="devices-grid" id="devices-grid"></div>
+  </main>
+
+  <aside class="sidebar">
+    <!-- Scenes -->
+    <div class="sidebar-section">
+      <div class="sidebar-title">빠른 장면</div>
+      <div class="scene-grid">
+        <button class="scene-btn" onclick="activateScene('home')"><span class="icon">🏡</span>외출 복귀</button>
+        <button class="scene-btn" onclick="activateScene('out')"><span class="icon">👋</span>외출 모드</button>
+        <button class="scene-btn" onclick="activateScene('sleep')"><span class="icon">🌙</span>취침 모드</button>
+        <button class="scene-btn" onclick="activateScene('movie')"><span class="icon">🎬</span>영화 모드</button>
+      </div>
+    </div>
+
+    <!-- Energy Chart -->
+    <div class="sidebar-section">
+      <div class="sidebar-title">에너지 사용량</div>
+      <div class="chart-container">
+        <div class="chart-header">
+          <h3>오늘</h3>
+          <div class="chart-value" id="energy-total">12.4 kWh</div>
+        </div>
+        <canvas id="energyChart" height="140"></canvas>
+      </div>
+    </div>
+
+    <!-- Camera -->
+    <div class="sidebar-section">
+      <div class="sidebar-title">보안 카메라</div>
+      <div class="camera-list">
+        <div class="camera-item">
+          <div class="camera-dot online"></div>
+          <div class="camera-info"><div class="camera-name">현관</div><div class="camera-status">실시간 녹화 중</div></div>
+          <span style="color:var(--success);font-size:.75rem;font-weight:500">REC</span>
+        </div>
+        <div class="camera-item">
+          <div class="camera-dot online"></div>
+          <div class="camera-info"><div class="camera-name">거실</div><div class="camera-status">실시간 녹화 중</div></div>
+          <span style="color:var(--success);font-size:.75rem;font-weight:500">REC</span>
+        </div>
+        <div class="camera-item">
+          <div class="camera-dot online"></div>
+          <div class="camera-info"><div class="camera-name">주차장</div><div class="camera-status">실시간 녹화 중</div></div>
+          <span style="color:var(--success);font-size:.75rem;font-weight:500">REC</span>
+        </div>
+        <div class="camera-item">
+          <div class="camera-dot offline"></div>
+          <div class="camera-info"><div class="camera-name">뒷마당</div><div class="camera-status" style="color:var(--danger)">오프라인</div></div>
+          <span style="color:var(--danger);font-size:.7rem">●</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+// --- Data ---
+const rooms = {
+  living: [
+    { id:'l-light', name:'거실 조명', icon:'💡', type:'light', on:true, brightness:80 },
+    { id:'l-ac', name:'에어컨', icon:'❄️', type:'ac', on:true, temp:24 },
+    { id:'l-tv', name:'TV', icon:'📺', type:'toggle', on:true },
+    { id:'l-speaker', name:'스피커', icon:'🔊', type:'speaker', on:true, volume:45 },
+    { id:'l-purifier', name:'공기청정기', icon:'🌬️', type:'purifier', on:true, mode:'자동' },
+  ],
+  bedroom: [
+    { id:'b-light', name:'침실 조명', icon:'💡', type:'light', on:false, brightness:40 },
+    { id:'b-ac', name:'에어컨', icon:'❄️', type:'ac', on:false, temp:22 },
+    { id:'b-speaker', name:'스피커', icon:'🔊', type:'speaker', on:false, volume:30 },
+    { id:'b-purifier', name:'공기청정기', icon:'🌬️', type:'purifier', on:false, mode:'수면' },
+  ],
+  kitchen: [
+    { id:'k-light', name:'주방 조명', icon:'💡', type:'light', on:true, brightness:100 },
+    { id:'k-hood', name:'레인지후드', icon:'🌀', type:'toggle', on:false },
+    { id:'k-purifier', name:'공기청정기', icon:'🌬️', type:'purifier', on:true, mode:'강력' },
+  ],
+  bathroom: [
+    { id:'bt-light', name:'욕실 조명', icon:'💡', type:'light', on:false, brightness:70 },
+    { id:'bt-fan', name:'환풍기', icon:'🌀', type:'toggle', on:false },
+    { id:'bt-heater', name:'온풍기', icon:'🔥', type:'ac', on:false, temp:28 },
+  ],
+};
+
+let currentRoom = 'living';
+
+// --- Clock ---
+function updateClock() {
+  const now = new Date();
+  const days = ['일','월','화','수','목','금','토'];
+  document.getElementById('date').textContent =
+    `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일 (${days[now.getDay()]})`;
+  document.getElementById('time').textContent =
+    now.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+}
+updateClock(); setInterval(updateClock, 10000);
+
+// --- Sensor simulation ---
+function updateSensors() {
+  const temp = (22 + Math.random()*4).toFixed(1);
+  const humid = Math.floor(45 + Math.random()*15);
+  const dust = Math.floor(15 + Math.random()*40);
+  const airEl = document.getElementById('s-air');
+  document.getElementById('s-temp').innerHTML = `${temp}<span class="unit">°C</span>`;
+  document.getElementById('s-humid').innerHTML = `${humid}<span class="unit">%</span>`;
+  document.getElementById('s-dust').innerHTML = `${dust}<span class="unit">㎍/㎥</span>`;
+  if(dust<30){airEl.textContent='좋음';airEl.style.color='var(--success)'}
+  else if(dust<50){airEl.textContent='보통';airEl.style.color='var(--warning)'}
+  else{airEl.textContent='나쁨';airEl.style.color='var(--danger)'}
+}
+setInterval(updateSensors, 5000);
+
+// --- Tabs ---
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    currentRoom = tab.dataset.room;
+    renderDevices();
+  });
+});
+
+// --- Render Devices ---
+function renderDevices() {
+  const grid = document.getElementById('devices-grid');
+  const devs = rooms[currentRoom];
+  grid.innerHTML = devs.map(d => {
+    const activeClass = d.on ? 'active' : '';
+    const statusText = d.on ? '켜짐' : '꺼짐';
+    let controls = '';
+
+    if(d.type === 'light') {
+      controls = `
+        <div class="slider-wrap">
+          <label><span>밝기</span><span>${d.brightness}%</span></label>
+          <input type="range" min="1" max="100" value="${d.brightness}"
+            onchange="setDeviceProp('${d.id}','brightness',+this.value)" ${!d.on?'disabled':''}>
+        </div>`;
+    } else if(d.type === 'ac') {
+      controls = `
+        <div class="temp-control">
+          <button class="temp-btn" onclick="adjustTemp('${d.id}',-1)">−</button>
+          <div class="temp-display">${d.temp}<span class="unit">°C</span></div>
+          <button class="temp-btn" onclick="adjustTemp('${d.id}',1)">+</button>
+        </div>`;
+    } else if(d.type === 'speaker') {
+      controls = `
+        <div class="slider-wrap">
+          <label><span>음량</span><span>${d.volume}%</span></label>
+          <input type="range" min="0" max="100" value="${d.volume}"
+            onchange="setDeviceProp('${d.id}','volume',+this.value)" ${!d.on?'disabled':''}>
+        </div>`;
+    } else if(d.type === 'purifier') {
+      const modes = ['자동','수면','강력'];
+      controls = `
+        <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">
+          ${modes.map(m=>`<button style="padding:5px 12px;border-radius:6px;border:1px solid ${d.mode===m?'var(--primary)':'var(--border)'};
+            background:${d.mode===m?'rgba(108,92,231,.15)':'transparent'};color:var(--text);font-size:.72rem;font-weight:500"
+            onclick="setDeviceProp('${d.id}','mode','${m}')" ${!d.on?'disabled':''}>${m}</button>`).join('')}
+        </div>`;
+    }
+
+    return `
+      <div class="device-card ${activeClass}">
+        <div class="device-header">
+          <div>
+            <div class="device-icon">${d.icon}</div>
+          </div>
+          <button class="toggle ${d.on?'on':''}" onclick="toggleDevice('${d.id}')"></button>
+        </div>
+        <div class="device-name">${d.name}</div>
+        <div class="device-status">${d.on ? (d.type==='ac'?`${d.temp}°C 냉방 중`:d.type==='purifier'?`${d.mode} 모드`:statusText) : statusText}</div>
+        ${d.on ? controls : ''}
+      </div>`;
+  }).join('');
+}
+
+function getDevice(id) {
+  for(const r of Object.values(rooms))
+    for(const d of r) if(d.id===id) return d;
+}
+
+function toggleDevice(id) {
+  const d = getDevice(id);
+  d.on = !d.on;
+  renderDevices();
+}
+
+function setDeviceProp(id, prop, val) {
+  const d = getDevice(id);
+  d[prop] = val;
+  renderDevices();
+}
+
+function adjustTemp(id, delta) {
+  const d = getDevice(id);
+  if(!d.on) return;
+  d.temp = Math.max(16, Math.min(30, d.temp + delta));
+  renderDevices();
+}
+
+// --- Scenes ---
+function activateScene(scene) {
+  const living = rooms.living;
+  const bedroom = rooms.bedroom;
+  if(scene==='sleep'){
+    living.forEach(d=>d.on=false);
+    bedroom.forEach(d=>{
+      if(d.type==='light'){d.on=true;d.brightness=10}
+      else if(d.type==='ac'){d.on=true;d.temp=22}
+      else if(d.type==='purifier'){d.on=true;d.mode='수면'}
+      else d.on=false;
+    });
+  } else if(scene==='out'){
+    Object.values(rooms).forEach(r=>r.forEach(d=>{
+      if(d.type==='purifier'){d.on=true;d.mode='자동'}
+      else d.on=false;
+    }));
+  } else if(scene==='home'){
+    living.forEach(d=>{
+      d.on=true;
+      if(d.type==='light') d.brightness=80;
+      if(d.type==='ac') d.temp=24;
+    });
+  } else if(scene==='movie'){
+    living.forEach(d=>{
+      if(d.type==='light'){d.on=true;d.brightness=15}
+      else if(d.id==='l-tv'){d.on=true}
+      else if(d.type==='speaker'){d.on=true;d.volume=65}
+      else if(d.type==='ac'){d.on=true;d.temp=23}
+    });
+  }
+  renderDevices();
+  showToast(scene==='sleep'?'취침 모드 활성화':scene==='out'?'외출 모드 활성화':scene==='home'?'외출 복귀 모드 활성화':'영화 모드 활성화');
+}
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.textContent = msg;
+  Object.assign(t.style,{
+    position:'fixed',bottom:'30px',left:'50%',transform:'translateX(-50%)',
+    background:'var(--primary)',color:'#fff',padding:'12px 28px',borderRadius:'10px',
+    fontSize:'.88rem',fontWeight:'500',zIndex:'9999',boxShadow:'0 6px 20px var(--primary-glow)',
+    animation:'fadeInUp .3s'
+  });
+  document.body.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300)},2000);
+}
+
+// --- Energy Chart (Canvas) ---
+function drawEnergyChart() {
+  const canvas = document.getElementById('energyChart');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = 140 * dpr;
+  ctx.scale(dpr, dpr);
+  const W = rect.width, H = 140;
+
+  const hours = ['0시','3시','6시','9시','12시','15시','18시','21시'];
+  const data = [0.8, 0.4, 0.6, 1.8, 2.2, 1.6, 2.8, 2.2];
+  const max = Math.max(...data) * 1.2;
+  const barW = W / hours.length - 10;
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(255,255,255,.06)';
+  ctx.lineWidth = 1;
+  for(let i=0;i<4;i++){
+    const y = H - 20 - (i/3)*(H-40);
+    ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
+  }
+
+  // Bars
+  hours.forEach((label, i) => {
+    const x = i * (W / hours.length) + 5;
+    const barH = (data[i]/max) * (H - 45);
+    const y = H - 20 - barH;
+
+    const grad = ctx.createLinearGradient(x, y, x, H - 20);
+    grad.addColorStop(0, 'rgba(108,92,231,.9)');
+    grad.addColorStop(1, 'rgba(108,92,231,.3)');
+    ctx.fillStyle = grad;
+
+    // Rounded rect
+    const r = 4;
+    ctx.beginPath();
+    ctx.moveTo(x+r, y);
+    ctx.lineTo(x+barW-r, y);
+    ctx.quadraticCurveTo(x+barW, y, x+barW, y+r);
+    ctx.lineTo(x+barW, H-20);
+    ctx.lineTo(x, H-20);
+    ctx.lineTo(x, y+r);
+    ctx.quadraticCurveTo(x, y, x+r, y);
+    ctx.fill();
+
+    // Label
+    ctx.fillStyle = 'rgba(255,255,255,.4)';
+    ctx.font = '10px Inter';
+    ctx.textAlign = 'center';
+    ctx.fillText(label, x + barW/2, H - 4);
+
+    // Value on top
+    ctx.fillStyle = 'rgba(255,255,255,.6)';
+    ctx.font = '9px Inter';
+    ctx.fillText(data[i].toFixed(1), x + barW/2, y - 5);
+  });
+
+  // Update total
+  const total = data.reduce((a,b)=>a+b,0);
+  document.getElementById('energy-total').textContent = total.toFixed(1) + ' kWh';
+}
+
+// --- Init ---
+renderDevices();
+drawEnergyChart();
+window.addEventListener('resize', drawEnergyChart);
+
+// Add fadeInUp animation
+const style = document.createElement('style');
+style.textContent = '@keyframes fadeInUp{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}';
+document.head.appendChild(style);
+</script>
+</body>
+</html>

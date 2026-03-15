@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VINO ÉLITE — 프리미엄 와인 셀렉션</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #141414;
+  --bg-card: #1a1a1a;
+  --bg-card-hover: #222;
+  --burgundy: #722F37;
+  --burgundy-light: #8B3A42;
+  --burgundy-dark: #5A252C;
+  --gold: #C9A96E;
+  --gold-light: #D4B87A;
+  --text-primary: #F5F0EB;
+  --text-secondary: #A09890;
+  --text-muted: #6B6560;
+  --border: #2a2a2a;
+  --overlay: rgba(10, 10, 10, 0.85);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--burgundy); border-radius: 4px; }
+
+/* ── Navigation ── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 1.2rem 3rem;
+  display: flex; align-items: center; justify-content: space-between;
+  background: transparent;
+  transition: background 0.4s, box-shadow 0.4s;
+}
+.nav.scrolled {
+  background: rgba(10, 10, 10, 0.95);
+  box-shadow: 0 2px 30px rgba(0,0,0,0.5);
+  backdrop-filter: blur(20px);
+}
+.nav-logo {
+  font-size: 1.5rem; font-weight: 800; letter-spacing: 3px;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+.nav-logo span { color: var(--text-primary); font-weight: 300; }
+.nav-links { display: flex; gap: 2rem; align-items: center; }
+.nav-links a {
+  color: var(--text-secondary); text-decoration: none; font-size: 0.85rem;
+  font-weight: 500; letter-spacing: 1px; text-transform: uppercase;
+  transition: color 0.3s; position: relative;
+}
+.nav-links a::after {
+  content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px;
+  background: var(--gold); transition: width 0.3s;
+}
+.nav-links a:hover { color: var(--gold); }
+.nav-links a:hover::after { width: 100%; }
+.cart-btn {
+  position: relative; background: none; border: 1px solid var(--border);
+  color: var(--text-primary); padding: 0.6rem 1.2rem; border-radius: 4px;
+  cursor: pointer; font-family: inherit; font-size: 0.85rem;
+  letter-spacing: 1px; transition: all 0.3s;
+}
+.cart-btn:hover { border-color: var(--gold); color: var(--gold); }
+.cart-count {
+  position: absolute; top: -6px; right: -6px;
+  background: var(--burgundy); color: #fff; font-size: 0.65rem;
+  width: 18px; height: 18px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+}
+.mobile-toggle {
+  display: none; background: none; border: none; color: var(--text-primary);
+  font-size: 1.5rem; cursor: pointer;
+}
+
+/* ── Hero ── */
+.hero {
+  position: relative; height: 100vh; display: flex;
+  align-items: center; justify-content: center; text-align: center;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background: url('https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=1920&q=80') center/cover;
+}
+.hero-bg::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to bottom,
+    rgba(10,10,10,0.6) 0%,
+    rgba(10,10,10,0.3) 40%,
+    rgba(10,10,10,0.7) 70%,
+    rgba(10,10,10,1) 100%
+  );
+}
+.hero-content { position: relative; z-index: 2; max-width: 800px; padding: 0 2rem; }
+.hero-sub {
+  font-size: 0.85rem; letter-spacing: 6px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 1.5rem; font-weight: 500;
+}
+.hero-title {
+  font-size: clamp(2.8rem, 6vw, 5.5rem); font-weight: 800;
+  line-height: 1.1; margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, var(--text-primary), var(--gold));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-desc {
+  font-size: 1.1rem; color: var(--text-secondary);
+  max-width: 550px; margin: 0 auto 2.5rem; font-weight: 300; line-height: 1.8;
+}
+.hero-cta {
+  display: inline-block; padding: 1rem 3rem;
+  background: var(--burgundy); color: #fff; text-decoration: none;
+  font-size: 0.85rem; font-weight: 600; letter-spacing: 2px;
+  text-transform: uppercase; border-radius: 2px;
+  transition: all 0.3s; border: 1px solid var(--burgundy);
+}
+.hero-cta:hover {
+  background: transparent; border-color: var(--gold); color: var(--gold);
+}
+.scroll-indicator {
+  position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  z-index: 2; animation: bounce 2s infinite;
+}
+.scroll-indicator span {
+  display: block; width: 20px; height: 20px;
+  border-right: 1px solid var(--gold); border-bottom: 1px solid var(--gold);
+  transform: rotate(45deg); opacity: 0.5;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(10px); }
+}
+
+/* ── Section Common ── */
+.section { padding: 6rem 3rem; max-width: 1400px; margin: 0 auto; }
+.section-header { text-align: center; margin-bottom: 4rem; }
+.section-label {
+  font-size: 0.75rem; letter-spacing: 5px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 0.8rem; font-weight: 500;
+}
+.section-title {
+  font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 700; margin-bottom: 1rem;
+}
+.section-desc {
+  color: var(--text-secondary); max-width: 600px; margin: 0 auto;
+  font-weight: 300; font-size: 1rem;
+}
+
+/* ── Filters ── */
+.filters {
+  display: flex; flex-wrap: wrap; gap: 1.5rem;
+  justify-content: center; margin-bottom: 3rem;
+  padding: 2rem; background: var(--bg-secondary);
+  border-radius: 8px; border: 1px solid var(--border);
+}
+.filter-group { display: flex; flex-direction: column; gap: 0.5rem; }
+.filter-label {
+  font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-muted); font-weight: 600;
+}
+.filter-options { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.filter-btn {
+  padding: 0.5rem 1rem; background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--text-secondary); font-family: inherit; font-size: 0.8rem;
+  border-radius: 4px; cursor: pointer; transition: all 0.3s; font-weight: 400;
+}
+.filter-btn:hover { border-color: var(--burgundy-light); color: var(--text-primary); }
+.filter-btn.active {
+  background: var(--burgundy); border-color: var(--burgundy);
+  color: #fff; font-weight: 500;
+}
+.filter-select {
+  padding: 0.5rem 1rem; background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--text-secondary); font-family: inherit; font-size: 0.8rem;
+  border-radius: 4px; cursor: pointer; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23A09890' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 0.7rem center;
+  padding-right: 2rem;
+}
+.filter-select:focus { outline: none; border-color: var(--burgundy-light); }
+
+/* ── Wine Grid ── */
+.wine-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+.wine-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden; cursor: pointer;
+  transition: all 0.4s; position: relative;
+}
+.wine-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 50px rgba(114, 47, 55, 0.15);
+  border-color: var(--burgundy-dark);
+}
+.wine-card-img {
+  position: relative; height: 260px; overflow: hidden;
+  background: var(--bg-secondary);
+}
+.wine-card-img img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.6s;
+}
+.wine-card:hover .wine-card-img img { transform: scale(1.05); }
+.wine-badge {
+  position: absolute; top: 1rem; left: 1rem;
+  padding: 0.3rem 0.8rem; font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 1px; text-transform: uppercase; border-radius: 2px;
+}
+.badge-red { background: var(--burgundy); color: #fff; }
+.badge-white { background: #D4B87A; color: #1a1a1a; }
+.badge-rose { background: #D4788B; color: #fff; }
+.badge-sparkling { background: #7AA5D4; color: #fff; }
+.wine-card-body { padding: 1.2rem 1.5rem 1.5rem; }
+.wine-name {
+  font-size: 1.05rem; font-weight: 600; margin-bottom: 0.4rem;
+  line-height: 1.4;
+}
+.wine-meta {
+  font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.8rem;
+  display: flex; gap: 0.5rem; flex-wrap: wrap;
+}
+.wine-meta span { display: flex; align-items: center; gap: 0.3rem; }
+.wine-rating {
+  display: flex; align-items: center; gap: 0.3rem;
+  margin-bottom: 0.8rem;
+}
+.stars { color: var(--gold); font-size: 0.85rem; letter-spacing: 1px; }
+.rating-num { font-size: 0.8rem; color: var(--text-secondary); font-weight: 500; }
+.wine-bottom {
+  display: flex; justify-content: space-between; align-items: center;
+}
+.wine-price { font-size: 1.3rem; font-weight: 700; color: var(--gold); }
+.wine-price .unit { font-size: 0.75rem; color: var(--text-muted); font-weight: 400; }
+.add-cart-btn {
+  padding: 0.5rem 1rem; background: var(--burgundy); border: none;
+  color: #fff; font-family: inherit; font-size: 0.75rem;
+  font-weight: 600; border-radius: 4px; cursor: pointer;
+  transition: all 0.3s; letter-spacing: 0.5px;
+}
+.add-cart-btn:hover { background: var(--burgundy-light); }
+.no-results {
+  grid-column: 1 / -1; text-align: center; padding: 4rem 2rem;
+  color: var(--text-muted); font-size: 1.1rem;
+}
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0; background: var(--overlay);
+  z-index: 200; display: none; align-items: center; justify-content: center;
+  padding: 2rem; backdrop-filter: blur(8px);
+}
+.modal-overlay.active { display: flex; }
+.modal {
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: 12px; max-width: 900px; width: 100%;
+  max-height: 90vh; overflow-y: auto; position: relative;
+  animation: modalIn 0.35s ease;
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.modal-close {
+  position: absolute; top: 1.2rem; right: 1.5rem;
+  background: none; border: none; color: var(--text-muted);
+  font-size: 1.5rem; cursor: pointer; z-index: 10;
+  width: 36px; height: 36px; display: flex;
+  align-items: center; justify-content: center;
+  border-radius: 50%; transition: all 0.3s;
+}
+.modal-close:hover { background: var(--bg-card); color: var(--text-primary); }
+.modal-inner { display: flex; }
+.modal-img {
+  flex: 0 0 380px; height: 500px; overflow: hidden;
+}
+.modal-img img { width: 100%; height: 100%; object-fit: cover; }
+.modal-content { flex: 1; padding: 2.5rem; }
+.modal-badge {
+  display: inline-block; padding: 0.3rem 0.8rem; font-size: 0.65rem;
+  font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+  border-radius: 2px; margin-bottom: 1rem;
+}
+.modal-name { font-size: 1.6rem; font-weight: 700; margin-bottom: 0.5rem; }
+.modal-info {
+  display: flex; gap: 1.5rem; flex-wrap: wrap;
+  margin-bottom: 1.5rem; font-size: 0.85rem; color: var(--text-secondary);
+}
+.modal-info-item { display: flex; flex-direction: column; gap: 0.2rem; }
+.modal-info-label {
+  font-size: 0.65rem; text-transform: uppercase;
+  letter-spacing: 1.5px; color: var(--text-muted); font-weight: 600;
+}
+.modal-rating { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; }
+.modal-divider {
+  border: none; border-top: 1px solid var(--border); margin: 1.5rem 0;
+}
+.modal-section-title {
+  font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 0.8rem; font-weight: 600;
+}
+.modal-tasting { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7; margin-bottom: 0; }
+.modal-pairing-list {
+  list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem;
+}
+.modal-pairing-list li {
+  padding: 0.4rem 0.9rem; background: var(--bg-card);
+  border: 1px solid var(--border); border-radius: 20px;
+  font-size: 0.8rem; color: var(--text-secondary);
+}
+.modal-price-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 2rem;
+}
+.modal-price { font-size: 1.8rem; font-weight: 800; color: var(--gold); }
+.modal-price .unit { font-size: 0.85rem; color: var(--text-muted); font-weight: 400; }
+.modal-cart-btn {
+  padding: 0.9rem 2.5rem; background: var(--burgundy); border: none;
+  color: #fff; font-family: inherit; font-size: 0.85rem;
+  font-weight: 600; letter-spacing: 1px; border-radius: 4px;
+  cursor: pointer; transition: all 0.3s; text-transform: uppercase;
+}
+.modal-cart-btn:hover { background: var(--burgundy-light); }
+
+/* ── Footer ── */
+.footer {
+  border-top: 1px solid var(--border); padding: 4rem 3rem 2rem;
+  text-align: center;
+}
+.footer-logo {
+  font-size: 1.3rem; font-weight: 800; letter-spacing: 3px;
+  color: var(--gold); margin-bottom: 1rem;
+}
+.footer-text { color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.5rem; }
+
+/* ── Cart Sidebar ── */
+.cart-sidebar {
+  position: fixed; top: 0; right: -420px; width: 400px; height: 100vh;
+  background: var(--bg-secondary); border-left: 1px solid var(--border);
+  z-index: 300; transition: right 0.4s ease; display: flex; flex-direction: column;
+}
+.cart-sidebar.open { right: 0; }
+.cart-header {
+  padding: 1.5rem 2rem; border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.cart-title { font-size: 1.1rem; font-weight: 700; letter-spacing: 1px; }
+.cart-close-btn {
+  background: none; border: none; color: var(--text-muted);
+  font-size: 1.3rem; cursor: pointer;
+}
+.cart-items { flex: 1; overflow-y: auto; padding: 1rem 2rem; }
+.cart-item {
+  display: flex; gap: 1rem; padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.cart-item-img { width: 60px; height: 80px; border-radius: 4px; object-fit: cover; }
+.cart-item-info { flex: 1; }
+.cart-item-name { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.3rem; }
+.cart-item-price { font-size: 0.85rem; color: var(--gold); }
+.cart-item-qty {
+  display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;
+}
+.qty-btn {
+  width: 26px; height: 26px; background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--text-primary); border-radius: 4px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; font-size: 0.85rem;
+}
+.qty-btn:hover { border-color: var(--burgundy-light); }
+.qty-num { font-size: 0.85rem; font-weight: 500; min-width: 20px; text-align: center; }
+.cart-item-remove {
+  background: none; border: none; color: var(--text-muted);
+  font-size: 0.75rem; cursor: pointer; align-self: flex-start;
+}
+.cart-item-remove:hover { color: #e44; }
+.cart-footer {
+  padding: 1.5rem 2rem; border-top: 1px solid var(--border);
+}
+.cart-total {
+  display: flex; justify-content: space-between;
+  font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;
+}
+.cart-total-price { color: var(--gold); }
+.checkout-btn {
+  width: 100%; padding: 1rem; background: var(--burgundy); border: none;
+  color: #fff; font-family: inherit; font-size: 0.9rem; font-weight: 600;
+  letter-spacing: 1px; border-radius: 4px; cursor: pointer; transition: all 0.3s;
+}
+.checkout-btn:hover { background: var(--burgundy-light); }
+.cart-empty {
+  text-align: center; padding: 3rem 1rem; color: var(--text-muted);
+}
+.cart-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  z-index: 250; display: none;
+}
+.cart-overlay.open { display: block; }
+
+/* ── Toast ── */
+.toast {
+  position: fixed; bottom: 2rem; right: 2rem; z-index: 400;
+  padding: 1rem 1.5rem; background: var(--burgundy);
+  color: #fff; border-radius: 6px; font-size: 0.85rem; font-weight: 500;
+  transform: translateY(100px); opacity: 0; transition: all 0.4s;
+  box-shadow: 0 8px 25px rgba(114,47,55,0.4);
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .nav { padding: 1rem 1.5rem; }
+  .nav-links { display: none; }
+  .mobile-toggle { display: block; }
+  .nav-links.open {
+    display: flex; flex-direction: column;
+    position: absolute; top: 100%; left: 0; right: 0;
+    background: rgba(10,10,10,0.98); padding: 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .section { padding: 4rem 1.5rem; }
+  .filters { padding: 1.2rem; gap: 1rem; }
+  .modal-inner { flex-direction: column; }
+  .modal-img { flex: none; height: 280px; }
+  .modal-content { padding: 1.5rem; }
+  .wine-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+  .cart-sidebar { width: 100%; right: -100%; }
+}
+@media (max-width: 500px) {
+  .hero-title { font-size: 2.2rem; }
+  .wine-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav" id="nav">
+  <div class="nav-logo">VINO <span>ÉLITE</span></div>
+  <div class="nav-links" id="navLinks">
+    <a href="#collection">컬렉션</a>
+    <a href="#about">소개</a>
+    <button class="cart-btn" onclick="toggleCart()">
+      장바구니 <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </div>
+  <button class="mobile-toggle" onclick="toggleMobileNav()">&#9776;</button>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <p class="hero-sub">Premium Wine Selection</p>
+    <h1 class="hero-title">특별한 순간을 위한 와인</h1>
+    <p class="hero-desc">세계 최고의 와이너리에서 엄선한 프리미엄 와인 컬렉션.<br>당신의 테이블에 격조를 더합니다.</p>
+    <a href="#collection" class="hero-cta">컬렉션 보기</a>
+  </div>
+  <div class="scroll-indicator"><span></span></div>
+</section>
+
+<!-- Collection -->
+<section class="section" id="collection">
+  <div class="section-header">
+    <p class="section-label">Our Collection</p>
+    <h2 class="section-title">프리미엄 와인 셀렉션</h2>
+    <p class="section-desc">세계 각지의 명산지에서 엄선한 최상급 와인을 만나보세요</p>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters">
+    <div class="filter-group">
+      <span class="filter-label">타입</span>
+      <div class="filter-options" id="typeFilters">
+        <button class="filter-btn active" data-type="all">전체</button>
+        <button class="filter-btn" data-type="red">레드</button>
+        <button class="filter-btn" data-type="white">화이트</button>
+        <button class="filter-btn" data-type="rose">로제</button>
+        <button class="filter-btn" data-type="sparkling">스파클링</button>
+      </div>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">가격대</span>
+      <div class="filter-options">
+        <select class="filter-select" id="priceFilter">
+          <option value="all">전체</option>
+          <option value="0-100000">~10만원</option>
+          <option value="100000-300000">10~30만원</option>
+          <option value="300000-500000">30~50만원</option>
+          <option value="500000-9999999">50만원~</option>
+        </select>
+      </div>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">지역</span>
+      <div class="filter-options">
+        <select class="filter-select" id="regionFilter">
+          <option value="all">전체</option>
+          <option value="프랑스">프랑스</option>
+          <option value="이탈리아">이탈리아</option>
+          <option value="스페인">스페인</option>
+          <option value="미국">미국</option>
+          <option value="칠레">칠레</option>
+          <option value="아르헨티나">아르헨티나</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="wine-grid" id="wineGrid"></div>
+</section>
+
+<!-- About -->
+<section class="section" id="about">
+  <div class="section-header">
+    <p class="section-label">About Us</p>
+    <h2 class="section-title">VINO ÉLITE</h2>
+    <p class="section-desc">2010년부터 세계 유수의 와이너리와 직접 파트너십을 맺고, 최상의 빈티지만을 엄선하여 제공하고 있습니다. 진정한 와인 애호가를 위한 프리미엄 셀렉션.</p>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-logo">VINO ÉLITE</div>
+  <p class="footer-text">서울특별시 강남구 와인로 123 | contact@vinoelite.kr</p>
+  <p class="footer-text">&copy; 2026 VINO ÉLITE. All rights reserved.</p>
+</footer>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div class="modal-inner" id="modalInner"></div>
+  </div>
+</div>
+
+<!-- Cart Sidebar -->
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h3 class="cart-title">장바구니</h3>
+    <button class="cart-close-btn" onclick="toggleCart()">&times;</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span>합계</span>
+      <span class="cart-total-price" id="cartTotal">₩0</span>
+    </div>
+    <button class="checkout-btn" onclick="alert('주문이 완료되었습니다!')">주문하기</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+const wines = [
+  {
+    id: 1, name: "Château Margaux 2015",
+    type: "red", region: "프랑스", subregion: "보르도, 마르고",
+    grape: "카베르네 소비뇽", vintage: 2015, price: 890000, rating: 4.9,
+    img: "https://images.unsplash.com/photo-1586370434639-0fe43b2d32e6?w=600&q=80",
+    tasting: "깊은 루비빛. 블랙커런트, 제비꽃, 삼나무 향이 우아하게 어우러지며, 실크처럼 부드러운 타닌과 긴 여운이 특징적입니다. 완벽한 균형미를 갖춘 그랑 크뤼의 진수.",
+    pairing: ["양갈비 로스트", "트러플 리소토", "숙성 치즈"]
+  },
+  {
+    id: 2, name: "Opus One 2018",
+    type: "red", region: "미국", subregion: "나파 밸리",
+    grape: "카베르네 소비뇽 블렌드", vintage: 2018, price: 650000, rating: 4.8,
+    img: "https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=600&q=80",
+    tasting: "진한 보랏빛 루비. 카시스, 다크초콜릿, 에스프레소 향이 복합적이며, 벨벳 같은 질감과 세련된 오크 뉘앙스가 인상적인 나파 밸리의 아이콘.",
+    pairing: ["안심 스테이크", "다크 초콜릿", "버섯 라구"]
+  },
+  {
+    id: 3, name: "Puligny-Montrachet 2019",
+    type: "white", region: "프랑스", subregion: "부르고뉴",
+    grape: "샤르도네", vintage: 2019, price: 320000, rating: 4.7,
+    img: "https://images.unsplash.com/photo-1566995541428-f2246c17cda1?w=600&q=80",
+    tasting: "연한 금빛. 흰 복숭아, 아카시아꽃, 헤이즐넛 향이 섬세하게 펼쳐지며, 미네랄리티와 크리미한 질감이 조화를 이루는 프리미엄 화이트.",
+    pairing: ["랍스터 테르미도르", "관자 버터구이", "그뤼에르 치즈"]
+  },
+  {
+    id: 4, name: "Barolo Riserva 2016",
+    type: "red", region: "이탈리아", subregion: "피에몬테",
+    grape: "네비올로", vintage: 2016, price: 280000, rating: 4.6,
+    img: "https://images.unsplash.com/photo-1474722883778-792e7990302f?w=600&q=80",
+    tasting: "가넷빛 루비. 장미, 타르, 체리, 감초 향이 복합적이며, 강건한 타닌과 높은 산도가 장기 숙성 잠재력을 보여주는 '와인의 왕'.",
+    pairing: ["오소부코", "화이트 트러플 파스타", "파르미지아노"]
+  },
+  {
+    id: 5, name: "Whispering Angel 2022",
+    type: "rose", region: "프랑스", subregion: "프로방스",
+    grape: "그르나슈 블렌드", vintage: 2022, price: 45000, rating: 4.3,
+    img: "https://images.unsplash.com/photo-1558001373-7b93ee48ffa0?w=600&q=80",
+    tasting: "연한 연어빛 핑크. 딸기, 자몽, 흰꽃 향이 상쾌하며, 신선한 산미와 미네랄이 돋보이는 프로방스 로제의 정석.",
+    pairing: ["해산물 샐러드", "연어 타르타르", "지중해식 요리"]
+  },
+  {
+    id: 6, name: "Dom Pérignon 2012",
+    type: "sparkling", region: "프랑스", subregion: "샹파뉴",
+    grape: "피노 누아 / 샤르도네", vintage: 2012, price: 380000, rating: 4.9,
+    img: "https://images.unsplash.com/photo-1594372365401-3b5ff14eaaed?w=600&q=80",
+    tasting: "섬세한 금빛 기포. 브리오슈, 아몬드, 백합, 시트러스 향이 층층이 드러나며, 크리미한 무스와 정교한 산미가 완벽한 균형을 이루는 프레스티지 큐베.",
+    pairing: ["캐비아", "신선한 굴", "랍스터"]
+  },
+  {
+    id: 7, name: "Tignanello 2019",
+    type: "red", region: "이탈리아", subregion: "토스카나",
+    grape: "산지오베제 블렌드", vintage: 2019, price: 230000, rating: 4.5,
+    img: "https://images.unsplash.com/photo-1560148218-1a83060f7b32?w=600&q=80",
+    tasting: "깊은 루비. 붉은 과일, 바닐라, 후추, 발사믹 향이 복합적이며, 부드러우면서도 구조감 있는 타닌이 인상적인 슈퍼 토스칸.",
+    pairing: ["비스테카 알라 피오렌티나", "파파르델레", "페코리노"]
+  },
+  {
+    id: 8, name: "Cloudy Bay Sauvignon Blanc 2023",
+    type: "white", region: "뉴질랜드", subregion: "말보로",
+    grape: "소비뇽 블랑", vintage: 2023, price: 48000, rating: 4.2,
+    img: "https://images.unsplash.com/photo-1600320844678-46a5e6550ec3?w=600&q=80",
+    tasting: "밝은 레몬빛. 패션프루트, 라임, 풋풋한 허브 향이 생동감 넘치며, 상쾌한 산미와 깨끗한 피니시가 매력적인 뉴월드 소비뇽 블랑.",
+    pairing: ["세비체", "염소 치즈 샐러드", "태국 요리"]
+  },
+  {
+    id: 9, name: "Vega Sicilia Único 2011",
+    type: "red", region: "스페인", subregion: "리베라 델 두에로",
+    grape: "템프라니요 블렌드", vintage: 2011, price: 520000, rating: 4.8,
+    img: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=600&q=80",
+    tasting: "깊은 가넷빛. 블랙베리, 담배잎, 가죽, 향신료 향이 복합적으로 어우러지며, 실크 같은 타닌과 끝없이 이어지는 여운이 압도적인 스페인의 전설.",
+    pairing: ["이베리코 하몽", "양고기 코치니요", "만체고 치즈"]
+  },
+  {
+    id: 10, name: "Concha y Toro Don Melchor 2019",
+    type: "red", region: "칠레", subregion: "푸엔테 알토",
+    grape: "카베르네 소비뇽", vintage: 2019, price: 120000, rating: 4.4,
+    img: "https://images.unsplash.com/photo-1567696911980-2eed69a46042?w=600&q=80",
+    tasting: "진한 루비. 블랙커런트, 유칼립투스, 민트, 다크초콜릿 향이 풍부하며, 촘촘한 타닌과 긴 피니시가 돋보이는 칠레 프리미엄의 대표.",
+    pairing: ["그릴드 립아이", "엠파나다", "블루 치즈"]
+  },
+  {
+    id: 11, name: "Catena Zapata Malbec 2020",
+    type: "red", region: "아르헨티나", subregion: "멘도사",
+    grape: "말벡", vintage: 2020, price: 95000, rating: 4.3,
+    img: "https://images.unsplash.com/photo-1578911373434-0cb395d2cbfb?w=600&q=80",
+    tasting: "짙은 보랏빛. 자두, 블랙체리, 바이올렛, 코코아 향이 풍성하며, 벨벳 같은 타닌과 우아한 구조감이 인상적인 아르헨티나 말벡의 정수.",
+    pairing: ["아사도", "초리소", "프로볼로네 치즈"]
+  },
+  {
+    id: 12, name: "Moët & Chandon Rosé Impérial",
+    type: "sparkling", region: "프랑스", subregion: "샹파뉴",
+    grape: "피노 누아 / 피노 뫼니에", vintage: 0, price: 85000, rating: 4.1,
+    img: "https://images.unsplash.com/photo-1549934151-03b16c4ada23?w=600&q=80",
+    tasting: "생동감 넘치는 핑크빛 기포. 야생 딸기, 산딸기, 장미 꽃잎 향이 로맨틱하며, 풍성한 과일미와 우아한 피니시가 매력적인 로제 샴페인.",
+    pairing: ["디저트", "연어 스시", "딸기 타르트"]
+  }
+];
+
+let cart = [];
+let activeType = 'all';
+
+// Format price
+function formatPrice(n) {
+  return '₩' + n.toLocaleString('ko-KR');
+}
+
+// Stars
+function starsHTML(rating) {
+  const full = Math.floor(rating);
+  const half = rating % 1 >= 0.3;
+  let s = '';
+  for (let i = 0; i < full; i++) s += '★';
+  if (half) s += '☆';
+  return s;
+}
+
+// Badge class
+function badgeClass(type) {
+  return { red: 'badge-red', white: 'badge-white', rose: 'badge-rose', sparkling: 'badge-sparkling' }[type];
+}
+function typeName(type) {
+  return { red: '레드', white: '화이트', rose: '로제', sparkling: '스파클링' }[type];
+}
+
+// Render cards
+function renderWines() {
+  const grid = document.getElementById('wineGrid');
+  const priceVal = document.getElementById('priceFilter').value;
+  const regionVal = document.getElementById('regionFilter').value;
+
+  let filtered = wines.filter(w => {
+    if (activeType !== 'all' && w.type !== activeType) return false;
+    if (regionVal !== 'all' && w.region !== regionVal) return false;
+    if (priceVal !== 'all') {
+      const [min, max] = priceVal.split('-').map(Number);
+      if (w.price < min || w.price > max) return false;
+    }
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="no-results">조건에 맞는 와인이 없습니다.</div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map(w => `
+    <div class="wine-card" onclick="openModal(${w.id})">
+      <div class="wine-card-img">
+        <img src="${w.img}" alt="${w.name}" loading="lazy">
+        <span class="wine-badge ${badgeClass(w.type)}">${typeName(w.type)}</span>
+      </div>
+      <div class="wine-card-body">
+        <h3 class="wine-name">${w.name}</h3>
+        <div class="wine-meta">
+          <span>${w.subregion}</span>
+          <span>·</span>
+          <span>${w.grape}</span>
+        </div>
+        <div class="wine-rating">
+          <span class="stars">${starsHTML(w.rating)}</span>
+          <span class="rating-num">${w.rating}</span>
+        </div>
+        <div class="wine-bottom">
+          <span class="wine-price">${formatPrice(w.price)} <span class="unit">/ 750ml</span></span>
+          <button class="add-cart-btn" onclick="event.stopPropagation(); addToCart(${w.id})">담기</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Modal
+function openModal(id) {
+  const w = wines.find(x => x.id === id);
+  if (!w) return;
+  document.getElementById('modalInner').innerHTML = `
+    <div class="modal-img"><img src="${w.img}" alt="${w.name}"></div>
+    <div class="modal-content">
+      <span class="modal-badge ${badgeClass(w.type)}">${typeName(w.type)}</span>
+      <h2 class="modal-name">${w.name}</h2>
+      <div class="modal-info">
+        <div class="modal-info-item"><span class="modal-info-label">지역</span>${w.subregion}</div>
+        <div class="modal-info-item"><span class="modal-info-label">품종</span>${w.grape}</div>
+        <div class="modal-info-item"><span class="modal-info-label">빈티지</span>${w.vintage || 'N/V'}</div>
+      </div>
+      <div class="modal-rating">
+        <span class="stars" style="font-size:1.1rem">${starsHTML(w.rating)}</span>
+        <span class="rating-num" style="font-size:1rem">${w.rating} / 5.0</span>
+      </div>
+      <hr class="modal-divider">
+      <h4 class="modal-section-title">테이스팅 노트</h4>
+      <p class="modal-tasting">${w.tasting}</p>
+      <hr class="modal-divider">
+      <h4 class="modal-section-title">음식 페어링</h4>
+      <ul class="modal-pairing-list">${w.pairing.map(p => `<li>${p}</li>`).join('')}</ul>
+      <div class="modal-price-row">
+        <span class="modal-price">${formatPrice(w.price)} <span class="unit">/ 750ml</span></span>
+        <button class="modal-cart-btn" onclick="addToCart(${w.id}); closeModal();">장바구니 담기</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('modalOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// Cart
+function addToCart(id) {
+  const w = wines.find(x => x.id === id);
+  const existing = cart.find(c => c.id === id);
+  if (existing) { existing.qty++; }
+  else { cart.push({ ...w, qty: 1 }); }
+  updateCart();
+  showToast(`${w.name} 추가됨`);
+}
+
+function updateCart() {
+  const countEl = document.getElementById('cartCount');
+  const itemsEl = document.getElementById('cartItems');
+  const totalEl = document.getElementById('cartTotal');
+  const total = cart.reduce((s, c) => s + c.qty, 0);
+  countEl.textContent = total;
+
+  if (cart.length === 0) {
+    itemsEl.innerHTML = '<div class="cart-empty">장바구니가 비어있습니다.</div>';
+    totalEl.textContent = '₩0';
+    return;
+  }
+
+  itemsEl.innerHTML = cart.map(c => `
+    <div class="cart-item">
+      <img class="cart-item-img" src="${c.img}" alt="${c.name}">
+      <div class="cart-item-info">
+        <div class="cart-item-name">${c.name}</div>
+        <div class="cart-item-price">${formatPrice(c.price)}</div>
+        <div class="cart-item-qty">
+          <button class="qty-btn" onclick="changeQty(${c.id}, -1)">−</button>
+          <span class="qty-num">${c.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${c.id}, 1)">+</button>
+        </div>
+      </div>
+      <button class="cart-item-remove" onclick="removeFromCart(${c.id})">삭제</button>
+    </div>
+  `).join('');
+
+  const sum = cart.reduce((s, c) => s + c.price * c.qty, 0);
+  totalEl.textContent = formatPrice(sum);
+}
+
+function changeQty(id, d) {
+  const item = cart.find(c => c.id === id);
+  if (!item) return;
+  item.qty += d;
+  if (item.qty <= 0) cart = cart.filter(c => c.id !== id);
+  updateCart();
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(c => c.id !== id);
+  updateCart();
+}
+
+function toggleCart() {
+  document.getElementById('cartSidebar').classList.toggle('open');
+  document.getElementById('cartOverlay').classList.toggle('open');
+}
+
+// Toast
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// Filters
+document.getElementById('typeFilters').addEventListener('click', function(e) {
+  if (!e.target.classList.contains('filter-btn')) return;
+  this.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  activeType = e.target.dataset.type;
+  renderWines();
+});
+
+document.getElementById('priceFilter').addEventListener('change', renderWines);
+document.getElementById('regionFilter').addEventListener('change', renderWines);
+
+// Nav scroll
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// Mobile nav
+function toggleMobileNav() {
+  document.getElementById('navLinks').classList.toggle('open');
+}
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeModal();
+    if (document.getElementById('cartSidebar').classList.contains('open')) toggleCart();
+  }
+});
+
+// Init
+renderWines();
+updateCart();
+</script>
+</body>
+</html>

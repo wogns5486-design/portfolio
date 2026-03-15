@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>독서 기록장</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#4f46e5;--primary-light:#6366f1;--primary-dark:#3730a3;
+  --bg:#f8fafc;--surface:#ffffff;--surface-alt:#f1f5f9;
+  --text:#1e293b;--text-secondary:#64748b;--text-tertiary:#94a3b8;
+  --border:#e2e8f0;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;
+  --radius:12px;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);
+  --shadow-lg:0 10px 25px rgba(0,0,0,.1);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6}
+button{cursor:pointer;font-family:inherit;border:none;outline:none}
+input,select,textarea{font-family:inherit;outline:none}
+
+/* Header */
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 24px;position:sticky;top:0;z-index:50}
+.header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.logo{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:800;color:var(--primary)}
+.logo svg{width:28px;height:28px}
+.goal-bar{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text-secondary)}
+.goal-bar .progress-mini{width:120px;height:8px;background:var(--surface-alt);border-radius:99px;overflow:hidden}
+.goal-bar .progress-mini-fill{height:100%;background:var(--primary);border-radius:99px;transition:width .4s}
+.goal-btn{background:none;color:var(--primary);font-size:13px;font-weight:600;text-decoration:underline}
+
+/* Tabs */
+.tabs{max-width:1100px;margin:24px auto 0;padding:0 24px;display:flex;gap:4px}
+.tab{padding:10px 20px;font-size:14px;font-weight:600;color:var(--text-secondary);background:transparent;border-radius:10px 10px 0 0;transition:.2s}
+.tab:hover{color:var(--text)}
+.tab.active{background:var(--surface);color:var(--primary);box-shadow:var(--shadow)}
+.tab .badge{display:inline-block;background:var(--surface-alt);color:var(--text-secondary);font-size:11px;font-weight:700;padding:2px 7px;border-radius:99px;margin-left:6px}
+.tab.active .badge{background:var(--primary);color:#fff}
+
+/* Main */
+.main{max-width:1100px;margin:0 auto;padding:0 24px 40px}
+.content-card{background:var(--surface);border-radius:0 var(--radius) var(--radius) var(--radius);box-shadow:var(--shadow);padding:24px;min-height:400px}
+
+/* Actions row */
+.actions-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.search-box{display:flex;align-items:center;gap:8px;background:var(--surface-alt);border-radius:8px;padding:8px 14px;flex:1;max-width:320px}
+.search-box input{border:none;background:transparent;flex:1;font-size:14px;color:var(--text)}
+.search-box svg{width:18px;height:18px;color:var(--text-tertiary);flex-shrink:0}
+.btn-primary{background:var(--primary);color:#fff;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px;transition:.2s}
+.btn-primary:hover{background:var(--primary-light);transform:translateY(-1px)}
+
+/* Book grid */
+.book-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.book-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;transition:.2s;position:relative}
+.book-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px)}
+.book-top{display:flex;gap:14px;margin-bottom:12px}
+.book-cover{width:56px;height:78px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:rgba(255,255,255,.8);box-shadow:2px 2px 8px rgba(0,0,0,.15)}
+.book-info{flex:1;min-width:0}
+.book-title{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.book-author{font-size:13px;color:var(--text-secondary);margin-top:2px}
+.book-category{display:inline-block;font-size:11px;font-weight:600;color:var(--primary);background:rgba(79,70,229,.08);padding:2px 8px;border-radius:99px;margin-top:6px}
+.book-progress{margin-top:8px}
+.book-progress-header{display:flex;justify-content:space-between;font-size:12px;color:var(--text-secondary);margin-bottom:4px}
+.book-progress-bar{width:100%;height:6px;background:var(--surface-alt);border-radius:99px;overflow:hidden}
+.book-progress-fill{height:100%;border-radius:99px;transition:width .4s}
+.book-page-input{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;color:var(--text-secondary)}
+.book-page-input input{width:60px;border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:12px;text-align:center}
+.book-page-input button{background:var(--primary);color:#fff;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600}
+.book-actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.book-actions button{font-size:12px;padding:5px 10px;border-radius:6px;font-weight:500;transition:.15s}
+.btn-move{background:var(--surface-alt);color:var(--text-secondary)}
+.btn-move:hover{background:var(--border)}
+.btn-delete{background:rgba(239,68,68,.08);color:var(--danger)}
+.btn-delete:hover{background:rgba(239,68,68,.15)}
+.btn-review{background:rgba(79,70,229,.08);color:var(--primary)}
+.btn-review:hover{background:rgba(79,70,229,.15)}
+
+/* Stars */
+.stars{display:flex;gap:2px;margin-top:6px}
+.stars span{font-size:18px;cursor:pointer;color:var(--border);transition:.15s}
+.stars span.filled{color:var(--warning)}
+.review-text{font-size:13px;color:var(--text-secondary);margin-top:4px;font-style:italic}
+
+/* Empty state */
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-tertiary)}
+.empty-state svg{width:64px;height:64px;margin-bottom:16px;opacity:.4}
+.empty-state p{font-size:15px}
+
+/* Stats section */
+.stats-section{margin-top:32px}
+.stats-section h2{font-size:20px;font-weight:700;margin-bottom:16px;color:var(--text)}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:24px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center}
+.stat-value{font-size:28px;font-weight:800;color:var(--primary)}
+.stat-label{font-size:13px;color:var(--text-secondary);margin-top:4px}
+.chart-container{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.chart-container h3{font-size:15px;font-weight:600;margin-bottom:12px}
+.chart-container canvas{width:100%!important;max-height:260px}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal{background:var(--surface);border-radius:16px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg)}
+.modal-header{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid var(--border)}
+.modal-header h2{font-size:18px;font-weight:700}
+.modal-close{background:var(--surface-alt);width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--text-secondary)}
+.modal-body{padding:24px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:6px}
+.form-group input,.form-group select,.form-group textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:14px;transition:.2s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(79,70,229,.1)}
+.color-options{display:flex;gap:8px;flex-wrap:wrap}
+.color-opt{width:32px;height:32px;border-radius:8px;cursor:pointer;border:3px solid transparent;transition:.15s}
+.color-opt.selected{border-color:var(--text);transform:scale(1.15)}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
+.btn-cancel{background:var(--surface-alt);color:var(--text-secondary);padding:10px 20px;border-radius:8px;font-size:14px;font-weight:600}
+.btn-submit{background:var(--primary);color:#fff;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:600}
+
+/* Goal modal */
+.goal-input-row{display:flex;align-items:center;gap:10px}
+.goal-input-row input{width:80px;text-align:center;font-size:24px;font-weight:700;border:2px solid var(--border);border-radius:10px;padding:8px}
+.goal-input-row span{font-size:16px;color:var(--text-secondary)}
+
+/* Review modal */
+.review-stars{display:flex;gap:4px;margin-bottom:12px}
+.review-stars span{font-size:28px;cursor:pointer;color:var(--border);transition:.15s}
+.review-stars span.filled{color:var(--warning)}
+
+/* Responsive */
+@media(max-width:640px){
+  .header-inner{flex-direction:column;align-items:flex-start}
+  .tabs{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .tab{white-space:nowrap;font-size:13px;padding:8px 14px}
+  .book-grid{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .actions-row{flex-direction:column;align-items:stretch}
+  .search-box{max-width:100%}
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      독서 기록장
+    </div>
+    <div class="goal-bar">
+      <span id="goalText">올해 목표: 0 / 0권</span>
+      <div class="progress-mini"><div class="progress-mini-fill" id="goalProgress" style="width:0%"></div></div>
+      <button class="goal-btn" onclick="openGoalModal()">목표 설정</button>
+    </div>
+  </div>
+</header>
+
+<!-- Tabs -->
+<div class="tabs">
+  <button class="tab active" data-tab="reading" onclick="switchTab('reading')">읽는 중 <span class="badge" id="badge-reading">0</span></button>
+  <button class="tab" data-tab="finished" onclick="switchTab('finished')">다 읽음 <span class="badge" id="badge-finished">0</span></button>
+  <button class="tab" data-tab="wishlist" onclick="switchTab('wishlist')">읽고 싶은 <span class="badge" id="badge-wishlist">0</span></button>
+  <button class="tab" data-tab="stats" onclick="switchTab('stats')">통계</button>
+</div>
+
+<!-- Main Content -->
+<div class="main">
+  <div class="content-card">
+    <!-- Actions -->
+    <div class="actions-row" id="actionsRow">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" placeholder="책 검색..." id="searchInput" oninput="renderBooks()">
+      </div>
+      <button class="btn-primary" onclick="openAddModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+        책 추가
+      </button>
+    </div>
+
+    <!-- Book lists -->
+    <div id="bookList" class="book-grid"></div>
+    <div id="emptyState" class="empty-state" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <p>아직 등록된 책이 없어요</p>
+    </div>
+
+    <!-- Stats panel -->
+    <div id="statsPanel" style="display:none">
+      <div class="stats-section">
+        <h2>올해 독서 통계</h2>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-value" id="statBooks">0</div><div class="stat-label">읽은 책</div></div>
+          <div class="stat-card"><div class="stat-value" id="statPages">0</div><div class="stat-label">총 페이지</div></div>
+          <div class="stat-card"><div class="stat-value" id="statAvgRating">-</div><div class="stat-label">평균 별점</div></div>
+          <div class="stat-card"><div class="stat-value" id="statGoalPct">0%</div><div class="stat-label">목표 달성률</div></div>
+        </div>
+        <div class="chart-container">
+          <h3>월별 독서량</h3>
+          <canvas id="monthlyChart" height="220"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Book Modal -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>새 책 추가</h2>
+      <button class="modal-close" onclick="closeAddModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>제목 *</label>
+        <input type="text" id="bookTitle" placeholder="책 제목을 입력하세요">
+      </div>
+      <div class="form-group">
+        <label>저자</label>
+        <input type="text" id="bookAuthor" placeholder="저자명">
+      </div>
+      <div class="form-group">
+        <label>표지 색상</label>
+        <div class="color-options" id="colorOptions"></div>
+      </div>
+      <div class="form-group">
+        <label>총 페이지</label>
+        <input type="number" id="bookPages" placeholder="0" min="0">
+      </div>
+      <div class="form-group">
+        <label>카테고리</label>
+        <select id="bookCategory">
+          <option value="소설">소설</option>
+          <option value="에세이">에세이</option>
+          <option value="자기계발">자기계발</option>
+          <option value="경제/경영">경제/경영</option>
+          <option value="과학">과학</option>
+          <option value="역사">역사</option>
+          <option value="인문">인문</option>
+          <option value="IT/기술">IT/기술</option>
+          <option value="기타">기타</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>상태</label>
+        <select id="bookStatus">
+          <option value="reading">읽는 중</option>
+          <option value="finished">다 읽음</option>
+          <option value="wishlist">읽고 싶은</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeAddModal()">취소</button>
+      <button class="btn-submit" onclick="addBook()">추가</button>
+    </div>
+  </div>
+</div>
+
+<!-- Goal Modal -->
+<div class="modal-overlay" id="goalModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>올해 독서 목표</h2>
+      <button class="modal-close" onclick="closeGoalModal()">&times;</button>
+    </div>
+    <div class="modal-body" style="text-align:center;padding:32px">
+      <p style="color:var(--text-secondary);margin-bottom:16px">올해 몇 권의 책을 읽을 목표인가요?</p>
+      <div class="goal-input-row" style="justify-content:center">
+        <input type="number" id="goalInput" min="1" max="999" value="12">
+        <span>권</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeGoalModal()">취소</button>
+      <button class="btn-submit" onclick="saveGoal()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- Review Modal -->
+<div class="modal-overlay" id="reviewModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>별점 & 한줄 후기</h2>
+      <button class="modal-close" onclick="closeReviewModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-weight:600;margin-bottom:12px" id="reviewBookTitle"></p>
+      <div class="review-stars" id="reviewStars"></div>
+      <div class="form-group">
+        <label>한줄 후기</label>
+        <textarea id="reviewText" rows="3" placeholder="이 책에 대한 짧은 감상을 남겨보세요"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeReviewModal()">취소</button>
+      <button class="btn-submit" onclick="saveReview()">저장</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// State
+let books = JSON.parse(localStorage.getItem('bt_books') || '[]');
+let goal = parseInt(localStorage.getItem('bt_goal') || '12');
+let currentTab = 'reading';
+let reviewBookId = null;
+let reviewRating = 0;
+
+const COLORS = ['#4f46e5','#7c3aed','#db2777','#dc2626','#ea580c','#d97706','#16a34a','#0891b2','#2563eb','#475569'];
+
+function save() {
+  localStorage.setItem('bt_books', JSON.stringify(books));
+  localStorage.setItem('bt_goal', goal.toString());
+}
+
+// Init color picker
+function initColors() {
+  const c = document.getElementById('colorOptions');
+  c.innerHTML = COLORS.map((clr, i) =>
+    `<div class="color-opt${i===0?' selected':''}" style="background:${clr}" data-color="${clr}" onclick="selectColor(this)"></div>`
+  ).join('');
+}
+
+function selectColor(el) {
+  document.querySelectorAll('.color-opt').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function getSelectedColor() {
+  const s = document.querySelector('.color-opt.selected');
+  return s ? s.dataset.color : COLORS[0];
+}
+
+// Tabs
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  const isStats = tab === 'stats';
+  document.getElementById('actionsRow').style.display = isStats ? 'none' : '';
+  document.getElementById('bookList').style.display = isStats ? 'none' : '';
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('statsPanel').style.display = isStats ? '' : 'none';
+  if (isStats) renderStats();
+  else renderBooks();
+}
+
+// Render
+function renderBooks() {
+  const query = document.getElementById('searchInput').value.toLowerCase();
+  const list = books.filter(b => b.status === currentTab && (
+    b.title.toLowerCase().includes(query) || b.author.toLowerCase().includes(query)
+  ));
+
+  // Update badges
+  ['reading','finished','wishlist'].forEach(s => {
+    document.getElementById('badge-' + s).textContent = books.filter(b => b.status === s).length;
+  });
+  updateGoalBar();
+
+  const container = document.getElementById('bookList');
+  const empty = document.getElementById('emptyState');
+
+  if (!list.length) {
+    container.innerHTML = '';
+    empty.style.display = '';
+    return;
+  }
+  empty.style.display = 'none';
+
+  container.innerHTML = list.map(b => {
+    const pct = b.totalPages > 0 ? Math.min(100, Math.round((b.currentPage / b.totalPages) * 100)) : 0;
+    const initial = b.title.charAt(0);
+    const progressColor = pct >= 100 ? 'var(--success)' : 'var(--primary)';
+
+    let progressHtml = '';
+    if (b.status === 'reading') {
+      progressHtml = `
+        <div class="book-progress">
+          <div class="book-progress-header"><span>${pct}%</span><span>${b.currentPage||0} / ${b.totalPages||'?'}p</span></div>
+          <div class="book-progress-bar"><div class="book-progress-fill" style="width:${pct}%;background:${progressColor}"></div></div>
+          <div class="book-page-input">
+            <span>현재 페이지:</span>
+            <input type="number" value="${b.currentPage||0}" min="0" max="${b.totalPages||99999}" id="page-${b.id}">
+            <button onclick="updatePage('${b.id}')">저장</button>
+          </div>
+        </div>`;
+    }
+
+    let starsHtml = '';
+    if (b.status === 'finished' && b.rating) {
+      starsHtml = '<div class="stars">' + [1,2,3,4,5].map(i =>
+        `<span class="${i <= b.rating ? 'filled' : ''}">★</span>`
+      ).join('') + '</div>';
+      if (b.review) starsHtml += `<div class="review-text">"${b.review}"</div>`;
+    }
+
+    let moveButtons = '';
+    if (b.status === 'reading') {
+      moveButtons = `<button class="btn-move" onclick="moveBook('${b.id}','finished')">다 읽음으로</button>
+        <button class="btn-review" onclick="openReviewModal('${b.id}')">후기</button>`;
+    } else if (b.status === 'finished') {
+      moveButtons = `<button class="btn-review" onclick="openReviewModal('${b.id}')">후기 수정</button>`;
+    } else {
+      moveButtons = `<button class="btn-move" onclick="moveBook('${b.id}','reading')">읽기 시작</button>`;
+    }
+
+    return `<div class="book-card">
+      <div class="book-top">
+        <div class="book-cover" style="background:${b.color}">${initial}</div>
+        <div class="book-info">
+          <div class="book-title" title="${b.title}">${b.title}</div>
+          <div class="book-author">${b.author || '저자 미상'}</div>
+          <span class="book-category">${b.category}</span>
+        </div>
+      </div>
+      ${progressHtml}
+      ${starsHtml}
+      <div class="book-actions">
+        ${moveButtons}
+        <button class="btn-delete" onclick="deleteBook('${b.id}')">삭제</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updatePage(id) {
+  const input = document.getElementById('page-' + id);
+  const book = books.find(b => b.id === id);
+  if (!book || !input) return;
+  book.currentPage = Math.max(0, parseInt(input.value) || 0);
+  if (book.totalPages && book.currentPage >= book.totalPages) {
+    book.currentPage = book.totalPages;
+  }
+  save();
+  renderBooks();
+}
+
+function moveBook(id, newStatus) {
+  const book = books.find(b => b.id === id);
+  if (!book) return;
+  book.status = newStatus;
+  if (newStatus === 'finished') {
+    book.finishedDate = new Date().toISOString();
+    if (book.totalPages) book.currentPage = book.totalPages;
+  }
+  save();
+  renderBooks();
+}
+
+function deleteBook(id) {
+  if (!confirm('이 책을 삭제할까요?')) return;
+  books = books.filter(b => b.id !== id);
+  save();
+  renderBooks();
+}
+
+// Add modal
+function openAddModal() {
+  document.getElementById('addModal').classList.add('show');
+  document.getElementById('bookTitle').value = '';
+  document.getElementById('bookAuthor').value = '';
+  document.getElementById('bookPages').value = '';
+  document.getElementById('bookCategory').value = '소설';
+  document.getElementById('bookStatus').value = currentTab === 'stats' ? 'reading' : currentTab;
+  initColors();
+}
+function closeAddModal() { document.getElementById('addModal').classList.remove('show'); }
+
+function addBook() {
+  const title = document.getElementById('bookTitle').value.trim();
+  if (!title) { alert('제목을 입력해주세요'); return; }
+  const book = {
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+    title,
+    author: document.getElementById('bookAuthor').value.trim(),
+    color: getSelectedColor(),
+    totalPages: parseInt(document.getElementById('bookPages').value) || 0,
+    currentPage: 0,
+    category: document.getElementById('bookCategory').value,
+    status: document.getElementById('bookStatus').value,
+    rating: 0,
+    review: '',
+    createdDate: new Date().toISOString(),
+    finishedDate: null
+  };
+  if (book.status === 'finished') {
+    book.finishedDate = new Date().toISOString();
+    book.currentPage = book.totalPages;
+  }
+  books.push(book);
+  save();
+  closeAddModal();
+  if (currentTab !== book.status && currentTab !== 'stats') switchTab(book.status);
+  else renderBooks();
+}
+
+// Goal modal
+function openGoalModal() {
+  document.getElementById('goalInput').value = goal;
+  document.getElementById('goalModal').classList.add('show');
+}
+function closeGoalModal() { document.getElementById('goalModal').classList.remove('show'); }
+function saveGoal() {
+  goal = Math.max(1, parseInt(document.getElementById('goalInput').value) || 12);
+  save();
+  closeGoalModal();
+  updateGoalBar();
+  if (currentTab === 'stats') renderStats();
+}
+
+function updateGoalBar() {
+  const year = new Date().getFullYear();
+  const done = books.filter(b => b.status === 'finished' && b.finishedDate && new Date(b.finishedDate).getFullYear() === year).length;
+  const pct = goal > 0 ? Math.min(100, Math.round((done / goal) * 100)) : 0;
+  document.getElementById('goalText').textContent = `올해 목표: ${done} / ${goal}권`;
+  document.getElementById('goalProgress').style.width = pct + '%';
+}
+
+// Review modal
+function openReviewModal(id) {
+  const book = books.find(b => b.id === id);
+  if (!book) return;
+  reviewBookId = id;
+  reviewRating = book.rating || 0;
+  document.getElementById('reviewBookTitle').textContent = book.title;
+  document.getElementById('reviewText').value = book.review || '';
+  renderReviewStars();
+  document.getElementById('reviewModal').classList.add('show');
+}
+function closeReviewModal() { document.getElementById('reviewModal').classList.remove('show'); reviewBookId = null; }
+
+function renderReviewStars() {
+  document.getElementById('reviewStars').innerHTML = [1,2,3,4,5].map(i =>
+    `<span class="${i <= reviewRating ? 'filled' : ''}" onclick="reviewRating=${i};renderReviewStars()">★</span>`
+  ).join('');
+}
+
+function saveReview() {
+  const book = books.find(b => b.id === reviewBookId);
+  if (!book) return;
+  book.rating = reviewRating;
+  book.review = document.getElementById('reviewText').value.trim();
+  save();
+  closeReviewModal();
+  renderBooks();
+}
+
+// Stats
+function renderStats() {
+  const year = new Date().getFullYear();
+  const finished = books.filter(b => b.status === 'finished' && b.finishedDate && new Date(b.finishedDate).getFullYear() === year);
+  const totalPages = finished.reduce((s, b) => s + (b.totalPages || 0), 0);
+  const ratings = finished.filter(b => b.rating > 0);
+  const avgRating = ratings.length ? (ratings.reduce((s, b) => s + b.rating, 0) / ratings.length).toFixed(1) : '-';
+  const goalPct = goal > 0 ? Math.min(100, Math.round((finished.length / goal) * 100)) : 0;
+
+  document.getElementById('statBooks').textContent = finished.length;
+  document.getElementById('statPages').textContent = totalPages.toLocaleString();
+  document.getElementById('statAvgRating').textContent = avgRating;
+  document.getElementById('statGoalPct').textContent = goalPct + '%';
+
+  // Monthly chart
+  const monthly = new Array(12).fill(0);
+  finished.forEach(b => {
+    const m = new Date(b.finishedDate).getMonth();
+    monthly[m]++;
+  });
+  drawChart(monthly);
+}
+
+function drawChart(data) {
+  const canvas = document.getElementById('monthlyChart');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const W = rect.width - 40;
+  const H = 220;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, W, H);
+
+  const months = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  const max = Math.max(1, ...data);
+  const barW = Math.max(16, (W - 60) / 12 - 8);
+  const chartH = H - 50;
+  const startX = 30;
+
+  // Grid lines
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = 10 + (chartH / 4) * i;
+    ctx.beginPath();
+    ctx.moveTo(startX, y);
+    ctx.lineTo(W, y);
+    ctx.stroke();
+  }
+
+  // Bars
+  data.forEach((v, i) => {
+    const x = startX + i * ((W - startX) / 12) + ((W - startX) / 12 - barW) / 2;
+    const h = (v / max) * (chartH - 10);
+    const y = 10 + chartH - h;
+
+    // Bar
+    ctx.fillStyle = v > 0 ? '#4f46e5' : '#e2e8f0';
+    ctx.beginPath();
+    ctx.roundRect(x, y, barW, h, 4);
+    ctx.fill();
+
+    // Value
+    if (v > 0) {
+      ctx.fillStyle = '#4f46e5';
+      ctx.font = '600 11px Inter';
+      ctx.textAlign = 'center';
+      ctx.fillText(v, x + barW / 2, y - 6);
+    }
+
+    // Label
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '500 11px Inter';
+    ctx.textAlign = 'center';
+    ctx.fillText(months[i], x + barW / 2, H - 8);
+  });
+}
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show'); });
+});
+
+// roundRect polyfill
+if (!CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+    r = Math.min(r, w / 2, h / 2);
+    this.moveTo(x + r, y);
+    this.arcTo(x + w, y, x + w, y + h, r);
+    this.arcTo(x + w, y + h, x, y + h, r);
+    this.arcTo(x, y + h, x, y, r);
+    this.arcTo(x, y, x + w, y, r);
+    this.closePath();
+  };
+}
+
+// Init
+initColors();
+renderBooks();
+updateGoalBar();
+window.addEventListener('resize', () => { if (currentTab === 'stats') renderStats(); });
+</script>
+</body>
+</html>
