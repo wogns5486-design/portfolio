@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR 코드 생성기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#7c3aed;--primary-light:#a78bfa;--primary-dark:#5b21b6;
+  --bg:#f8f7ff;--surface:#fff;--surface-alt:#f3f0ff;
+  --text:#1e1b4b;--text-sec:#6b7280;--border:#e5e7eb;
+  --radius:12px;--shadow:0 4px 24px rgba(124,58,237,.08);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6}
+.container{max-width:960px;margin:0 auto;padding:24px 16px}
+header{text-align:center;padding:32px 0 24px}
+header h1{font-size:28px;font-weight:700;color:var(--primary-dark)}
+header p{color:var(--text-sec);margin-top:4px;font-size:14px}
+.app{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+.panel{background:var(--surface);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}
+.panel h2{font-size:16px;font-weight:600;margin-bottom:16px;color:var(--primary-dark)}
+/* Type selector */
+.type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
+.type-btn{padding:10px 6px;border:2px solid var(--border);border-radius:8px;background:var(--surface);cursor:pointer;text-align:center;font-size:12px;font-weight:500;transition:.2s;color:var(--text)}
+.type-btn:hover{border-color:var(--primary-light);background:var(--surface-alt)}
+.type-btn.active{border-color:var(--primary);background:var(--surface-alt);color:var(--primary)}
+.type-btn .icon{font-size:20px;display:block;margin-bottom:4px}
+/* Form */
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:13px;font-weight:500;margin-bottom:4px;color:var(--text)}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;transition:.2s;background:var(--surface)}
+.form-group input:focus,.form-group textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(124,58,237,.1)}
+.form-group textarea{resize:vertical;min-height:80px}
+/* Options */
+.options-row{display:flex;gap:12px;flex-wrap:wrap;align-items:end}
+.options-row .form-group{flex:1;min-width:100px}
+.color-input{display:flex;align-items:center;gap:8px}
+.color-input input[type=color]{width:36px;height:36px;border:none;border-radius:6px;cursor:pointer;padding:0;background:none}
+.color-input span{font-size:12px;color:var(--text-sec)}
+.size-btns{display:flex;gap:6px}
+.size-btn{padding:8px 16px;border:1.5px solid var(--border);border-radius:8px;background:var(--surface);cursor:pointer;font-size:13px;font-weight:500;transition:.2s}
+.size-btn:hover{border-color:var(--primary-light)}
+.size-btn.active{border-color:var(--primary);background:var(--surface-alt);color:var(--primary)}
+.btn-generate{width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:.2s;margin-top:16px}
+.btn-generate:hover{background:var(--primary-dark)}
+/* Preview */
+.preview-area{display:flex;flex-direction:column;align-items:center;gap:16px}
+.qr-canvas-wrap{background:var(--surface-alt);border-radius:var(--radius);padding:24px;display:flex;align-items:center;justify-content:center;min-height:240px}
+.qr-canvas-wrap canvas{border-radius:4px}
+.placeholder{color:var(--text-sec);font-size:14px;text-align:center}
+.btn-download{padding:10px 24px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:.2s;display:none}
+.btn-download:hover{background:var(--primary-dark)}
+/* History */
+.history-panel{margin-top:24px;grid-column:1/-1}
+.history-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.history-item{background:var(--surface-alt);border-radius:8px;padding:12px;text-align:center;cursor:pointer;transition:.2s;position:relative}
+.history-item:hover{box-shadow:0 2px 12px rgba(124,58,237,.12)}
+.history-item canvas{width:80px;height:80px;border-radius:4px}
+.history-item .label{font-size:11px;color:var(--text-sec);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.history-item .delete-btn{position:absolute;top:4px;right:4px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.1);border:none;cursor:pointer;font-size:12px;line-height:20px;color:var(--text-sec);display:none}
+.history-item:hover .delete-btn{display:block}
+.empty-history{text-align:center;color:var(--text-sec);font-size:13px;padding:20px}
+@media(max-width:680px){
+  .app{grid-template-columns:1fr}
+  .type-grid{grid-template-columns:repeat(3,1fr)}
+  .history-list{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>QR 코드 생성기</h1>
+    <p>다양한 형식의 QR 코드를 손쉽게 만들어 보세요</p>
+  </header>
+  <div class="app">
+    <div class="panel">
+      <h2>입력 설정</h2>
+      <div class="type-grid">
+        <button class="type-btn active" data-type="url"><span class="icon">🔗</span>URL</button>
+        <button class="type-btn" data-type="text"><span class="icon">📝</span>텍스트</button>
+        <button class="type-btn" data-type="phone"><span class="icon">📞</span>전화번호</button>
+        <button class="type-btn" data-type="email"><span class="icon">📧</span>이메일</button>
+        <button class="type-btn" data-type="wifi"><span class="icon">📶</span>Wi-Fi</button>
+        <button class="type-btn" data-type="vcard"><span class="icon">👤</span>명함</button>
+      </div>
+      <div id="formArea"></div>
+      <div style="margin-top:16px">
+        <h2>스타일 옵션</h2>
+        <div class="options-row">
+          <div class="form-group">
+            <label>전경색</label>
+            <div class="color-input"><input type="color" id="fgColor" value="#000000"><span id="fgLabel">#000000</span></div>
+          </div>
+          <div class="form-group">
+            <label>배경색</label>
+            <div class="color-input"><input type="color" id="bgColor" value="#ffffff"><span id="bgLabel">#ffffff</span></div>
+          </div>
+          <div class="form-group">
+            <label>크기</label>
+            <div class="size-btns">
+              <button class="size-btn" data-size="5">S</button>
+              <button class="size-btn active" data-size="8">M</button>
+              <button class="size-btn" data-size="12">L</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="btn-generate" id="btnGenerate">QR 코드 생성</button>
+    </div>
+    <div class="panel">
+      <h2>미리보기</h2>
+      <div class="preview-area">
+        <div class="qr-canvas-wrap" id="canvasWrap">
+          <div class="placeholder">QR 코드가 여기에 표시됩니다</div>
+        </div>
+        <button class="btn-download" id="btnDownload">PNG 다운로드</button>
+      </div>
+    </div>
+    <div class="panel history-panel">
+      <h2>생성 히스토리</h2>
+      <div id="historyList"></div>
+    </div>
+  </div>
+</div>
+<script>
+// ===== QR Code encoder (pure JS, no library) =====
+const QR=(()=>{
+  // Galois Field GF(2^8) with polynomial 0x11d
+  const EXP=new Uint8Array(512),LOG=new Uint8Array(256);
+  {let v=1;for(let i=0;i<255;i++){EXP[i]=v;LOG[v]=i;v<<=1;if(v&256)v^=0x11d}for(let i=255;i<512;i++)EXP[i]=EXP[i-255]}
+
+  function gfMul(a,b){return a===0||b===0?0:EXP[LOG[a]+LOG[b]]}
+
+  // Reed-Solomon generator polynomial
+  function rsGenPoly(n){
+    let g=[1];
+    for(let i=0;i<n;i++){
+      let ng=new Array(g.length+1).fill(0);
+      for(let j=0;j<g.length;j++){
+        ng[j]^=g[j];
+        ng[j+1]^=gfMul(g[j],EXP[i]);
+      }
+      g=ng;
+    }
+    return g;
+  }
+
+  function rsEncode(data,ecLen){
+    const gen=rsGenPoly(ecLen);
+    const msg=new Uint8Array(data.length+ecLen);
+    msg.set(data);
+    for(let i=0;i<data.length;i++){
+      const coef=msg[i];
+      if(coef!==0) for(let j=0;j<gen.length;j++) msg[i+j]^=gfMul(gen[j],coef);
+    }
+    return Array.from(msg.slice(data.length));
+  }
+
+  // Version/EC tables (versions 1-10, EC level L for simplicity)
+  // [totalCodewords, ecCodewordsPerBlock, numBlocks, dataCodewords]
+  const VER_TABLE=[
+    null,
+    [26,7,1,19],[44,10,1,34],[70,15,1,55],[100,20,1,80],[134,26,1,108],
+    [172,18,2,68],[196,20,2,78],[242,24,2,97],[292,30,2,116],[346,18,2,68],
+  ];
+  // More accurate version table for EC level L
+  const DATA_CAPACITY=[0,19,34,55,80,108,136,156,194,232,271,
+    321,367,425,458,520,586,644,718,792,858,
+    929,1003,1091,1171,1273,1367,1465,1528,1628,1732,
+    1840,1952,2068,2188,2303,2431,2563,2699,2809,2953];
+
+  // EC codewords per block and block structure for L level
+  const EC_TABLE=[null,
+    {ec:7,g1b:1,g1d:19,g2b:0,g2d:0},
+    {ec:10,g1b:1,g1d:34,g2b:0,g2d:0},
+    {ec:15,g1b:1,g1d:55,g2b:0,g2d:0},
+    {ec:20,g1b:1,g1d:80,g2b:0,g2d:0},
+    {ec:26,g1b:1,g1d:108,g2b:0,g2d:0},
+    {ec:18,g1b:2,g1d:68,g2b:0,g2d:0},
+    {ec:20,g1b:2,g1d:78,g2b:0,g2d:0},
+    {ec:24,g1b:2,g1d:97,g2b:0,g2d:0},
+    {ec:30,g1b:2,g1d:116,g2b:0,g2d:0},
+    {ec:18,g1b:2,g1d:68,g2b:2,g2d:69},
+    {ec:20,g1b:4,g1d:81,g2b:0,g2d:0},
+    {ec:24,g1b:2,g1d:92,g2b:2,g2d:93},
+    {ec:26,g1b:4,g1d:107,g2b:0,g2d:0},
+    {ec:30,g1b:3,g1d:115,g2b:1,g2d:116},
+    {ec:22,g1b:5,g1d:87,g2b:1,g2d:88},
+    {ec:24,g1b:5,g1d:98,g2b:1,g2d:99},
+    {ec:28,g1b:1,g1d:107,g2b:5,g2d:108},
+    {ec:30,g1b:5,g1d:120,g2b:1,g2d:121},
+    {ec:28,g1b:3,g1d:113,g2b:4,g2d:114},
+    {ec:28,g1b:3,g1d:107,g2b:5,g2d:108},
+    {ec:28,g1b:4,g1d:116,g2b:4,g2d:117},
+    {ec:28,g1b:2,g1d:111,g2b:7,g2d:112},
+    {ec:30,g1b:4,g1d:121,g2b:5,g2d:122},
+    {ec:30,g1b:6,g1d:117,g2b:4,g2d:118},
+    {ec:26,g1b:8,g1d:106,g2b:4,g2d:107},
+    {ec:28,g1b:10,g1d:114,g2b:2,g2d:115},
+    {ec:30,g1b:8,g1d:122,g2b:4,g2d:123},
+    {ec:30,g1b:3,g1d:117,g2b:10,g2d:118},
+    {ec:30,g1b:7,g1d:116,g2b:7,g2d:117},
+    {ec:30,g1b:5,g1d:115,g2b:10,g2d:116},
+    {ec:30,g1b:13,g1d:115,g2b:3,g2d:116},
+    {ec:30,g1b:17,g1d:115,g2b:0,g2d:0},
+    {ec:30,g1b:17,g1d:115,g2b:1,g2d:116},
+    {ec:30,g1b:13,g1d:115,g2b:6,g2d:116},
+    {ec:30,g1b:12,g1d:121,g2b:7,g2d:122},
+    {ec:30,g1b:6,g1d:121,g2b:14,g2d:122},
+    {ec:30,g1b:17,g1d:122,g2b:4,g2d:123},
+    {ec:30,g1b:4,g1d:122,g2b:18,g2d:123},
+    {ec:30,g1b:20,g1d:117,g2b:4,g2d:118},
+    {ec:30,g1b:19,g1d:118,g2b:6,g2d:119},
+  ];
+
+  // Alignment pattern positions per version
+  const ALIGN_POS=[null,[],[6,18],[6,22],[6,26],[6,30],[6,34],
+    [6,22,38],[6,24,42],[6,26,46],[6,28,50],[6,30,54],[6,32,58],
+    [6,34,62],[6,26,46,66],[6,26,48,70],[6,26,50,74],[6,30,54,78],
+    [6,30,56,82],[6,30,58,86],[6,34,62,90],[6,28,50,72,94],
+    [6,26,50,74,98],[6,30,54,78,102],[6,28,54,80,106],[6,32,58,84,110],
+    [6,30,58,86,114],[6,34,62,90,118],[6,26,50,74,98,122],
+    [6,30,54,78,102,126],[6,26,52,78,104,130],[6,30,56,82,108,134],
+    [6,34,60,86,112,138],[6,30,58,86,114,142],[6,34,62,90,118,146],
+    [6,30,54,78,102,126,150],[6,24,50,76,102,128,154],
+    [6,28,54,80,106,132,158],[6,32,58,84,110,136,162],
+    [6,26,54,82,110,138,166],[6,30,58,86,114,142,170]];
+
+  // Format info bits for EC level L, masks 0-7
+  const FORMAT_INFO=[0x77c4,0x72f3,0x7daa,0x789d,0x662f,0x6318,0x6c41,0x6976];
+
+  // Version info bits (versions 7-40)
+  const VERSION_INFO=[null,null,null,null,null,null,null,
+    0x07c94,0x085bc,0x09a99,0x0a4d3,0x0bbf6,0x0c762,0x0d847,0x0e60d,
+    0x0f928,0x10b78,0x1145d,0x12a17,0x13532,0x149a6,0x15683,0x168c9,
+    0x177ec,0x18ec4,0x191e1,0x1afab,0x1b08e,0x1cc1a,0x1d33f,0x1ed75,
+    0x1f250,0x209d5,0x216f0,0x228ba,0x2379f,0x24b0b,0x2542e,0x26a64,0x27541];
+
+  function encodeUTF8(str){
+    const arr=[];
+    for(let i=0;i<str.length;i++){
+      let c=str.charCodeAt(i);
+      if(c<0x80)arr.push(c);
+      else if(c<0x800){arr.push(0xc0|(c>>6));arr.push(0x80|(c&0x3f))}
+      else if(c>=0xd800&&c<0xe000){
+        c=0x10000+((c&0x3ff)<<10)|(str.charCodeAt(++i)&0x3ff);
+        arr.push(0xf0|(c>>18));arr.push(0x80|((c>>12)&0x3f));arr.push(0x80|((c>>6)&0x3f));arr.push(0x80|(c&0x3f));
+      } else{arr.push(0xe0|(c>>12));arr.push(0x80|((c>>6)&0x3f));arr.push(0x80|(c&0x3f))}
+    }
+    return arr;
+  }
+
+  function chooseVersion(dataLen){
+    for(let v=1;v<=40;v++){
+      if(!DATA_CAPACITY[v])continue;
+      // byte mode: 4 bit mode + char count bits + data
+      const ccBits=v<=9?8:(v<=26?16:16);
+      const totalBits=4+ccBits+dataLen*8;
+      const totalBytes=Math.ceil(totalBits/8);
+      if(totalBytes<=DATA_CAPACITY[v])return v;
+    }
+    return -1;
+  }
+
+  function createDataBits(utf8Data,version){
+    const ec=EC_TABLE[version];
+    const totalData=DATA_CAPACITY[version];
+    const ccBits=version<=9?8:16;
+    const bits=[];
+    function pushBits(val,len){for(let i=len-1;i>=0;i--)bits.push((val>>i)&1)}
+    // Byte mode indicator: 0100
+    pushBits(4,4);
+    pushBits(utf8Data.length,ccBits);
+    for(const b of utf8Data)pushBits(b,8);
+    // Terminator
+    const maxBits=totalData*8;
+    const termLen=Math.min(4,maxBits-bits.length);
+    pushBits(0,termLen);
+    // Pad to byte boundary
+    while(bits.length%8!==0)bits.push(0);
+    // Pad bytes
+    const padBytes=[0xec,0x11];let pi=0;
+    while(bits.length<maxBits){pushBits(padBytes[pi],8);pi^=1}
+    // Convert to bytes
+    const data=[];
+    for(let i=0;i<bits.length;i+=8){
+      let b=0;for(let j=0;j<8;j++)b=(b<<1)|bits[i+j];data.push(b);
+    }
+    return new Uint8Array(data);
+  }
+
+  function interleaveBlocks(data,version){
+    const ec=EC_TABLE[version];
+    const blocks=[];
+    let offset=0;
+    // Group 1
+    for(let i=0;i<ec.g1b;i++){
+      blocks.push(Array.from(data.slice(offset,offset+ec.g1d)));
+      offset+=ec.g1d;
+    }
+    // Group 2
+    for(let i=0;i<ec.g2b;i++){
+      blocks.push(Array.from(data.slice(offset,offset+ec.g2d)));
+      offset+=ec.g2d;
+    }
+    // Generate EC for each block
+    const ecBlocks=blocks.map(b=>rsEncode(new Uint8Array(b),ec.ec));
+    // Interleave data
+    const result=[];
+    const maxDataLen=Math.max(ec.g1d,ec.g2d||0);
+    for(let i=0;i<maxDataLen;i++)
+      for(const b of blocks)if(i<b.length)result.push(b[i]);
+    // Interleave EC
+    for(let i=0;i<ec.ec;i++)
+      for(const b of ecBlocks)if(i<b.length)result.push(b[i]);
+    return result;
+  }
+
+  function createMatrix(version){
+    const size=17+version*4;
+    // 0=white, 1=black, null=unset
+    const m=Array.from({length:size},()=>new Array(size).fill(null));
+    const reserved=Array.from({length:size},()=>new Array(size).fill(false));
+
+    function setModule(r,c,v,res){
+      if(r>=0&&r<size&&c>=0&&c<size){m[r][c]=v?1:0;if(res)reserved[r][c]=true}
+    }
+
+    // Finder patterns
+    function finderPattern(row,col){
+      for(let r=-1;r<=7;r++)for(let c=-1;c<=7;c++){
+        const rr=row+r,cc=col+c;
+        if(rr<0||rr>=size||cc<0||cc>=size)continue;
+        const v=(r>=0&&r<=6&&(c===0||c===6))||(c>=0&&c<=6&&(r===0||r===6))||(r>=2&&r<=4&&c>=2&&c<=4);
+        setModule(rr,cc,v,true);
+      }
+    }
+    finderPattern(0,0);finderPattern(0,size-7);finderPattern(size-7,0);
+
+    // Alignment patterns
+    if(version>=2){
+      const pos=ALIGN_POS[version];
+      for(const r of pos)for(const c of pos){
+        if(reserved[r][c])continue;
+        for(let dr=-2;dr<=2;dr++)for(let dc=-2;dc<=2;dc++){
+          const v=Math.abs(dr)===2||Math.abs(dc)===2||(dr===0&&dc===0);
+          setModule(r+dr,c+dc,v,true);
+        }
+      }
+    }
+
+    // Timing patterns
+    for(let i=8;i<size-8;i++){
+      if(!reserved[6][i]){setModule(6,i,i%2===0,true)}
+      if(!reserved[i][6]){setModule(i,6,i%2===0,true)}
+    }
+
+    // Dark module
+    setModule(size-8,8,1,true);
+
+    // Reserve format info areas
+    for(let i=0;i<8;i++){
+      if(!reserved[8][i])reserved[8][i]=true;
+      if(!reserved[i][8])reserved[i][8]=true;
+      if(!reserved[8][size-1-i])reserved[8][size-1-i]=true;
+      if(!reserved[size-1-i][8])reserved[size-1-i][8]=true;
+    }
+    reserved[8][8]=true;
+
+    // Reserve version info areas
+    if(version>=7){
+      for(let i=0;i<6;i++)for(let j=0;j<3;j++){
+        reserved[i][size-11+j]=true;
+        reserved[size-11+j][i]=true;
+      }
+    }
+
+    return {m,reserved,size};
+  }
+
+  function placeData(matrix,reserved,size,dataBits){
+    let bitIdx=0;
+    let upward=true;
+    for(let col=size-1;col>=1;col-=2){
+      if(col===6)col=5; // Skip timing column
+      const rows=upward?[...Array(size).keys()].reverse():[...Array(size).keys()];
+      for(const row of rows){
+        for(let c=col;c>=col-1;c--){
+          if(!reserved[row][c]){
+            matrix[row][c]=bitIdx<dataBits.length?dataBits[bitIdx]:0;
+            bitIdx++;
+          }
+        }
+      }
+      upward=!upward;
+    }
+  }
+
+  function applyMask(matrix,reserved,size,maskNum){
+    const maskFn=[
+      (r,c)=>(r+c)%2===0,
+      (r,c)=>r%2===0,
+      (r,c)=>c%3===0,
+      (r,c)=>(r+c)%3===0,
+      (r,c)=>(Math.floor(r/2)+Math.floor(c/3))%2===0,
+      (r,c)=>(r*c)%2+(r*c)%3===0,
+      (r,c)=>((r*c)%2+(r*c)%3)%2===0,
+      (r,c)=>((r+c)%2+(r*c)%3)%2===0,
+    ];
+    const fn=maskFn[maskNum];
+    for(let r=0;r<size;r++)
+      for(let c=0;c<size;c++)
+        if(!reserved[r][c]&&fn(r,c))matrix[r][c]^=1;
+  }
+
+  function placeFormatInfo(matrix,size,maskNum){
+    const info=FORMAT_INFO[maskNum];
+    const bits=[];
+    for(let i=14;i>=0;i--)bits.push((info>>i)&1);
+    // Around top-left finder
+    const pos1=[[8,0],[8,1],[8,2],[8,3],[8,4],[8,5],[8,7],[8,8],[7,8],[5,8],[4,8],[3,8],[2,8],[1,8],[0,8]];
+    for(let i=0;i<15;i++)matrix[pos1[i][0]][pos1[i][1]]=bits[i];
+    // Bottom-left + top-right
+    const pos2=[[size-1,8],[size-2,8],[size-3,8],[size-4,8],[size-5,8],[size-6,8],[size-7,8],
+      [8,size-8],[8,size-7],[8,size-6],[8,size-5],[8,size-4],[8,size-3],[8,size-2],[8,size-1]];
+    for(let i=0;i<15;i++)matrix[pos2[i][0]][pos2[i][1]]=bits[i];
+  }
+
+  function placeVersionInfo(matrix,size,version){
+    if(version<7)return;
+    const info=VERSION_INFO[version];
+    let bitIdx=0;
+    for(let i=0;i<6;i++)for(let j=0;j<3;j++){
+      const bit=(info>>bitIdx)&1;
+      matrix[i][size-11+j]=bit;
+      matrix[size-11+j][i]=bit;
+      bitIdx++;
+    }
+  }
+
+  function penaltyScore(matrix,size){
+    let score=0;
+    // Rule 1: consecutive same-color modules in row/col
+    for(let r=0;r<size;r++){
+      let cnt=1;
+      for(let c=1;c<size;c++){
+        if(matrix[r][c]===matrix[r][c-1])cnt++;
+        else{if(cnt>=5)score+=cnt-2;cnt=1}
+      }
+      if(cnt>=5)score+=cnt-2;
+    }
+    for(let c=0;c<size;c++){
+      let cnt=1;
+      for(let r=1;r<size;r++){
+        if(matrix[r][c]===matrix[r-1][c])cnt++;
+        else{if(cnt>=5)score+=cnt-2;cnt=1}
+      }
+      if(cnt>=5)score+=cnt-2;
+    }
+    // Rule 2: 2x2 blocks
+    for(let r=0;r<size-1;r++)for(let c=0;c<size-1;c++){
+      const v=matrix[r][c];
+      if(v===matrix[r][c+1]&&v===matrix[r+1][c]&&v===matrix[r+1][c+1])score+=3;
+    }
+    // Rule 3: finder-like patterns (simplified)
+    // Rule 4: proportion
+    let dark=0;
+    for(let r=0;r<size;r++)for(let c=0;c<size;c++)if(matrix[r][c])dark++;
+    const pct=dark*100/(size*size);
+    score+=Math.abs(Math.round(pct/5)*5-50)*2;
+    return score;
+  }
+
+  function generate(text){
+    const utf8=encodeUTF8(text);
+    const version=chooseVersion(utf8.length);
+    if(version<0)throw new Error('데이터가 너무 깁니다');
+
+    const dataCW=createDataBits(utf8,version);
+    const interleaved=interleaveBlocks(dataCW,version);
+    // Convert to bit array
+    const dataBits=[];
+    for(const b of interleaved)for(let i=7;i>=0;i--)dataBits.push((b>>i)&1);
+    // Add remainder bits
+    const remainderBits=[0,0,7,7,7,7,7,0,0,0,0,0,0,0,3,3,3,3,3,3,3,4,4,4,4,4,4,4,3,3,3,3,3,3,3,0,0,0,0,0,0];
+    for(let i=0;i<(remainderBits[version]||0);i++)dataBits.push(0);
+
+    // Try all 8 masks, pick best
+    let bestMatrix,bestScore=Infinity;
+    for(let mask=0;mask<8;mask++){
+      const {m,reserved,size}=createMatrix(version);
+      placeData(m,reserved,size,dataBits);
+      applyMask(m,reserved,size,mask);
+      placeFormatInfo(m,size,mask);
+      placeVersionInfo(m,size,version);
+      // Fill any remaining null with 0
+      for(let r=0;r<size;r++)for(let c=0;c<size;c++)if(m[r][c]===null)m[r][c]=0;
+      const score=penaltyScore(m,size);
+      if(score<bestScore){bestScore=score;bestMatrix=m}
+    }
+
+    return bestMatrix;
+  }
+
+  return {generate};
+})();
+
+// ===== App Logic =====
+const forms={
+  url:`<div class="form-group"><label>URL 주소</label><input type="url" id="inputUrl" placeholder="https://example.com"></div>`,
+  text:`<div class="form-group"><label>텍스트</label><textarea id="inputText" placeholder="QR 코드에 담을 내용을 입력하세요"></textarea></div>`,
+  phone:`<div class="form-group"><label>전화번호</label><input type="tel" id="inputPhone" placeholder="010-1234-5678"></div>`,
+  email:`<div class="form-group"><label>이메일 주소</label><input type="email" id="inputEmail" placeholder="user@example.com"></div>
+    <div class="form-group"><label>제목 (선택)</label><input id="inputEmailSubj" placeholder="제목"></div>
+    <div class="form-group"><label>본문 (선택)</label><textarea id="inputEmailBody" placeholder="본문"></textarea></div>`,
+  wifi:`<div class="form-group"><label>네트워크 이름 (SSID)</label><input id="inputSSID" placeholder="Wi-Fi 이름"></div>
+    <div class="form-group"><label>비밀번호</label><input id="inputWifiPass" placeholder="비밀번호"></div>
+    <div class="form-group"><label>보안 방식</label><select id="inputWifiEnc"><option value="WPA">WPA/WPA2</option><option value="WEP">WEP</option><option value="nopass">없음</option></select></div>`,
+  vcard:`<div class="form-group"><label>이름</label><input id="vcName" placeholder="홍길동"></div>
+    <div class="form-group"><label>회사</label><input id="vcOrg" placeholder="회사명"></div>
+    <div class="form-group"><label>직함</label><input id="vcTitle" placeholder="직함"></div>
+    <div class="form-group"><label>전화번호</label><input id="vcPhone" placeholder="010-1234-5678"></div>
+    <div class="form-group"><label>이메일</label><input id="vcEmail" placeholder="user@example.com"></div>
+    <div class="form-group"><label>웹사이트</label><input id="vcUrl" placeholder="https://"></div>`,
+};
+
+let currentType='url';
+let cellSize=8;
+
+const formArea=document.getElementById('formArea');
+const canvasWrap=document.getElementById('canvasWrap');
+const btnDownload=document.getElementById('btnDownload');
+const fgColor=document.getElementById('fgColor');
+const bgColor=document.getElementById('bgColor');
+const fgLabel=document.getElementById('fgLabel');
+const bgLabel=document.getElementById('bgLabel');
+
+fgColor.addEventListener('input',()=>fgLabel.textContent=fgColor.value);
+bgColor.addEventListener('input',()=>bgLabel.textContent=bgColor.value);
+
+// Type buttons
+document.querySelectorAll('.type-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentType=btn.dataset.type;
+    formArea.innerHTML=forms[currentType];
+  });
+});
+
+// Size buttons
+document.querySelectorAll('.size-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    cellSize=parseInt(btn.dataset.size);
+  });
+});
+
+// Initialize form
+formArea.innerHTML=forms.url;
+
+function getDataString(){
+  switch(currentType){
+    case 'url': return document.getElementById('inputUrl')?.value||'';
+    case 'text': return document.getElementById('inputText')?.value||'';
+    case 'phone':{
+      const p=document.getElementById('inputPhone')?.value||'';
+      return p?`tel:${p}`:'';
+    }
+    case 'email':{
+      const e=document.getElementById('inputEmail')?.value||'';
+      const s=document.getElementById('inputEmailSubj')?.value||'';
+      const b=document.getElementById('inputEmailBody')?.value||'';
+      if(!e)return '';
+      let str=`mailto:${e}`;
+      const params=[];
+      if(s)params.push(`subject=${encodeURIComponent(s)}`);
+      if(b)params.push(`body=${encodeURIComponent(b)}`);
+      if(params.length)str+='?'+params.join('&');
+      return str;
+    }
+    case 'wifi':{
+      const ssid=document.getElementById('inputSSID')?.value||'';
+      const pass=document.getElementById('inputWifiPass')?.value||'';
+      const enc=document.getElementById('inputWifiEnc')?.value||'WPA';
+      if(!ssid)return '';
+      return `WIFI:T:${enc};S:${ssid};P:${pass};;`;
+    }
+    case 'vcard':{
+      const n=document.getElementById('vcName')?.value||'';
+      if(!n)return '';
+      const parts=[`BEGIN:VCARD`,`VERSION:3.0`,`FN:${n}`];
+      const org=document.getElementById('vcOrg')?.value;if(org)parts.push(`ORG:${org}`);
+      const title=document.getElementById('vcTitle')?.value;if(title)parts.push(`TITLE:${title}`);
+      const ph=document.getElementById('vcPhone')?.value;if(ph)parts.push(`TEL:${ph}`);
+      const em=document.getElementById('vcEmail')?.value;if(em)parts.push(`EMAIL:${em}`);
+      const url=document.getElementById('vcUrl')?.value;if(url)parts.push(`URL:${url}`);
+      parts.push(`END:VCARD`);
+      return parts.join('\n');
+    }
+  }
+  return '';
+}
+
+let currentCanvas=null;
+
+function renderQR(matrix){
+  const size=matrix.length;
+  const quiet=4;
+  const totalSize=(size+quiet*2)*cellSize;
+  const canvas=document.createElement('canvas');
+  canvas.width=totalSize;canvas.height=totalSize;
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle=bgColor.value;
+  ctx.fillRect(0,0,totalSize,totalSize);
+  ctx.fillStyle=fgColor.value;
+  for(let r=0;r<size;r++)for(let c=0;c<size;c++){
+    if(matrix[r][c])ctx.fillRect((c+quiet)*cellSize,(r+quiet)*cellSize,cellSize,cellSize);
+  }
+  return canvas;
+}
+
+const typeLabels={url:'URL',text:'텍스트',phone:'전화번호',email:'이메일',wifi:'Wi-Fi',vcard:'명함'};
+
+document.getElementById('btnGenerate').addEventListener('click',()=>{
+  const data=getDataString();
+  if(!data){alert('내용을 입력해주세요.');return}
+  try{
+    const matrix=QR.generate(data);
+    const canvas=renderQR(matrix);
+    canvasWrap.innerHTML='';
+    canvasWrap.appendChild(canvas);
+    currentCanvas=canvas;
+    btnDownload.style.display='inline-block';
+    saveHistory(data,currentType,matrix);
+  }catch(e){
+    alert('QR 코드 생성 실패: '+e.message);
+  }
+});
+
+btnDownload.addEventListener('click',()=>{
+  if(!currentCanvas)return;
+  const link=document.createElement('a');
+  link.download='qr-code.png';
+  link.href=currentCanvas.toDataURL('image/png');
+  link.click();
+});
+
+// History
+function getHistory(){
+  try{return JSON.parse(localStorage.getItem('qr_history')||'[]')}catch{return[]}
+}
+function saveHistory(data,type,matrix){
+  const history=getHistory();
+  history.unshift({data,type,matrix,time:Date.now()});
+  if(history.length>10)history.length=10;
+  localStorage.setItem('qr_history',JSON.stringify(history));
+  renderHistory();
+}
+function deleteHistory(idx){
+  const history=getHistory();
+  history.splice(idx,1);
+  localStorage.setItem('qr_history',JSON.stringify(history));
+  renderHistory();
+}
+function renderHistory(){
+  const list=document.getElementById('historyList');
+  const history=getHistory();
+  if(!history.length){list.innerHTML='<div class="empty-history">아직 생성한 QR 코드가 없습니다</div>';return}
+  list.className='history-list';
+  list.innerHTML='';
+  history.forEach((item,idx)=>{
+    const div=document.createElement('div');
+    div.className='history-item';
+    const canvas=document.createElement('canvas');
+    // Mini render
+    const m=item.matrix;
+    const s=m.length;const cs=2;const q=2;const ts=(s+q*2)*cs;
+    canvas.width=ts;canvas.height=ts;
+    const ctx=canvas.getContext('2d');
+    ctx.fillStyle='#fff';ctx.fillRect(0,0,ts,ts);
+    ctx.fillStyle='#000';
+    for(let r=0;r<s;r++)for(let c=0;c<s;c++)if(m[r][c])ctx.fillRect((c+q)*cs,(r+q)*cs,cs,cs);
+    const label=document.createElement('div');
+    label.className='label';
+    label.textContent=`${typeLabels[item.type]||item.type}: ${item.data.substring(0,20)}`;
+    const delBtn=document.createElement('button');
+    delBtn.className='delete-btn';delBtn.textContent='×';
+    delBtn.addEventListener('click',e=>{e.stopPropagation();deleteHistory(idx)});
+    div.appendChild(delBtn);div.appendChild(canvas);div.appendChild(label);
+    div.addEventListener('click',()=>{
+      // Re-render this QR
+      const c2=renderQR(item.matrix);
+      canvasWrap.innerHTML='';canvasWrap.appendChild(c2);
+      currentCanvas=c2;btnDownload.style.display='inline-block';
+    });
+    list.appendChild(div);
+  });
+}
+renderHistory();
+</script>
+</body>
+</html>

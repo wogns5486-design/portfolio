@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>코드랩 아카데미 | 6개월 만에 개발자가 되세요</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --primary: #6C3CE1;
+  --primary-dark: #5228CC;
+  --primary-light: #8B5CF6;
+  --indigo: #4F46E5;
+  --indigo-light: #818CF8;
+  --bg: #FFFFFF;
+  --bg-light: #F8F7FF;
+  --bg-gray: #F3F4F6;
+  --text: #1F2937;
+  --text-light: #6B7280;
+  --text-lighter: #9CA3AF;
+  --border: #E5E7EB;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 25px rgba(0,0,0,0.08), 0 4px 10px rgba(0,0,0,0.04);
+  --shadow-xl: 0 20px 40px rgba(108,60,225,0.12);
+  --radius: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; border: none; font-family: inherit; }
+img { max-width: 100%; display: block; }
+
+/* ─── NAV ─── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  z-index: 1000;
+  transition: box-shadow 0.3s;
+}
+.nav.scrolled { box-shadow: var(--shadow-md); }
+.nav .container {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 72px;
+}
+.nav-logo {
+  font-size: 1.35rem; font-weight: 800; color: var(--primary);
+  display: flex; align-items: center; gap: 8px;
+}
+.nav-logo span {
+  background: linear-gradient(135deg, var(--primary), var(--indigo));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.nav-links { display: flex; gap: 32px; align-items: center; }
+.nav-links a {
+  font-size: 0.9rem; font-weight: 500; color: var(--text-light);
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--primary); }
+.nav-cta {
+  padding: 10px 24px; border-radius: 8px; font-weight: 600; font-size: 0.88rem;
+  background: var(--primary); color: #fff; transition: all 0.2s;
+}
+.nav-cta:hover { background: var(--primary-dark); transform: translateY(-1px); }
+.nav-mobile-btn {
+  display: none; background: none; padding: 8px;
+  flex-direction: column; gap: 5px;
+}
+.nav-mobile-btn span {
+  display: block; width: 24px; height: 2px; background: var(--text);
+  transition: 0.3s;
+}
+
+/* ─── HERO ─── */
+.hero {
+  padding: 160px 0 100px;
+  background: linear-gradient(180deg, var(--bg-light) 0%, var(--bg) 100%);
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: -200px; right: -200px;
+  width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(108,60,225,0.06) 0%, transparent 70%);
+}
+.hero::after {
+  content: ''; position: absolute; bottom: -100px; left: -150px;
+  width: 400px; height: 400px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(79,70,229,0.05) 0%, transparent 70%);
+}
+.hero .container { position: relative; z-index: 1; text-align: center; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 20px; border-radius: 100px; font-size: 0.85rem; font-weight: 600;
+  background: rgba(108,60,225,0.08); color: var(--primary);
+  margin-bottom: 28px;
+}
+.hero-badge::before {
+  content: ''; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--primary); animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; } 50% { opacity: 0.4; }
+}
+.hero h1 {
+  font-size: 3.5rem; font-weight: 900; line-height: 1.15;
+  margin-bottom: 24px; letter-spacing: -0.02em;
+}
+.hero h1 .gradient {
+  background: linear-gradient(135deg, var(--primary), var(--indigo));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero-sub {
+  font-size: 1.2rem; color: var(--text-light); max-width: 600px;
+  margin: 0 auto 40px; line-height: 1.7;
+}
+.hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.btn-primary {
+  padding: 16px 36px; border-radius: 10px; font-weight: 700; font-size: 1rem;
+  background: linear-gradient(135deg, var(--primary), var(--indigo));
+  color: #fff; transition: all 0.3s; box-shadow: 0 4px 15px rgba(108,60,225,0.3);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(108,60,225,0.4); }
+.btn-secondary {
+  padding: 16px 36px; border-radius: 10px; font-weight: 700; font-size: 1rem;
+  background: var(--bg); color: var(--text); border: 2px solid var(--border);
+  transition: all 0.3s;
+}
+.btn-secondary:hover { border-color: var(--primary); color: var(--primary); }
+
+.hero-stats {
+  display: flex; justify-content: center; gap: 60px; margin-top: 64px;
+  padding-top: 48px; border-top: 1px solid var(--border);
+}
+.hero-stat-num {
+  font-size: 2.2rem; font-weight: 800; color: var(--primary);
+}
+.hero-stat-label {
+  font-size: 0.88rem; color: var(--text-light); margin-top: 4px;
+}
+
+/* ─── SECTIONS COMMON ─── */
+section { padding: 100px 0; }
+.section-tag {
+  display: inline-block; font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--primary); background: rgba(108,60,225,0.08);
+  padding: 6px 16px; border-radius: 100px; margin-bottom: 16px;
+}
+.section-title {
+  font-size: 2.4rem; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.02em;
+}
+.section-desc {
+  font-size: 1.05rem; color: var(--text-light); max-width: 600px; line-height: 1.7;
+}
+.section-header { text-align: center; margin-bottom: 60px; }
+.section-header .section-desc { margin: 0 auto; }
+
+/* ─── STATS BAR ─── */
+.stats {
+  background: linear-gradient(135deg, var(--primary), var(--indigo));
+  padding: 60px 0;
+}
+.stats-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px;
+  text-align: center;
+}
+.stat-item h3 {
+  font-size: 2.8rem; font-weight: 900; color: #fff;
+}
+.stat-item p {
+  font-size: 0.95rem; color: rgba(255,255,255,0.8); margin-top: 4px; font-weight: 500;
+}
+
+/* ─── CURRICULUM ─── */
+.curriculum { background: var(--bg-light); }
+.course-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+.course-card {
+  background: var(--bg); border-radius: var(--radius-lg); padding: 36px;
+  border: 1px solid var(--border); transition: all 0.3s; position: relative; overflow: hidden;
+}
+.course-card:hover {
+  transform: translateY(-4px); box-shadow: var(--shadow-xl);
+  border-color: var(--primary-light);
+}
+.course-card.featured {
+  border-color: var(--primary); background: linear-gradient(180deg, rgba(108,60,225,0.03), var(--bg));
+}
+.course-card.featured::before {
+  content: '인기'; position: absolute; top: 20px; right: -28px;
+  background: var(--primary); color: #fff; font-size: 0.75rem; font-weight: 700;
+  padding: 4px 36px; transform: rotate(45deg);
+}
+.course-icon {
+  width: 56px; height: 56px; border-radius: var(--radius);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; margin-bottom: 20px;
+}
+.course-card:nth-child(1) .course-icon { background: rgba(59,130,246,0.1); }
+.course-card:nth-child(2) .course-icon { background: rgba(108,60,225,0.1); }
+.course-card:nth-child(3) .course-icon { background: rgba(16,185,129,0.1); }
+.course-card h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
+.course-card .course-desc {
+  font-size: 0.9rem; color: var(--text-light); margin-bottom: 20px; line-height: 1.6;
+}
+.course-meta {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+.course-meta span { font-size: 0.85rem; color: var(--text-light); }
+.course-meta strong { color: var(--text); }
+.course-price {
+  font-size: 1.6rem; font-weight: 800; color: var(--primary); margin-bottom: 8px;
+}
+.course-price-note { font-size: 0.8rem; color: var(--text-lighter); margin-bottom: 20px; }
+.course-includes h4 {
+  font-size: 0.82rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.05em; color: var(--text-light); margin-bottom: 12px;
+}
+.course-includes ul { list-style: none; }
+.course-includes li {
+  font-size: 0.88rem; color: var(--text-light); padding: 4px 0;
+  display: flex; align-items: center; gap: 8px;
+}
+.course-includes li::before {
+  content: '✓'; color: var(--primary); font-weight: 700; font-size: 0.85rem;
+}
+.course-btn {
+  display: block; width: 100%; padding: 14px; border-radius: 10px;
+  font-weight: 700; font-size: 0.92rem; text-align: center;
+  margin-top: 24px; transition: all 0.3s;
+}
+.course-card:nth-child(1) .course-btn,
+.course-card:nth-child(3) .course-btn {
+  background: var(--bg-light); color: var(--primary); border: 1px solid var(--border);
+}
+.course-card:nth-child(1) .course-btn:hover,
+.course-card:nth-child(3) .course-btn:hover {
+  background: rgba(108,60,225,0.06);
+}
+.course-card.featured .course-btn {
+  background: var(--primary); color: #fff;
+}
+.course-card.featured .course-btn:hover { background: var(--primary-dark); }
+
+/* ─── INSTRUCTORS ─── */
+.instructors-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
+.instructor-card {
+  text-align: center; padding: 36px 24px; border-radius: var(--radius-lg);
+  background: var(--bg); border: 1px solid var(--border); transition: all 0.3s;
+}
+.instructor-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.instructor-avatar {
+  width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 20px;
+  background: linear-gradient(135deg, var(--bg-light), rgba(108,60,225,0.08));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.4rem; border: 3px solid var(--bg);
+  box-shadow: 0 0 0 3px rgba(108,60,225,0.12);
+}
+.instructor-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
+.instructor-role {
+  font-size: 0.85rem; color: var(--primary); font-weight: 600; margin-bottom: 12px;
+}
+.instructor-desc {
+  font-size: 0.85rem; color: var(--text-light); line-height: 1.6;
+}
+.instructor-tags {
+  display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 16px;
+}
+.instructor-tags span {
+  font-size: 0.72rem; font-weight: 600; padding: 4px 10px;
+  border-radius: 100px; background: var(--bg-light); color: var(--text-light);
+}
+
+/* ─── REVIEWS ─── */
+.reviews { background: var(--bg-light); }
+.reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.review-card {
+  background: var(--bg); border-radius: var(--radius-lg); padding: 32px;
+  border: 1px solid var(--border); transition: all 0.3s;
+}
+.review-card:hover { box-shadow: var(--shadow-lg); }
+.review-stars { color: #FBBF24; font-size: 0.9rem; margin-bottom: 16px; letter-spacing: 2px; }
+.review-text {
+  font-size: 0.95rem; color: var(--text); line-height: 1.7; margin-bottom: 20px;
+  font-style: italic;
+}
+.review-author { display: flex; align-items: center; gap: 14px; }
+.review-avatar {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: linear-gradient(135deg, rgba(108,60,225,0.1), rgba(79,70,229,0.1));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; font-weight: 700; color: var(--primary);
+}
+.review-name { font-size: 0.92rem; font-weight: 600; }
+.review-company {
+  font-size: 0.82rem; color: var(--text-light); margin-top: 2px;
+}
+
+/* ─── FAQ ─── */
+.faq-list { max-width: 800px; margin: 0 auto; }
+.faq-item {
+  border: 1px solid var(--border); border-radius: var(--radius);
+  margin-bottom: 12px; overflow: hidden; transition: all 0.3s;
+}
+.faq-item.active { border-color: var(--primary-light); box-shadow: var(--shadow); }
+.faq-question {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 20px 24px; background: var(--bg); width: 100%;
+  font-size: 1rem; font-weight: 600; color: var(--text); text-align: left;
+  transition: all 0.2s;
+}
+.faq-question:hover { color: var(--primary); }
+.faq-icon {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--bg-light); display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; color: var(--text-light); transition: all 0.3s; flex-shrink: 0;
+}
+.faq-item.active .faq-icon { background: var(--primary); color: #fff; transform: rotate(45deg); }
+.faq-answer {
+  max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.35s ease;
+}
+.faq-item.active .faq-answer { max-height: 300px; }
+.faq-answer-inner {
+  padding: 0 24px 20px; font-size: 0.92rem; color: var(--text-light); line-height: 1.7;
+}
+
+/* ─── CONSULT FORM ─── */
+.consult {
+  background: linear-gradient(180deg, var(--bg-light) 0%, var(--bg) 100%);
+}
+.consult-box {
+  max-width: 640px; margin: 0 auto; background: var(--bg);
+  border-radius: var(--radius-xl); padding: 48px; border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+}
+.consult-box h3 {
+  font-size: 1.6rem; font-weight: 800; text-align: center; margin-bottom: 8px;
+}
+.consult-box .sub {
+  text-align: center; font-size: 0.92rem; color: var(--text-light); margin-bottom: 32px;
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.form-group { margin-bottom: 16px; }
+.form-group label {
+  display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--text);
+}
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; padding: 12px 16px; border-radius: 8px;
+  border: 1px solid var(--border); font-size: 0.92rem; font-family: inherit;
+  transition: border-color 0.2s; background: var(--bg); color: var(--text);
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(108,60,225,0.1);
+}
+.form-group textarea { resize: vertical; min-height: 100px; }
+.form-submit {
+  width: 100%; padding: 16px; border-radius: 10px; font-weight: 700; font-size: 1rem;
+  background: linear-gradient(135deg, var(--primary), var(--indigo));
+  color: #fff; margin-top: 8px; transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(108,60,225,0.3);
+}
+.form-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(108,60,225,0.4); }
+.form-note {
+  text-align: center; font-size: 0.8rem; color: var(--text-lighter); margin-top: 16px;
+}
+
+/* ─── FOOTER ─── */
+.footer {
+  background: var(--text); color: rgba(255,255,255,0.7); padding: 60px 0 30px;
+}
+.footer-grid {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px;
+  margin-bottom: 40px;
+}
+.footer-brand h3 {
+  font-size: 1.3rem; font-weight: 800; color: #fff; margin-bottom: 12px;
+}
+.footer-brand p { font-size: 0.88rem; line-height: 1.6; }
+.footer-col h4 {
+  font-size: 0.88rem; font-weight: 700; color: #fff; margin-bottom: 16px;
+}
+.footer-col a {
+  display: block; font-size: 0.85rem; padding: 4px 0; transition: color 0.2s;
+}
+.footer-col a:hover { color: var(--primary-light); }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.1); padding-top: 24px;
+  text-align: center; font-size: 0.82rem;
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 1024px) {
+  .hero h1 { font-size: 2.8rem; }
+  .course-grid { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
+  .instructors-grid { grid-template-columns: repeat(2, 1fr); }
+  .reviews-grid { grid-template-columns: repeat(2, 1fr); }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-mobile-btn { display: flex; }
+  .nav-links.open {
+    display: flex; flex-direction: column; position: absolute;
+    top: 72px; left: 0; right: 0; background: var(--bg);
+    padding: 24px; gap: 16px; border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow-lg);
+  }
+  .nav-links.open .nav-cta { text-align: center; }
+  .hero { padding: 130px 0 80px; }
+  .hero h1 { font-size: 2.2rem; }
+  .hero-sub { font-size: 1.05rem; }
+  .hero-stats { gap: 32px; flex-wrap: wrap; }
+  .hero-stat-num { font-size: 1.8rem; }
+  section { padding: 72px 0; }
+  .section-title { font-size: 1.8rem; }
+  .instructors-grid { grid-template-columns: 1fr; max-width: 360px; margin: 0 auto; }
+  .reviews-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .consult-box { padding: 32px 24px; }
+  .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+  .stat-item h3 { font-size: 2.2rem; }
+}
+@media (max-width: 480px) {
+  .hero h1 { font-size: 1.8rem; }
+  .hero-actions { flex-direction: column; }
+  .btn-primary, .btn-secondary { width: 100%; text-align: center; }
+}
+
+/* ─── ANIMATIONS ─── */
+.fade-up {
+  opacity: 0; transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="container">
+    <a href="#" class="nav-logo">
+      <span>CodeLab</span> 아카데미
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#curriculum">커리큘럼</a>
+      <a href="#instructors">강사진</a>
+      <a href="#reviews">수강후기</a>
+      <a href="#faq">FAQ</a>
+      <a href="#consult" class="nav-cta">무료 상담 신청</a>
+    </div>
+    <button class="nav-mobile-btn" id="mobileBtn" aria-label="메뉴 열기">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">모집 중 · 2026년 4월 기수</div>
+    <h1>
+      <span class="gradient">6개월</span> 만에<br>개발자가 되세요
+    </h1>
+    <p class="hero-sub">
+      실무 중심 커리큘럼과 현직 개발자 강사진이 여러분의 커리어 전환을 돕습니다.<br>
+      수료 후 취업까지 끝까지 책임집니다.
+    </p>
+    <div class="hero-actions">
+      <a href="#consult" class="btn-primary">무료 상담 신청하기</a>
+      <a href="#curriculum" class="btn-secondary">커리큘럼 보기</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-num" data-target="2847">0</div>
+        <div class="hero-stat-label">누적 수강생</div>
+      </div>
+      <div>
+        <div class="hero-stat-num" data-target="94" data-suffix="%">0</div>
+        <div class="hero-stat-label">취업 성공률</div>
+      </div>
+      <div>
+        <div class="hero-stat-num" data-target="4.9">0</div>
+        <div class="hero-stat-label">수강 만족도</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<section class="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item fade-up">
+        <h3 data-target="2847" data-duration="2000">0+</h3>
+        <p>누적 수강생</p>
+      </div>
+      <div class="stat-item fade-up">
+        <h3>94%</h3>
+        <p>6개월 내 취업률</p>
+      </div>
+      <div class="stat-item fade-up">
+        <h3>4.9/5.0</h3>
+        <p>평균 만족도</p>
+      </div>
+      <div class="stat-item fade-up">
+        <h3>150+</h3>
+        <p>파트너 기업</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CURRICULUM -->
+<section class="curriculum" id="curriculum">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="section-tag">커리큘럼</span>
+      <h2 class="section-title">목표에 맞는 코스를 선택하세요</h2>
+      <p class="section-desc">현직 개발자가 설계한 실무 중심 커리큘럼으로 빠르게 성장하세요.</p>
+    </div>
+    <div class="course-grid">
+      <!-- 프론트엔드 -->
+      <div class="course-card fade-up">
+        <div class="course-icon">🎨</div>
+        <h3>프론트엔드 코스</h3>
+        <p class="course-desc">React, TypeScript 기반의 모던 프론트엔드 개발을 마스터합니다.</p>
+        <div class="course-meta">
+          <span>기간: <strong>4개월</strong></span>
+          <span>정원: <strong>20명</strong></span>
+        </div>
+        <div class="course-price">₩3,200,000</div>
+        <div class="course-price-note">월 ₩533,000 · 6개월 무이자 할부 가능</div>
+        <div class="course-includes">
+          <h4>포함 내용</h4>
+          <ul>
+            <li>HTML/CSS/JavaScript 기초</li>
+            <li>React + TypeScript 심화</li>
+            <li>Next.js & 상태관리</li>
+            <li>포트폴리오 프로젝트 2개</li>
+            <li>1:1 코드 리뷰</li>
+          </ul>
+        </div>
+        <a href="#consult" class="course-btn">상담 신청하기</a>
+      </div>
+      <!-- 풀스택 (인기) -->
+      <div class="course-card featured fade-up">
+        <div class="course-icon">🚀</div>
+        <h3>풀스택 코스</h3>
+        <p class="course-desc">프론트엔드부터 백엔드, 배포까지 전 과정을 한 번에 학습합니다.</p>
+        <div class="course-meta">
+          <span>기간: <strong>6개월</strong></span>
+          <span>정원: <strong>15명</strong></span>
+        </div>
+        <div class="course-price">₩4,800,000</div>
+        <div class="course-price-note">월 ₩800,000 · 6개월 무이자 할부 가능</div>
+        <div class="course-includes">
+          <h4>포함 내용</h4>
+          <ul>
+            <li>프론트엔드 전 과정</li>
+            <li>Node.js + Express/NestJS</li>
+            <li>DB 설계 & 클라우드 배포</li>
+            <li>팀 프로젝트 포함 3개</li>
+            <li>취업 보장 프로그램</li>
+          </ul>
+        </div>
+        <a href="#consult" class="course-btn">상담 신청하기</a>
+      </div>
+      <!-- 백엔드 -->
+      <div class="course-card fade-up">
+        <div class="course-icon">⚙️</div>
+        <h3>백엔드 코스</h3>
+        <p class="course-desc">Node.js와 Python 기반의 서버 개발 및 시스템 설계를 배웁니다.</p>
+        <div class="course-meta">
+          <span>기간: <strong>5개월</strong></span>
+          <span>정원: <strong>18명</strong></span>
+        </div>
+        <div class="course-price">₩3,800,000</div>
+        <div class="course-price-note">월 ₩633,000 · 6개월 무이자 할부 가능</div>
+        <div class="course-includes">
+          <h4>포함 내용</h4>
+          <ul>
+            <li>Node.js + Python 기초</li>
+            <li>REST API & GraphQL</li>
+            <li>DB (PostgreSQL, MongoDB)</li>
+            <li>AWS/Docker 배포</li>
+            <li>시스템 설계 실습</li>
+          </ul>
+        </div>
+        <a href="#consult" class="course-btn">상담 신청하기</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTRUCTORS -->
+<section class="instructors-section" id="instructors">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="section-tag">강사진</span>
+      <h2 class="section-title">현직 개발자에게 직접 배우세요</h2>
+      <p class="section-desc">FAANG 출신, 스타트업 CTO 등 검증된 실력의 강사진이 함께합니다.</p>
+    </div>
+    <div class="instructors-grid">
+      <div class="instructor-card fade-up">
+        <div class="instructor-avatar">👨‍💻</div>
+        <h3>김정우</h3>
+        <p class="instructor-role">프론트엔드 리드</p>
+        <p class="instructor-desc">前 네이버 시니어 개발자. 10년차 프론트엔드 전문가.</p>
+        <div class="instructor-tags">
+          <span>React</span><span>TypeScript</span><span>Next.js</span>
+        </div>
+      </div>
+      <div class="instructor-card fade-up">
+        <div class="instructor-avatar">👩‍💻</div>
+        <h3>이수현</h3>
+        <p class="instructor-role">백엔드 리드</p>
+        <p class="instructor-desc">前 카카오 테크리드. MSA, 대용량 트래픽 처리 전문.</p>
+        <div class="instructor-tags">
+          <span>Node.js</span><span>AWS</span><span>Docker</span>
+        </div>
+      </div>
+      <div class="instructor-card fade-up">
+        <div class="instructor-avatar">👨‍🏫</div>
+        <h3>박민준</h3>
+        <p class="instructor-role">풀스택 강사</p>
+        <p class="instructor-desc">스타트업 CTO 출신. 3개 서비스 런칭 경험.</p>
+        <div class="instructor-tags">
+          <span>풀스택</span><span>DevOps</span><span>설계</span>
+        </div>
+      </div>
+      <div class="instructor-card fade-up">
+        <div class="instructor-avatar">👩‍🎓</div>
+        <h3>최예진</h3>
+        <p class="instructor-role">커리어 멘토</p>
+        <p class="instructor-desc">前 HR 매니저. 500명 이상 취업 코칭 경력.</p>
+        <div class="instructor-tags">
+          <span>이력서</span><span>면접</span><span>포트폴리오</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews" id="reviews">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="section-tag">수강 후기</span>
+      <h2 class="section-title">수강생들의 생생한 후기</h2>
+      <p class="section-desc">코드랩 아카데미를 거쳐 개발자로 취업한 분들의 이야기입니다.</p>
+    </div>
+    <div class="reviews-grid">
+      <div class="review-card fade-up">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"비전공자였지만 6개월 만에 프론트엔드 개발자로 취업했습니다. 체계적인 커리큘럼 덕분에 포기하지 않고 완주할 수 있었어요."</p>
+        <div class="review-author">
+          <div class="review-avatar">김</div>
+          <div>
+            <div class="review-name">김하은</div>
+            <div class="review-company">네이버 · 프론트엔드 개발자</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card fade-up">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"백엔드 코스를 수강했는데, 실무에서 바로 쓸 수 있는 내용 위주라 입사 후에도 적응이 빨랐습니다."</p>
+        <div class="review-author">
+          <div class="review-avatar">이</div>
+          <div>
+            <div class="review-name">이준혁</div>
+            <div class="review-company">카카오 · 백엔드 개발자</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card fade-up">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"디자이너에서 프론트엔드로 전향했어요. 강사님들의 꼼꼼한 코드 리뷰가 성장에 큰 도움이 됐습니다."</p>
+        <div class="review-author">
+          <div class="review-avatar">박</div>
+          <div>
+            <div class="review-name">박서연</div>
+            <div class="review-company">토스 · 프론트엔드 개발자</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card fade-up">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"풀스택 코스의 팀 프로젝트가 정말 도움이 많이 됐습니다. 면접에서 프로젝트 경험을 자신있게 이야기할 수 있었어요."</p>
+        <div class="review-author">
+          <div class="review-avatar">정</div>
+          <div>
+            <div class="review-name">정우진</div>
+            <div class="review-company">쿠팡 · 풀스택 개발자</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card fade-up">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"30대 후반에 시작했는데, 커리어 멘토링 덕분에 방향을 잡을 수 있었습니다. 지금은 스타트업에서 즐겁게 일하고 있어요."</p>
+        <div class="review-author">
+          <div class="review-avatar">한</div>
+          <div>
+            <div class="review-name">한지민</div>
+            <div class="review-company">당근마켓 · 백엔드 개발자</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card fade-up">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"국비 지원 학원 다니다 결국 여기로 왔는데, 수업 퀄리티가 차원이 다릅니다. 투자 대비 최고의 선택이었어요."</p>
+        <div class="review-author">
+          <div class="review-avatar">윤</div>
+          <div>
+            <div class="review-name">윤성호</div>
+            <div class="review-company">라인 · 프론트엔드 개발자</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="section-tag">FAQ</span>
+      <h2 class="section-title">자주 묻는 질문</h2>
+      <p class="section-desc">궁금한 점이 있으시면 무료 상담을 통해 자세히 안내 받으실 수 있습니다.</p>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item fade-up">
+        <button class="faq-question">
+          코딩을 전혀 모르는 비전공자도 수강할 수 있나요?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            네, 물론입니다! 수강생의 70% 이상이 비전공자이며, 기초부터 차근차근 배울 수 있도록 커리큘럼이 설계되어 있습니다. 사전 지식이 없어도 수강 가능하며, 입문 2주 과정을 통해 기초를 다지고 시작합니다.
+          </div>
+        </div>
+      </div>
+      <div class="faq-item fade-up">
+        <button class="faq-question">
+          수업은 온라인으로도 들을 수 있나요?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            모든 수업은 오프라인(강남 캠퍼스)과 온라인 동시 진행됩니다. 녹화 강의도 제공되어 복습이 가능하며, 온라인 수강생도 실시간 질의응답과 코드 리뷰에 동일하게 참여할 수 있습니다.
+          </div>
+        </div>
+      </div>
+      <div class="faq-item fade-up">
+        <button class="faq-question">
+          취업 보장이 실제로 되나요?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            풀스택 코스의 취업 보장 프로그램은 수료 후 3개월 내 취업을 못할 경우 수강료의 50%를 환불해 드립니다. 150개 이상의 파트너 기업과 연계되어 있으며, 이력서 첨삭, 모의 면접, 포트폴리오 리뷰를 포함한 종합 취업 지원을 제공합니다.
+          </div>
+        </div>
+      </div>
+      <div class="faq-item fade-up">
+        <button class="faq-question">
+          할부 결제가 가능한가요?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            네, 최대 6개월 무이자 할부를 지원합니다. 또한 ISA(소득공유제)를 통해 취업 후 급여에서 분할 납부하는 방식도 선택 가능합니다. 경제적 부담 없이 교육에 집중할 수 있도록 다양한 결제 옵션을 제공합니다.
+          </div>
+        </div>
+      </div>
+      <div class="faq-item fade-up">
+        <button class="faq-question">
+          수업 시간과 일정은 어떻게 되나요?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            평일반(월~금, 10:00~18:00)과 주말반(토~일, 10:00~17:00) 중 선택 가능합니다. 직장인을 위한 야간반(월/수/금, 19:00~22:00)도 운영 중입니다. 모든 수업은 녹화 제공되므로 부득이한 결석 시에도 학습에 공백이 생기지 않습니다.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONSULT FORM -->
+<section class="consult" id="consult">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="section-tag">무료 상담</span>
+      <h2 class="section-title">무료 상담을 신청하세요</h2>
+      <p class="section-desc">전문 상담사가 1:1로 맞춤 코스를 추천해 드립니다.</p>
+    </div>
+    <div class="consult-box fade-up">
+      <h3>상담 신청서</h3>
+      <p class="sub">아래 정보를 입력해 주시면 영업일 기준 1일 내 연락드립니다.</p>
+      <form id="consultForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">이름</label>
+            <input type="text" id="name" placeholder="홍길동" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">연락처</label>
+            <input type="tel" id="phone" placeholder="010-1234-5678" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="email">이메일</label>
+          <input type="email" id="email" placeholder="email@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="course">관심 코스</label>
+          <select id="course" required>
+            <option value="" disabled selected>코스를 선택해 주세요</option>
+            <option value="frontend">프론트엔드 코스 (4개월)</option>
+            <option value="backend">백엔드 코스 (5개월)</option>
+            <option value="fullstack">풀스택 코스 (6개월)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="message">문의사항 (선택)</label>
+          <textarea id="message" placeholder="궁금한 점이 있으시면 자유롭게 작성해 주세요."></textarea>
+        </div>
+        <button type="submit" class="form-submit">무료 상담 신청하기</button>
+      </form>
+      <p class="form-note">개인정보는 상담 목적으로만 사용되며 제3자에게 제공되지 않습니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>CodeLab 아카데미</h3>
+        <p>실무 중심 코딩 교육으로 여러분의 커리어 전환을 돕습니다.<br>서울시 강남구 테헤란로 123, 코드랩빌딩 5층</p>
+      </div>
+      <div class="footer-col">
+        <h4>코스</h4>
+        <a href="#curriculum">프론트엔드</a>
+        <a href="#curriculum">백엔드</a>
+        <a href="#curriculum">풀스택</a>
+      </div>
+      <div class="footer-col">
+        <h4>정보</h4>
+        <a href="#instructors">강사진</a>
+        <a href="#reviews">수강후기</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <div class="footer-col">
+        <h4>고객센터</h4>
+        <a href="tel:02-1234-5678">02-1234-5678</a>
+        <a href="mailto:hello@codelab.kr">hello@codelab.kr</a>
+        <a href="#consult">무료 상담 신청</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 CodeLab Academy. All rights reserved.
+    </div>
+  </div>
+</footer>
+
+<script>
+// Mobile nav toggle
+const mobileBtn = document.getElementById('mobileBtn');
+const navLinks = document.getElementById('navLinks');
+mobileBtn.addEventListener('click', () => {
+  navLinks.classList.toggle('open');
+});
+navLinks.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => navLinks.classList.remove('open'));
+});
+
+// Nav scroll shadow
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 10);
+});
+
+// Counter animation
+function animateCounters() {
+  document.querySelectorAll('.hero-stat-num[data-target]').forEach(el => {
+    const target = parseFloat(el.dataset.target);
+    const suffix = el.dataset.suffix || '';
+    const isDecimal = String(target).includes('.');
+    const duration = 2000;
+    const start = performance.now();
+
+    function update(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = eased * target;
+
+      if (isDecimal) {
+        el.textContent = current.toFixed(1) + suffix;
+      } else {
+        el.textContent = Math.floor(current).toLocaleString() + suffix;
+      }
+
+      if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  });
+}
+
+// Fade-up intersection observer
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+// Start hero counters when visible
+const heroObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      animateCounters();
+      heroObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.3 });
+const heroStats = document.querySelector('.hero-stats');
+if (heroStats) heroObserver.observe(heroStats);
+
+// FAQ accordion
+document.querySelectorAll('.faq-question').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.parentElement;
+    const isActive = item.classList.contains('active');
+    document.querySelectorAll('.faq-item.active').forEach(i => i.classList.remove('active'));
+    if (!isActive) item.classList.add('active');
+  });
+});
+
+// Form submit
+document.getElementById('consultForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const btn = this.querySelector('.form-submit');
+  const originalText = btn.textContent;
+  btn.textContent = '신청 완료!';
+  btn.style.background = '#10B981';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    btn.textContent = originalText;
+    btn.style.background = '';
+    btn.disabled = false;
+    this.reset();
+  }, 3000);
+});
+</script>
+</body>
+</html>

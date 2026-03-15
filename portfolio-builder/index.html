@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>포트폴리오 빌더</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --primary: #4f46e5;
+  --primary-light: #818cf8;
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --border: #e2e8f0;
+  --text: #1e293b;
+  --text-light: #64748b;
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* Layout */
+.app { display: flex; min-height: 100vh; }
+
+.editor {
+  width: 420px;
+  min-width: 420px;
+  background: var(--card);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  padding: 24px;
+}
+
+.preview-area {
+  flex: 1;
+  padding: 32px;
+  overflow-y: auto;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Editor Styles */
+.editor h1 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: var(--primary);
+}
+
+.editor .subtitle {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-light);
+  margin: 20px 0 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.section-title:first-of-type { border-top: none; margin-top: 12px; }
+
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+input[type="text"], input[type="email"], input[type="tel"], input[type="url"], textarea, select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  transition: border-color 0.2s;
+  background: #fff;
+  color: var(--text);
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+}
+
+textarea { resize: vertical; min-height: 60px; }
+
+.field { margin-bottom: 12px; }
+
+/* Photo Upload */
+.photo-upload {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.photo-preview {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px dashed var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.photo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-preview .placeholder {
+  font-size: 24px;
+  color: var(--text-light);
+}
+
+.photo-upload input[type="file"] { display: none; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--text);
+  transition: all 0.15s;
+}
+
+.btn:hover { background: var(--bg); border-color: var(--primary-light); }
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.btn-primary:hover { background: #4338ca; }
+
+.btn-danger {
+  color: #ef4444;
+  border-color: #fecaca;
+}
+
+.btn-danger:hover { background: #fef2f2; }
+
+.btn-sm { padding: 4px 10px; font-size: 12px; }
+
+/* Tags */
+.tag-input-wrap {
+  display: flex;
+  gap: 6px;
+}
+
+.tag-input-wrap input { flex: 1; }
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  background: #eef2ff;
+  color: var(--primary);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.tag button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--primary);
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+  margin-left: 2px;
+}
+
+/* Repeater (경력/프로젝트) */
+.repeater-item {
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.repeater-item .remove-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #ef4444;
+  font-size: 16px;
+  padding: 2px;
+  line-height: 1;
+}
+
+.add-row {
+  margin-top: 6px;
+}
+
+/* Template selector */
+.template-selector {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.template-option {
+  flex: 1;
+  padding: 10px 8px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s;
+  background: #fff;
+}
+
+.template-option:hover { border-color: var(--primary-light); }
+.template-option.active { border-color: var(--primary); background: #eef2ff; color: var(--primary); }
+
+/* Actions bar */
+.actions {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+}
+
+/* ========== PREVIEW TEMPLATES ========== */
+.resume {
+  width: 210mm;
+  min-height: 297mm;
+  background: #fff;
+  box-shadow: var(--shadow-lg);
+  border-radius: 4px;
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* --- Modern Template --- */
+.resume.modern .header {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  color: #fff;
+  padding: 40px;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.resume.modern .header .photo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.3);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.resume.modern .header .info h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.resume.modern .header .info .title {
+  font-size: 16px;
+  opacity: 0.9;
+  font-weight: 300;
+}
+
+.resume.modern .header .info .bio {
+  font-size: 13px;
+  opacity: 0.85;
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+.resume.modern .body { padding: 32px 40px; }
+
+.resume.modern .body .sec-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 24px 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid #eef2ff;
+}
+
+.resume.modern .body .sec-title:first-child { margin-top: 0; }
+
+/* --- Classic Template --- */
+.resume.classic .header {
+  padding: 36px 40px;
+  text-align: center;
+  border-bottom: 3px solid var(--text);
+}
+
+.resume.classic .header .photo {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 12px;
+  display: block;
+  border: 2px solid var(--text);
+}
+
+.resume.classic .header h1 {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.resume.classic .header .title {
+  font-size: 14px;
+  color: var(--text-light);
+  margin-top: 4px;
+}
+
+.resume.classic .header .bio {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-top: 10px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.resume.classic .body { padding: 28px 40px; }
+
+.resume.classic .body .sec-title {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin: 20px 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.resume.classic .body .sec-title:first-child { margin-top: 0; }
+
+/* --- Minimal Template --- */
+.resume.minimal .header {
+  padding: 40px 40px 20px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.resume.minimal .header .photo {
+  width: 72px;
+  height: 72px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.resume.minimal .header h1 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.resume.minimal .header .title {
+  font-size: 14px;
+  color: var(--text-light);
+}
+
+.resume.minimal .header .bio {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-top: 8px;
+}
+
+.resume.minimal .body { padding: 20px 40px 40px; }
+
+.resume.minimal .body .sec-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-light);
+  margin: 20px 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.resume.minimal .body .sec-title:first-child { margin-top: 0; }
+
+/* Shared preview elements */
+.resume .exp-item, .resume .proj-item, .resume .edu-item {
+  margin-bottom: 14px;
+}
+
+.resume .exp-item h3, .resume .proj-item h3, .resume .edu-item h3 {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.resume .exp-item .meta, .resume .proj-item .meta, .resume .edu-item .meta {
+  font-size: 12px;
+  color: var(--text-light);
+  margin-bottom: 4px;
+}
+
+.resume .exp-item p, .resume .proj-item p { font-size: 13px; color: #475569; }
+
+.resume .skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.resume .skill-tag {
+  padding: 4px 12px;
+  background: #f1f5f9;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #475569;
+}
+
+.resume.modern .skill-tag { background: #eef2ff; color: var(--primary); }
+
+.resume .contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.resume .contact-grid .item { display: flex; gap: 6px; align-items: center; color: #475569; }
+.resume .contact-grid .item span:first-child { font-weight: 500; color: var(--text); min-width: 50px; }
+
+.empty-hint { color: #cbd5e1; font-style: italic; font-size: 13px; }
+
+/* Print */
+@media print {
+  body { background: #fff; }
+  .editor, .actions { display: none !important; }
+  .preview-area { padding: 0; height: auto; }
+  .resume { box-shadow: none; width: 100%; min-height: auto; border-radius: 0; }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .app { flex-direction: column; }
+  .editor {
+    width: 100%;
+    min-width: auto;
+    height: auto;
+    position: static;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .preview-area { height: auto; padding: 16px; }
+  .resume { width: 100%; min-height: auto; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- Left: Editor -->
+  <div class="editor">
+    <h1>포트폴리오 빌더</h1>
+    <p class="subtitle">입력하면 오른쪽에서 실시간으로 확인하세요</p>
+
+    <!-- Template -->
+    <div class="section-title">템플릿 선택</div>
+    <div class="template-selector">
+      <div class="template-option active" data-tpl="modern">모던</div>
+      <div class="template-option" data-tpl="classic">클래식</div>
+      <div class="template-option" data-tpl="minimal">미니멀</div>
+    </div>
+
+    <!-- Basic Info -->
+    <div class="section-title">기본 정보</div>
+    <div class="photo-upload">
+      <div class="photo-preview" id="photoPreviewThumb" onclick="document.getElementById('photoInput').click()">
+        <span class="placeholder">+</span>
+      </div>
+      <div>
+        <button class="btn" onclick="document.getElementById('photoInput').click()">사진 업로드</button>
+        <input type="file" id="photoInput" accept="image/*">
+      </div>
+    </div>
+    <div class="field"><label>이름</label><input type="text" id="name" placeholder="홍길동"></div>
+    <div class="field"><label>직함</label><input type="text" id="jobTitle" placeholder="프론트엔드 개발자"></div>
+    <div class="field"><label>소개</label><textarea id="bio" placeholder="간단한 자기소개를 작성하세요"></textarea></div>
+
+    <!-- Experience -->
+    <div class="section-title">경력</div>
+    <div id="expList"></div>
+    <button class="btn btn-sm add-row" onclick="addExperience()">+ 경력 추가</button>
+
+    <!-- Education -->
+    <div class="section-title">학력</div>
+    <div id="eduList"></div>
+    <button class="btn btn-sm add-row" onclick="addEducation()">+ 학력 추가</button>
+
+    <!-- Skills -->
+    <div class="section-title">기술 스택</div>
+    <div class="tag-input-wrap">
+      <input type="text" id="skillInput" placeholder="기술명 입력 후 추가" onkeydown="if(event.key==='Enter'){event.preventDefault();addSkill()}">
+      <button class="btn btn-sm" onclick="addSkill()">추가</button>
+    </div>
+    <div class="tags" id="skillTags"></div>
+
+    <!-- Projects -->
+    <div class="section-title">프로젝트</div>
+    <div id="projList"></div>
+    <button class="btn btn-sm add-row" onclick="addProject()">+ 프로젝트 추가</button>
+
+    <!-- Contact -->
+    <div class="section-title">연락처</div>
+    <div class="field"><label>이메일</label><input type="email" id="email" placeholder="example@email.com"></div>
+    <div class="field"><label>전화번호</label><input type="tel" id="phone" placeholder="010-1234-5678"></div>
+    <div class="field"><label>GitHub</label><input type="url" id="github" placeholder="https://github.com/username"></div>
+    <div class="field"><label>웹사이트</label><input type="url" id="website" placeholder="https://mysite.com"></div>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button class="btn btn-primary" onclick="printPDF()" style="flex:1">PDF 다운로드</button>
+    </div>
+  </div>
+
+  <!-- Right: Preview -->
+  <div class="preview-area">
+    <div class="resume modern" id="resumePreview"></div>
+  </div>
+</div>
+
+<script>
+// State
+let state = {
+  template: 'modern',
+  photo: null,
+  name: '',
+  jobTitle: '',
+  bio: '',
+  experiences: [],
+  educations: [],
+  skills: [],
+  projects: [],
+  email: '',
+  phone: '',
+  github: '',
+  website: ''
+};
+
+// Template selector
+document.querySelectorAll('.template-option').forEach(el => {
+  el.addEventListener('click', () => {
+    document.querySelectorAll('.template-option').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    state.template = el.dataset.tpl;
+    render();
+  });
+});
+
+// Photo upload
+document.getElementById('photoInput').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    state.photo = ev.target.result;
+    document.getElementById('photoPreviewThumb').innerHTML = '<img src="' + ev.target.result + '">';
+    render();
+  };
+  reader.readAsDataURL(file);
+});
+
+// Basic fields
+['name', 'jobTitle', 'bio', 'email', 'phone', 'github', 'website'].forEach(id => {
+  document.getElementById(id).addEventListener('input', function() {
+    state[id] = this.value;
+    render();
+  });
+});
+
+// Skills
+function addSkill() {
+  const input = document.getElementById('skillInput');
+  const val = input.value.trim();
+  if (!val || state.skills.includes(val)) return;
+  state.skills.push(val);
+  input.value = '';
+  renderSkillTags();
+  render();
+}
+
+function removeSkill(idx) {
+  state.skills.splice(idx, 1);
+  renderSkillTags();
+  render();
+}
+
+function renderSkillTags() {
+  document.getElementById('skillTags').innerHTML = state.skills.map((s, i) =>
+    '<span class="tag">' + esc(s) + '<button onclick="removeSkill(' + i + ')">&times;</button></span>'
+  ).join('');
+}
+
+// Experience repeater
+let expId = 0;
+function addExperience() {
+  state.experiences.push({ id: ++expId, company: '', role: '', period: '', desc: '' });
+  renderExpList();
+  render();
+}
+
+function removeExperience(id) {
+  state.experiences = state.experiences.filter(e => e.id !== id);
+  renderExpList();
+  render();
+}
+
+function renderExpList() {
+  document.getElementById('expList').innerHTML = state.experiences.map(e => `
+    <div class="repeater-item">
+      <button class="remove-btn" onclick="removeExperience(${e.id})">&times;</button>
+      <div class="field"><label>회사명</label><input type="text" value="${esc(e.company)}" onInput="updateExp(${e.id},'company',this.value)"></div>
+      <div class="field"><label>직책</label><input type="text" value="${esc(e.role)}" onInput="updateExp(${e.id},'role',this.value)"></div>
+      <div class="field"><label>기간</label><input type="text" value="${esc(e.period)}" placeholder="2022.03 - 현재" onInput="updateExp(${e.id},'period',this.value)"></div>
+      <div class="field"><label>설명</label><textarea onInput="updateExp(${e.id},'desc',this.value)">${esc(e.desc)}</textarea></div>
+    </div>
+  `).join('');
+}
+
+function updateExp(id, key, val) {
+  const item = state.experiences.find(e => e.id === id);
+  if (item) { item[key] = val; render(); }
+}
+
+// Education repeater
+let eduId = 0;
+function addEducation() {
+  state.educations.push({ id: ++eduId, school: '', major: '', period: '' });
+  renderEduList();
+  render();
+}
+
+function removeEducation(id) {
+  state.educations = state.educations.filter(e => e.id !== id);
+  renderEduList();
+  render();
+}
+
+function renderEduList() {
+  document.getElementById('eduList').innerHTML = state.educations.map(e => `
+    <div class="repeater-item">
+      <button class="remove-btn" onclick="removeEducation(${e.id})">&times;</button>
+      <div class="field"><label>학교</label><input type="text" value="${esc(e.school)}" onInput="updateEdu(${e.id},'school',this.value)"></div>
+      <div class="field"><label>전공</label><input type="text" value="${esc(e.major)}" onInput="updateEdu(${e.id},'major',this.value)"></div>
+      <div class="field"><label>기간</label><input type="text" value="${esc(e.period)}" placeholder="2018.03 - 2022.02" onInput="updateEdu(${e.id},'period',this.value)"></div>
+    </div>
+  `).join('');
+}
+
+function updateEdu(id, key, val) {
+  const item = state.educations.find(e => e.id === id);
+  if (item) { item[key] = val; render(); }
+}
+
+// Project repeater
+let projId = 0;
+function addProject() {
+  state.projects.push({ id: ++projId, name: '', desc: '', tech: '', link: '' });
+  renderProjList();
+  render();
+}
+
+function removeProject(id) {
+  state.projects = state.projects.filter(e => e.id !== id);
+  renderProjList();
+  render();
+}
+
+function renderProjList() {
+  document.getElementById('projList').innerHTML = state.projects.map(e => `
+    <div class="repeater-item">
+      <button class="remove-btn" onclick="removeProject(${e.id})">&times;</button>
+      <div class="field"><label>프로젝트명</label><input type="text" value="${esc(e.name)}" onInput="updateProj(${e.id},'name',this.value)"></div>
+      <div class="field"><label>설명</label><textarea onInput="updateProj(${e.id},'desc',this.value)">${esc(e.desc)}</textarea></div>
+      <div class="field"><label>사용 기술</label><input type="text" value="${esc(e.tech)}" placeholder="React, Node.js 등" onInput="updateProj(${e.id},'tech',this.value)"></div>
+      <div class="field"><label>링크</label><input type="url" value="${esc(e.link)}" placeholder="https://..." onInput="updateProj(${e.id},'link',this.value)"></div>
+    </div>
+  `).join('');
+}
+
+function updateProj(id, key, val) {
+  const item = state.projects.find(e => e.id === id);
+  if (item) { item[key] = val; render(); }
+}
+
+// Escape HTML
+function esc(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Main render
+function render() {
+  const el = document.getElementById('resumePreview');
+  el.className = 'resume ' + state.template;
+
+  const photoHTML = state.photo ? `<img class="photo" src="${state.photo}" alt="프로필 사진">` : '';
+  const nameHTML = state.name || '<span class="empty-hint">이름을 입력하세요</span>';
+  const titleHTML = state.jobTitle ? `<div class="title">${esc(state.jobTitle)}</div>` : '';
+  const bioHTML = state.bio ? `<div class="bio">${esc(state.bio)}</div>` : '';
+
+  let header = '';
+  if (state.template === 'modern') {
+    header = `<div class="header">${photoHTML}<div class="info"><h1>${nameHTML}</h1>${titleHTML}${bioHTML}</div></div>`;
+  } else if (state.template === 'classic') {
+    header = `<div class="header">${photoHTML}<h1>${nameHTML}</h1>${titleHTML}${bioHTML}</div>`;
+  } else {
+    header = `<div class="header">${photoHTML}<div class="info"><h1>${nameHTML}</h1>${titleHTML}${bioHTML}</div></div>`;
+  }
+
+  // Body sections
+  let body = '';
+
+  // Experience
+  if (state.experiences.length) {
+    body += '<div class="sec-title">경력</div>';
+    state.experiences.forEach(e => {
+      body += `<div class="exp-item">
+        <h3>${esc(e.company)}${e.role ? ' · ' + esc(e.role) : ''}</h3>
+        ${e.period ? '<div class="meta">' + esc(e.period) + '</div>' : ''}
+        ${e.desc ? '<p>' + esc(e.desc) + '</p>' : ''}
+      </div>`;
+    });
+  }
+
+  // Education
+  if (state.educations.length) {
+    body += '<div class="sec-title">학력</div>';
+    state.educations.forEach(e => {
+      body += `<div class="edu-item">
+        <h3>${esc(e.school)}${e.major ? ' · ' + esc(e.major) : ''}</h3>
+        ${e.period ? '<div class="meta">' + esc(e.period) + '</div>' : ''}
+      </div>`;
+    });
+  }
+
+  // Skills
+  if (state.skills.length) {
+    body += '<div class="sec-title">기술 스택</div>';
+    body += '<div class="skill-tags">' + state.skills.map(s => '<span class="skill-tag">' + esc(s) + '</span>').join('') + '</div>';
+  }
+
+  // Projects
+  if (state.projects.length) {
+    body += '<div class="sec-title">프로젝트</div>';
+    state.projects.forEach(e => {
+      body += `<div class="proj-item">
+        <h3>${esc(e.name)}${e.tech ? ' <span style="font-weight:400;font-size:12px;color:#94a3b8">(' + esc(e.tech) + ')</span>' : ''}</h3>
+        ${e.desc ? '<p>' + esc(e.desc) + '</p>' : ''}
+        ${e.link ? '<div class="meta"><a href="' + esc(e.link) + '" style="color:var(--primary)">' + esc(e.link) + '</a></div>' : ''}
+      </div>`;
+    });
+  }
+
+  // Contact
+  if (state.email || state.phone || state.github || state.website) {
+    body += '<div class="sec-title">연락처</div><div class="contact-grid">';
+    if (state.email) body += '<div class="item"><span>이메일</span><span>' + esc(state.email) + '</span></div>';
+    if (state.phone) body += '<div class="item"><span>전화</span><span>' + esc(state.phone) + '</span></div>';
+    if (state.github) body += '<div class="item"><span>GitHub</span><span>' + esc(state.github) + '</span></div>';
+    if (state.website) body += '<div class="item"><span>웹사이트</span><span>' + esc(state.website) + '</span></div>';
+    body += '</div>';
+  }
+
+  el.innerHTML = header + '<div class="body">' + body + '</div>';
+}
+
+// PDF
+function printPDF() {
+  window.print();
+}
+
+// Initial render
+render();
+</script>
+</body>
+</html>

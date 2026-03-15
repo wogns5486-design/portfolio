@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>펫케어 - 반려동물 건강관리 & 커뮤니티</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --coral: #FF6B6B;
+  --coral-light: #FF8E8E;
+  --coral-dark: #E55A5A;
+  --pink: #FFB4B4;
+  --pink-light: #FFD6D6;
+  --pink-pale: #FFF0F0;
+  --white: #FFFFFF;
+  --gray-50: #FAFAFA;
+  --gray-100: #F5F5F5;
+  --gray-200: #EEEEEE;
+  --gray-300: #E0E0E0;
+  --gray-400: #BDBDBD;
+  --gray-500: #9E9E9E;
+  --gray-600: #757575;
+  --gray-700: #616161;
+  --gray-800: #424242;
+  --gray-900: #212121;
+  --green: #4CAF50;
+  --blue: #42A5F5;
+  --orange: #FFA726;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--gray-50);
+  color: var(--gray-800);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ===== Header / Navigation ===== */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: var(--white);
+  box-shadow: var(--shadow-sm);
+  z-index: 1000;
+  transition: box-shadow 0.3s;
+}
+
+header.scrolled { box-shadow: var(--shadow-md); }
+
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--coral);
+  text-decoration: none;
+}
+
+.logo svg { width: 32px; height: 32px; }
+
+nav { display: flex; gap: 4px; }
+
+nav a {
+  padding: 8px 16px;
+  text-decoration: none;
+  color: var(--gray-600);
+  font-weight: 500;
+  font-size: 0.9rem;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s;
+  position: relative;
+}
+
+nav a:hover, nav a.active {
+  color: var(--coral);
+  background: var(--pink-pale);
+}
+
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  color: var(--gray-700);
+}
+
+.mobile-menu-btn svg { width: 24px; height: 24px; }
+
+/* ===== Main Content ===== */
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 84px 20px 40px;
+}
+
+.section {
+  display: none;
+  animation: fadeIn 0.4s ease;
+}
+
+.section.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.section-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 24px;
+}
+
+.section-title span { color: var(--coral); }
+
+/* ===== My Pet Section ===== */
+.pet-profile-card {
+  background: linear-gradient(135deg, var(--coral), var(--coral-light));
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  margin-bottom: 32px;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.pet-profile-card::before {
+  content: '';
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 200px;
+  height: 200px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+}
+
+.pet-profile-card::after {
+  content: '';
+  position: absolute;
+  bottom: -30px;
+  left: 30%;
+  width: 120px;
+  height: 120px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 50%;
+}
+
+.pet-photo {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid rgba(255,255,255,0.4);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.pet-info { position: relative; z-index: 1; }
+.pet-info h2 { font-size: 1.8rem; font-weight: 700; margin-bottom: 4px; }
+.pet-info .pet-breed { font-size: 1rem; opacity: 0.9; margin-bottom: 16px; }
+
+.pet-stats {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.pet-stat {
+  background: rgba(255,255,255,0.2);
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  backdrop-filter: blur(4px);
+}
+
+.pet-stat .label { font-size: 0.75rem; opacity: 0.85; }
+.pet-stat .value { font-size: 1.1rem; font-weight: 700; }
+
+/* Health Records */
+.health-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.health-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+}
+
+.health-card h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.health-card h3 .icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.icon-vaccine { background: #E8F5E9; }
+.icon-hospital { background: #E3F2FD; }
+.icon-weight { background: #FFF3E0; }
+.icon-schedule { background: #FCE4EC; }
+
+.vaccine-list { list-style: none; }
+
+.vaccine-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.vaccine-item:last-child { border-bottom: none; }
+
+.vaccine-name { font-weight: 500; font-size: 0.9rem; }
+
+.vaccine-date {
+  font-size: 0.8rem;
+  color: var(--gray-500);
+}
+
+.vaccine-status {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.status-done { background: #E8F5E9; color: #2E7D32; }
+.status-upcoming { background: #FFF3E0; color: #E65100; }
+.status-overdue { background: #FFEBEE; color: #C62828; }
+
+.visit-item {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.visit-item:last-child { border-bottom: none; }
+
+.visit-date { font-size: 0.8rem; color: var(--coral); font-weight: 600; }
+.visit-desc { font-size: 0.9rem; margin-top: 2px; }
+.visit-vet { font-size: 0.8rem; color: var(--gray-500); margin-top: 2px; }
+
+.weight-chart-container {
+  grid-column: 1 / -1;
+}
+
+#weightChart {
+  width: 100%;
+  height: 250px;
+  border-radius: var(--radius-sm);
+}
+
+/* ===== Hospital Section ===== */
+.hospital-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 20px;
+}
+
+.hospital-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.hospital-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.hospital-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.hospital-body { padding: 20px; }
+
+.hospital-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.hospital-address {
+  font-size: 0.85rem;
+  color: var(--gray-500);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.hospital-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hospital-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--orange);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.hospital-hours {
+  font-size: 0.8rem;
+  color: var(--green);
+  font-weight: 500;
+  background: #E8F5E9;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.hospital-tags {
+  display: flex;
+  gap: 6px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.hospital-tag {
+  font-size: 0.75rem;
+  background: var(--pink-pale);
+  color: var(--coral);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.hospital-call-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  padding: 8px 18px;
+  background: var(--coral);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.hospital-call-btn:hover { background: var(--coral-dark); }
+
+/* ===== Community Section ===== */
+.community-post-form {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.post-form-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.post-form-input {
+  flex: 1;
+  padding: 10px 16px;
+  border: 1px solid var(--gray-200);
+  border-radius: 24px;
+  font-size: 0.9rem;
+  background: var(--gray-50);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.post-form-input:focus { border-color: var(--coral); }
+
+.post-form-btn {
+  padding: 10px 20px;
+  background: var(--coral);
+  color: var(--white);
+  border: none;
+  border-radius: 24px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.post-form-btn:hover { background: var(--coral-dark); }
+
+.feed-list { display: flex; flex-direction: column; gap: 20px; }
+
+.feed-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+}
+
+.feed-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+}
+
+.feed-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.feed-author { font-weight: 600; font-size: 0.9rem; }
+.feed-time { font-size: 0.75rem; color: var(--gray-500); }
+
+.feed-img {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+}
+
+.feed-body { padding: 16px 20px; }
+.feed-text { font-size: 0.9rem; line-height: 1.6; margin-bottom: 12px; }
+
+.feed-actions {
+  display: flex;
+  gap: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--gray-100);
+}
+
+.feed-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--gray-500);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.feed-action-btn:hover { background: var(--gray-100); color: var(--coral); }
+.feed-action-btn.liked { color: var(--coral); }
+.feed-action-btn.liked svg { fill: var(--coral); }
+
+.feed-comments { padding: 0 20px 16px; }
+
+.comment-item {
+  display: flex;
+  gap: 10px;
+  padding: 8px 0;
+}
+
+.comment-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.comment-content { font-size: 0.85rem; }
+.comment-author { font-weight: 600; }
+.comment-text { color: var(--gray-700); }
+
+.comment-input-wrap {
+  display: flex;
+  gap: 8px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--gray-100);
+}
+
+.comment-input {
+  flex: 1;
+  padding: 8px 14px;
+  border: 1px solid var(--gray-200);
+  border-radius: 20px;
+  font-size: 0.8rem;
+  outline: none;
+}
+
+.comment-input:focus { border-color: var(--coral); }
+
+.comment-submit {
+  padding: 8px 16px;
+  background: var(--coral);
+  color: var(--white);
+  border: none;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ===== Shop Section ===== */
+.shop-categories {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.shop-cat-btn {
+  padding: 8px 18px;
+  border: 1px solid var(--gray-200);
+  border-radius: 24px;
+  background: var(--white);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--gray-600);
+}
+
+.shop-cat-btn:hover, .shop-cat-btn.active {
+  background: var(--coral);
+  color: var(--white);
+  border-color: var(--coral);
+}
+
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.shop-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.shop-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.shop-img-wrap { position: relative; }
+
+.shop-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.shop-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.badge-best { background: var(--coral); }
+.badge-new { background: var(--blue); }
+.badge-sale { background: var(--orange); }
+
+.shop-wish-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--white);
+  border: none;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.shop-wish-btn:hover { background: var(--pink-pale); }
+.shop-wish-btn.active svg { fill: var(--coral); stroke: var(--coral); }
+
+.shop-body { padding: 16px; }
+.shop-brand { font-size: 0.75rem; color: var(--gray-500); font-weight: 500; margin-bottom: 4px; }
+.shop-name { font-size: 0.95rem; font-weight: 600; margin-bottom: 8px; line-height: 1.3; }
+
+.shop-price-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.shop-price { font-size: 1.1rem; font-weight: 700; color: var(--coral); }
+.shop-price-original { font-size: 0.85rem; color: var(--gray-400); text-decoration: line-through; }
+.shop-discount { font-size: 0.85rem; color: var(--coral); font-weight: 700; }
+
+.shop-rating {
+  font-size: 0.8rem;
+  color: var(--gray-500);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.shop-rating .star { color: var(--orange); }
+
+.shop-cart-btn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 12px;
+  background: var(--pink-pale);
+  color: var(--coral);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.shop-cart-btn:hover {
+  background: var(--coral);
+  color: var(--white);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  nav { display: none; }
+  nav.open {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: var(--white);
+    padding: 12px;
+    box-shadow: var(--shadow-md);
+    gap: 0;
+  }
+  nav.open a { padding: 12px 16px; }
+  .mobile-menu-btn { display: block; }
+
+  .pet-profile-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 24px;
+  }
+
+  .pet-stats { justify-content: center; }
+
+  .health-grid { grid-template-columns: 1fr; }
+  .weight-chart-container { grid-column: 1; }
+
+  .hospital-grid { grid-template-columns: 1fr; }
+
+  .shop-grid { grid-template-columns: repeat(2, 1fr); }
+
+  .community-post-form { flex-wrap: wrap; }
+}
+
+@media (max-width: 480px) {
+  .shop-grid { grid-template-columns: 1fr; }
+  .pet-stat { padding: 8px 14px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header id="header">
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <svg viewBox="0 0 32 32" fill="none">
+        <circle cx="16" cy="16" r="14" fill="#FF6B6B"/>
+        <ellipse cx="11" cy="12" rx="3" ry="4" fill="white"/>
+        <ellipse cx="21" cy="12" rx="3" ry="4" fill="white"/>
+        <ellipse cx="16" cy="20" rx="5" ry="3.5" fill="white"/>
+        <circle cx="14" cy="19" r="1" fill="#FF6B6B"/>
+        <circle cx="18" cy="19" r="1" fill="#FF6B6B"/>
+      </svg>
+      펫케어
+    </a>
+    <nav id="mainNav">
+      <a href="#" class="active" data-section="my-pet">내 반려동물</a>
+      <a href="#" data-section="hospital">병원</a>
+      <a href="#" data-section="community">커뮤니티</a>
+      <a href="#" data-section="shop">쇼핑</a>
+    </nav>
+    <button class="mobile-menu-btn" id="menuBtn" aria-label="메뉴 열기">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<main>
+  <!-- ===== My Pet Section ===== -->
+  <section class="section active" id="my-pet">
+    <h1 class="section-title">내 <span>반려동물</span></h1>
+
+    <div class="pet-profile-card">
+      <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&h=300&fit=crop" alt="반려동물 사진" class="pet-photo">
+      <div class="pet-info">
+        <h2>초코</h2>
+        <p class="pet-breed">골든 리트리버</p>
+        <div class="pet-stats">
+          <div class="pet-stat"><div class="label">나이</div><div class="value">3살</div></div>
+          <div class="pet-stat"><div class="label">체중</div><div class="value">28.5kg</div></div>
+          <div class="pet-stat"><div class="label">성별</div><div class="value">남아</div></div>
+          <div class="pet-stat"><div class="label">중성화</div><div class="value">완료</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="health-grid">
+      <!-- Vaccination Schedule -->
+      <div class="health-card">
+        <h3><span class="icon icon-vaccine">💉</span> 접종 일정</h3>
+        <ul class="vaccine-list">
+          <li class="vaccine-item">
+            <div><div class="vaccine-name">종합백신 (DHPPL)</div><div class="vaccine-date">2025-12-15</div></div>
+            <span class="vaccine-status status-done">완료</span>
+          </li>
+          <li class="vaccine-item">
+            <div><div class="vaccine-name">광견병 예방접종</div><div class="vaccine-date">2026-01-20</div></div>
+            <span class="vaccine-status status-done">완료</span>
+          </li>
+          <li class="vaccine-item">
+            <div><div class="vaccine-name">켄넬코프</div><div class="vaccine-date">2026-03-28</div></div>
+            <span class="vaccine-status status-upcoming">예정</span>
+          </li>
+          <li class="vaccine-item">
+            <div><div class="vaccine-name">심장사상충 예방</div><div class="vaccine-date">2026-04-10</div></div>
+            <span class="vaccine-status status-upcoming">예정</span>
+          </li>
+          <li class="vaccine-item">
+            <div><div class="vaccine-name">코로나 장염</div><div class="vaccine-date">2026-02-01 (만료)</div></div>
+            <span class="vaccine-status status-overdue">지연</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Hospital Visits -->
+      <div class="health-card">
+        <h3><span class="icon icon-hospital">🏥</span> 병원 방문 기록</h3>
+        <div class="visit-item">
+          <div class="visit-date">2026-03-05</div>
+          <div class="visit-desc">정기 건강검진 - 혈액검사, 소변검사</div>
+          <div class="visit-vet">해피펫 동물병원 · 김수의 원장</div>
+        </div>
+        <div class="visit-item">
+          <div class="visit-date">2026-01-20</div>
+          <div class="visit-desc">광견병 예방접종</div>
+          <div class="visit-vet">해피펫 동물병원 · 김수의 원장</div>
+        </div>
+        <div class="visit-item">
+          <div class="visit-date">2025-12-15</div>
+          <div class="visit-desc">종합백신 접종 + 피부 상담</div>
+          <div class="visit-vet">해피펫 동물병원 · 이진료 수의사</div>
+        </div>
+        <div class="visit-item">
+          <div class="visit-date">2025-10-08</div>
+          <div class="visit-desc">슬개골 검진 - 이상 없음</div>
+          <div class="visit-vet">굿프렌즈 동물병원 · 박동물 원장</div>
+        </div>
+      </div>
+
+      <!-- Weight Chart -->
+      <div class="health-card weight-chart-container">
+        <h3><span class="icon icon-weight">📊</span> 체중 변화</h3>
+        <canvas id="weightChart"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Hospital Section ===== -->
+  <section class="section" id="hospital">
+    <h1 class="section-title">주변 <span>동물병원</span></h1>
+    <div class="hospital-grid" id="hospitalGrid"></div>
+  </section>
+
+  <!-- ===== Community Section ===== -->
+  <section class="section" id="community">
+    <h1 class="section-title"><span>커뮤니티</span> 피드</h1>
+
+    <div class="community-post-form">
+      <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=80&h=80&fit=crop" alt="프로필" class="post-form-avatar">
+      <input type="text" class="post-form-input" placeholder="우리 아이 이야기를 공유해보세요..." id="postInput">
+      <button class="post-form-btn" onclick="addPost()">게시</button>
+    </div>
+
+    <div class="feed-list" id="feedList"></div>
+  </section>
+
+  <!-- ===== Shop Section ===== -->
+  <section class="section" id="shop">
+    <h1 class="section-title">펫용품 <span>쇼핑</span></h1>
+
+    <div class="shop-categories">
+      <button class="shop-cat-btn active" data-cat="all">전체</button>
+      <button class="shop-cat-btn" data-cat="food">사료/간식</button>
+      <button class="shop-cat-btn" data-cat="toy">장난감</button>
+      <button class="shop-cat-btn" data-cat="health">건강/위생</button>
+      <button class="shop-cat-btn" data-cat="fashion">패션</button>
+    </div>
+
+    <div class="shop-grid" id="shopGrid"></div>
+  </section>
+</main>
+
+<script>
+// ===== Navigation =====
+const navLinks = document.querySelectorAll('nav a');
+const sections = document.querySelectorAll('.section');
+const nav = document.getElementById('mainNav');
+const menuBtn = document.getElementById('menuBtn');
+
+navLinks.forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = link.dataset.section;
+    navLinks.forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+    sections.forEach(s => {
+      s.classList.remove('active');
+      if (s.id === target) s.classList.add('active');
+    });
+    nav.classList.remove('open');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+});
+
+menuBtn.addEventListener('click', () => nav.classList.toggle('open'));
+
+// Header scroll effect
+window.addEventListener('scroll', () => {
+  document.getElementById('header').classList.toggle('scrolled', window.scrollY > 10);
+});
+
+// ===== Weight Chart (Canvas) =====
+function drawWeightChart() {
+  const canvas = document.getElementById('weightChart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+
+  canvas.width = canvas.offsetWidth * dpr;
+  canvas.height = canvas.offsetHeight * dpr;
+  ctx.scale(dpr, dpr);
+
+  const w = canvas.offsetWidth;
+  const h = canvas.offsetHeight;
+  const pad = { top: 30, right: 30, bottom: 40, left: 50 };
+
+  const data = [
+    { month: '10월', weight: 26.2 },
+    { month: '11월', weight: 26.8 },
+    { month: '12월', weight: 27.5 },
+    { month: '1월', weight: 27.9 },
+    { month: '2월', weight: 28.2 },
+    { month: '3월', weight: 28.5 },
+  ];
+
+  const minW = 25, maxW = 30;
+  const chartW = w - pad.left - pad.right;
+  const chartH = h - pad.top - pad.bottom;
+
+  const xStep = chartW / (data.length - 1);
+  const yScale = (v) => pad.top + chartH - ((v - minW) / (maxW - minW)) * chartH;
+
+  // Grid lines
+  ctx.strokeStyle = '#F0F0F0';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 5; i++) {
+    const yVal = minW + (maxW - minW) * (i / 5);
+    const y = yScale(yVal);
+    ctx.beginPath();
+    ctx.moveTo(pad.left, y);
+    ctx.lineTo(w - pad.right, y);
+    ctx.stroke();
+
+    ctx.fillStyle = '#9E9E9E';
+    ctx.font = '11px Inter';
+    ctx.textAlign = 'right';
+    ctx.fillText(yVal.toFixed(1) + 'kg', pad.left - 8, y + 4);
+  }
+
+  // X labels
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#757575';
+  data.forEach((d, i) => {
+    ctx.fillText(d.month, pad.left + i * xStep, h - 10);
+  });
+
+  // Area gradient
+  const gradient = ctx.createLinearGradient(0, pad.top, 0, h - pad.bottom);
+  gradient.addColorStop(0, 'rgba(255,107,107,0.25)');
+  gradient.addColorStop(1, 'rgba(255,107,107,0.02)');
+
+  ctx.beginPath();
+  ctx.moveTo(pad.left, yScale(data[0].weight));
+  data.forEach((d, i) => ctx.lineTo(pad.left + i * xStep, yScale(d.weight)));
+  ctx.lineTo(pad.left + (data.length - 1) * xStep, h - pad.bottom);
+  ctx.lineTo(pad.left, h - pad.bottom);
+  ctx.closePath();
+  ctx.fillStyle = gradient;
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  ctx.strokeStyle = '#FF6B6B';
+  ctx.lineWidth = 3;
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  data.forEach((d, i) => {
+    const x = pad.left + i * xStep;
+    const y = yScale(d.weight);
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  // Points
+  data.forEach((d, i) => {
+    const x = pad.left + i * xStep;
+    const y = yScale(d.weight);
+    ctx.beginPath();
+    ctx.arc(x, y, 5, 0, Math.PI * 2);
+    ctx.fillStyle = '#FF6B6B';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(x, y, 3, 0, Math.PI * 2);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+
+    // Value label
+    ctx.fillStyle = '#424242';
+    ctx.font = '600 11px Inter';
+    ctx.textAlign = 'center';
+    ctx.fillText(d.weight + 'kg', x, y - 12);
+  });
+}
+
+setTimeout(drawWeightChart, 100);
+window.addEventListener('resize', drawWeightChart);
+
+// ===== Hospital Data =====
+const hospitals = [
+  {
+    name: '해피펫 동물병원',
+    address: '서울 강남구 테헤란로 123',
+    rating: 4.8,
+    reviews: 324,
+    hours: '영업중',
+    tags: ['24시간', '수술', '건강검진'],
+    img: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=500&h=300&fit=crop',
+    phone: '02-1234-5678'
+  },
+  {
+    name: '굿프렌즈 동물병원',
+    address: '서울 서초구 반포대로 45',
+    rating: 4.6,
+    reviews: 218,
+    hours: '영업중',
+    tags: ['피부과', '안과', '치과'],
+    img: 'https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=500&h=300&fit=crop',
+    phone: '02-2345-6789'
+  },
+  {
+    name: '펫러브 24시 동물병원',
+    address: '서울 송파구 올림픽로 78',
+    rating: 4.9,
+    reviews: 512,
+    hours: '24시간 영업',
+    tags: ['24시간', '응급실', 'CT/MRI'],
+    img: 'https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?w=500&h=300&fit=crop',
+    phone: '02-3456-7890'
+  },
+  {
+    name: '아이펫 동물의료센터',
+    address: '서울 마포구 월드컵로 234',
+    rating: 4.5,
+    reviews: 167,
+    hours: '영업중',
+    tags: ['내과', '외과', '재활'],
+    img: 'https://images.unsplash.com/photo-1612531386530-97c3f3f4896d?w=500&h=300&fit=crop',
+    phone: '02-4567-8901'
+  },
+  {
+    name: '스마일 동물병원',
+    address: '서울 영등포구 여의대로 56',
+    rating: 4.7,
+    reviews: 289,
+    hours: '영업중',
+    tags: ['예방접종', '건강검진', '영양상담'],
+    img: 'https://images.unsplash.com/photo-1583337130417-13104dec14a8?w=500&h=300&fit=crop',
+    phone: '02-5678-9012'
+  },
+  {
+    name: '토토 동물병원',
+    address: '서울 용산구 이태원로 99',
+    rating: 4.4,
+    reviews: 143,
+    hours: '오후 6시 마감',
+    tags: ['소동물', '이색동물', '수술'],
+    img: 'https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=500&h=300&fit=crop',
+    phone: '02-6789-0123'
+  }
+];
+
+document.getElementById('hospitalGrid').innerHTML = hospitals.map(h => `
+  <div class="hospital-card">
+    <img src="${h.img}" alt="${h.name}" class="hospital-img" loading="lazy">
+    <div class="hospital-body">
+      <div class="hospital-name">${h.name}</div>
+      <div class="hospital-address">📍 ${h.address}</div>
+      <div class="hospital-meta">
+        <div class="hospital-rating">⭐ ${h.rating} <span style="color:#9E9E9E;font-weight:400">(${h.reviews})</span></div>
+        <span class="hospital-hours">${h.hours}</span>
+      </div>
+      <div class="hospital-tags">${h.tags.map(t => `<span class="hospital-tag">${t}</span>`).join('')}</div>
+      <button class="hospital-call-btn" onclick="alert('${h.phone}로 전화 연결')">📞 전화하기</button>
+    </div>
+  </div>
+`).join('');
+
+// ===== Community Feed Data =====
+const feedData = [
+  {
+    author: '댕댕맘',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop',
+    time: '2시간 전',
+    img: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=700&h=500&fit=crop',
+    text: '오늘 초코랑 한강 산책 다녀왔어요! 🐕 날씨가 너무 좋아서 2시간이나 걸었네요. 초코가 너무 신나서 뛰어다녔어요 ㅎㅎ',
+    likes: 42,
+    comments: [
+      { author: '냥이집사', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=60&h=60&fit=crop', text: '초코 너무 귀여워요!! 😍' },
+      { author: '퍼피러버', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=60&h=60&fit=crop', text: '골든 리트리버는 사랑입니다 ❤️' }
+    ]
+  },
+  {
+    author: '냥이집사',
+    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop',
+    time: '5시간 전',
+    img: 'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=700&h=500&fit=crop',
+    text: '우리 나비가 새 캣타워에서 낮잠 자는 중 💤 요즘 여기가 제일 좋은가 봐요~',
+    likes: 67,
+    comments: [
+      { author: '펫수의사', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop', text: '편안해 보이네요~ 좋은 캣타워 어디서 구매하셨나요?' }
+    ]
+  },
+  {
+    author: '퍼피러버',
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop',
+    time: '1일 전',
+    img: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=700&h=500&fit=crop',
+    text: '두 아이가 처음 만났을 때 vs 지금 🥹 처음엔 서로 경계하더니 이제는 떨어지질 않아요! 형제보다 더 친한 것 같아요.',
+    likes: 128,
+    comments: [
+      { author: '댕댕맘', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=60&h=60&fit=crop', text: '헐 너무 귀여워요ㅠㅠ 다견가정 부럽습니다!' },
+      { author: '수의사김', avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=60&h=60&fit=crop', text: '사이좋은 모습 보기 좋네요 😊' }
+    ]
+  },
+  {
+    author: '펫수의사',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop',
+    time: '2일 전',
+    img: 'https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=700&h=500&fit=crop',
+    text: '반려동물 건강 팁 💡 봄철에는 진드기 예방이 중요해요! 산책 후 꼭 몸을 확인해주시고, 예방약을 꼬박꼬박 투여해주세요.',
+    likes: 203,
+    comments: []
+  }
+];
+
+function renderFeed() {
+  document.getElementById('feedList').innerHTML = feedData.map((post, idx) => `
+    <div class="feed-card">
+      <div class="feed-header">
+        <img src="${post.avatar}" alt="${post.author}" class="feed-avatar">
+        <div>
+          <div class="feed-author">${post.author}</div>
+          <div class="feed-time">${post.time}</div>
+        </div>
+      </div>
+      <img src="${post.img}" alt="피드 이미지" class="feed-img" loading="lazy">
+      <div class="feed-body">
+        <p class="feed-text">${post.text}</p>
+        <div class="feed-actions">
+          <button class="feed-action-btn ${post.liked ? 'liked' : ''}" onclick="toggleLike(${idx})">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            좋아요 ${post.likes}
+          </button>
+          <button class="feed-action-btn" onclick="document.getElementById('comment-input-${idx}').focus()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            댓글 ${post.comments.length}
+          </button>
+        </div>
+      </div>
+      ${post.comments.length > 0 ? `<div class="feed-comments">${post.comments.map(c => `
+        <div class="comment-item">
+          <img src="${c.avatar}" alt="${c.author}" class="comment-avatar">
+          <div class="comment-content"><span class="comment-author">${c.author}</span> <span class="comment-text">${c.text}</span></div>
+        </div>
+      `).join('')}</div>` : ''}
+      <div class="comment-input-wrap">
+        <input type="text" class="comment-input" id="comment-input-${idx}" placeholder="댓글을 입력하세요..." onkeypress="if(event.key==='Enter')addComment(${idx})">
+        <button class="comment-submit" onclick="addComment(${idx})">게시</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleLike(idx) {
+  feedData[idx].liked = !feedData[idx].liked;
+  feedData[idx].likes += feedData[idx].liked ? 1 : -1;
+  renderFeed();
+}
+
+function addComment(idx) {
+  const input = document.getElementById(`comment-input-${idx}`);
+  const text = input.value.trim();
+  if (!text) return;
+  feedData[idx].comments.push({
+    author: '나',
+    avatar: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=60&h=60&fit=crop',
+    text: text
+  });
+  renderFeed();
+}
+
+function addPost() {
+  const input = document.getElementById('postInput');
+  const text = input.value.trim();
+  if (!text) return;
+  feedData.unshift({
+    author: '나 (초코맘)',
+    avatar: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=80&h=80&fit=crop',
+    time: '방금 전',
+    img: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=700&h=500&fit=crop',
+    text: text,
+    likes: 0,
+    comments: []
+  });
+  input.value = '';
+  renderFeed();
+}
+
+renderFeed();
+
+// ===== Shop Data =====
+const shopItems = [
+  {
+    brand: '로얄캐닌',
+    name: '골든 리트리버 어덜트 사료 12kg',
+    price: 89000,
+    original: 110000,
+    discount: 19,
+    rating: 4.8,
+    reviews: 1243,
+    badge: 'best',
+    cat: 'food',
+    img: 'https://images.unsplash.com/photo-1568640347023-a616a30bc3bd?w=400&h=400&fit=crop'
+  },
+  {
+    brand: '펫토이',
+    name: '노즈워크 퍼즐 장난감 세트',
+    price: 25900,
+    original: 35000,
+    discount: 26,
+    rating: 4.7,
+    reviews: 856,
+    badge: 'best',
+    cat: 'toy',
+    img: 'https://images.unsplash.com/photo-1535294435445-d7249b8f0dae?w=400&h=400&fit=crop'
+  },
+  {
+    brand: '펫프레시',
+    name: '반려동물 구강케어 스프레이',
+    price: 18500,
+    original: null,
+    discount: 0,
+    rating: 4.5,
+    reviews: 423,
+    badge: 'new',
+    cat: 'health',
+    img: 'https://images.unsplash.com/photo-1583337130417-13104dec14a8?w=400&h=400&fit=crop'
+  },
+  {
+    brand: '독스타',
+    name: '방수 레인코트 (옐로우)',
+    price: 32000,
+    original: 45000,
+    discount: 29,
+    rating: 4.6,
+    reviews: 312,
+    badge: 'sale',
+    cat: 'fashion',
+    img: 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&h=400&fit=crop'
+  },
+  {
+    brand: '내추럴코어',
+    name: '오리고기 져키 트릿 300g',
+    price: 12900,
+    original: 15000,
+    discount: 14,
+    rating: 4.9,
+    reviews: 2107,
+    badge: 'best',
+    cat: 'food',
+    img: 'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=400&h=400&fit=crop'
+  },
+  {
+    brand: '프로플랜',
+    name: '관절 건강 영양제 (글루코사민)',
+    price: 38000,
+    original: null,
+    discount: 0,
+    rating: 4.4,
+    reviews: 198,
+    badge: 'new',
+    cat: 'health',
+    img: 'https://images.unsplash.com/photo-1585664811087-47f65abbad64?w=400&h=400&fit=crop'
+  },
+  {
+    brand: '쿵펫',
+    name: '내구성 터프볼 (대형견용)',
+    price: 15900,
+    original: 19900,
+    discount: 20,
+    rating: 4.7,
+    reviews: 645,
+    badge: 'sale',
+    cat: 'toy',
+    img: 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=400&h=400&fit=crop'
+  },
+  {
+    brand: '펫클럽',
+    name: '프리미엄 가죽 목줄 + 리드줄 세트',
+    price: 45000,
+    original: 62000,
+    discount: 27,
+    rating: 4.8,
+    reviews: 534,
+    badge: 'sale',
+    cat: 'fashion',
+    img: 'https://images.unsplash.com/photo-1567612529009-afe25413e305?w=400&h=400&fit=crop'
+  }
+];
+
+function renderShop(cat = 'all') {
+  const filtered = cat === 'all' ? shopItems : shopItems.filter(i => i.cat === cat);
+  document.getElementById('shopGrid').innerHTML = filtered.map((item, idx) => `
+    <div class="shop-card">
+      <div class="shop-img-wrap">
+        <img src="${item.img}" alt="${item.name}" class="shop-img" loading="lazy">
+        ${item.badge ? `<span class="shop-badge badge-${item.badge}">${item.badge === 'best' ? 'BEST' : item.badge === 'new' ? 'NEW' : 'SALE'}</span>` : ''}
+        <button class="shop-wish-btn" onclick="this.classList.toggle('active')" aria-label="찜하기">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6B6B" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+      </div>
+      <div class="shop-body">
+        <div class="shop-brand">${item.brand}</div>
+        <div class="shop-name">${item.name}</div>
+        <div class="shop-price-row">
+          ${item.discount ? `<span class="shop-discount">${item.discount}%</span>` : ''}
+          <span class="shop-price">${item.price.toLocaleString()}원</span>
+          ${item.original ? `<span class="shop-price-original">${item.original.toLocaleString()}원</span>` : ''}
+        </div>
+        <div class="shop-rating">
+          <span class="star">★</span> ${item.rating} <span style="color:#BDBDBD">(${item.reviews.toLocaleString()})</span>
+        </div>
+        <button class="shop-cart-btn" onclick="alert('장바구니에 추가되었습니다!')">장바구니 담기</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+document.querySelectorAll('.shop-cat-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.shop-cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderShop(btn.dataset.cat);
+  });
+});
+
+renderShop();
+
+// Re-draw chart when navigating back to my-pet
+const observer = new MutationObserver(() => {
+  if (document.getElementById('my-pet').classList.contains('active')) {
+    setTimeout(drawWeightChart, 50);
+  }
+});
+observer.observe(document.getElementById('my-pet'), { attributes: true, attributeFilter: ['class'] });
+</script>
+</body>
+</html>
