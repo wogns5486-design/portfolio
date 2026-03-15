@@ -703,13 +703,6 @@
       content: '';
       position: absolute;
       inset: 0;
-      background:
-        linear-gradient(180deg,
-          var(--bg) 0%,
-          rgba(99,102,241,0.08) 30%,
-          rgba(129,140,248,0.06) 70%,
-          var(--bg) 100%
-        );
       pointer-events: none;
     }
 
@@ -718,16 +711,13 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 800px;
-      height: 400px;
-      background: radial-gradient(ellipse, rgba(99,102,241,0.12), rgba(129,140,248,0.06) 40%, transparent 70%);
       transform: translate(-50%, -50%);
       pointer-events: none;
     }
 
     .cta-inner {
       position: relative;
-      z-index: 1;
+      z-index: 2;
       max-width: 620px;
       margin: 0 auto;
     }
@@ -921,6 +911,17 @@
       .project-card.featured {
         grid-column: span 2;
       }
+
+      .value-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .process-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .process-step:nth-child(2) .process-step-arrow {
+        display: none;
+      }
     }
 
     @media (max-width: 640px) {
@@ -971,6 +972,27 @@
       .project-link { font-size: 0.8rem; margin-top: 12px; }
       .filter-bar { gap: 6px; margin-bottom: 24px; }
       .filter-btn { padding: 8px 14px; font-size: 0.78rem; }
+
+      /* 테크 스택 */
+      .tech-stack-section { padding: 48px 0; }
+      .tech-categories { gap: 20px; margin-top: 28px; }
+      .tech-category { flex-direction: column; gap: 10px; }
+      .tech-category-label { min-width: unset; padding-top: 0; font-size: 0.7rem; }
+      .tech-badge-item { padding: 6px 12px; font-size: 0.76rem; }
+
+      /* 프로세스 */
+      .process-section { padding: 48px 0; }
+      .process-grid { grid-template-columns: 1fr; gap: 16px; margin-top: 28px; }
+      .process-step { padding: 24px 20px; }
+      .process-step-number { font-size: 1.8rem; }
+      .process-step-icon { font-size: 1.6rem; }
+      .process-step-title { font-size: 1rem; }
+      .process-step-desc { font-size: 0.78rem; }
+      .process-step-arrow { display: none; }
+
+      /* 프로젝트 테크 태그 */
+      .project-techs { gap: 4px; margin-top: 10px; }
+      .project-tech { font-size: 0.62rem; padding: 2px 8px; }
 
       /* CTA */
       .cta-section { padding: 80px 20px; min-height: auto; }
@@ -1072,13 +1094,7 @@
       line-height: 1.65;
     }
 
-    @media (max-width: 900px) {
-      .value-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    /* 640px mobile rules consolidated into main media query above */
+    /* 900px, 640px rules consolidated into main media query block above */
     /* ============================================
        PREMIUM SaaS BLUR ORBS
        ============================================ */
@@ -1229,11 +1245,7 @@
       background: radial-gradient(circle, rgba(236,72,153,0.06) 0%, transparent 70%);
     }
 
-    /* Ensure CTA inner stays above orbs */
-    .cta-inner {
-      position: relative;
-      z-index: 2;
-    }
+    /* CTA inner z-index consolidated into main .cta-inner rule above */
 
     /* ============================================
        TECH STACK SECTION
@@ -1386,37 +1398,7 @@
       word-break: keep-all;
     }
 
-    /* ============================================
-       RESPONSIVE — TECH STACK, PROCESS, PROJECT TECHS
-       ============================================ */
-    @media (max-width: 900px) {
-      .process-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      .process-step:nth-child(2) .process-step-arrow {
-        display: none;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .tech-stack-section { padding: 48px 0; }
-      .tech-categories { gap: 20px; margin-top: 28px; }
-      .tech-category { flex-direction: column; gap: 10px; }
-      .tech-category-label { min-width: unset; padding-top: 0; font-size: 0.7rem; }
-      .tech-badge-item { padding: 6px 12px; font-size: 0.76rem; }
-
-      .process-section { padding: 48px 0; }
-      .process-grid { grid-template-columns: 1fr; gap: 16px; margin-top: 28px; }
-      .process-step { padding: 24px 20px; }
-      .process-step-number { font-size: 1.8rem; }
-      .process-step-icon { font-size: 1.6rem; }
-      .process-step-title { font-size: 1rem; }
-      .process-step-desc { font-size: 0.78rem; }
-      .process-step-arrow { display: none; }
-
-      .project-techs { gap: 4px; margin-top: 10px; }
-      .project-tech { font-size: 0.62rem; padding: 2px 8px; }
-    }
+    /* RESPONSIVE for tech-stack, process, project-techs: consolidated into main media query blocks above */
   </style>
 </head>
 <body>

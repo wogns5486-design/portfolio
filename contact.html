@@ -364,17 +364,17 @@
     <form class="contact-form" id="contactForm" onsubmit="submitForm(event)">
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">이름 / 회사명 <span class="required">*</span></label>
+          <label class="form-label" for="clientName">이름 / 회사명 <span class="required">*</span></label>
           <input type="text" class="form-input" id="clientName" placeholder="홍길동 / 주식회사 OO" required>
         </div>
         <div class="form-group">
-          <label class="form-label">연락처 <span class="required">*</span></label>
+          <label class="form-label" for="clientContact">연락처 <span class="required">*</span></label>
           <input type="text" class="form-input" id="clientContact" placeholder="이메일 또는 전화번호" required>
         </div>
       </div>
 
       <div class="form-group">
-        <label class="form-label">프로젝트 유형</label>
+        <label class="form-label" for="projectType">프로젝트 유형</label>
         <select class="form-select" id="projectType">
           <option value="">선택해 주세요</option>
           <option value="랜딩페이지">랜딩페이지 / 홈페이지</option>
@@ -387,8 +387,8 @@
       </div>
 
       <div class="form-group">
-        <label class="form-label">예상 예산</label>
-        <div class="budget-chips">
+        <label class="form-label" id="budgetLabel">예상 예산</label>
+        <div class="budget-chips" role="radiogroup" aria-labelledby="budgetLabel">
           <label class="budget-chip" onclick="selectBudget(this)">
             <input type="radio" name="budget" value="30만원 이하">30만원 이하
           </label>
@@ -408,7 +408,7 @@
       </div>
 
       <div class="form-group">
-        <label class="form-label">희망 완성 시기</label>
+        <label class="form-label" for="timeline">희망 완성 시기</label>
         <select class="form-select" id="timeline">
           <option value="">선택해 주세요</option>
           <option value="1주 이내">1주 이내</option>
@@ -419,12 +419,12 @@
       </div>
 
       <div class="form-group">
-        <label class="form-label">프로젝트 설명 <span class="required">*</span></label>
+        <label class="form-label" for="projectDesc">프로젝트 설명 <span class="required">*</span></label>
         <textarea class="form-textarea" id="projectDesc" placeholder="어떤 사이트/앱을 만들고 싶으신지 자유롭게 적어주세요.&#10;&#10;예시: 카페 홈페이지를 만들고 싶어요. 메뉴판, 예약 기능, 지도가 필요합니다." required></textarea>
       </div>
 
       <div class="form-group">
-        <label class="form-label">참고 사이트 (선택)</label>
+        <label class="form-label" for="refSite">참고 사이트 (선택)</label>
         <input type="text" class="form-input" id="refSite" placeholder="https://example.com">
       </div>
 
