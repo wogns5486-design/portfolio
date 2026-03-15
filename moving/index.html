@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>이사 체크리스트 플래너</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --primary: #4F6AF6;
+  --primary-light: #E8ECFF;
+  --primary-dark: #3A50D9;
+  --accent: #FF6B6B;
+  --accent-light: #FFE0E0;
+  --success: #2ECC71;
+  --success-light: #E8F8F0;
+  --warning: #F39C12;
+  --warning-light: #FEF5E7;
+  --bg: #F5F7FB;
+  --card: #FFFFFF;
+  --text: #2C3E50;
+  --text-light: #7F8C9B;
+  --border: #E4E9F2;
+  --shadow: 0 2px 12px rgba(79,106,246,0.08);
+  --shadow-hover: 0 6px 24px rgba(79,106,246,0.15);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  padding: 40px 0 32px;
+}
+
+.header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary), #7C5CFC);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+
+.header p {
+  color: var(--text-light);
+  font-size: 0.95rem;
+}
+
+/* D-Day */
+.dday-section {
+  background: linear-gradient(135deg, var(--primary), #7C5CFC);
+  border-radius: var(--radius);
+  padding: 32px;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.dday-section::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 300px;
+  height: 300px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 50%;
+}
+
+.dday-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  opacity: 0.85;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.dday-date-input {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 8px 0 16px;
+}
+
+.dday-date-input::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
+
+.dday-count {
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.dday-count small {
+  font-size: 1rem;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.dday-sub {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  margin-top: 4px;
+}
+
+/* Progress */
+.progress-section {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 28px;
+  box-shadow: var(--shadow);
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.progress-header h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.progress-percent {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.progress-bar-bg {
+  width: 100%;
+  height: 14px;
+  background: var(--primary-light);
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), #7C5CFC);
+  border-radius: 7px;
+  transition: width 0.5s ease;
+  min-width: 0;
+}
+
+.progress-stats {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: var(--text-light);
+}
+
+.progress-stats span { font-weight: 600; color: var(--text); }
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tabs::-webkit-scrollbar { display: none; }
+
+.tab-btn {
+  padding: 10px 18px;
+  border: none;
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-light);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  box-shadow: var(--shadow);
+}
+
+.tab-btn:hover { color: var(--primary); }
+.tab-btn.active { background: var(--primary); color: #fff; }
+
+/* Checklist */
+.checklist-section {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 28px;
+  box-shadow: var(--shadow);
+}
+
+.checklist-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.checklist-title h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.add-item-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.add-item-row input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  transition: border-color 0.2s;
+}
+
+.add-item-row input:focus { outline: none; border-color: var(--primary); }
+
+.btn {
+  padding: 10px 18px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+.btn-danger { background: var(--accent); color: #fff; }
+.btn-danger:hover { background: #e55a5a; }
+.btn-sm { padding: 6px 12px; font-size: 0.8rem; }
+
+.checklist-items { list-style: none; }
+
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s;
+  border-bottom: 1px solid var(--border);
+}
+
+.checklist-item:last-child { border-bottom: none; }
+.checklist-item:hover { background: var(--bg); }
+
+.checklist-item input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.checklist-item label {
+  flex: 1;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.checklist-item.done label {
+  text-decoration: line-through;
+  color: var(--text-light);
+}
+
+.checklist-item .delete-btn {
+  background: none;
+  border: none;
+  color: var(--text-light);
+  cursor: pointer;
+  font-size: 1.1rem;
+  opacity: 0;
+  transition: opacity 0.2s, color 0.2s;
+  padding: 4px;
+}
+
+.checklist-item:hover .delete-btn { opacity: 1; }
+.checklist-item .delete-btn:hover { color: var(--accent); }
+
+.empty-state {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+/* Two column layout */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+/* Cost Calculator */
+.cost-section {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+
+.cost-section h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.cost-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.cost-item input[type="text"] {
+  flex: 1;
+  padding: 9px 12px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+}
+
+.cost-item input[type="number"] {
+  width: 120px;
+  padding: 9px 12px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  text-align: right;
+}
+
+.cost-item input:focus { outline: none; border-color: var(--primary); }
+
+.cost-item .delete-btn {
+  background: none;
+  border: none;
+  color: var(--text-light);
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 4px;
+}
+
+.cost-item .delete-btn:hover { color: var(--accent); }
+
+.cost-add {
+  margin: 12px 0;
+}
+
+.cost-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: var(--primary-light);
+  border-radius: var(--radius-sm);
+  margin-top: 16px;
+  font-weight: 700;
+}
+
+.cost-total .amount {
+  font-size: 1.3rem;
+  color: var(--primary);
+}
+
+/* Memo */
+.memo-section {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+
+.memo-section h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.memo-section textarea {
+  width: 100%;
+  min-height: 200px;
+  padding: 14px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+
+.memo-section textarea:focus { outline: none; border-color: var(--primary); }
+
+/* Company Cards */
+.company-section {
+  margin-bottom: 28px;
+}
+
+.company-section h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.company-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.company-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.3s, transform 0.3s;
+  position: relative;
+}
+
+.company-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+
+.company-card .badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.badge-best { background: var(--success-light); color: var(--success); }
+.badge-popular { background: var(--warning-light); color: var(--warning); }
+.badge-budget { background: var(--primary-light); color: var(--primary); }
+
+.company-card input {
+  width: 100%;
+  padding: 8px 0;
+  border: none;
+  border-bottom: 2px solid var(--border);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  transition: border-color 0.2s;
+  background: transparent;
+}
+
+.company-card input:focus { outline: none; border-bottom-color: var(--primary); }
+
+.company-card input.company-name { font-size: 1.05rem; font-weight: 700; }
+.company-card input.company-price { font-size: 1.2rem; font-weight: 800; color: var(--primary); }
+
+.company-card textarea {
+  width: 100%;
+  min-height: 60px;
+  padding: 8px 0;
+  border: none;
+  border-bottom: 2px solid var(--border);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  color: var(--text-light);
+  resize: none;
+  background: transparent;
+}
+
+.company-card textarea:focus { outline: none; border-bottom-color: var(--primary); }
+
+.company-rating {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.company-rating .star {
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: var(--border);
+  transition: color 0.15s;
+}
+
+.company-rating .star.active { color: #F1C40F; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container { padding: 16px 14px 48px; }
+  .header h1 { font-size: 1.5rem; }
+  .dday-count { font-size: 2.5rem; }
+  .two-col { grid-template-columns: 1fr; }
+  .company-grid { grid-template-columns: 1fr; }
+  .tabs { gap: 6px; }
+  .tab-btn { padding: 8px 14px; font-size: 0.8rem; }
+}
+
+@media (max-width: 480px) {
+  .dday-section { padding: 24px 16px; }
+  .cost-item { flex-wrap: wrap; }
+  .cost-item input[type="number"] { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <div class="header">
+    <h1>🏠 이사 체크리스트 플래너</h1>
+    <p>체계적인 이사 준비를 위한 올인원 플래너</p>
+  </div>
+
+  <!-- D-Day -->
+  <div class="dday-section">
+    <div class="dday-label">이사 예정일</div>
+    <input type="date" class="dday-date-input" id="ddayDate">
+    <div class="dday-count" id="ddayCount">D-Day 설정</div>
+    <div class="dday-sub" id="ddaySub">위 달력에서 이사일을 선택하세요</div>
+  </div>
+
+  <!-- Overall Progress -->
+  <div class="progress-section">
+    <div class="progress-header">
+      <h2>전체 진행률</h2>
+      <div class="progress-percent" id="progressPercent">0%</div>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div class="progress-stats">
+      완료 <span id="doneCount">0</span> / 전체 <span id="totalCount">0</span>
+    </div>
+  </div>
+
+  <!-- Category Tabs -->
+  <div class="tabs" id="categoryTabs"></div>
+
+  <!-- Checklist -->
+  <div class="checklist-section">
+    <div class="checklist-title">
+      <h2 id="checklistHeading">체크리스트</h2>
+    </div>
+    <div class="add-item-row">
+      <input type="text" id="newItemInput" placeholder="새 항목 추가...">
+      <button class="btn btn-primary" id="addItemBtn">추가</button>
+    </div>
+    <ul class="checklist-items" id="checklistItems"></ul>
+  </div>
+
+  <!-- Company Comparison -->
+  <div class="company-section">
+    <h2>🚛 이사 업체 비교</h2>
+    <div class="company-grid" id="companyGrid"></div>
+  </div>
+
+  <!-- Cost + Memo -->
+  <div class="two-col">
+    <div class="cost-section">
+      <h2>💰 비용 계산기</h2>
+      <div id="costItems"></div>
+      <button class="btn btn-primary btn-sm cost-add" id="addCostBtn">+ 항목 추가</button>
+      <div class="cost-total">
+        <span>총 예상 비용</span>
+        <span class="amount" id="costTotal">0원</span>
+      </div>
+    </div>
+
+    <div class="memo-section">
+      <h2>📝 메모</h2>
+      <textarea id="memoArea" placeholder="이사 관련 메모를 자유롭게 작성하세요...&#10;&#10;예: 새 집 도어락 비밀번호, 관리사무소 연락처 등"></textarea>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'moving-planner-data';
+
+const DEFAULT_CATEGORIES = {
+  documents: { name: '📄 서류', icon: '📄', items: [
+    '전입신고 (이사 후 14일 이내)',
+    '확정일자 받기',
+    '임대차계약서 원본 보관',
+    '이사 견적서 비교/보관',
+    '관리비 정산 확인',
+    '공과금 최종 납부 (전기/수도/가스)',
+    '인터넷/TV 이전 신청'
+  ]},
+  cleaning: { name: '🧹 청소', icon: '🧹', items: [
+    '기존 집 베란다 청소',
+    '기존 집 화장실 청소',
+    '기존 집 주방 기름때 제거',
+    '에어컨 필터 청소',
+    '새 집 입주 전 청소',
+    '새 집 해충 방역',
+    '새 집 환기 (2~3일 전)'
+  ]},
+  packing: { name: '📦 짐싸기', icon: '📦', items: [
+    '박스/테이프/뽁뽁이 구매',
+    '안 쓰는 물건 정리/버리기',
+    '계절 옷 박스 포장',
+    '주방용품 포장 (깨지는 것 뽁뽁이)',
+    '책/서류 박스 포장',
+    '전자제품 포장 (원래 박스 활용)',
+    '귀중품 따로 챙기기',
+    '냉장고 음식 정리 (2일 전)',
+    '세탁기 물 빼기'
+  ]},
+  install: { name: '🔧 설치', icon: '🔧', items: [
+    '인터넷 설치 예약',
+    '가스 개통 신청',
+    '도어락 비밀번호 변경',
+    '전등/조명 확인',
+    '커튼/블라인드 설치',
+    '세탁기 급수/배수 연결',
+    '에어컨 설치 확인'
+  ]},
+  address: { name: '📬 주소변경', icon: '📬', items: [
+    '주민등록 주소변경 (전입신고)',
+    '운전면허증 주소변경',
+    '카드사 주소변경',
+    '은행 주소변경',
+    '보험사 주소변경',
+    '택배 주소 변경 (쿠팡/마켓컬리 등)',
+    '온라인 쇼핑몰 기본 배송지 변경',
+    '회사/학교 주소변경 신고'
+  ]}
+};
+
+const DEFAULT_COSTS = [
+  { name: '이사 업체 비용', amount: 0 },
+  { name: '포장 자재 (박스/테이프)', amount: 0 },
+  { name: '입주 청소', amount: 0 },
+  { name: '해충 방역', amount: 0 },
+  { name: '에어컨 설치/이전', amount: 0 },
+  { name: '인터넷 설치비', amount: 0 }
+];
+
+const DEFAULT_COMPANIES = [
+  { name: '용달이사', price: '30~50만원', notes: '1톤 트럭 기준\n소형 이사 적합', rating: 3, badge: 'budget', badgeText: '가성비' },
+  { name: '일반이사 (반포장)', price: '80~150만원', notes: '큰 짐 포장 지원\n중형 이사 적합', rating: 4, badge: 'popular', badgeText: '인기' },
+  { name: '포장이사', price: '150~300만원', notes: '전체 포장/운반/정리\n가족 이사 적합', rating: 5, badge: 'best', badgeText: '추천' }
+];
+
+// State
+let state = loadState();
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch(e) {}
+  return initDefault();
+}
+
+function initDefault() {
+  const checklist = {};
+  Object.keys(DEFAULT_CATEGORIES).forEach(cat => {
+    checklist[cat] = DEFAULT_CATEGORIES[cat].items.map((text, i) => ({
+      id: cat + '_' + i,
+      text,
+      done: false
+    }));
+  });
+  return {
+    ddayDate: '',
+    activeCategory: 'documents',
+    checklist,
+    costs: JSON.parse(JSON.stringify(DEFAULT_COSTS)),
+    companies: JSON.parse(JSON.stringify(DEFAULT_COMPANIES)),
+    memo: ''
+  };
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+// D-Day
+function renderDday() {
+  const input = document.getElementById('ddayDate');
+  const countEl = document.getElementById('ddayCount');
+  const subEl = document.getElementById('ddaySub');
+
+  input.value = state.ddayDate;
+
+  if (!state.ddayDate) {
+    countEl.textContent = 'D-Day 설정';
+    subEl.textContent = '위 달력에서 이사일을 선택하세요';
+    return;
+  }
+
+  const target = new Date(state.ddayDate + 'T00:00:00');
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const diff = Math.ceil((target - today) / (1000 * 60 * 60 * 24));
+
+  if (diff > 0) {
+    countEl.innerHTML = `D-${diff} <small>일</small>`;
+    subEl.textContent = `${target.getFullYear()}년 ${target.getMonth()+1}월 ${target.getDate()}일까지`;
+  } else if (diff === 0) {
+    countEl.textContent = 'D-Day!';
+    subEl.textContent = '오늘이 이사날입니다! 화이팅!';
+  } else {
+    countEl.innerHTML = `D+${Math.abs(diff)} <small>일</small>`;
+    subEl.textContent = '이사가 완료되었습니다';
+  }
+}
+
+document.getElementById('ddayDate').addEventListener('change', e => {
+  state.ddayDate = e.target.value;
+  saveState();
+  renderDday();
+});
+
+// Progress
+function updateProgress() {
+  let done = 0, total = 0;
+  Object.values(state.checklist).forEach(items => {
+    items.forEach(item => {
+      total++;
+      if (item.done) done++;
+    });
+  });
+
+  const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+  document.getElementById('progressPercent').textContent = pct + '%';
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('doneCount').textContent = done;
+  document.getElementById('totalCount').textContent = total;
+}
+
+// Tabs
+function renderTabs() {
+  const container = document.getElementById('categoryTabs');
+  container.innerHTML = '';
+  Object.keys(DEFAULT_CATEGORIES).forEach(key => {
+    const cat = DEFAULT_CATEGORIES[key];
+    const items = state.checklist[key] || [];
+    const doneN = items.filter(i => i.done).length;
+    const btn = document.createElement('button');
+    btn.className = 'tab-btn' + (state.activeCategory === key ? ' active' : '');
+    btn.textContent = `${cat.name} ${doneN}/${items.length}`;
+    btn.onclick = () => {
+      state.activeCategory = key;
+      saveState();
+      renderTabs();
+      renderChecklist();
+    };
+    container.appendChild(btn);
+  });
+}
+
+// Checklist
+function renderChecklist() {
+  const cat = state.activeCategory;
+  const catInfo = DEFAULT_CATEGORIES[cat];
+  document.getElementById('checklistHeading').textContent = catInfo.name + ' 체크리스트';
+
+  const ul = document.getElementById('checklistItems');
+  const items = state.checklist[cat] || [];
+
+  if (items.length === 0) {
+    ul.innerHTML = '<div class="empty-state">항목이 없습니다. 위에서 추가해보세요!</div>';
+    return;
+  }
+
+  ul.innerHTML = '';
+  items.forEach((item, idx) => {
+    const li = document.createElement('li');
+    li.className = 'checklist-item' + (item.done ? ' done' : '');
+
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = item.done;
+    cb.onchange = () => {
+      item.done = cb.checked;
+      saveState();
+      renderChecklist();
+      renderTabs();
+      updateProgress();
+    };
+
+    const label = document.createElement('label');
+    label.textContent = item.text;
+    label.onclick = () => { cb.click(); };
+
+    const delBtn = document.createElement('button');
+    delBtn.className = 'delete-btn';
+    delBtn.innerHTML = '&times;';
+    delBtn.onclick = () => {
+      state.checklist[cat].splice(idx, 1);
+      saveState();
+      renderChecklist();
+      renderTabs();
+      updateProgress();
+    };
+
+    li.appendChild(cb);
+    li.appendChild(label);
+    li.appendChild(delBtn);
+    ul.appendChild(li);
+  });
+}
+
+// Add item
+document.getElementById('addItemBtn').addEventListener('click', addItem);
+document.getElementById('newItemInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addItem();
+});
+
+function addItem() {
+  const input = document.getElementById('newItemInput');
+  const text = input.value.trim();
+  if (!text) return;
+  const cat = state.activeCategory;
+  if (!state.checklist[cat]) state.checklist[cat] = [];
+  state.checklist[cat].push({
+    id: cat + '_' + Date.now(),
+    text,
+    done: false
+  });
+  input.value = '';
+  saveState();
+  renderChecklist();
+  renderTabs();
+  updateProgress();
+}
+
+// Costs
+function renderCosts() {
+  const container = document.getElementById('costItems');
+  container.innerHTML = '';
+
+  state.costs.forEach((cost, idx) => {
+    const div = document.createElement('div');
+    div.className = 'cost-item';
+
+    const nameInput = document.createElement('input');
+    nameInput.type = 'text';
+    nameInput.value = cost.name;
+    nameInput.placeholder = '항목명';
+    nameInput.onchange = () => {
+      cost.name = nameInput.value;
+      saveState();
+    };
+
+    const amountInput = document.createElement('input');
+    amountInput.type = 'number';
+    amountInput.value = cost.amount || '';
+    amountInput.placeholder = '금액 (원)';
+    amountInput.oninput = () => {
+      cost.amount = parseInt(amountInput.value) || 0;
+      saveState();
+      updateCostTotal();
+    };
+
+    const delBtn = document.createElement('button');
+    delBtn.className = 'delete-btn';
+    delBtn.innerHTML = '&times;';
+    delBtn.onclick = () => {
+      state.costs.splice(idx, 1);
+      saveState();
+      renderCosts();
+    };
+
+    div.appendChild(nameInput);
+    div.appendChild(amountInput);
+    div.appendChild(delBtn);
+    container.appendChild(div);
+  });
+
+  updateCostTotal();
+}
+
+function updateCostTotal() {
+  const total = state.costs.reduce((s, c) => s + (c.amount || 0), 0);
+  document.getElementById('costTotal').textContent = total.toLocaleString('ko-KR') + '원';
+}
+
+document.getElementById('addCostBtn').addEventListener('click', () => {
+  state.costs.push({ name: '', amount: 0 });
+  saveState();
+  renderCosts();
+});
+
+// Companies
+function renderCompanies() {
+  const grid = document.getElementById('companyGrid');
+  grid.innerHTML = '';
+
+  state.companies.forEach((comp, idx) => {
+    const card = document.createElement('div');
+    card.className = 'company-card';
+
+    const badgeClass = comp.badge === 'best' ? 'badge-best' : comp.badge === 'popular' ? 'badge-popular' : 'badge-budget';
+    card.innerHTML = `
+      <span class="badge ${badgeClass}">${comp.badgeText}</span>
+      <input class="company-name" value="${escHtml(comp.name)}" placeholder="업체명">
+      <input class="company-price" value="${escHtml(comp.price)}" placeholder="예상 가격">
+      <textarea placeholder="특이사항/메모">${escHtml(comp.notes)}</textarea>
+      <div class="company-rating">${[1,2,3,4,5].map(s =>
+        `<span class="star ${s <= comp.rating ? 'active' : ''}" data-star="${s}">★</span>`
+      ).join('')}</div>
+    `;
+
+    card.querySelector('.company-name').onchange = e => {
+      comp.name = e.target.value;
+      saveState();
+    };
+    card.querySelector('.company-price').onchange = e => {
+      comp.price = e.target.value;
+      saveState();
+    };
+    card.querySelector('textarea').onchange = e => {
+      comp.notes = e.target.value;
+      saveState();
+    };
+
+    card.querySelectorAll('.star').forEach(star => {
+      star.onclick = () => {
+        comp.rating = parseInt(star.dataset.star);
+        saveState();
+        renderCompanies();
+      };
+    });
+
+    grid.appendChild(card);
+  });
+}
+
+function escHtml(str) {
+  const d = document.createElement('div');
+  d.textContent = str || '';
+  return d.innerHTML;
+}
+
+// Memo
+function renderMemo() {
+  const textarea = document.getElementById('memoArea');
+  textarea.value = state.memo || '';
+  textarea.oninput = () => {
+    state.memo = textarea.value;
+    saveState();
+  };
+}
+
+// Init
+function init() {
+  renderDday();
+  renderTabs();
+  renderChecklist();
+  updateProgress();
+  renderCosts();
+  renderCompanies();
+  renderMemo();
+}
+
+init();
+</script>
+</body>
+</html>

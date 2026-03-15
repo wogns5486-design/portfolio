@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>실시간 투표 앱</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --purple-50: #faf5ff;
+  --purple-100: #f3e8ff;
+  --purple-200: #e9d5ff;
+  --purple-300: #d8b4fe;
+  --purple-400: #c084fc;
+  --purple-500: #a855f7;
+  --purple-600: #9333ea;
+  --purple-700: #7e22ce;
+  --purple-800: #6b21a8;
+  --white: #ffffff;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.04);
+  --radius: 12px;
+  --radius-lg: 16px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--gray-50);
+  color: var(--gray-800);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, var(--purple-600), var(--purple-700));
+  color: var(--white);
+  padding: 24px 0;
+  box-shadow: var(--shadow-lg);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.header-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header h1 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.header h1 span { opacity: 0.8; font-weight: 400; font-size: 0.85rem; margin-left: 8px; }
+.header-stats {
+  display: flex;
+  gap: 20px;
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+.header-stats strong { font-weight: 700; }
+
+/* Container */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 4px;
+  box-shadow: var(--shadow);
+}
+.tab-btn {
+  flex: 1;
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--gray-500);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tab-btn:hover { color: var(--purple-600); background: var(--purple-50); }
+.tab-btn.active {
+  background: var(--purple-600);
+  color: var(--white);
+  box-shadow: var(--shadow-md);
+}
+.tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  margin-left: 6px;
+  background: var(--purple-100);
+  color: var(--purple-700);
+}
+.tab-btn.active .tab-badge {
+  background: rgba(255,255,255,0.25);
+  color: var(--white);
+}
+
+/* Tab content */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* Create Form */
+.create-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  box-shadow: var(--shadow-md);
+}
+.create-card h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: var(--gray-800);
+}
+.form-group { margin-bottom: 20px; }
+.form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gray-600);
+  margin-bottom: 6px;
+}
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--gray-200);
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--gray-800);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+.form-input:focus {
+  border-color: var(--purple-400);
+  box-shadow: 0 0 0 3px rgba(168,85,247,0.15);
+}
+.form-input::placeholder { color: var(--gray-400); }
+
+.options-list { display: flex; flex-direction: column; gap: 10px; }
+.option-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.option-row .form-input { flex: 1; }
+.option-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--purple-100);
+  color: var(--purple-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.remove-option-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  color: var(--gray-400);
+  font-size: 1.2rem;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.remove-option-btn:hover { background: #fee2e2; color: #ef4444; }
+
+.add-option-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border: 2px dashed var(--purple-300);
+  background: var(--purple-50);
+  color: var(--purple-600);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: all 0.2s;
+}
+.add-option-btn:hover { background: var(--purple-100); border-color: var(--purple-400); }
+
+.create-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  background: linear-gradient(135deg, var(--purple-500), var(--purple-700));
+  color: var(--white);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 24px;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-md);
+}
+.create-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+.create-btn:active { transform: translateY(0); }
+
+/* Poll Card */
+.poll-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 16px;
+  transition: box-shadow 0.2s;
+}
+.poll-card:hover { box-shadow: var(--shadow-lg); }
+
+.poll-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  gap: 12px;
+}
+.poll-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--gray-800);
+  line-height: 1.4;
+}
+.poll-meta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-shrink: 0;
+}
+.poll-status {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.poll-status.active { background: #dcfce7; color: #16a34a; }
+.poll-status.ended { background: var(--gray-100); color: var(--gray-500); }
+
+.poll-info {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  font-size: 0.82rem;
+  color: var(--gray-500);
+}
+.poll-info-item { display: flex; align-items: center; gap: 4px; }
+
+/* Vote options */
+.vote-options { display: flex; flex-direction: column; gap: 10px; }
+.vote-option {
+  position: relative;
+  border: 2px solid var(--gray-200);
+  border-radius: 10px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  overflow: hidden;
+}
+.vote-option:hover { border-color: var(--purple-300); }
+.vote-option.voted { border-color: var(--purple-400); background: var(--purple-50); }
+.vote-option.disabled { cursor: default; }
+.vote-option.disabled:hover { border-color: var(--gray-200); }
+.vote-option.voted.disabled { border-color: var(--purple-400); }
+
+.vote-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: var(--purple-100);
+  border-radius: 8px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 0;
+}
+.vote-option.voted .vote-bar { background: var(--purple-200); }
+
+.vote-option-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.vote-option-text {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--gray-700);
+}
+.vote-option-stats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--gray-500);
+  font-weight: 600;
+}
+.vote-percent {
+  font-weight: 700;
+  color: var(--purple-600);
+  min-width: 40px;
+  text-align: right;
+}
+.vote-count { color: var(--gray-400); font-size: 0.78rem; }
+
+/* Poll actions */
+.poll-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--gray-100);
+}
+.poll-action-btn {
+  padding: 8px 16px;
+  border: 1.5px solid var(--gray-200);
+  background: var(--white);
+  color: var(--gray-600);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.poll-action-btn:hover { border-color: var(--purple-300); color: var(--purple-600); background: var(--purple-50); }
+.poll-action-btn.danger:hover { border-color: #fca5a5; color: #ef4444; background: #fef2f2; }
+.poll-action-btn.end-btn:hover { border-color: #fbbf24; color: #d97706; background: #fffbeb; }
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--gray-400);
+}
+.empty-icon { font-size: 3rem; margin-bottom: 12px; }
+.empty-title { font-size: 1.1rem; font-weight: 600; color: var(--gray-500); margin-bottom: 4px; }
+.empty-desc { font-size: 0.9rem; }
+
+/* Toast */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.toast {
+  background: var(--gray-800);
+  color: var(--white);
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-xl);
+  animation: toastIn 0.3s ease, toastOut 0.3s ease 2.5s forwards;
+  max-width: 320px;
+}
+@keyframes toastIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-8px); } }
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(4px);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.25s;
+}
+.modal-overlay.show { opacity: 1; visibility: visible; }
+.modal {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: var(--shadow-xl);
+  transform: scale(0.95);
+  transition: transform 0.25s;
+}
+.modal-overlay.show .modal { transform: scale(1); }
+.modal h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+.modal p { font-size: 0.9rem; color: var(--gray-500); margin-bottom: 20px; }
+.modal-buttons { display: flex; gap: 8px; justify-content: flex-end; }
+.modal-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.modal-btn.cancel { background: var(--gray-100); color: var(--gray-600); }
+.modal-btn.cancel:hover { background: var(--gray-200); }
+.modal-btn.confirm { background: var(--purple-600); color: var(--white); }
+.modal-btn.confirm:hover { background: var(--purple-700); }
+.modal-btn.danger { background: #ef4444; color: var(--white); }
+.modal-btn.danger:hover { background: #dc2626; }
+
+/* Share modal */
+.share-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.share-btn {
+  flex: 1;
+  min-width: 100px;
+  padding: 12px;
+  border: 2px solid var(--gray-200);
+  background: var(--white);
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+}
+.share-btn:hover { border-color: var(--purple-300); background: var(--purple-50); }
+.share-btn .share-icon { font-size: 1.3rem; display: block; margin-bottom: 4px; }
+
+/* Responsive */
+@media (max-width: 600px) {
+  .header-inner { flex-direction: column; gap: 8px; text-align: center; }
+  .header h1 { font-size: 1.3rem; }
+  .tabs { flex-direction: column; }
+  .create-card, .poll-card { padding: 20px; }
+  .poll-header { flex-direction: column; }
+  .poll-actions { flex-wrap: wrap; }
+  .share-buttons { flex-direction: column; }
+  .toast-container { left: 16px; right: 16px; bottom: 16px; }
+  .toast { max-width: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <h1>실시간 투표<span>Poll App</span></h1>
+    <div class="header-stats">
+      <span>활성 <strong id="activeCount">0</strong></span>
+      <span>총 참여 <strong id="totalVotes">0</strong></span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="active">진행 중<span class="tab-badge" id="activeBadge">0</span></button>
+    <button class="tab-btn" data-tab="create">새 투표 만들기</button>
+    <button class="tab-btn" data-tab="archive">아카이브<span class="tab-badge" id="archiveBadge">0</span></button>
+  </div>
+
+  <!-- Active Polls -->
+  <div class="tab-content active" id="tab-active">
+    <div id="activePolls"></div>
+  </div>
+
+  <!-- Create Poll -->
+  <div class="tab-content" id="tab-create">
+    <div class="create-card">
+      <h2>새 투표 만들기</h2>
+      <div class="form-group">
+        <label for="pollTitle">투표 제목</label>
+        <input type="text" id="pollTitle" class="form-input" placeholder="어떤 것에 대해 투표할까요?" maxlength="100">
+      </div>
+      <div class="form-group">
+        <label>투표 항목 (2~6개)</label>
+        <div class="options-list" id="optionsList">
+          <div class="option-row">
+            <span class="option-num">1</span>
+            <input type="text" class="form-input option-input" placeholder="항목 1" maxlength="60">
+          </div>
+          <div class="option-row">
+            <span class="option-num">2</span>
+            <input type="text" class="form-input option-input" placeholder="항목 2" maxlength="60">
+          </div>
+        </div>
+        <button class="add-option-btn" id="addOptionBtn" type="button">+ 항목 추가</button>
+      </div>
+      <button class="create-btn" id="createPollBtn" type="button">투표 생성하기</button>
+    </div>
+  </div>
+
+  <!-- Archive -->
+  <div class="tab-content" id="tab-archive">
+    <div id="archivedPolls"></div>
+  </div>
+</div>
+
+<!-- Confirm Modal -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal">
+    <h3 id="confirmTitle">확인</h3>
+    <p id="confirmMsg">정말 진행하시겠습니까?</p>
+    <div class="modal-buttons">
+      <button class="modal-btn cancel" id="confirmCancel">취소</button>
+      <button class="modal-btn confirm" id="confirmOk">확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- Share Modal -->
+<div class="modal-overlay" id="shareModal">
+  <div class="modal">
+    <h3>투표 공유하기</h3>
+    <p id="shareTitle"></p>
+    <div class="share-buttons">
+      <button class="share-btn" id="shareKakao"><span class="share-icon">💬</span>카카오톡</button>
+      <button class="share-btn" id="shareTwitter"><span class="share-icon">🐦</span>트위터</button>
+      <button class="share-btn" id="shareCopy"><span class="share-icon">📋</span>링크 복사</button>
+    </div>
+    <div class="modal-buttons">
+      <button class="modal-btn cancel" id="shareClose">닫기</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+(function() {
+  'use strict';
+
+  const STORAGE_KEY = 'poll_app_data';
+
+  // State
+  let polls = [];
+  let confirmCallback = null;
+  let currentSharePoll = null;
+
+  // DOM
+  const $ = s => document.querySelector(s);
+  const $$ = s => document.querySelectorAll(s);
+
+  // Init
+  function init() {
+    loadData();
+    bindEvents();
+    render();
+  }
+
+  // Storage
+  function loadData() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      polls = raw ? JSON.parse(raw) : [];
+    } catch { polls = []; }
+  }
+  function saveData() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(polls));
+  }
+
+  // Events
+  function bindEvents() {
+    $$('.tab-btn').forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
+    $('#addOptionBtn').addEventListener('click', addOptionField);
+    $('#createPollBtn').addEventListener('click', createPoll);
+    $('#confirmCancel').addEventListener('click', closeConfirm);
+    $('#confirmOk').addEventListener('click', () => { if (confirmCallback) confirmCallback(); closeConfirm(); });
+    $('#shareClose').addEventListener('click', closeShare);
+    $('#shareKakao').addEventListener('click', shareKakao);
+    $('#shareTwitter').addEventListener('click', shareTwitter);
+    $('#shareCopy').addEventListener('click', shareCopyLink);
+
+    // Close modals on overlay click
+    $('#confirmModal').addEventListener('click', e => { if (e.target === $('#confirmModal')) closeConfirm(); });
+    $('#shareModal').addEventListener('click', e => { if (e.target === $('#shareModal')) closeShare(); });
+  }
+
+  // Tabs
+  function switchTab(tab) {
+    $$('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+    $$('.tab-content').forEach(c => c.classList.toggle('active', c.id === 'tab-' + tab));
+  }
+
+  // Options
+  function addOptionField() {
+    const list = $('#optionsList');
+    const count = list.children.length;
+    if (count >= 6) { toast('최대 6개까지 추가할 수 있습니다'); return; }
+    const row = document.createElement('div');
+    row.className = 'option-row';
+    row.innerHTML = `
+      <span class="option-num">${count + 1}</span>
+      <input type="text" class="form-input option-input" placeholder="항목 ${count + 1}" maxlength="60">
+      <button class="remove-option-btn" type="button">&times;</button>
+    `;
+    row.querySelector('.remove-option-btn').addEventListener('click', () => {
+      row.remove();
+      updateOptionNumbers();
+    });
+    list.appendChild(row);
+    row.querySelector('.option-input').focus();
+  }
+
+  function updateOptionNumbers() {
+    const rows = $$('.option-row');
+    rows.forEach((r, i) => {
+      r.querySelector('.option-num').textContent = i + 1;
+      r.querySelector('.option-input').placeholder = '항목 ' + (i + 1);
+    });
+  }
+
+  // Create poll
+  function createPoll() {
+    const title = $('#pollTitle').value.trim();
+    if (!title) { toast('투표 제목을 입력해주세요'); $('#pollTitle').focus(); return; }
+
+    const inputs = $$('.option-input');
+    const options = [];
+    inputs.forEach(inp => {
+      const v = inp.value.trim();
+      if (v) options.push(v);
+    });
+
+    if (options.length < 2) { toast('최소 2개의 항목을 입력해주세요'); return; }
+
+    const poll = {
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      title,
+      options: options.map(text => ({ text, votes: 0 })),
+      totalVotes: 0,
+      createdAt: Date.now(),
+      active: true,
+      votedOption: null
+    };
+
+    polls.unshift(poll);
+    saveData();
+
+    // Reset form
+    $('#pollTitle').value = '';
+    const list = $('#optionsList');
+    list.innerHTML = `
+      <div class="option-row"><span class="option-num">1</span><input type="text" class="form-input option-input" placeholder="항목 1" maxlength="60"></div>
+      <div class="option-row"><span class="option-num">2</span><input type="text" class="form-input option-input" placeholder="항목 2" maxlength="60"></div>
+    `;
+
+    toast('투표가 생성되었습니다!');
+    switchTab('active');
+    render();
+  }
+
+  // Vote
+  function vote(pollId, optionIndex) {
+    const poll = polls.find(p => p.id === pollId);
+    if (!poll || !poll.active || poll.votedOption !== null) return;
+
+    poll.options[optionIndex].votes++;
+    poll.totalVotes++;
+    poll.votedOption = optionIndex;
+    saveData();
+    render();
+    toast('투표가 완료되었습니다!');
+  }
+
+  // End poll
+  function endPoll(pollId) {
+    showConfirm('투표 종료', '이 투표를 종료하시겠습니까? 종료 후에는 더 이상 투표할 수 없습니다.', () => {
+      const poll = polls.find(p => p.id === pollId);
+      if (poll) {
+        poll.active = false;
+        poll.endedAt = Date.now();
+        saveData();
+        render();
+        toast('투표가 종료되었습니다');
+      }
+    }, 'confirm');
+  }
+
+  // Delete poll
+  function deletePoll(pollId) {
+    showConfirm('투표 삭제', '이 투표를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.', () => {
+      polls = polls.filter(p => p.id !== pollId);
+      saveData();
+      render();
+      toast('투표가 삭제되었습니다');
+    }, 'danger');
+  }
+
+  // Share
+  function openShare(pollId) {
+    const poll = polls.find(p => p.id === pollId);
+    if (!poll) return;
+    currentSharePoll = poll;
+    $('#shareTitle').textContent = '"' + poll.title + '"';
+    $('#shareModal').classList.add('show');
+  }
+  function closeShare() { $('#shareModal').classList.remove('show'); currentSharePoll = null; }
+  function getShareText() {
+    if (!currentSharePoll) return '';
+    const p = currentSharePoll;
+    let text = `[투표] ${p.title}\n`;
+    p.options.forEach((o, i) => {
+      const pct = p.totalVotes > 0 ? Math.round(o.votes / p.totalVotes * 100) : 0;
+      text += `${i + 1}. ${o.text} (${pct}%)\n`;
+    });
+    text += `총 ${p.totalVotes}명 참여`;
+    return text;
+  }
+  function shareKakao() {
+    const text = getShareText();
+    const url = 'https://story.kakao.com/s/share?url=' + encodeURIComponent(window.location.href) + '&text=' + encodeURIComponent(text);
+    window.open(url, '_blank', 'width=600,height=400');
+    closeShare();
+  }
+  function shareTwitter() {
+    const text = getShareText();
+    const url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text);
+    window.open(url, '_blank', 'width=600,height=400');
+    closeShare();
+  }
+  function shareCopyLink() {
+    const text = getShareText();
+    navigator.clipboard.writeText(text).then(() => {
+      toast('클립보드에 복사되었습니다');
+    }).catch(() => {
+      // fallback
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+      toast('클립보드에 복사되었습니다');
+    });
+    closeShare();
+  }
+
+  // Confirm modal
+  function showConfirm(title, msg, callback, btnType) {
+    $('#confirmTitle').textContent = title;
+    $('#confirmMsg').textContent = msg;
+    const okBtn = $('#confirmOk');
+    okBtn.className = 'modal-btn ' + (btnType || 'confirm');
+    okBtn.textContent = btnType === 'danger' ? '삭제' : '확인';
+    confirmCallback = callback;
+    $('#confirmModal').classList.add('show');
+  }
+  function closeConfirm() {
+    $('#confirmModal').classList.remove('show');
+    confirmCallback = null;
+  }
+
+  // Toast
+  function toast(msg) {
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.textContent = msg;
+    $('#toastContainer').appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+
+  // Time format
+  function timeAgo(ts) {
+    const diff = Date.now() - ts;
+    const m = Math.floor(diff / 60000);
+    if (m < 1) return '방금 전';
+    if (m < 60) return m + '분 전';
+    const h = Math.floor(m / 60);
+    if (h < 24) return h + '시간 전';
+    const d = Math.floor(h / 24);
+    if (d < 30) return d + '일 전';
+    return new Date(ts).toLocaleDateString('ko-KR');
+  }
+
+  // Render
+  function render() {
+    const active = polls.filter(p => p.active);
+    const archived = polls.filter(p => !p.active);
+    const totalVotes = polls.reduce((s, p) => s + p.totalVotes, 0);
+
+    // Header stats
+    $('#activeCount').textContent = active.length;
+    $('#totalVotes').textContent = totalVotes;
+    $('#activeBadge').textContent = active.length;
+    $('#archiveBadge').textContent = archived.length;
+
+    // Active polls
+    const activeContainer = $('#activePolls');
+    if (active.length === 0) {
+      activeContainer.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">📊</div>
+          <div class="empty-title">진행 중인 투표가 없습니다</div>
+          <div class="empty-desc">새 투표를 만들어보세요!</div>
+        </div>`;
+    } else {
+      activeContainer.innerHTML = active.map(p => renderPollCard(p)).join('');
+    }
+
+    // Archived polls
+    const archiveContainer = $('#archivedPolls');
+    if (archived.length === 0) {
+      archiveContainer.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">📁</div>
+          <div class="empty-title">아카이브된 투표가 없습니다</div>
+          <div class="empty-desc">종료된 투표가 여기에 표시됩니다</div>
+        </div>`;
+    } else {
+      archiveContainer.innerHTML = archived.map(p => renderPollCard(p)).join('');
+    }
+
+    // Bind vote clicks
+    document.querySelectorAll('.vote-option[data-poll]').forEach(el => {
+      el.addEventListener('click', () => {
+        const pollId = el.dataset.poll;
+        const idx = parseInt(el.dataset.idx);
+        vote(pollId, idx);
+      });
+    });
+
+    // Bind action buttons
+    document.querySelectorAll('[data-action]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const action = btn.dataset.action;
+        const pollId = btn.dataset.id;
+        if (action === 'end') endPoll(pollId);
+        else if (action === 'delete') deletePoll(pollId);
+        else if (action === 'share') openShare(pollId);
+      });
+    });
+
+    // Animate bars
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.vote-bar').forEach(bar => {
+        bar.style.width = bar.dataset.width + '%';
+      });
+    });
+  }
+
+  function renderPollCard(poll) {
+    const hasVoted = poll.votedOption !== null;
+    const showResults = hasVoted || !poll.active;
+
+    let optionsHtml = poll.options.map((opt, i) => {
+      const pct = poll.totalVotes > 0 ? Math.round(opt.votes / poll.totalVotes * 100) : 0;
+      const isVoted = poll.votedOption === i;
+      const canClick = poll.active && !hasVoted;
+
+      return `
+        <div class="vote-option ${isVoted ? 'voted' : ''} ${!canClick ? 'disabled' : ''}"
+             ${canClick ? `data-poll="${poll.id}" data-idx="${i}"` : ''}>
+          <div class="vote-bar" data-width="${showResults ? pct : 0}" style="width: 0%"></div>
+          <div class="vote-option-inner">
+            <span class="vote-option-text">${isVoted ? '✓ ' : ''}${escHtml(opt.text)}</span>
+            ${showResults ? `
+              <span class="vote-option-stats">
+                <span class="vote-count">${opt.votes}표</span>
+                <span class="vote-percent">${pct}%</span>
+              </span>
+            ` : ''}
+          </div>
+        </div>`;
+    }).join('');
+
+    const actions = [];
+    actions.push(`<button class="poll-action-btn" data-action="share" data-id="${poll.id}">📤 공유</button>`);
+    if (poll.active) {
+      actions.push(`<button class="poll-action-btn end-btn" data-action="end" data-id="${poll.id}">⏹ 종료</button>`);
+    }
+    actions.push(`<button class="poll-action-btn danger" data-action="delete" data-id="${poll.id}">🗑 삭제</button>`);
+
+    return `
+      <div class="poll-card">
+        <div class="poll-header">
+          <div class="poll-title">${escHtml(poll.title)}</div>
+          <div class="poll-meta">
+            <span class="poll-status ${poll.active ? 'active' : 'ended'}">${poll.active ? '진행중' : '종료'}</span>
+          </div>
+        </div>
+        <div class="poll-info">
+          <span class="poll-info-item">👥 ${poll.totalVotes}명 참여</span>
+          <span class="poll-info-item">🕐 ${timeAgo(poll.createdAt)}</span>
+          <span class="poll-info-item">📊 ${poll.options.length}개 항목</span>
+        </div>
+        <div class="vote-options">${optionsHtml}</div>
+        <div class="poll-actions">${actions.join('')}</div>
+      </div>`;
+  }
+
+  function escHtml(s) {
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
