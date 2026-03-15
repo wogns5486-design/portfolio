@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>환율 계산기 | Currency Converter</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#2563eb;--primary-light:#3b82f6;--primary-dark:#1d4ed8;
+  --bg:#f0f5ff;--card:#fff;--text:#1e293b;--text-secondary:#64748b;
+  --border:#e2e8f0;--shadow:0 4px 24px rgba(37,99,235,.08);
+  --radius:16px;--transition:.25s cubic-bezier(.4,0,.2,1);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6}
+
+/* Header */
+.header{background:linear-gradient(135deg,#2563eb 0%,#1e40af 100%);color:#fff;padding:48px 24px 56px;text-align:center;position:relative;overflow:hidden}
+.header::after{content:'';position:absolute;bottom:-30px;left:0;right:0;height:60px;background:var(--bg);border-radius:50% 50% 0 0}
+.header h1{font-size:2rem;font-weight:800;margin-bottom:6px;letter-spacing:-.5px}
+.header p{font-size:.95rem;opacity:.85;font-weight:400}
+.header-icon{font-size:2.4rem;margin-bottom:12px;display:block}
+
+/* Container */
+.container{max-width:720px;margin:-20px auto 40px;padding:0 16px;position:relative;z-index:1}
+
+/* Card */
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:28px 24px;margin-bottom:20px;border:1px solid var(--border);transition:var(--transition)}
+.card:hover{box-shadow:0 8px 32px rgba(37,99,235,.12)}
+
+/* Converter */
+.converter-label{font-size:.8rem;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.input-group{display:flex;gap:12px;align-items:stretch;margin-bottom:8px}
+.input-group input{flex:1;border:2px solid var(--border);border-radius:12px;padding:14px 16px;font-size:1.25rem;font-family:'Inter',sans-serif;font-weight:600;outline:none;transition:var(--transition);min-width:0}
+.input-group input:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(37,99,235,.1)}
+.input-group input::placeholder{color:#cbd5e1;font-weight:400}
+.currency-select{position:relative}
+.currency-select select{appearance:none;border:2px solid var(--border);border-radius:12px;padding:14px 40px 14px 44px;font-size:1rem;font-family:'Inter',sans-serif;font-weight:600;background:var(--card);cursor:pointer;outline:none;transition:var(--transition);color:var(--text);min-width:130px}
+.currency-select select:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(37,99,235,.1)}
+.currency-select .flag{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:1.2rem;pointer-events:none}
+.currency-select .arrow{position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-secondary);font-size:.7rem}
+
+/* Swap */
+.swap-row{display:flex;justify-content:center;margin:4px 0 12px}
+.swap-btn{width:48px;height:48px;border-radius:50%;border:2px solid var(--border);background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--transition);color:var(--primary);font-size:1.2rem}
+.swap-btn:hover{background:var(--primary);color:#fff;border-color:var(--primary);transform:rotate(180deg)}
+
+/* Result */
+.result-box{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-radius:12px;padding:20px;text-align:center;margin-top:12px}
+.result-amount{font-size:1.8rem;font-weight:800;color:var(--primary-dark);word-break:break-all}
+.result-rate{font-size:.85rem;color:var(--text-secondary);margin-top:6px}
+.result-fav{position:absolute;right:16px;top:16px;background:none;border:none;font-size:1.3rem;cursor:pointer;opacity:.5;transition:var(--transition)}
+.result-fav:hover,.result-fav.active{opacity:1;transform:scale(1.15)}
+
+/* Popular Rates */
+.section-title{font-size:1.1rem;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.popular-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.rate-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:var(--transition);position:relative;overflow:hidden}
+.rate-card:hover{border-color:var(--primary-light);box-shadow:0 4px 16px rgba(37,99,235,.1);transform:translateY(-2px)}
+.rate-card .pair{font-weight:700;font-size:.95rem;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.rate-card .pair .flags{font-size:1.1rem}
+.rate-card .value{font-size:1.3rem;font-weight:800;color:var(--primary)}
+.rate-card .change{font-size:.75rem;font-weight:600;margin-top:4px}
+.rate-card .change.up{color:#16a34a}
+.rate-card .change.down{color:#dc2626}
+
+/* Chart */
+.chart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.chart-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.chart-tab{padding:6px 14px;border-radius:8px;border:1.5px solid var(--border);background:var(--card);font-size:.8rem;font-weight:600;cursor:pointer;transition:var(--transition);font-family:'Inter',sans-serif;color:var(--text-secondary)}
+.chart-tab.active,.chart-tab:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+.chart-canvas-wrap{position:relative;width:100%;height:220px;margin-top:8px}
+.chart-canvas-wrap canvas{width:100%!important;height:100%!important}
+.chart-tooltip{position:absolute;background:#1e293b;color:#fff;padding:6px 10px;border-radius:8px;font-size:.75rem;font-weight:600;pointer-events:none;opacity:0;transition:opacity .15s;white-space:nowrap;z-index:5}
+
+/* Favorites */
+.fav-list{display:flex;flex-direction:column;gap:8px}
+.fav-item{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:#f8fafc;border-radius:12px;transition:var(--transition);cursor:pointer}
+.fav-item:hover{background:#eff6ff}
+.fav-item .pair{font-weight:700;font-size:.9rem;display:flex;align-items:center;gap:8px}
+.fav-item .value{font-weight:800;color:var(--primary);font-size:1.05rem}
+.fav-item .remove{background:none;border:none;color:#dc2626;cursor:pointer;font-size:1rem;opacity:.5;transition:var(--transition);padding:4px}
+.fav-item .remove:hover{opacity:1}
+.empty-fav{text-align:center;color:var(--text-secondary);padding:24px;font-size:.9rem}
+
+/* Footer */
+.footer{text-align:center;padding:24px;color:var(--text-secondary);font-size:.8rem}
+
+/* Responsive */
+@media(max-width:480px){
+  .header{padding:36px 16px 44px}
+  .header h1{font-size:1.5rem}
+  .container{padding:0 12px}
+  .card{padding:20px 16px}
+  .input-group{flex-direction:column}
+  .currency-select select{width:100%;min-width:unset}
+  .popular-grid{grid-template-columns:1fr}
+  .result-amount{font-size:1.4rem}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-icon">💱</span>
+  <h1>환율 계산기</h1>
+  <p>실시간 환율 변환 · 10개 주요 통화 지원</p>
+</div>
+
+<div class="container">
+
+  <!-- Converter Card -->
+  <div class="card" id="converterCard">
+    <div class="converter-label">보내는 금액</div>
+    <div class="input-group">
+      <input type="text" id="fromAmount" placeholder="금액 입력" inputmode="decimal" value="1000">
+      <div class="currency-select">
+        <span class="flag" id="fromFlag">🇰🇷</span>
+        <select id="fromCurrency"></select>
+        <span class="arrow">▼</span>
+      </div>
+    </div>
+
+    <div class="swap-row">
+      <button class="swap-btn" id="swapBtn" title="통화 교환">⇅</button>
+    </div>
+
+    <div class="converter-label">받는 금액</div>
+    <div class="input-group">
+      <input type="text" id="toAmount" placeholder="변환 결과" readonly>
+      <div class="currency-select">
+        <span class="flag" id="toFlag">🇺🇸</span>
+        <select id="toCurrency"></select>
+        <span class="arrow">▼</span>
+      </div>
+    </div>
+
+    <div class="result-box" style="position:relative">
+      <button class="result-fav" id="favToggle" title="즐겨찾기 추가">☆</button>
+      <div class="result-amount" id="resultDisplay">-</div>
+      <div class="result-rate" id="rateDisplay">환율 정보를 불러오는 중...</div>
+    </div>
+  </div>
+
+  <!-- Popular Rates -->
+  <div class="card">
+    <div class="section-title">📊 인기 환율</div>
+    <div class="popular-grid" id="popularGrid"></div>
+  </div>
+
+  <!-- Chart -->
+  <div class="card">
+    <div class="chart-header">
+      <div class="section-title" style="margin-bottom:0">📈 7일 환율 추이</div>
+      <div class="chart-tabs" id="chartTabs"></div>
+    </div>
+    <div class="chart-canvas-wrap">
+      <canvas id="chartCanvas"></canvas>
+      <div class="chart-tooltip" id="chartTooltip"></div>
+    </div>
+  </div>
+
+  <!-- Favorites -->
+  <div class="card">
+    <div class="section-title">⭐ 즐겨찾기</div>
+    <div id="favList"></div>
+  </div>
+
+</div>
+
+<div class="footer">© 2026 환율 계산기 · 환율 데이터는 참고용입니다</div>
+
+<script>
+// ─── Currency Data ───
+const CURRENCIES = [
+  { code:'KRW', name:'한국 원',      flag:'🇰🇷', symbol:'₩' },
+  { code:'USD', name:'미국 달러',    flag:'🇺🇸', symbol:'$' },
+  { code:'EUR', name:'유로',          flag:'🇪🇺', symbol:'€' },
+  { code:'JPY', name:'일본 엔',      flag:'🇯🇵', symbol:'¥' },
+  { code:'CNY', name:'중국 위안',    flag:'🇨🇳', symbol:'¥' },
+  { code:'GBP', name:'영국 파운드',  flag:'🇬🇧', symbol:'£' },
+  { code:'AUD', name:'호주 달러',    flag:'🇦🇺', symbol:'A$' },
+  { code:'CAD', name:'캐나다 달러',  flag:'🇨🇦', symbol:'C$' },
+  { code:'CHF', name:'스위스 프랑',  flag:'🇨🇭', symbol:'Fr' },
+  { code:'SGD', name:'싱가포르 달러',flag:'🇸🇬', symbol:'S$' }
+];
+
+// Base rates (1 USD = X). Realistic approximate rates.
+const BASE_RATES = {
+  USD:1, KRW:1385.50, EUR:0.9215, JPY:154.30, CNY:7.245,
+  GBP:0.7920, AUD:1.5480, CAD:1.3685, CHF:0.8835, SGD:1.3445
+};
+
+// Simulate slight daily variations for 7-day chart
+function generateHistory(fromCode, toCode) {
+  const data = [];
+  const baseRate = BASE_RATES[toCode] / BASE_RATES[fromCode];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const noise = 1 + (Math.sin(i * 1.7 + fromCode.charCodeAt(0)) * 0.008) + (Math.cos(i * 2.3) * 0.005);
+    data.push({ date: d, rate: baseRate * noise });
+  }
+  return data;
+}
+
+const popularPairs = [
+  ['USD','KRW'], ['EUR','KRW'], ['JPY','KRW'], ['GBP','KRW']
+];
+
+// ─── State ───
+let fromCur = 'KRW', toCur = 'USD';
+let favorites = JSON.parse(localStorage.getItem('currFav') || '[]');
+let chartPair = ['USD','KRW'];
+
+// ─── DOM refs ───
+const $fromAmt = document.getElementById('fromAmount');
+const $toAmt = document.getElementById('toAmount');
+const $fromSel = document.getElementById('fromCurrency');
+const $toSel = document.getElementById('toCurrency');
+const $fromFlag = document.getElementById('fromFlag');
+const $toFlag = document.getElementById('toFlag');
+const $result = document.getElementById('resultDisplay');
+const $rate = document.getElementById('rateDisplay');
+const $favToggle = document.getElementById('favToggle');
+const $favList = document.getElementById('favList');
+const $popGrid = document.getElementById('popularGrid');
+const $chartTabs = document.getElementById('chartTabs');
+const canvas = document.getElementById('chartCanvas');
+const ctx = canvas.getContext('2d');
+const $tooltip = document.getElementById('chartTooltip');
+
+// ─── Helpers ───
+function cur(code) { return CURRENCIES.find(c=>c.code===code); }
+function convert(amount, from, to) {
+  return amount * (BASE_RATES[to] / BASE_RATES[from]);
+}
+function fmt(n, code) {
+  const c = cur(code);
+  if (code==='KRW'||code==='JPY') return c.symbol + Math.round(n).toLocaleString('ko-KR');
+  return c.symbol + n.toLocaleString('ko-KR',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function fmtRate(n) {
+  if (n >= 100) return n.toFixed(2);
+  if (n >= 1) return n.toFixed(4);
+  return n.toFixed(6);
+}
+
+// ─── Populate Selects ───
+function populateSelects() {
+  [[$fromSel, fromCur], [$toSel, toCur]].forEach(([sel, val])=>{
+    sel.innerHTML = CURRENCIES.map(c=>`<option value="${c.code}" ${c.code===val?'selected':''}>${c.code} - ${c.name}</option>`).join('');
+  });
+  $fromFlag.textContent = cur(fromCur).flag;
+  $toFlag.textContent = cur(toCur).flag;
+}
+
+// ─── Calculate ───
+function calculate() {
+  const raw = $fromAmt.value.replace(/[^0-9.]/g,'');
+  const amount = parseFloat(raw) || 0;
+  const result = convert(amount, fromCur, toCur);
+  $toAmt.value = amount ? fmt(result, toCur) : '';
+  const rate1 = convert(1, fromCur, toCur);
+  $result.textContent = amount ? fmt(result, toCur) : '-';
+  $rate.textContent = `1 ${fromCur} = ${fmtRate(rate1)} ${toCur}`;
+  updateFavToggle();
+}
+
+// ─── Events ───
+$fromAmt.addEventListener('input', calculate);
+$fromSel.addEventListener('change', ()=>{ fromCur=$fromSel.value; $fromFlag.textContent=cur(fromCur).flag; calculate(); });
+$toSel.addEventListener('change', ()=>{ toCur=$toSel.value; $toFlag.textContent=cur(toCur).flag; calculate(); });
+document.getElementById('swapBtn').addEventListener('click', ()=>{
+  [fromCur, toCur] = [toCur, fromCur];
+  populateSelects(); calculate();
+});
+
+// ─── Favorites ───
+function favKey(f,t){ return f+'/'+t; }
+function isFav(f,t){ return favorites.includes(favKey(f,t)); }
+function updateFavToggle(){
+  $favToggle.textContent = isFav(fromCur,toCur) ? '★' : '☆';
+  $favToggle.classList.toggle('active', isFav(fromCur,toCur));
+}
+$favToggle.addEventListener('click', ()=>{
+  const key = favKey(fromCur, toCur);
+  if (favorites.includes(key)) favorites = favorites.filter(k=>k!==key);
+  else if (favorites.length < 10) favorites.push(key);
+  localStorage.setItem('currFav', JSON.stringify(favorites));
+  updateFavToggle(); renderFavorites();
+});
+
+function renderFavorites() {
+  if (!favorites.length) { $favList.innerHTML='<div class="empty-fav">즐겨찾기한 통화 쌍이 없습니다.<br>변환기 옆 ☆ 버튼을 눌러 추가하세요.</div>'; return; }
+  $favList.innerHTML = '<div class="fav-list">' + favorites.map(key=>{
+    const [f,t] = key.split('/');
+    const cf = cur(f), ct = cur(t);
+    if (!cf || !ct) return '';
+    const rate = convert(1, f, t);
+    return `<div class="fav-item" data-from="${f}" data-to="${t}">
+      <span class="pair">${cf.flag} ${f} → ${ct.flag} ${t}</span>
+      <span class="value">${fmtRate(rate)}</span>
+      <button class="remove" data-key="${key}" title="삭제">✕</button>
+    </div>`;
+  }).join('') + '</div>';
+
+  $favList.querySelectorAll('.fav-item').forEach(el=>{
+    el.addEventListener('click', e=>{
+      if (e.target.classList.contains('remove')) return;
+      fromCur = el.dataset.from; toCur = el.dataset.to;
+      populateSelects(); calculate();
+    });
+  });
+  $favList.querySelectorAll('.remove').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      e.stopPropagation();
+      favorites = favorites.filter(k=>k!==btn.dataset.key);
+      localStorage.setItem('currFav', JSON.stringify(favorites));
+      updateFavToggle(); renderFavorites();
+    });
+  });
+}
+
+// ─── Popular Rates Cards ───
+function renderPopular() {
+  $popGrid.innerHTML = popularPairs.map(([f,t])=>{
+    const cf=cur(f), ct=cur(t);
+    const rate = convert(1, f, t);
+    const change = (Math.sin(f.charCodeAt(0)+t.charCodeAt(1))*0.8).toFixed(2);
+    const up = parseFloat(change) >= 0;
+    return `<div class="rate-card" data-from="${f}" data-to="${t}">
+      <div class="pair"><span class="flags">${cf.flag}→${ct.flag}</span>${f}/${t}</div>
+      <div class="value">${fmtRate(rate)}</div>
+      <div class="change ${up?'up':'down'}">${up?'▲':'▼'} ${Math.abs(change)}%</div>
+    </div>`;
+  }).join('');
+  $popGrid.querySelectorAll('.rate-card').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      fromCur=el.dataset.from; toCur=el.dataset.to;
+      populateSelects(); calculate();
+    });
+  });
+}
+
+// ─── Chart ───
+const chartPairs = [['USD','KRW'],['EUR','KRW'],['JPY','KRW'],['GBP','KRW']];
+const var_primary = '#2563eb';
+
+function renderChartTabs() {
+  $chartTabs.innerHTML = chartPairs.map(([f,t])=>{
+    const active = chartPair[0]===f && chartPair[1]===t ? 'active' : '';
+    return `<button class="chart-tab ${active}" data-from="${f}" data-to="${t}">${f}/${t}</button>`;
+  }).join('');
+  $chartTabs.querySelectorAll('.chart-tab').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      chartPair = [btn.dataset.from, btn.dataset.to];
+      renderChartTabs(); drawChart();
+    });
+  });
+}
+
+function drawChart() {
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  const W = rect.width, H = rect.height;
+
+  const history = generateHistory(chartPair[0], chartPair[1]);
+  const rates = history.map(d=>d.rate);
+  const min = Math.min(...rates), max = Math.max(...rates);
+  const range = max - min || 1;
+  const padT=30, padB=40, padL=55, padR=20;
+  const gW = W-padL-padR, gH = H-padT-padB;
+
+  ctx.clearRect(0,0,W,H);
+
+  // Grid lines
+  ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+  for (let i=0;i<=4;i++){
+    const y = padT + gH*(i/4);
+    ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(W-padR,y); ctx.stroke();
+    ctx.fillStyle='#94a3b8'; ctx.font='11px Inter'; ctx.textAlign='right';
+    const val = max - range*(i/4);
+    ctx.fillText(val>=100?val.toFixed(1):val.toFixed(3), padL-8, y+4);
+  }
+
+  // X labels
+  ctx.textAlign='center'; ctx.fillStyle='#94a3b8'; ctx.font='11px Inter';
+  history.forEach((d,i)=>{
+    const x = padL + gW*(i/(history.length-1));
+    const label = `${d.date.getMonth()+1}/${d.date.getDate()}`;
+    ctx.fillText(label, x, H-padB+20);
+  });
+
+  // Gradient fill
+  const grad = ctx.createLinearGradient(0,padT,0,padT+gH);
+  grad.addColorStop(0,'rgba(37,99,235,0.18)');
+  grad.addColorStop(1,'rgba(37,99,235,0.01)');
+  ctx.beginPath();
+  history.forEach((d,i)=>{
+    const x = padL + gW*(i/(history.length-1));
+    const y = padT + gH*(1-(d.rate-min)/range);
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  });
+  ctx.lineTo(padL+gW, padT+gH);
+  ctx.lineTo(padL, padT+gH);
+  ctx.closePath();
+  ctx.fillStyle=grad; ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  ctx.strokeStyle=var_primary; ctx.lineWidth=2.5; ctx.lineJoin='round';
+  history.forEach((d,i)=>{
+    const x = padL + gW*(i/(history.length-1));
+    const y = padT + gH*(1-(d.rate-min)/range);
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+
+  // Dots
+  history.forEach((d,i)=>{
+    const x = padL + gW*(i/(history.length-1));
+    const y = padT + gH*(1-(d.rate-min)/range);
+    ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2);
+    ctx.fillStyle='#fff'; ctx.fill();
+    ctx.strokeStyle=var_primary; ctx.lineWidth=2.5; ctx.stroke();
+  });
+
+  // Store points for tooltip
+  canvas._points = history.map((d,i)=>({
+    x: padL + gW*(i/(history.length-1)),
+    y: padT + gH*(1-(d.rate-min)/range),
+    date: d.date, rate: d.rate
+  }));
+}
+
+canvas.addEventListener('mousemove', e=>{
+  if (!canvas._points) return;
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  let closest = null, minDist = Infinity;
+  canvas._points.forEach(p=>{
+    const dist = Math.abs(p.x - mx);
+    if (dist < minDist){ minDist=dist; closest=p; }
+  });
+  if (closest && minDist < 40){
+    const label = `${closest.date.getMonth()+1}/${closest.date.getDate()} : ${closest.rate>=100?closest.rate.toFixed(2):closest.rate.toFixed(4)}`;
+    $tooltip.textContent = label;
+    $tooltip.style.opacity = '1';
+    $tooltip.style.left = closest.x + 'px';
+    $tooltip.style.top = (closest.y - 36) + 'px';
+    $tooltip.style.transform = 'translateX(-50%)';
+  } else { $tooltip.style.opacity='0'; }
+});
+canvas.addEventListener('mouseleave', ()=>{ $tooltip.style.opacity='0'; });
+
+// Touch support for chart
+canvas.addEventListener('touchmove', e=>{
+  e.preventDefault();
+  if (!canvas._points) return;
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.touches[0].clientX - rect.left;
+  let closest = null, minDist = Infinity;
+  canvas._points.forEach(p=>{
+    const dist = Math.abs(p.x - mx);
+    if (dist < minDist){ minDist=dist; closest=p; }
+  });
+  if (closest && minDist < 60){
+    const label = `${closest.date.getMonth()+1}/${closest.date.getDate()} : ${closest.rate>=100?closest.rate.toFixed(2):closest.rate.toFixed(4)}`;
+    $tooltip.textContent = label;
+    $tooltip.style.opacity = '1';
+    $tooltip.style.left = closest.x + 'px';
+    $tooltip.style.top = (closest.y - 36) + 'px';
+    $tooltip.style.transform = 'translateX(-50%)';
+  }
+}, {passive:false});
+canvas.addEventListener('touchend', ()=>{ $tooltip.style.opacity='0'; });
+
+// ─── Init ───
+populateSelects();
+calculate();
+renderPopular();
+renderFavorites();
+renderChartTabs();
+
+// Debounced resize
+let resizeTimer;
+window.addEventListener('resize', ()=>{
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(drawChart, 150);
+});
+
+// Initial chart draw after layout
+requestAnimationFrame(()=>setTimeout(drawChart, 50));
+</script>
+</body>
+</html>

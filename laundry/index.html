@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>세탁소 관리 시스템</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --sky: #0ea5e9;
+  --sky-light: #e0f2fe;
+  --sky-50: #f0f9ff;
+  --sky-dark: #0284c7;
+  --white: #ffffff;
+  --gray-50: #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --gray-400: #94a3b8;
+  --gray-500: #64748b;
+  --gray-600: #475569;
+  --gray-700: #334155;
+  --gray-800: #1e293b;
+  --green: #22c55e;
+  --green-light: #dcfce7;
+  --orange: #f97316;
+  --orange-light: #fff7ed;
+  --red: #ef4444;
+  --red-light: #fef2f2;
+  --purple: #8b5cf6;
+  --purple-light: #f5f3ff;
+  --radius: 12px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.04);
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--gray-50);
+  color: var(--gray-800);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, var(--sky), var(--sky-dark));
+  color: var(--white);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(14,165,233,0.25);
+}
+
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header h1 span { font-size: 1.5rem; }
+
+.header-time {
+  font-size: 0.85rem;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+/* Navigation */
+.nav {
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  position: sticky;
+  top: 60px;
+  z-index: 99;
+}
+
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.nav-btn {
+  padding: 14px 20px;
+  border: none;
+  background: none;
+  color: var(--gray-500);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+}
+
+.nav-btn:hover { color: var(--sky); }
+
+.nav-btn.active {
+  color: var(--sky);
+  border-bottom-color: var(--sky);
+  font-weight: 600;
+}
+
+/* Main */
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+/* Cards */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  margin-bottom: 20px;
+  border: 1px solid var(--gray-100);
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: var(--gray-800);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Form */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+
+.form-group label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--gray-600);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 10px 14px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--gray-800);
+  background: var(--white);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--sky);
+  box-shadow: 0 0 0 3px rgba(14,165,233,0.15);
+}
+
+.form-group textarea { resize: vertical; min-height: 70px; }
+
+/* Buttons */
+.btn {
+  padding: 10px 22px;
+  border: none;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-primary {
+  background: var(--sky);
+  color: var(--white);
+}
+.btn-primary:hover { background: var(--sky-dark); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+
+.btn-sm {
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  border-radius: 6px;
+}
+
+.btn-success { background: var(--green); color: var(--white); }
+.btn-success:hover { background: #16a34a; }
+
+.btn-warning { background: var(--orange); color: var(--white); }
+.btn-warning:hover { background: #ea580c; }
+
+.btn-danger { background: var(--red); color: var(--white); }
+.btn-danger:hover { background: #dc2626; }
+
+.btn-outline {
+  background: var(--white);
+  color: var(--sky);
+  border: 1.5px solid var(--sky);
+}
+.btn-outline:hover { background: var(--sky-50); }
+
+.form-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* Status Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-접수 { background: var(--sky-light); color: var(--sky-dark); }
+.badge-세탁중 { background: var(--orange-light); color: var(--orange); }
+.badge-완료 { background: var(--green-light); color: #16a34a; }
+.badge-수령 { background: var(--purple-light); color: var(--purple); }
+
+/* Table */
+.table-wrap { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+thead th {
+  background: var(--gray-50);
+  padding: 12px 14px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--gray-600);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-bottom: 2px solid var(--gray-200);
+  white-space: nowrap;
+}
+
+tbody td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--gray-100);
+  vertical-align: middle;
+}
+
+tbody tr:hover { background: var(--sky-50); }
+
+/* Search bar */
+.search-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.search-bar input,
+.search-bar select {
+  padding: 10px 14px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  background: var(--white);
+  flex: 1;
+  min-width: 180px;
+}
+
+.search-bar input:focus,
+.search-bar select:focus {
+  outline: none;
+  border-color: var(--sky);
+  box-shadow: 0 0 0 3px rgba(14,165,233,0.15);
+}
+
+/* Stats */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--gray-100);
+  text-align: center;
+}
+
+.stat-card .stat-icon { font-size: 1.6rem; margin-bottom: 6px; }
+.stat-card .stat-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--gray-800);
+}
+.stat-card .stat-label {
+  font-size: 0.82rem;
+  color: var(--gray-500);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.stat-card.sky { border-top: 3px solid var(--sky); }
+.stat-card.green { border-top: 3px solid var(--green); }
+.stat-card.orange { border-top: 3px solid var(--orange); }
+.stat-card.purple { border-top: 3px solid var(--purple); }
+
+/* Chart area */
+.chart-container {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--gray-100);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.chart-bar-group {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 200px;
+  padding: 10px 0;
+  border-bottom: 2px solid var(--gray-200);
+  margin-bottom: 8px;
+}
+
+.chart-bar-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  min-width: 30px;
+}
+
+.chart-bar {
+  width: 100%;
+  max-width: 40px;
+  background: linear-gradient(180deg, var(--sky), var(--sky-dark));
+  border-radius: 4px 4px 0 0;
+  min-height: 2px;
+  transition: height 0.4s ease;
+  position: relative;
+}
+
+.chart-bar .bar-val {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--gray-600);
+  white-space: nowrap;
+}
+
+.chart-labels {
+  display: flex;
+  gap: 6px;
+}
+
+.chart-labels span {
+  flex: 1;
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--gray-500);
+  min-width: 30px;
+}
+
+/* Month nav */
+.month-nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.month-nav button {
+  background: var(--sky-light);
+  border: none;
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: var(--sky-dark);
+  transition: background 0.2s;
+}
+
+.month-nav button:hover { background: var(--sky); color: var(--white); }
+
+.month-nav .month-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  min-width: 140px;
+  text-align: center;
+}
+
+/* Modal overlay */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 200;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.modal-overlay.show { display: flex; }
+
+.modal {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 28px;
+  max-width: 480px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal h3 {
+  font-size: 1.15rem;
+  margin-bottom: 20px;
+  color: var(--gray-800);
+}
+
+.modal .form-group { margin-bottom: 14px; }
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--gray-800);
+  color: var(--white);
+  padding: 14px 22px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  z-index: 300;
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--gray-400);
+}
+
+.empty-state .empty-icon { font-size: 3rem; margin-bottom: 12px; }
+.empty-state p { font-size: 0.95rem; }
+
+/* Delete confirm */
+.delete-actions { display: flex; gap: 8px; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header-inner { padding: 12px 16px; }
+  .header h1 { font-size: 1.15rem; }
+  .nav-inner { padding: 0 12px; }
+  .nav-btn { padding: 12px 14px; font-size: 0.85rem; }
+  .main { padding: 16px; }
+  .card { padding: 18px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .stat-card .stat-value { font-size: 1.4rem; }
+  table { font-size: 0.82rem; }
+  thead th, tbody td { padding: 10px 8px; }
+  .search-bar { flex-direction: column; }
+  .search-bar input, .search-bar select { min-width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .header-time { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <h1><span>👔</span> 세탁소 관리 시스템</h1>
+    <div class="header-time" id="headerTime"></div>
+  </div>
+</header>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <button class="nav-btn active" data-page="register">접수 등록</button>
+    <button class="nav-btn" data-page="list">접수 목록</button>
+    <button class="nav-btn" data-page="stats">매출 통계</button>
+    <button class="nav-btn" data-page="search">고객 검색</button>
+  </div>
+</nav>
+
+<main class="main">
+
+  <!-- 접수 등록 -->
+  <section class="page active" id="page-register">
+    <div class="card">
+      <div class="card-title">📝 새 접수 등록</div>
+      <form id="registerForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>고객명 *</label>
+            <input type="text" id="regName" required placeholder="홍길동">
+          </div>
+          <div class="form-group">
+            <label>연락처 *</label>
+            <input type="tel" id="regPhone" required placeholder="010-1234-5678">
+          </div>
+          <div class="form-group">
+            <label>의류 종류 *</label>
+            <select id="regType" required>
+              <option value="">선택하세요</option>
+              <option value="셔츠">셔츠</option>
+              <option value="바지">바지</option>
+              <option value="정장(상의)">정장(상의)</option>
+              <option value="정장(하의)">정장(하의)</option>
+              <option value="코트">코트</option>
+              <option value="패딩">패딩</option>
+              <option value="원피스">원피스</option>
+              <option value="치마">치마</option>
+              <option value="넥타이">넥타이</option>
+              <option value="이불/침구">이불/침구</option>
+              <option value="커튼">커튼</option>
+              <option value="운동화">운동화</option>
+              <option value="기타">기타</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>수량 *</label>
+            <input type="number" id="regQty" required min="1" value="1">
+          </div>
+          <div class="form-group">
+            <label>요금 (원) *</label>
+            <input type="number" id="regPrice" required min="0" step="100" placeholder="5000">
+          </div>
+          <div class="form-group">
+            <label>예상 완료일</label>
+            <input type="date" id="regDueDate">
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:16px">
+          <label>메모</label>
+          <textarea id="regMemo" placeholder="특이사항을 입력하세요"></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="reset" class="btn btn-outline">초기화</button>
+          <button type="submit" class="btn btn-primary">접수 등록</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- 접수 목록 -->
+  <section class="page" id="page-list">
+    <div class="search-bar">
+      <input type="text" id="listSearch" placeholder="고객명 또는 연락처 검색...">
+      <select id="listFilter">
+        <option value="all">전체 상태</option>
+        <option value="접수">접수</option>
+        <option value="세탁중">세탁중</option>
+        <option value="완료">완료</option>
+        <option value="수령">수령</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>번호</th>
+              <th>고객명</th>
+              <th>연락처</th>
+              <th>의류</th>
+              <th>수량</th>
+              <th>요금</th>
+              <th>접수일</th>
+              <th>상태</th>
+              <th>관리</th>
+            </tr>
+          </thead>
+          <tbody id="listBody"></tbody>
+        </table>
+      </div>
+      <div class="empty-state" id="listEmpty" style="display:none">
+        <div class="empty-icon">📋</div>
+        <p>접수 내역이 없습니다</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 매출 통계 -->
+  <section class="page" id="page-stats">
+    <div class="stats-grid">
+      <div class="stat-card sky">
+        <div class="stat-icon">📊</div>
+        <div class="stat-value" id="statTodaySales">0</div>
+        <div class="stat-label">오늘 매출</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon">📅</div>
+        <div class="stat-value" id="statMonthSales">0</div>
+        <div class="stat-label">이번 달 매출</div>
+      </div>
+      <div class="stat-card orange">
+        <div class="stat-icon">👕</div>
+        <div class="stat-value" id="statTodayCount">0</div>
+        <div class="stat-label">오늘 접수 건</div>
+      </div>
+      <div class="stat-card purple">
+        <div class="stat-icon">✅</div>
+        <div class="stat-value" id="statPending">0</div>
+        <div class="stat-label">미수령 건</div>
+      </div>
+    </div>
+
+    <div class="chart-container">
+      <div class="card-title">📈 일별 매출 (이번 달)</div>
+      <div class="chart-bar-group" id="dailyChart"></div>
+      <div class="chart-labels" id="dailyLabels"></div>
+    </div>
+
+    <div class="chart-container">
+      <div class="card-title">📊 월별 매출</div>
+      <div class="month-nav">
+        <button id="prevYear">◀</button>
+        <span class="month-label" id="yearLabel"></span>
+        <button id="nextYear">▶</button>
+      </div>
+      <div class="chart-bar-group" id="monthlyChart"></div>
+      <div class="chart-labels" id="monthlyLabels"></div>
+    </div>
+  </section>
+
+  <!-- 고객 검색 -->
+  <section class="page" id="page-search">
+    <div class="search-bar">
+      <input type="text" id="custSearch" placeholder="고객명 또는 연락처로 검색...">
+      <button class="btn btn-primary" onclick="searchCustomers()">검색</button>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>고객명</th>
+              <th>연락처</th>
+              <th>총 이용 횟수</th>
+              <th>총 이용 금액</th>
+              <th>최근 이용일</th>
+              <th>상세</th>
+            </tr>
+          </thead>
+          <tbody id="custBody"></tbody>
+        </table>
+      </div>
+      <div class="empty-state" id="custEmpty">
+        <div class="empty-icon">🔍</div>
+        <p>고객명 또는 연락처를 입력하여 검색하세요</p>
+      </div>
+    </div>
+
+    <div class="card" id="custDetailCard" style="display:none">
+      <div class="card-title" id="custDetailTitle">고객 상세 이용 내역</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>번호</th>
+              <th>의류</th>
+              <th>수량</th>
+              <th>요금</th>
+              <th>접수일</th>
+              <th>상태</th>
+            </tr>
+          </thead>
+          <tbody id="custDetailBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- 상태 변경 모달 -->
+<div class="modal-overlay" id="statusModal">
+  <div class="modal">
+    <h3>상태 변경</h3>
+    <div class="form-group">
+      <label>접수 번호</label>
+      <input type="text" id="modalOrderId" readonly>
+    </div>
+    <div class="form-group">
+      <label>고객명</label>
+      <input type="text" id="modalName" readonly>
+    </div>
+    <div class="form-group">
+      <label>현재 상태</label>
+      <input type="text" id="modalCurrent" readonly>
+    </div>
+    <div class="form-group">
+      <label>변경할 상태</label>
+      <select id="modalNext">
+        <option value="접수">접수</option>
+        <option value="세탁중">세탁중</option>
+        <option value="완료">완료</option>
+        <option value="수령">수령</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">취소</button>
+      <button class="btn btn-primary" onclick="confirmStatusChange()">변경</button>
+    </div>
+  </div>
+</div>
+
+<!-- 삭제 확인 모달 -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <h3>접수 삭제</h3>
+    <p style="margin-bottom:20px;color:var(--gray-600)">이 접수 내역을 삭제하시겠습니까?<br>삭제 후에는 복구할 수 없습니다.</p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeDeleteModal()">취소</button>
+      <button class="btn btn-danger" onclick="confirmDelete()">삭제</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ─── Data Layer ─── */
+const STORAGE_KEY = 'laundry_orders';
+
+function getOrders() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+  catch { return []; }
+}
+
+function saveOrders(orders) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(orders));
+}
+
+function generateId() {
+  const now = new Date();
+  const y = now.getFullYear().toString().slice(-2);
+  const m = String(now.getMonth() + 1).padStart(2, '0');
+  const d = String(now.getDate()).padStart(2, '0');
+  const rand = Math.floor(Math.random() * 900 + 100);
+  return `L${y}${m}${d}-${rand}`;
+}
+
+/* ─── Toast ─── */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+/* ─── Navigation ─── */
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('page-' + btn.dataset.page).classList.add('active');
+    if (btn.dataset.page === 'list') renderList();
+    if (btn.dataset.page === 'stats') renderStats();
+  });
+});
+
+/* ─── Header Clock ─── */
+function updateClock() {
+  const now = new Date();
+  const opts = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short', hour: '2-digit', minute: '2-digit' };
+  document.getElementById('headerTime').textContent = now.toLocaleDateString('ko-KR', opts);
+}
+updateClock();
+setInterval(updateClock, 30000);
+
+/* ─── Format ─── */
+function formatMoney(n) {
+  return Number(n).toLocaleString('ko-KR') + '원';
+}
+
+function formatDate(iso) {
+  if (!iso) return '-';
+  const d = new Date(iso);
+  return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function formatPhone(p) {
+  const nums = p.replace(/\D/g, '');
+  if (nums.length === 11) return nums.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+  if (nums.length === 10) return nums.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+  return p;
+}
+
+/* ─── Register ─── */
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const order = {
+    id: generateId(),
+    name: document.getElementById('regName').value.trim(),
+    phone: formatPhone(document.getElementById('regPhone').value.trim()),
+    type: document.getElementById('regType').value,
+    qty: parseInt(document.getElementById('regQty').value),
+    price: parseInt(document.getElementById('regPrice').value),
+    dueDate: document.getElementById('regDueDate').value || null,
+    memo: document.getElementById('regMemo').value.trim(),
+    status: '접수',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+  const orders = getOrders();
+  orders.unshift(order);
+  saveOrders(orders);
+  this.reset();
+  showToast(`접수 완료: ${order.id}`);
+});
+
+/* ─── List ─── */
+function renderList() {
+  const orders = getOrders();
+  const keyword = document.getElementById('listSearch').value.trim().toLowerCase();
+  const filter = document.getElementById('listFilter').value;
+
+  const filtered = orders.filter(o => {
+    const matchSearch = !keyword || o.name.toLowerCase().includes(keyword) || o.phone.includes(keyword);
+    const matchFilter = filter === 'all' || o.status === filter;
+    return matchSearch && matchFilter;
+  });
+
+  const tbody = document.getElementById('listBody');
+  const empty = document.getElementById('listEmpty');
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+
+  empty.style.display = 'none';
+  tbody.innerHTML = filtered.map(o => `
+    <tr>
+      <td><strong>${o.id}</strong></td>
+      <td>${o.name}</td>
+      <td>${o.phone}</td>
+      <td>${o.type}</td>
+      <td>${o.qty}</td>
+      <td>${formatMoney(o.price)}</td>
+      <td>${formatDate(o.createdAt)}</td>
+      <td><span class="badge badge-${o.status}">${o.status}</span></td>
+      <td>
+        <button class="btn btn-sm btn-primary" onclick="openStatusModal('${o.id}')">상태</button>
+        <button class="btn btn-sm btn-danger" onclick="openDeleteModal('${o.id}')" style="margin-left:4px">삭제</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+document.getElementById('listSearch').addEventListener('input', renderList);
+document.getElementById('listFilter').addEventListener('change', renderList);
+
+/* ─── Status Modal ─── */
+let currentEditId = null;
+
+function openStatusModal(id) {
+  const order = getOrders().find(o => o.id === id);
+  if (!order) return;
+  currentEditId = id;
+  document.getElementById('modalOrderId').value = order.id;
+  document.getElementById('modalName').value = order.name;
+  document.getElementById('modalCurrent').value = order.status;
+  document.getElementById('modalNext').value = order.status;
+  document.getElementById('statusModal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('statusModal').classList.remove('show');
+  currentEditId = null;
+}
+
+function confirmStatusChange() {
+  const newStatus = document.getElementById('modalNext').value;
+  const orders = getOrders();
+  const idx = orders.findIndex(o => o.id === currentEditId);
+  if (idx === -1) return;
+  orders[idx].status = newStatus;
+  orders[idx].updatedAt = new Date().toISOString();
+  saveOrders(orders);
+  closeModal();
+  renderList();
+  showToast(`상태 변경: ${newStatus}`);
+}
+
+/* ─── Delete Modal ─── */
+let deleteTargetId = null;
+
+function openDeleteModal(id) {
+  deleteTargetId = id;
+  document.getElementById('deleteModal').classList.add('show');
+}
+
+function closeDeleteModal() {
+  document.getElementById('deleteModal').classList.remove('show');
+  deleteTargetId = null;
+}
+
+function confirmDelete() {
+  let orders = getOrders();
+  orders = orders.filter(o => o.id !== deleteTargetId);
+  saveOrders(orders);
+  closeDeleteModal();
+  renderList();
+  showToast('삭제 완료');
+}
+
+/* ─── Stats ─── */
+let statsYear = new Date().getFullYear();
+
+function renderStats() {
+  const orders = getOrders();
+  const now = new Date();
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  const monthStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+
+  // Summary cards
+  let todaySales = 0, monthSales = 0, todayCount = 0, pending = 0;
+  orders.forEach(o => {
+    const d = o.createdAt.slice(0, 10);
+    const m = o.createdAt.slice(0, 7);
+    if (d === todayStr) { todaySales += o.price; todayCount++; }
+    if (m === monthStr) monthSales += o.price;
+    if (o.status !== '수령') pending++;
+  });
+
+  document.getElementById('statTodaySales').textContent = formatMoney(todaySales);
+  document.getElementById('statMonthSales').textContent = formatMoney(monthSales);
+  document.getElementById('statTodayCount').textContent = todayCount + '건';
+  document.getElementById('statPending').textContent = pending + '건';
+
+  // Daily chart (current month)
+  const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const dailyData = new Array(daysInMonth).fill(0);
+  orders.forEach(o => {
+    const od = new Date(o.createdAt);
+    if (od.getFullYear() === now.getFullYear() && od.getMonth() === now.getMonth()) {
+      dailyData[od.getDate() - 1] += o.price;
+    }
+  });
+
+  const maxDaily = Math.max(...dailyData, 1);
+  const chartEl = document.getElementById('dailyChart');
+  const labelsEl = document.getElementById('dailyLabels');
+
+  chartEl.innerHTML = dailyData.map((v, i) => `
+    <div class="chart-bar-item">
+      <div class="chart-bar" style="height:${(v/maxDaily)*100}%">
+        ${v > 0 ? `<span class="bar-val">${(v/10000).toFixed(v >= 10000 ? 0 : 1)}만</span>` : ''}
+      </div>
+    </div>
+  `).join('');
+
+  labelsEl.innerHTML = dailyData.map((_, i) => `<span>${(i+1) % 5 === 0 || i === 0 ? (i+1) : ''}</span>`).join('');
+
+  // Monthly chart
+  renderMonthlyChart(orders);
+}
+
+function renderMonthlyChart(orders) {
+  if (!orders) orders = getOrders();
+  document.getElementById('yearLabel').textContent = statsYear + '년';
+
+  const monthlyData = new Array(12).fill(0);
+  orders.forEach(o => {
+    const od = new Date(o.createdAt);
+    if (od.getFullYear() === statsYear) {
+      monthlyData[od.getMonth()] += o.price;
+    }
+  });
+
+  const maxMonthly = Math.max(...monthlyData, 1);
+  const chartEl = document.getElementById('monthlyChart');
+  const labelsEl = document.getElementById('monthlyLabels');
+
+  chartEl.innerHTML = monthlyData.map(v => `
+    <div class="chart-bar-item">
+      <div class="chart-bar" style="height:${(v/maxMonthly)*100}%">
+        ${v > 0 ? `<span class="bar-val">${(v/10000).toFixed(v >= 10000 ? 0 : 1)}만</span>` : ''}
+      </div>
+    </div>
+  `).join('');
+
+  labelsEl.innerHTML = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월']
+    .map(m => `<span>${m}</span>`).join('');
+}
+
+document.getElementById('prevYear').addEventListener('click', () => { statsYear--; renderMonthlyChart(); });
+document.getElementById('nextYear').addEventListener('click', () => { statsYear++; renderMonthlyChart(); });
+
+/* ─── Customer Search ─── */
+function searchCustomers() {
+  const keyword = document.getElementById('custSearch').value.trim().toLowerCase();
+  if (!keyword) { showToast('검색어를 입력하세요'); return; }
+
+  const orders = getOrders();
+  const custMap = {};
+
+  orders.forEach(o => {
+    const key = o.name + '|' + o.phone;
+    if (!custMap[key]) {
+      custMap[key] = { name: o.name, phone: o.phone, count: 0, total: 0, lastDate: o.createdAt };
+    }
+    custMap[key].count++;
+    custMap[key].total += o.price;
+    if (o.createdAt > custMap[key].lastDate) custMap[key].lastDate = o.createdAt;
+  });
+
+  const results = Object.values(custMap).filter(c =>
+    c.name.toLowerCase().includes(keyword) || c.phone.includes(keyword)
+  );
+
+  const tbody = document.getElementById('custBody');
+  const empty = document.getElementById('custEmpty');
+  document.getElementById('custDetailCard').style.display = 'none';
+
+  if (results.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    empty.querySelector('p').textContent = '검색 결과가 없습니다';
+    return;
+  }
+
+  empty.style.display = 'none';
+  tbody.innerHTML = results.map(c => `
+    <tr>
+      <td><strong>${c.name}</strong></td>
+      <td>${c.phone}</td>
+      <td>${c.count}회</td>
+      <td>${formatMoney(c.total)}</td>
+      <td>${formatDate(c.lastDate)}</td>
+      <td><button class="btn btn-sm btn-outline" onclick="showCustDetail('${c.name}','${c.phone}')">상세</button></td>
+    </tr>
+  `).join('');
+}
+
+document.getElementById('custSearch').addEventListener('keypress', e => { if (e.key === 'Enter') searchCustomers(); });
+
+function showCustDetail(name, phone) {
+  const orders = getOrders().filter(o => o.name === name && o.phone === phone);
+  document.getElementById('custDetailTitle').textContent = `${name} (${phone}) 이용 내역`;
+  document.getElementById('custDetailBody').innerHTML = orders.map(o => `
+    <tr>
+      <td>${o.id}</td>
+      <td>${o.type}</td>
+      <td>${o.qty}</td>
+      <td>${formatMoney(o.price)}</td>
+      <td>${formatDate(o.createdAt)}</td>
+      <td><span class="badge badge-${o.status}">${o.status}</span></td>
+    </tr>
+  `).join('');
+  document.getElementById('custDetailCard').style.display = 'block';
+}
+
+/* ─── Close modals on overlay click ─── */
+document.getElementById('statusModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+document.getElementById('deleteModal').addEventListener('click', function(e) {
+  if (e.target === this) closeDeleteModal();
+});
+
+/* ─── Set default due date ─── */
+(function() {
+  const d = new Date();
+  d.setDate(d.getDate() + 3);
+  document.getElementById('regDueDate').value = d.toISOString().slice(0, 10);
+})();
+</script>
+
+</body>
+</html>
