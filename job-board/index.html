@@ -1244,6 +1244,10 @@ function applyFilters() {
     if (careers.length && !careers.includes(j.career)) return false;
     if (types.length && !types.includes(j.type)) return false;
     if (locations.length && !locations.some(l => j.location.includes(l))) return false;
+    const salMin = parseInt(document.getElementById('salaryMin').value);
+    const salMax = parseInt(document.getElementById('salaryMax').value);
+    if (salMin && j.salary < salMin) return false;
+    if (salMax && j.salary > salMax) return false;
     return true;
   });
 
