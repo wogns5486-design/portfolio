@@ -50,7 +50,7 @@
       -moz-osx-font-smoothing: grayscale;
       /* Subtle blue gradient noise background + SaaS dot grid */
       background-image:
-        radial-gradient(circle, rgba(148,163,184,0.07) 1px, transparent 1px),
+        radial-gradient(circle, rgba(148,163,184,0.10) 1px, transparent 1px),
         radial-gradient(ellipse at 20% 50%, rgba(99,102,241,0.04) 0%, transparent 50%),
         radial-gradient(ellipse at 80% 20%, rgba(129,140,248,0.03) 0%, transparent 50%),
         radial-gradient(ellipse at 50% 100%, rgba(99,102,241,0.03) 0%, transparent 40%);
@@ -76,11 +76,11 @@
        HERO — Center-aligned single column
        ============================================ */
     .hero {
-      min-height: 80vh;
+      min-height: auto;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 120px 28px 60px;
+      padding: 100px 28px 40px;
       position: relative;
       overflow: hidden;
       text-align: center;
@@ -94,7 +94,7 @@
       transform: translateX(-50%);
       width: 900px;
       height: 900px;
-      background: radial-gradient(circle, rgba(99,102,241,0.18), rgba(129,140,248,0.07) 40%, transparent 70%);
+      background: radial-gradient(circle, rgba(99,102,241,0.28), rgba(129,140,248,0.12) 40%, transparent 70%);
       pointer-events: none;
       z-index: 0;
     }
@@ -107,7 +107,7 @@
       transform: translateX(-50%);
       width: 700px;
       height: 500px;
-      background: radial-gradient(circle, rgba(99,102,241,0.1), transparent 60%);
+      background: radial-gradient(circle, rgba(99,102,241,0.20), transparent 60%);
       pointer-events: none;
       z-index: 0;
     }
@@ -130,7 +130,7 @@
     }
 
     .hero h1 {
-      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      font-size: clamp(2.6rem, 6vw, 4rem);
       font-weight: 900;
       line-height: 1.15;
       margin-bottom: 20px;
@@ -182,7 +182,7 @@
        STATS BAR — Separate section below hero
        ============================================ */
     .stats-bar {
-      padding: 0 28px 60px;
+      padding: 0 28px 48px;
       position: relative;
       z-index: 1;
     }
@@ -1112,7 +1112,7 @@
       left: -10%;
       width: 600px;
       height: 600px;
-      background: radial-gradient(circle, rgba(79,70,229,0.15) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(99,102,241,0.30) 0%, transparent 70%);
     }
 
     .hero-orb-2 {
@@ -1120,7 +1120,7 @@
       right: -8%;
       width: 500px;
       height: 500px;
-      background: radial-gradient(circle, rgba(168,85,247,0.12) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(236,72,153,0.25) 0%, transparent 70%);
     }
 
     .hero-orb-3 {
@@ -1128,7 +1128,7 @@
       left: 30%;
       width: 400px;
       height: 400px;
-      background: radial-gradient(circle, rgba(45,212,191,0.06) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(45,212,191,0.15) 0%, transparent 70%);
     }
 
     /* ============================================
@@ -1178,7 +1178,7 @@
       left: -15%;
       width: 500px;
       height: 500px;
-      background: radial-gradient(circle, rgba(129,140,248,0.08) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(129,140,248,0.18) 0%, transparent 70%);
     }
 
     .projects-orb-2 {
@@ -1186,7 +1186,7 @@
       right: -15%;
       width: 450px;
       height: 450px;
-      background: radial-gradient(circle, rgba(79,70,229,0.07) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(79,70,229,0.15) 0%, transparent 70%);
     }
 
     /* Stronger golden glow for featured DriveX card */
@@ -1226,7 +1226,7 @@
       left: -5%;
       width: 450px;
       height: 450px;
-      background: radial-gradient(circle, rgba(129,140,248,0.12) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(129,140,248,0.25) 0%, transparent 70%);
     }
 
     .cta-orb-2 {
@@ -1234,7 +1234,7 @@
       right: -5%;
       width: 400px;
       height: 400px;
-      background: radial-gradient(circle, rgba(79,70,229,0.10) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(79,70,229,0.22) 0%, transparent 70%);
     }
 
     .cta-orb-3 {
@@ -1242,7 +1242,7 @@
       right: 20%;
       width: 300px;
       height: 300px;
-      background: radial-gradient(circle, rgba(236,72,153,0.06) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(245,158,11,0.15) 0%, transparent 70%);
     }
 
     /* CTA inner z-index consolidated into main .cta-inner rule above */
