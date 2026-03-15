@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>도서관 관리 시스템</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --brown-900: #3E2723;
+  --brown-800: #4E342E;
+  --brown-700: #5D4037;
+  --brown-600: #6D4C41;
+  --brown-500: #795548;
+  --brown-400: #8D6E63;
+  --brown-300: #A1887F;
+  --brown-200: #BCAAA4;
+  --brown-100: #D7CCC8;
+  --brown-50: #EFEBE9;
+  --beige-100: #FFF8E1;
+  --beige-50: #FFFDF5;
+  --white: #FFFFFF;
+  --text-primary: #3E2723;
+  --text-secondary: #5D4037;
+  --text-muted: #8D6E63;
+  --green-500: #4CAF50;
+  --green-100: #E8F5E9;
+  --red-500: #EF5350;
+  --red-100: #FFEBEE;
+  --orange-500: #FF9800;
+  --orange-100: #FFF3E0;
+  --shadow-sm: 0 1px 3px rgba(62,39,35,0.08);
+  --shadow-md: 0 4px 12px rgba(62,39,35,0.1);
+  --shadow-lg: 0 8px 30px rgba(62,39,35,0.15);
+  --radius: 12px;
+  --radius-lg: 16px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--beige-50);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, var(--brown-800), var(--brown-600));
+  color: var(--white);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-lg);
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+}
+
+.my-loans-btn {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: var(--white);
+  padding: 10px 20px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.my-loans-btn:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+.my-loans-btn .badge {
+  background: var(--orange-500);
+  color: var(--white);
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-weight: 700;
+  min-width: 22px;
+  text-align: center;
+}
+
+/* Search & Filter Bar */
+.search-bar {
+  background: rgba(255,255,255,0.08);
+  padding: 16px 32px;
+}
+
+.search-bar-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.search-input-wrap {
+  flex: 1;
+  min-width: 250px;
+  position: relative;
+}
+
+.search-input-wrap svg {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  stroke: rgba(255,255,255,0.5);
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 16px 12px 42px;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: var(--radius);
+  background: rgba(255,255,255,0.1);
+  color: var(--white);
+  font-family: inherit;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.search-input::placeholder { color: rgba(255,255,255,0.5); }
+.search-input:focus { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.15); }
+
+.category-filters {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.cat-btn {
+  padding: 8px 16px;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 20px;
+  background: transparent;
+  color: rgba(255,255,255,0.7);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.cat-btn:hover { background: rgba(255,255,255,0.1); color: var(--white); }
+.cat-btn.active { background: var(--white); color: var(--brown-800); font-weight: 600; }
+
+/* Main Content */
+.main {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-title span {
+  color: var(--text-muted);
+  font-weight: 400;
+  font-size: 0.9rem;
+}
+
+/* Book Grid */
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 24px;
+}
+
+.book-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(62,39,35,0.06);
+}
+
+.book-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.book-cover {
+  width: 100%;
+  height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.book-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.book-cover-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 2.5rem;
+  color: rgba(255,255,255,0.8);
+}
+
+.book-cover-placeholder .cover-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0 16px;
+  text-align: center;
+  line-height: 1.3;
+  color: rgba(255,255,255,0.9);
+}
+
+.status-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  backdrop-filter: blur(8px);
+}
+
+.status-badge.available {
+  background: rgba(76,175,80,0.9);
+  color: var(--white);
+}
+
+.status-badge.borrowed {
+  background: rgba(239,83,80,0.9);
+  color: var(--white);
+}
+
+.book-info {
+  padding: 16px;
+}
+
+.book-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.book-author {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.book-publisher {
+  font-size: 0.78rem;
+  color: var(--brown-200);
+}
+
+.book-category-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: var(--brown-50);
+  color: var(--brown-500);
+  margin-top: 8px;
+}
+
+/* No Results */
+.no-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-muted);
+}
+
+.no-results svg {
+  width: 64px;
+  height: 64px;
+  stroke: var(--brown-200);
+  margin-bottom: 16px;
+}
+
+.no-results p {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(62,39,35,0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  max-width: 600px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(20px) scale(0.97);
+  transition: transform 0.3s;
+}
+
+.modal-overlay.active .modal {
+  transform: translateY(0) scale(1);
+}
+
+.modal-cover {
+  width: 100%;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.modal-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal-cover-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  color: rgba(255,255,255,0.6);
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.4);
+  border: none;
+  color: var(--white);
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.modal-close:hover { background: rgba(0,0,0,0.6); }
+
+.modal-body {
+  padding: 24px;
+}
+
+.modal-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.modal-author {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.modal-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.meta-item {
+  background: var(--brown-50);
+  padding: 12px;
+  border-radius: var(--radius);
+}
+
+.meta-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.meta-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.modal-synopsis {
+  margin-bottom: 24px;
+}
+
+.modal-synopsis h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+}
+
+.modal-synopsis p {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.modal-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: var(--beige-50);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+}
+
+.modal-status-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.modal-status-text.available { color: var(--green-500); }
+.modal-status-text.borrowed { color: var(--red-500); }
+
+.modal-action-btn {
+  padding: 12px 28px;
+  border: none;
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-borrow {
+  background: var(--brown-700);
+  color: var(--white);
+}
+
+.btn-borrow:hover { background: var(--brown-800); }
+
+.btn-return {
+  background: var(--green-500);
+  color: var(--white);
+}
+
+.btn-return:hover { background: #43A047; }
+
+/* My Loans Panel */
+.loans-panel-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(62,39,35,0.4);
+  z-index: 900;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+}
+
+.loans-panel-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.loans-panel {
+  position: fixed;
+  top: 0;
+  right: -420px;
+  width: 400px;
+  max-width: 90vw;
+  height: 100vh;
+  background: var(--white);
+  z-index: 950;
+  box-shadow: var(--shadow-lg);
+  transition: right 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.loans-panel.active {
+  right: 0;
+}
+
+.loans-panel-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--brown-50);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.loans-panel-header h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.loans-panel-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: var(--brown-50);
+  cursor: pointer;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: background 0.2s;
+}
+
+.loans-panel-close:hover { background: var(--brown-100); }
+
+.loans-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 24px;
+}
+
+.loan-item {
+  display: flex;
+  gap: 14px;
+  padding: 14px;
+  border-radius: var(--radius);
+  background: var(--beige-50);
+  margin-bottom: 12px;
+  align-items: center;
+}
+
+.loan-item-cover {
+  width: 50px;
+  height: 65px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  color: rgba(255,255,255,0.8);
+  flex-shrink: 0;
+}
+
+.loan-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.loan-item-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.loan-item-due {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.loan-item-dday {
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.dday-safe { background: var(--green-100); color: var(--green-500); }
+.dday-warn { background: var(--orange-100); color: var(--orange-500); }
+.dday-danger { background: var(--red-100); color: var(--red-500); }
+
+.loan-return-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background: var(--brown-100);
+  color: var(--brown-700);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.loan-return-btn:hover { background: var(--brown-200); }
+
+.loans-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+}
+
+.loans-empty svg {
+  width: 48px;
+  height: 48px;
+  stroke: var(--brown-200);
+  margin-bottom: 12px;
+}
+
+.loans-empty p {
+  font-size: 0.9rem;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--brown-800);
+  color: var(--white);
+  padding: 14px 28px;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  z-index: 2000;
+  opacity: 0;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header-top { padding: 12px 16px; }
+  .logo { font-size: 1.2rem; }
+  .logo-icon { width: 34px; height: 34px; font-size: 1.1rem; }
+  .search-bar { padding: 12px 16px; }
+  .search-bar-inner { flex-direction: column; }
+  .search-input-wrap { min-width: 100%; }
+  .category-filters { width: 100%; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; }
+  .main { padding: 20px 16px; }
+  .book-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+  .book-cover { height: 200px; }
+  .modal { max-height: 90vh; }
+  .modal-meta { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .book-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .book-cover { height: 180px; }
+  .book-info { padding: 12px; }
+  .book-title { font-size: 0.85rem; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--brown-200); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--brown-300); }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-top">
+    <div class="logo">
+      <div class="logo-icon">📚</div>
+      도서관
+    </div>
+    <button class="my-loans-btn" onclick="toggleLoansPanel()">
+      내 대출 현황
+      <span class="badge" id="loanBadge">0</span>
+    </button>
+  </div>
+  <div class="search-bar">
+    <div class="search-bar-inner">
+      <div class="search-input-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" class="search-input" id="searchInput" placeholder="제목, 저자, ISBN으로 검색..." oninput="filterBooks()">
+      </div>
+      <div class="category-filters" id="categoryFilters">
+        <button class="cat-btn active" data-cat="all" onclick="setCategory('all',this)">전체</button>
+        <button class="cat-btn" data-cat="소설" onclick="setCategory('소설',this)">소설</button>
+        <button class="cat-btn" data-cat="경제" onclick="setCategory('경제',this)">경제</button>
+        <button class="cat-btn" data-cat="자기계발" onclick="setCategory('자기계발',this)">자기계발</button>
+        <button class="cat-btn" data-cat="IT" onclick="setCategory('IT',this)">IT</button>
+        <button class="cat-btn" data-cat="역사" onclick="setCategory('역사',this)">역사</button>
+        <button class="cat-btn" data-cat="예술" onclick="setCategory('예술',this)">예술</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main class="main">
+  <div class="section-title">
+    도서 목록 <span id="bookCount"></span>
+  </div>
+  <div class="book-grid" id="bookGrid"></div>
+</main>
+
+<!-- Book Detail Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-cover" id="modalCover">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-title" id="modalTitle"></div>
+      <div class="modal-author" id="modalAuthor"></div>
+      <div class="modal-meta" id="modalMeta"></div>
+      <div class="modal-synopsis">
+        <h3>줄거리</h3>
+        <p id="modalSynopsis"></p>
+      </div>
+      <div class="modal-status-bar">
+        <div class="modal-status-text" id="modalStatus"></div>
+        <button class="modal-action-btn" id="modalActionBtn" onclick="toggleLoan()"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- My Loans Panel -->
+<div class="loans-panel-overlay" id="loansPanelOverlay" onclick="toggleLoansPanel()"></div>
+<div class="loans-panel" id="loansPanel">
+  <div class="loans-panel-header">
+    <h2>내 대출 현황</h2>
+    <button class="loans-panel-close" onclick="toggleLoansPanel()">&times;</button>
+  </div>
+  <div class="loans-panel-body" id="loansPanelBody"></div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// Book cover color palettes
+const coverColors = [
+  'linear-gradient(135deg, #8D6E63, #5D4037)',
+  'linear-gradient(135deg, #78909C, #455A64)',
+  'linear-gradient(135deg, #7986CB, #3F51B5)',
+  'linear-gradient(135deg, #4DB6AC, #00897B)',
+  'linear-gradient(135deg, #FF8A65, #E64A19)',
+  'linear-gradient(135deg, #BA68C8, #7B1FA2)',
+  'linear-gradient(135deg, #4FC3F7, #0288D1)',
+  'linear-gradient(135deg, #AED581, #558B2F)',
+  'linear-gradient(135deg, #F06292, #C2185B)',
+  'linear-gradient(135deg, #FFD54F, #F57F17)',
+  'linear-gradient(135deg, #A1887F, #6D4C41)',
+  'linear-gradient(135deg, #90A4AE, #37474F)',
+];
+
+const categoryEmojis = {
+  '소설': '📖', '경제': '📊', '자기계발': '🌱', 'IT': '💻', '역사': '🏛️', '예술': '🎨'
+};
+
+// Book Data
+const books = [
+  {
+    id: 1, title: '82년생 김지영', author: '조남주', publisher: '민음사',
+    isbn: '978-89-374-3473-1', category: '소설', pages: 190, year: 2016,
+    color: coverColors[0],
+    synopsis: '1982년 봄에 태어난 김지영의 이야기. 한국 사회에서 여성으로 살아간다는 것의 의미를 깊이 있게 다룬 소설로, 평범한 한 여성의 삶을 통해 우리 사회의 구조적 문제를 드러낸다. 출간 즉시 사회적 반향을 일으키며 100만 부 이상 판매된 화제작.'
+  },
+  {
+    id: 2, title: '부의 추월차선', author: 'MJ 드마코', publisher: '토트',
+    isbn: '978-89-972-1234-5', category: '경제', pages: 432, year: 2012,
+    color: coverColors[1],
+    synopsis: '부자가 되기 위한 세 가지 경로를 제시한다. 인도(생존), 서행차선(직장), 추월차선(사업). 저자는 젊은 나이에 재정적 자유를 달성한 경험을 바탕으로, 진정한 부를 만드는 사고방식과 전략을 공유한다.'
+  },
+  {
+    id: 3, title: '아토믹 해빗', author: '제임스 클리어', publisher: '비즈니스북스',
+    isbn: '978-89-972-5678-9', category: '자기계발', pages: 320, year: 2019,
+    color: coverColors[2],
+    synopsis: '아주 작은 습관의 힘이 어떻게 놀라운 결과를 만들어내는지 과학적으로 설명한다. 습관을 만들고 유지하는 4가지 법칙을 제시하며, 매일 1%의 개선이 복리 효과를 통해 인생을 바꿀 수 있다고 말한다.'
+  },
+  {
+    id: 4, title: '클린 코드', author: '로버트 C. 마틴', publisher: '인사이트',
+    isbn: '978-89-660-3456-7', category: 'IT', pages: 468, year: 2013,
+    color: coverColors[3],
+    synopsis: '깨끗한 코드를 작성하는 원칙과 패턴, 사례를 다룬 프로그래밍 필독서. 의미 있는 이름 짓기, 함수 작성법, 오류 처리, 단위 테스트 등 실무에서 바로 적용할 수 있는 소프트웨어 장인 정신을 담았다.'
+  },
+  {
+    id: 5, title: '사피엔스', author: '유발 하라리', publisher: '김영사',
+    isbn: '978-89-349-8765-4', category: '역사', pages: 636, year: 2015,
+    color: coverColors[4],
+    synopsis: '인류의 역사를 인지혁명, 농업혁명, 과학혁명이라는 세 개의 큰 혁명을 축으로 풀어낸다. 호모 사피엔스가 어떻게 지구를 지배하는 종이 되었는지, 그 과정에서 무엇을 얻고 잃었는지를 탐구한다.'
+  },
+  {
+    id: 6, title: '어떻게 살 것인가', author: '유시민', publisher: '생각의길',
+    isbn: '978-89-652-1111-2', category: '자기계발', pages: 288, year: 2013,
+    color: coverColors[5],
+    synopsis: '삶의 방향을 고민하는 이들을 위한 인문학 에세이. 동서양의 고전과 현대 사상을 넘나들며 '좋은 삶'이란 무엇인지 묻는다. 자유, 정의, 행복에 대한 깊은 성찰을 담담한 문체로 전한다.'
+  },
+  {
+    id: 7, title: '불편한 편의점', author: '김호연', publisher: '나무옆의자',
+    isbn: '978-89-543-2222-3', category: '소설', pages: 268, year: 2021,
+    color: coverColors[6],
+    synopsis: '서울 변두리 작은 편의점을 배경으로 펼쳐지는 따뜻한 이야기. 노숙자 출신의 알바생 독고와 편의점 주변 사람들의 관계를 통해, 각자의 상처를 치유하고 연대하는 과정을 유머와 감동으로 그려낸다.'
+  },
+  {
+    id: 8, title: '돈의 심리학', author: '모건 하우절', publisher: '인플루엔셜',
+    isbn: '978-89-654-3333-4', category: '경제', pages: 336, year: 2021,
+    color: coverColors[7],
+    synopsis: '돈에 대한 18가지 심리학적 통찰을 담은 책. 부를 축적하는 것은 지능의 문제가 아니라 행동의 문제라고 말하며, 우리의 돈에 대한 비합리적 사고방식과 현명한 재정 결정을 위한 조언을 제시한다.'
+  },
+  {
+    id: 9, title: '그림 읽어주는 남자', author: '손철주', publisher: '이봄',
+    isbn: '978-89-765-4444-5', category: '예술', pages: 312, year: 2017,
+    color: coverColors[8],
+    synopsis: '한국 전통 회화를 현대적 시선으로 재해석한 미술 에세이. 김홍도, 신윤복, 정선 등 조선시대 화가들의 작품을 친근하게 풀어내며, 그림 속에 숨겨진 이야기와 시대의 감성을 생생하게 전달한다.'
+  },
+  {
+    id: 10, title: '프로그래머의 뇌', author: '펠리너 헤르만스', publisher: '제이펍',
+    isbn: '978-89-876-5555-6', category: 'IT', pages: 288, year: 2022,
+    color: coverColors[9],
+    synopsis: '인지과학을 기반으로 프로그래머의 사고 과정을 분석한 책. 코드를 읽고, 이해하고, 작성하는 과정에서 뇌가 어떻게 작동하는지 설명하며, 더 효율적으로 프로그래밍하기 위한 과학적 방법을 제시한다.'
+  },
+  {
+    id: 11, title: '조선왕조실록', author: '박영규', publisher: '웅진지식하우스',
+    isbn: '978-89-987-6666-7', category: '역사', pages: 544, year: 2004,
+    color: coverColors[10],
+    synopsis: '조선 500년의 역사를 왕 중심으로 풀어낸 역사서. 27명의 왕의 즉위부터 퇴위까지를 생생하게 서술하며, 궁중의 권력 투쟁, 정치적 사건, 문화적 변화를 드라마틱하게 그려낸다.'
+  },
+  {
+    id: 12, title: '나는 나로 살기로 했다', author: '김수현', publisher: '마음의숲',
+    isbn: '978-89-098-7777-8', category: '자기계발', pages: 248, year: 2016,
+    color: coverColors[11],
+    synopsis: '타인의 시선에서 벗어나 자기 자신으로 살아가기 위한 에세이. 불안, 비교, 열등감에서 자유로워지는 법을 이야기하며, 있는 그대로의 나를 인정하고 사랑하는 것이 진정한 성장의 시작이라고 말한다.'
+  }
+];
+
+// State
+let currentCategory = 'all';
+let currentBookId = null;
+let loanedBooks = JSON.parse(localStorage.getItem('libraryLoans') || '{}');
+
+// Save loans
+function saveLoans() {
+  localStorage.setItem('libraryLoans', JSON.stringify(loanedBooks));
+}
+
+// Init
+function init() {
+  renderBooks();
+  updateLoanBadge();
+}
+
+// Filter books
+function filterBooks() {
+  renderBooks();
+}
+
+function setCategory(cat, btn) {
+  currentCategory = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderBooks();
+}
+
+function getFilteredBooks() {
+  const query = document.getElementById('searchInput').value.toLowerCase().trim();
+  return books.filter(book => {
+    const matchCat = currentCategory === 'all' || book.category === currentCategory;
+    const matchQuery = !query ||
+      book.title.toLowerCase().includes(query) ||
+      book.author.toLowerCase().includes(query) ||
+      book.isbn.includes(query);
+    return matchCat && matchQuery;
+  });
+}
+
+// Render books
+function renderBooks() {
+  const filtered = getFilteredBooks();
+  const grid = document.getElementById('bookGrid');
+  document.getElementById('bookCount').textContent = `(${filtered.length}권)`;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `
+      <div class="no-results">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <p>검색 결과가 없습니다</p>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(book => {
+    const isLoaned = !!loanedBooks[book.id];
+    const emoji = categoryEmojis[book.category] || '📚';
+    return `
+      <div class="book-card" onclick="openModal(${book.id})">
+        <div class="book-cover">
+          <div class="book-cover-placeholder" style="background:${book.color}">
+            ${emoji}
+            <div class="cover-title">${book.title}</div>
+          </div>
+          <span class="status-badge ${isLoaned ? 'borrowed' : 'available'}">
+            ${isLoaned ? '대출중' : '대출가능'}
+          </span>
+        </div>
+        <div class="book-info">
+          <div class="book-title">${book.title}</div>
+          <div class="book-author">${book.author}</div>
+          <div class="book-publisher">${book.publisher}</div>
+          <div class="book-category-tag">${book.category}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// Modal
+function openModal(id) {
+  currentBookId = id;
+  const book = books.find(b => b.id === id);
+  if (!book) return;
+
+  const isLoaned = !!loanedBooks[book.id];
+  const emoji = categoryEmojis[book.category] || '📚';
+
+  document.getElementById('modalCover').innerHTML = `
+    <div class="modal-cover-placeholder" style="background:${book.color}">${emoji}</div>
+    <button class="modal-close" onclick="closeModal()">&times;</button>`;
+
+  document.getElementById('modalTitle').textContent = book.title;
+  document.getElementById('modalAuthor').textContent = book.author;
+  document.getElementById('modalSynopsis').textContent = book.synopsis;
+
+  document.getElementById('modalMeta').innerHTML = `
+    <div class="meta-item"><div class="meta-label">출판사</div><div class="meta-value">${book.publisher}</div></div>
+    <div class="meta-item"><div class="meta-label">카테고리</div><div class="meta-value">${book.category}</div></div>
+    <div class="meta-item"><div class="meta-label">ISBN</div><div class="meta-value">${book.isbn}</div></div>
+    <div class="meta-item"><div class="meta-label">페이지</div><div class="meta-value">${book.pages}쪽 (${book.year})</div></div>`;
+
+  updateModalStatus(book);
+  document.getElementById('modalOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function updateModalStatus(book) {
+  const isLoaned = !!loanedBooks[book.id];
+  const statusEl = document.getElementById('modalStatus');
+  const btnEl = document.getElementById('modalActionBtn');
+
+  if (isLoaned) {
+    const dueDate = new Date(loanedBooks[book.id].dueDate);
+    const diffDays = Math.ceil((dueDate - new Date()) / (1000 * 60 * 60 * 24));
+    statusEl.className = 'modal-status-text borrowed';
+    statusEl.textContent = `대출중 (반납일: ${formatDate(dueDate)}, D${diffDays > 0 ? '-' + diffDays : '+' + Math.abs(diffDays)})`;
+    btnEl.className = 'modal-action-btn btn-return';
+    btnEl.textContent = '반납하기';
+  } else {
+    statusEl.className = 'modal-status-text available';
+    statusEl.textContent = '대출 가능';
+    btnEl.className = 'modal-action-btn btn-borrow';
+    btnEl.textContent = '대출하기';
+  }
+}
+
+function closeModal(e) {
+  if (e && e.target !== e.currentTarget) return;
+  document.getElementById('modalOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+  currentBookId = null;
+}
+
+// Loan toggle
+function toggleLoan() {
+  if (!currentBookId) return;
+  const book = books.find(b => b.id === currentBookId);
+  if (!book) return;
+
+  if (loanedBooks[book.id]) {
+    delete loanedBooks[book.id];
+    showToast(`"${book.title}" 반납 완료!`);
+  } else {
+    const dueDate = new Date();
+    dueDate.setDate(dueDate.getDate() + 14);
+    loanedBooks[book.id] = {
+      loanDate: new Date().toISOString(),
+      dueDate: dueDate.toISOString()
+    };
+    showToast(`"${book.title}" 대출 완료! (14일)`);
+  }
+
+  saveLoans();
+  updateModalStatus(book);
+  renderBooks();
+  updateLoanBadge();
+  renderLoansPanel();
+}
+
+// Return from panel
+function returnBook(id) {
+  const book = books.find(b => b.id === id);
+  if (!book) return;
+  delete loanedBooks[id];
+  saveLoans();
+  showToast(`"${book.title}" 반납 완료!`);
+  renderBooks();
+  updateLoanBadge();
+  renderLoansPanel();
+}
+
+// Loans Panel
+function toggleLoansPanel() {
+  const panel = document.getElementById('loansPanel');
+  const overlay = document.getElementById('loansPanelOverlay');
+  const isActive = panel.classList.contains('active');
+  if (isActive) {
+    panel.classList.remove('active');
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  } else {
+    renderLoansPanel();
+    panel.classList.add('active');
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function renderLoansPanel() {
+  const body = document.getElementById('loansPanelBody');
+  const loanIds = Object.keys(loanedBooks);
+
+  if (loanIds.length === 0) {
+    body.innerHTML = `
+      <div class="loans-empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <p>대출 중인 도서가 없습니다</p>
+      </div>`;
+    return;
+  }
+
+  body.innerHTML = loanIds.map(id => {
+    const book = books.find(b => b.id === parseInt(id));
+    if (!book) return '';
+    const loan = loanedBooks[id];
+    const dueDate = new Date(loan.dueDate);
+    const diffDays = Math.ceil((dueDate - new Date()) / (1000 * 60 * 60 * 24));
+    const emoji = categoryEmojis[book.category] || '📚';
+
+    let ddayClass = 'dday-safe';
+    if (diffDays <= 3) ddayClass = 'dday-danger';
+    else if (diffDays <= 7) ddayClass = 'dday-warn';
+
+    const ddayText = diffDays > 0 ? `D-${diffDays}` : diffDays === 0 ? 'D-Day' : `D+${Math.abs(diffDays)}`;
+
+    return `
+      <div class="loan-item">
+        <div class="loan-item-cover" style="background:${book.color}">${emoji}</div>
+        <div class="loan-item-info">
+          <div class="loan-item-title">${book.title}</div>
+          <div class="loan-item-due">반납일: ${formatDate(dueDate)}</div>
+        </div>
+        <span class="loan-item-dday ${ddayClass}">${ddayText}</span>
+        <button class="loan-return-btn" onclick="returnBook(${book.id})">반납</button>
+      </div>`;
+  }).join('');
+}
+
+function updateLoanBadge() {
+  const count = Object.keys(loanedBooks).length;
+  document.getElementById('loanBadge').textContent = count;
+}
+
+// Helpers
+function formatDate(date) {
+  const d = new Date(date);
+  return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (document.getElementById('modalOverlay').classList.contains('active')) closeModal();
+    if (document.getElementById('loansPanel').classList.contains('active')) toggleLoansPanel();
+  }
+});
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>전자출결 · 근태관리 시스템</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --primary: #4f46e5;
+  --primary-light: #6366f1;
+  --primary-dark: #4338ca;
+  --primary-50: #eef2ff;
+  --primary-100: #e0e7ff;
+  --primary-200: #c7d2fe;
+  --success: #22c55e;
+  --success-bg: #f0fdf4;
+  --warning: #f59e0b;
+  --warning-bg: #fffbeb;
+  --danger: #ef4444;
+  --danger-bg: #fef2f2;
+  --info: #3b82f6;
+  --info-bg: #eff6ff;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.05);
+  --shadow: 0 1px 3px rgba(0,0,0,.1), 0 1px 2px rgba(0,0,0,.06);
+  --shadow-md: 0 4px 6px rgba(0,0,0,.07), 0 2px 4px rgba(0,0,0,.06);
+  --shadow-lg: 0 10px 15px rgba(0,0,0,.1), 0 4px 6px rgba(0,0,0,.05);
+  --shadow-xl: 0 20px 25px rgba(0,0,0,.1), 0 10px 10px rgba(0,0,0,.04);
+  --radius: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--gray-50);
+  color: var(--gray-800);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: #fff;
+  padding: 20px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(79,70,229,.3);
+}
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header h1 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+.header h1 span { opacity: .7; font-weight: 400; margin-left: 8px; font-size: .85rem; }
+.header-date {
+  font-size: .9rem;
+  opacity: .85;
+  font-weight: 500;
+}
+
+/* Layout */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+.grid-main {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* Card */
+.card {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  border: 1px solid var(--gray-100);
+}
+.card-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--gray-100);
+  font-weight: 700;
+  font-size: .95rem;
+  color: var(--gray-800);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-header .icon { font-size: 1.1rem; }
+.card-body { padding: 24px; }
+
+/* Clock Section */
+.clock-card { text-align: center; }
+.clock-card .card-body { padding: 32px 24px; }
+.clock-display {
+  font-size: 4rem;
+  font-weight: 800;
+  color: var(--primary);
+  letter-spacing: -2px;
+  line-height: 1;
+  margin-bottom: 4px;
+  font-variant-numeric: tabular-nums;
+}
+.clock-seconds {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary-light);
+  opacity: .7;
+}
+.clock-date {
+  font-size: .95rem;
+  color: var(--gray-500);
+  margin-bottom: 28px;
+  font-weight: 500;
+}
+.clock-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border-radius: 100px;
+  font-size: .8rem;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+.clock-status.not-checked {
+  background: var(--gray-100);
+  color: var(--gray-500);
+}
+.clock-status.checked-in {
+  background: var(--success-bg);
+  color: var(--success);
+}
+.clock-status.checked-out {
+  background: var(--info-bg);
+  color: var(--info);
+}
+.status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.checked-in .status-dot { animation: pulse-dot 2s infinite; }
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .3; }
+}
+
+.btn-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 20px;
+  border: none;
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: .95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+}
+.btn:active { transform: scale(.97); }
+.btn:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+  transform: none;
+}
+.btn-checkin {
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(79,70,229,.3);
+}
+.btn-checkin:hover:not(:disabled) {
+  box-shadow: 0 6px 20px rgba(79,70,229,.4);
+  transform: translateY(-1px);
+}
+.btn-checkout {
+  background: linear-gradient(135deg, var(--danger), #f87171);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(239,68,68,.3);
+}
+.btn-checkout:hover:not(:disabled) {
+  box-shadow: 0 6px 20px rgba(239,68,68,.4);
+  transform: translateY(-1px);
+}
+.btn-leave {
+  grid-column: 1 / -1;
+  background: var(--gray-100);
+  color: var(--gray-700);
+  margin-top: 4px;
+}
+.btn-leave:hover { background: var(--gray-200); }
+
+/* Stats */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 20px;
+}
+.stat-item {
+  background: var(--gray-50);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+}
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--primary);
+  line-height: 1.2;
+}
+.stat-value.success { color: var(--success); }
+.stat-value.warning { color: var(--warning); }
+.stat-value.danger { color: var(--danger); }
+.stat-label {
+  font-size: .75rem;
+  color: var(--gray-500);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  margin-top: 4px;
+}
+
+/* Right column */
+.right-col { display: flex; flex-direction: column; gap: 24px; }
+
+/* Weekly Table */
+.week-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.week-table th {
+  padding: 10px 16px;
+  text-align: left;
+  font-size: .75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--gray-400);
+  border-bottom: 2px solid var(--gray-100);
+}
+.week-table td {
+  padding: 12px 16px;
+  font-size: .88rem;
+  border-bottom: 1px solid var(--gray-50);
+  font-weight: 500;
+}
+.week-table tr:last-child td { border-bottom: none; }
+.week-table .day-name { color: var(--gray-500); font-weight: 600; }
+.week-table .time { font-variant-numeric: tabular-nums; }
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: .75rem;
+  font-weight: 700;
+}
+.badge-normal { background: var(--success-bg); color: #16a34a; }
+.badge-late { background: var(--warning-bg); color: #d97706; }
+.badge-early { background: var(--info-bg); color: #2563eb; }
+.badge-absent { background: var(--danger-bg); color: #dc2626; }
+.badge-leave { background: #faf5ff; color: #9333ea; }
+.badge-half { background: #fdf4ff; color: #c026d3; }
+.badge-none { background: var(--gray-100); color: var(--gray-400); }
+
+/* Calendar */
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.calendar-nav button {
+  background: var(--gray-100);
+  border: none;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s;
+}
+.calendar-nav button:hover { background: var(--gray-200); }
+.calendar-nav .month-label {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.cal-header {
+  text-align: center;
+  font-size: .7rem;
+  font-weight: 700;
+  color: var(--gray-400);
+  padding: 8px 0;
+  text-transform: uppercase;
+}
+.cal-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-size: .8rem;
+  font-weight: 600;
+  position: relative;
+  cursor: default;
+  transition: all .15s;
+}
+.cal-day.empty { background: transparent; }
+.cal-day.today {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+.cal-day .day-num { z-index: 1; }
+.cal-day .cal-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  margin-top: 2px;
+}
+.cal-day.status-normal { background: var(--success-bg); color: #16a34a; }
+.cal-day.status-normal .cal-dot { background: #16a34a; }
+.cal-day.status-late { background: var(--warning-bg); color: #d97706; }
+.cal-day.status-late .cal-dot { background: #d97706; }
+.cal-day.status-early { background: var(--info-bg); color: #2563eb; }
+.cal-day.status-early .cal-dot { background: #2563eb; }
+.cal-day.status-absent { background: var(--danger-bg); color: #dc2626; }
+.cal-day.status-absent .cal-dot { background: #dc2626; }
+.cal-day.status-leave { background: #faf5ff; color: #9333ea; }
+.cal-day.status-leave .cal-dot { background: #9333ea; }
+.cal-day.status-half { background: #fdf4ff; color: #c026d3; }
+.cal-day.status-half .cal-dot { background: #c026d3; }
+.cal-day.weekend { color: var(--gray-300); }
+
+.cal-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--gray-100);
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: .72rem;
+  color: var(--gray-500);
+  font-weight: 500;
+}
+.legend-dot {
+  width: 10px; height: 10px;
+  border-radius: 3px;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.4);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 24px;
+}
+.modal-overlay.active { display: flex; }
+.modal {
+  background: #fff;
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 480px;
+  box-shadow: var(--shadow-xl);
+  animation: modalIn .25s ease;
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(20px) scale(.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.modal-header {
+  padding: 24px 24px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.modal-header h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+.modal-close {
+  background: var(--gray-100);
+  border: none;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s;
+}
+.modal-close:hover { background: var(--gray-200); }
+.modal-body { padding: 24px; }
+.form-group { margin-bottom: 16px; }
+.form-group label {
+  display: block;
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--gray-600);
+  margin-bottom: 6px;
+}
+.form-group select,
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: .9rem;
+  transition: border-color .2s;
+  background: #fff;
+}
+.form-group select:focus,
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+.form-group textarea { resize: vertical; min-height: 80px; }
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  padding: 0 24px 24px;
+}
+.modal-actions .btn { flex: 1; }
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-secondary {
+  background: var(--gray-100);
+  color: var(--gray-700);
+}
+.btn-secondary:hover { background: var(--gray-200); }
+
+/* Toast */
+.toast-container {
+  position: fixed;
+  top: 80px;
+  right: 24px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.toast {
+  background: #fff;
+  padding: 14px 20px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  font-size: .88rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: toastIn .3s ease;
+  border-left: 4px solid var(--primary);
+}
+.toast.success { border-left-color: var(--success); }
+.toast.error { border-left-color: var(--danger); }
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .grid-main {
+    grid-template-columns: 1fr;
+  }
+  .clock-display { font-size: 3rem; }
+}
+@media (max-width: 600px) {
+  .container { padding: 16px; }
+  .header-inner { flex-direction: column; gap: 4px; }
+  .clock-display { font-size: 2.5rem; }
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .btn { padding: 12px 16px; font-size: .85rem; }
+  .week-table th, .week-table td { padding: 8px 10px; font-size: .8rem; }
+  .cal-day { font-size: .7rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-inner">
+    <h1>전자출결 시스템 <span>근태관리</span></h1>
+    <div class="header-date" id="headerDate"></div>
+  </div>
+</header>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Main Content -->
+<div class="container">
+  <div class="grid-main">
+
+    <!-- Left Column: Clock + Stats -->
+    <div>
+      <!-- Clock Card -->
+      <div class="card clock-card">
+        <div class="card-body">
+          <div class="clock-display" id="clockHM">00:00</div>
+          <div class="clock-seconds" id="clockS">:00</div>
+          <div class="clock-date" id="clockDate"></div>
+
+          <div class="clock-status not-checked" id="clockStatus">
+            <span class="status-dot"></span>
+            <span id="statusText">미출근</span>
+          </div>
+
+          <div class="btn-group">
+            <button class="btn btn-checkin" id="btnCheckin" onclick="doCheckin()">
+              출근
+            </button>
+            <button class="btn btn-checkout" id="btnCheckout" onclick="doCheckout()" disabled>
+              퇴근
+            </button>
+            <button class="btn btn-leave" onclick="openLeaveModal()">
+              연차/반차 신청
+            </button>
+          </div>
+
+          <!-- Stats -->
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-value" id="statHours">0h</div>
+              <div class="stat-label">이번 달 근무</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value success" id="statRate">0%</div>
+              <div class="stat-label">출근율</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value warning" id="statLate">0</div>
+              <div class="stat-label">지각 횟수</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value danger" id="statAbsent">0</div>
+              <div class="stat-label">결근 횟수</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="right-col">
+
+      <!-- Weekly Table -->
+      <div class="card">
+        <div class="card-header">
+          <span class="icon">&#128197;</span> 이번 주 근무 기록
+        </div>
+        <div class="card-body" style="padding:0;">
+          <div style="overflow-x:auto;">
+            <table class="week-table">
+              <thead>
+                <tr>
+                  <th>날짜</th>
+                  <th>출근</th>
+                  <th>퇴근</th>
+                  <th>근무시간</th>
+                  <th>상태</th>
+                </tr>
+              </thead>
+              <tbody id="weekBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calendar -->
+      <div class="card">
+        <div class="card-header">
+          <span class="icon">&#128198;</span> 월간 캘린더
+        </div>
+        <div class="card-body">
+          <div class="calendar-nav">
+            <button onclick="changeMonth(-1)">&larr;</button>
+            <span class="month-label" id="calMonthLabel"></span>
+            <button onclick="changeMonth(1)">&rarr;</button>
+          </div>
+          <div class="calendar-grid" id="calGrid"></div>
+          <div class="cal-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#dcfce7"></div>정상</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#fef3c7"></div>지각</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#dbeafe"></div>조퇴</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#fee2e2"></div>결근</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#f3e8ff"></div>연차</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#fce7f3"></div>반차</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Leave Request Modal -->
+<div class="modal-overlay" id="leaveModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>연차/반차 신청</h3>
+      <button class="modal-close" onclick="closeLeaveModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>유형</label>
+        <select id="leaveType">
+          <option value="leave">연차 (종일)</option>
+          <option value="half">반차 (반일)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>날짜</label>
+        <input type="date" id="leaveDate">
+      </div>
+      <div class="form-group">
+        <label>사유</label>
+        <textarea id="leaveReason" placeholder="사유를 입력해주세요"></textarea>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeLeaveModal()">취소</button>
+      <button class="btn btn-primary" onclick="submitLeave()">신청</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── Data Layer ───
+const STORAGE_KEY = 'attendance_records';
+const WORK_START = 9; // 09:00 정시 출근
+const WORK_END = 18;  // 18:00 정시 퇴근
+
+function loadRecords() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
+}
+function saveRecords(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+function dateKey(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const dd = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${dd}`;
+}
+function todayKey() { return dateKey(new Date()); }
+
+// ─── Clock ───
+function updateClock() {
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  const ss = String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('clockHM').textContent = `${hh}:${mm}`;
+  document.getElementById('clockS').textContent = `:${ss}`;
+
+  const days = ['일','월','화','수','목','금','토'];
+  const dateStr = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일 (${days[now.getDay()]})`;
+  document.getElementById('clockDate').textContent = dateStr;
+  document.getElementById('headerDate').textContent = dateStr;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ─── Checkin / Checkout ───
+function doCheckin() {
+  const now = new Date();
+  const records = loadRecords();
+  const key = todayKey();
+  if (records[key] && records[key].checkin) {
+    showToast('이미 출근 처리되었습니다', 'error');
+    return;
+  }
+  const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  records[key] = records[key] || {};
+  records[key].checkin = timeStr;
+  records[key].checkinTs = now.getTime();
+  saveRecords(records);
+  showToast(`출근 완료: ${timeStr}`,'success');
+  refreshUI();
+}
+
+function doCheckout() {
+  const now = new Date();
+  const records = loadRecords();
+  const key = todayKey();
+  if (!records[key] || !records[key].checkin) {
+    showToast('먼저 출근 처리해주세요', 'error');
+    return;
+  }
+  if (records[key].checkout) {
+    showToast('이미 퇴근 처리되었습니다', 'error');
+    return;
+  }
+  const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  records[key].checkout = timeStr;
+  records[key].checkoutTs = now.getTime();
+  saveRecords(records);
+  showToast(`퇴근 완료: ${timeStr}`, 'success');
+  refreshUI();
+}
+
+// ─── Status Calculation ───
+function getStatus(record, dateStr) {
+  if (!record) return null;
+  if (record.leaveType === 'leave') return 'leave';
+  if (record.leaveType === 'half') return 'half';
+  if (!record.checkin) return 'absent';
+
+  const [h, m] = record.checkin.split(':').map(Number);
+  const isLate = h > WORK_START || (h === WORK_START && m > 0);
+
+  if (record.checkout) {
+    const [ch, cm] = record.checkout.split(':').map(Number);
+    const isEarly = ch < WORK_END;
+    if (isLate) return 'late';
+    if (isEarly) return 'early';
+    return 'normal';
+  }
+
+  // Checked in but not out yet - for today that's ok
+  if (dateStr === todayKey()) {
+    return isLate ? 'late' : 'normal';
+  }
+  // Past day with no checkout
+  return isLate ? 'late' : 'early';
+}
+
+function getWorkHours(record) {
+  if (!record || !record.checkin || !record.checkout) return 0;
+  if (record.leaveType === 'leave') return 0;
+  const [h1,m1] = record.checkin.split(':').map(Number);
+  const [h2,m2] = record.checkout.split(':').map(Number);
+  const diff = (h2*60+m2) - (h1*60+m1);
+  return Math.max(0, diff / 60);
+}
+
+function statusLabel(status) {
+  const map = {
+    normal: ['정상','badge-normal'],
+    late: ['지각','badge-late'],
+    early: ['조퇴','badge-early'],
+    absent: ['결근','badge-absent'],
+    leave: ['연차','badge-leave'],
+    half: ['반차','badge-half'],
+  };
+  return map[status] || ['—','badge-none'];
+}
+
+// ─── Week Table ───
+function getWeekDates() {
+  const now = new Date();
+  const day = now.getDay();
+  const mon = new Date(now);
+  mon.setDate(now.getDate() - (day === 0 ? 6 : day - 1));
+  const dates = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(mon);
+    d.setDate(mon.getDate() + i);
+    dates.push(d);
+  }
+  return dates;
+}
+
+function renderWeekTable() {
+  const records = loadRecords();
+  const dates = getWeekDates();
+  const days = ['일','월','화','수','목','금','토'];
+  const tbody = document.getElementById('weekBody');
+  tbody.innerHTML = '';
+
+  dates.forEach(d => {
+    const key = dateKey(d);
+    const rec = records[key];
+    const status = getStatus(rec, key);
+    const hours = getWorkHours(rec);
+    const [label, badgeClass] = status ? statusLabel(status) : ['—','badge-none'];
+    const isToday = key === todayKey();
+    const isFuture = d > new Date() && !isToday;
+
+    const tr = document.createElement('tr');
+    if (isToday) tr.style.background = 'var(--primary-50)';
+    tr.innerHTML = `
+      <td>
+        <span class="day-name">${days[d.getDay()]}</span>
+        ${d.getMonth()+1}/${d.getDate()}
+        ${isToday ? '<span style="color:var(--primary);font-weight:800;margin-left:4px;">TODAY</span>' : ''}
+      </td>
+      <td class="time">${rec && rec.checkin ? rec.checkin : '—'}</td>
+      <td class="time">${rec && rec.checkout ? rec.checkout : '—'}</td>
+      <td class="time">${hours > 0 ? hours.toFixed(1) + 'h' : '—'}</td>
+      <td>${isFuture ? '' : `<span class="badge ${badgeClass}">${label}</span>`}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// ─── Calendar ───
+let calYear, calMonth;
+(function() {
+  const n = new Date();
+  calYear = n.getFullYear();
+  calMonth = n.getMonth();
+})();
+
+function changeMonth(delta) {
+  calMonth += delta;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  if (calMonth < 0) { calMonth = 11; calYear--; }
+  renderCalendar();
+}
+
+function renderCalendar() {
+  document.getElementById('calMonthLabel').textContent = `${calYear}년 ${calMonth+1}월`;
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+
+  const dayNames = ['일','월','화','수','목','금','토'];
+  dayNames.forEach(dn => {
+    const div = document.createElement('div');
+    div.className = 'cal-header';
+    div.textContent = dn;
+    grid.appendChild(div);
+  });
+
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+  const records = loadRecords();
+  const todayStr = todayKey();
+
+  for (let i = 0; i < firstDay; i++) {
+    const div = document.createElement('div');
+    div.className = 'cal-day empty';
+    grid.appendChild(div);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dt = new Date(calYear, calMonth, d);
+    const key = dateKey(dt);
+    const rec = records[key];
+    const dayOfWeek = dt.getDay();
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+    const isFuture = dt > new Date() && key !== todayStr;
+
+    const div = document.createElement('div');
+    let cls = 'cal-day';
+    if (key === todayStr) cls += ' today';
+    if (isWeekend) cls += ' weekend';
+
+    if (!isFuture && !isWeekend) {
+      const status = getStatus(rec, key);
+      if (status) cls += ` status-${status}`;
+    }
+
+    div.className = cls;
+    div.innerHTML = `<span class="day-num">${d}</span>`;
+    if (!isFuture && !isWeekend && rec) {
+      div.innerHTML += '<div class="cal-dot"></div>';
+    }
+    grid.appendChild(div);
+  }
+}
+
+// ─── Stats ───
+function renderStats() {
+  const records = loadRecords();
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+
+  let totalHours = 0;
+  let workDays = 0;
+  let attendedDays = 0;
+  let lateDays = 0;
+  let absentDays = 0;
+
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const today = now.getDate();
+
+  for (let d = 1; d <= Math.min(daysInMonth, today); d++) {
+    const dt = new Date(year, month, d);
+    const dayOfWeek = dt.getDay();
+    if (dayOfWeek === 0 || dayOfWeek === 6) continue;
+
+    workDays++;
+    const key = dateKey(dt);
+    const rec = records[key];
+    const status = getStatus(rec, key);
+
+    if (status === 'normal' || status === 'late' || status === 'early' || status === 'half') {
+      attendedDays++;
+      totalHours += getWorkHours(rec);
+    }
+    if (status === 'leave') {
+      attendedDays++;
+    }
+    if (status === 'late') lateDays++;
+    if (status === 'absent' || (!rec && key !== todayKey())) absentDays++;
+  }
+
+  const rate = workDays > 0 ? Math.round((attendedDays / workDays) * 100) : 0;
+
+  document.getElementById('statHours').textContent = totalHours.toFixed(1) + 'h';
+  document.getElementById('statRate').textContent = rate + '%';
+  document.getElementById('statLate').textContent = lateDays;
+  document.getElementById('statAbsent').textContent = absentDays;
+}
+
+// ─── Button State ───
+function updateButtons() {
+  const records = loadRecords();
+  const rec = records[todayKey()];
+  const btnIn = document.getElementById('btnCheckin');
+  const btnOut = document.getElementById('btnCheckout');
+  const statusEl = document.getElementById('clockStatus');
+  const statusText = document.getElementById('statusText');
+
+  if (rec && rec.checkout) {
+    btnIn.disabled = true;
+    btnOut.disabled = true;
+    statusEl.className = 'clock-status checked-out';
+    statusText.textContent = `퇴근 완료 (${rec.checkout})`;
+  } else if (rec && rec.checkin) {
+    btnIn.disabled = true;
+    btnOut.disabled = false;
+    statusEl.className = 'clock-status checked-in';
+    statusText.textContent = `근무 중 (${rec.checkin} ~)`;
+  } else if (rec && rec.leaveType) {
+    btnIn.disabled = true;
+    btnOut.disabled = true;
+    statusEl.className = 'clock-status checked-out';
+    statusText.textContent = rec.leaveType === 'leave' ? '연차' : '반차';
+  } else {
+    btnIn.disabled = false;
+    btnOut.disabled = true;
+    statusEl.className = 'clock-status not-checked';
+    statusText.textContent = '미출근';
+  }
+}
+
+// ─── Leave Modal ───
+function openLeaveModal() {
+  document.getElementById('leaveModal').classList.add('active');
+  const dateInput = document.getElementById('leaveDate');
+  dateInput.value = todayKey();
+  document.getElementById('leaveType').value = 'leave';
+  document.getElementById('leaveReason').value = '';
+}
+
+function closeLeaveModal() {
+  document.getElementById('leaveModal').classList.remove('active');
+}
+
+function submitLeave() {
+  const type = document.getElementById('leaveType').value;
+  const date = document.getElementById('leaveDate').value;
+  const reason = document.getElementById('leaveReason').value;
+
+  if (!date) {
+    showToast('날짜를 선택해주세요', 'error');
+    return;
+  }
+
+  const records = loadRecords();
+  if (records[date] && records[date].checkin) {
+    showToast('이미 출근 기록이 있는 날짜입니다', 'error');
+    return;
+  }
+
+  records[date] = {
+    leaveType: type,
+    leaveReason: reason,
+  };
+  saveRecords(records);
+
+  const label = type === 'leave' ? '연차' : '반차';
+  showToast(`${date} ${label} 신청 완료`, 'success');
+  closeLeaveModal();
+  refreshUI();
+}
+
+// Close modal on overlay click
+document.getElementById('leaveModal').addEventListener('click', function(e) {
+  if (e.target === this) closeLeaveModal();
+});
+
+// ─── Toast ───
+function showToast(msg, type = '') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = msg;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(40px)';
+    toast.style.transition = 'all .3s';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+// ─── Refresh All ───
+function refreshUI() {
+  renderWeekTable();
+  renderCalendar();
+  renderStats();
+  updateButtons();
+}
+
+// Init
+refreshUI();
+</script>
+</body>
+</html>
