@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>칸반 보드 — TaskFlow</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg-primary:#0f0a1a;
+  --bg-secondary:#1a1229;
+  --bg-tertiary:#241b35;
+  --bg-card:#1e1530;
+  --bg-card-hover:#261d3d;
+  --purple-50:#f3e8ff;
+  --purple-100:#e9d5ff;
+  --purple-200:#d8b4fe;
+  --purple-300:#c084fc;
+  --purple-400:#a855f7;
+  --purple-500:#9333ea;
+  --purple-600:#7c3aed;
+  --purple-700:#6d28d9;
+  --purple-800:#5b21b6;
+  --purple-900:#4c1d95;
+  --text-primary:#f1e8ff;
+  --text-secondary:#c4b5d4;
+  --text-muted:#8b7a9e;
+  --border-color:#2d2240;
+  --border-light:#3d3055;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.4);
+  --shadow-md:0 4px 12px rgba(0,0,0,.5);
+  --shadow-lg:0 8px 30px rgba(0,0,0,.6);
+  --shadow-glow:0 0 20px rgba(147,51,234,.15);
+  --radius-sm:8px;
+  --radius-md:12px;
+  --radius-lg:16px;
+  --radius-xl:20px;
+  --transition:all .2s cubic-bezier(.4,0,.2,1);
+}
+html{font-size:14px}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg-primary);color:var(--text-primary);min-height:100vh;overflow-x:hidden}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--purple-800);border-radius:10px}
+::-webkit-scrollbar-thumb:hover{background:var(--purple-600)}
+
+/* ── Header ── */
+.header{
+  background:linear-gradient(135deg,var(--bg-secondary) 0%,rgba(93,33,182,.15) 100%);
+  border-bottom:1px solid var(--border-color);
+  padding:0 24px;height:64px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+}
+.header-left{display:flex;align-items:center;gap:16px}
+.board-icon{
+  width:36px;height:36px;border-radius:var(--radius-sm);
+  background:linear-gradient(135deg,var(--purple-500),var(--purple-700));
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;font-weight:800;color:#fff;
+}
+.board-title{font-size:1.3rem;font-weight:700;letter-spacing:-.02em}
+.board-subtitle{font-size:.75rem;color:var(--text-muted);margin-top:1px}
+.header-center{display:flex;align-items:center;gap:12px;flex:1;max-width:420px;margin:0 32px}
+.search-box{
+  flex:1;position:relative;
+}
+.search-box input{
+  width:100%;height:38px;border-radius:var(--radius-md);
+  background:var(--bg-tertiary);border:1px solid var(--border-color);
+  color:var(--text-primary);padding:0 14px 0 38px;
+  font-family:inherit;font-size:.85rem;
+  transition:var(--transition);outline:none;
+}
+.search-box input::placeholder{color:var(--text-muted)}
+.search-box input:focus{border-color:var(--purple-500);box-shadow:0 0 0 3px rgba(147,51,234,.15)}
+.search-box svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none}
+.filter-btn{
+  height:38px;padding:0 14px;border-radius:var(--radius-md);
+  background:var(--bg-tertiary);border:1px solid var(--border-color);
+  color:var(--text-secondary);font-family:inherit;font-size:.8rem;font-weight:500;
+  cursor:pointer;transition:var(--transition);display:flex;align-items:center;gap:6px;
+  white-space:nowrap;
+}
+.filter-btn:hover{border-color:var(--purple-500);color:var(--text-primary)}
+.filter-btn.active{background:var(--purple-800);border-color:var(--purple-600);color:#fff}
+.header-right{display:flex;align-items:center;gap:12px}
+.avatar-group{display:flex;align-items:center}
+.avatar{
+  width:32px;height:32px;border-radius:50%;
+  border:2px solid var(--bg-primary);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;font-weight:700;color:#fff;
+  margin-left:-8px;cursor:pointer;transition:var(--transition);
+  position:relative;
+}
+.avatar:first-child{margin-left:0}
+.avatar:hover{transform:translateY(-2px);z-index:2}
+.avatar-a{background:linear-gradient(135deg,#f472b6,#db2777)}
+.avatar-b{background:linear-gradient(135deg,#818cf8,#6366f1)}
+.avatar-c{background:linear-gradient(135deg,#34d399,#059669)}
+.avatar-d{background:linear-gradient(135deg,#fbbf24,#d97706)}
+.member-count{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--bg-tertiary);border:2px solid var(--border-color);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;font-weight:600;color:var(--text-muted);
+  margin-left:-8px;cursor:pointer;
+}
+
+/* ── Filter Bar ── */
+.filter-bar{
+  display:none;padding:10px 24px;
+  background:var(--bg-secondary);border-bottom:1px solid var(--border-color);
+  gap:8px;align-items:center;flex-wrap:wrap;
+}
+.filter-bar.show{display:flex}
+.filter-label{font-size:.75rem;color:var(--text-muted);font-weight:600;margin-right:4px}
+.label-filter{
+  width:22px;height:22px;border-radius:6px;border:2px solid transparent;
+  cursor:pointer;transition:var(--transition);
+}
+.label-filter:hover,.label-filter.active{border-color:#fff;transform:scale(1.15)}
+.filter-sep{width:1px;height:20px;background:var(--border-color);margin:0 8px}
+
+/* ── Board ── */
+.board{
+  display:flex;gap:20px;padding:24px;
+  overflow-x:auto;min-height:calc(100vh - 64px);
+  align-items:flex-start;
+}
+.column{
+  min-width:300px;max-width:300px;flex-shrink:0;
+  background:var(--bg-secondary);border-radius:var(--radius-lg);
+  border:1px solid var(--border-color);
+  display:flex;flex-direction:column;max-height:calc(100vh - 112px);
+}
+.column-header{
+  padding:16px 16px 12px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border-color);flex-shrink:0;
+}
+.column-title-wrap{display:flex;align-items:center;gap:10px}
+.column-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.column-title{font-size:.9rem;font-weight:700}
+.column-count{
+  font-size:.7rem;font-weight:600;
+  background:var(--bg-tertiary);color:var(--text-muted);
+  padding:2px 8px;border-radius:20px;
+}
+.column-add-btn{
+  width:28px;height:28px;border-radius:var(--radius-sm);
+  background:transparent;border:none;color:var(--text-muted);
+  cursor:pointer;transition:var(--transition);
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;
+}
+.column-add-btn:hover{background:var(--bg-tertiary);color:var(--purple-300)}
+.card-list{
+  padding:12px;flex:1;overflow-y:auto;
+  display:flex;flex-direction:column;gap:10px;
+  min-height:60px;
+}
+.card-list.drag-over{
+  background:rgba(147,51,234,.05);
+  border-radius:0 0 var(--radius-lg) var(--radius-lg);
+}
+
+/* ── Card ── */
+.card{
+  background:var(--bg-card);border:1px solid var(--border-color);
+  border-radius:var(--radius-md);padding:14px;
+  cursor:grab;transition:var(--transition);position:relative;
+}
+.card:hover{
+  background:var(--bg-card-hover);border-color:var(--border-light);
+  box-shadow:var(--shadow-md);transform:translateY(-1px);
+}
+.card.dragging{
+  opacity:.5;transform:rotate(2deg) scale(.97);
+  box-shadow:var(--shadow-lg),var(--shadow-glow);
+}
+.card-labels{display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap}
+.card-label{
+  height:6px;width:36px;border-radius:3px;
+}
+.card-title{font-size:.88rem;font-weight:600;line-height:1.4;margin-bottom:6px;word-break:break-word}
+.card-desc{font-size:.78rem;color:var(--text-muted);line-height:1.5;margin-bottom:12px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+.card-footer{display:flex;align-items:center;justify-content:space-between}
+.card-meta{display:flex;align-items:center;gap:10px}
+.card-due{
+  font-size:.7rem;font-weight:500;color:var(--text-muted);
+  display:flex;align-items:center;gap:4px;
+  background:var(--bg-tertiary);padding:3px 8px;border-radius:6px;
+}
+.card-due.overdue{color:#f87171;background:rgba(248,113,113,.1)}
+.card-due.soon{color:#fbbf24;background:rgba(251,191,36,.1)}
+.card-assignee{
+  width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.6rem;font-weight:700;color:#fff;
+}
+.card-delete{
+  position:absolute;top:8px;right:8px;
+  width:24px;height:24px;border-radius:6px;
+  background:transparent;border:none;color:var(--text-muted);
+  cursor:pointer;font-size:.85rem;transition:var(--transition);
+  display:none;align-items:center;justify-content:center;
+}
+.card:hover .card-delete{display:flex}
+.card-delete:hover{background:rgba(248,113,113,.15);color:#f87171}
+
+/* ── Modal ── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.65);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  z-index:1000;display:none;align-items:center;justify-content:center;
+  padding:20px;
+}
+.modal-overlay.show{display:flex}
+.modal{
+  background:var(--bg-secondary);border:1px solid var(--border-color);
+  border-radius:var(--radius-xl);width:100%;max-width:480px;
+  box-shadow:var(--shadow-lg),var(--shadow-glow);
+  animation:modalIn .25s ease;
+}
+@keyframes modalIn{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:none}}
+.modal-header{
+  padding:20px 24px 16px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border-color);
+}
+.modal-title{font-size:1.05rem;font-weight:700}
+.modal-close{
+  width:32px;height:32px;border-radius:var(--radius-sm);
+  background:transparent;border:none;color:var(--text-muted);
+  cursor:pointer;font-size:1.2rem;transition:var(--transition);
+  display:flex;align-items:center;justify-content:center;
+}
+.modal-close:hover{background:var(--bg-tertiary);color:var(--text-primary)}
+.modal-body{padding:20px 24px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:.78rem;font-weight:600;color:var(--text-secondary);margin-bottom:6px}
+.form-group input,.form-group textarea,.form-group select{
+  width:100%;background:var(--bg-tertiary);border:1px solid var(--border-color);
+  border-radius:var(--radius-sm);color:var(--text-primary);
+  padding:10px 14px;font-family:inherit;font-size:.85rem;
+  transition:var(--transition);outline:none;
+}
+.form-group textarea{resize:vertical;min-height:80px}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{
+  border-color:var(--purple-500);box-shadow:0 0 0 3px rgba(147,51,234,.12);
+}
+.form-group select option{background:var(--bg-secondary);color:var(--text-primary)}
+.label-options{display:flex;gap:8px;flex-wrap:wrap}
+.label-option{
+  width:32px;height:32px;border-radius:var(--radius-sm);
+  border:2px solid transparent;cursor:pointer;
+  transition:var(--transition);
+}
+.label-option:hover{transform:scale(1.1)}
+.label-option.selected{border-color:#fff;box-shadow:0 0 12px rgba(255,255,255,.2)}
+.modal-footer{
+  padding:16px 24px 20px;display:flex;justify-content:flex-end;gap:10px;
+  border-top:1px solid var(--border-color);
+}
+.btn{
+  height:40px;padding:0 20px;border-radius:var(--radius-sm);
+  font-family:inherit;font-size:.85rem;font-weight:600;
+  border:none;cursor:pointer;transition:var(--transition);
+  display:flex;align-items:center;gap:6px;
+}
+.btn-secondary{background:var(--bg-tertiary);color:var(--text-secondary);border:1px solid var(--border-color)}
+.btn-secondary:hover{background:var(--border-color);color:var(--text-primary)}
+.btn-primary{background:linear-gradient(135deg,var(--purple-500),var(--purple-700));color:#fff}
+.btn-primary:hover{box-shadow:0 4px 15px rgba(147,51,234,.4);transform:translateY(-1px)}
+
+/* ── Empty State ── */
+.empty-state{
+  text-align:center;padding:30px 16px;color:var(--text-muted);
+}
+.empty-state svg{margin-bottom:8px;opacity:.4}
+.empty-state p{font-size:.78rem}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .header{padding:0 16px;height:56px}
+  .header-center{display:none}
+  .board-subtitle{display:none}
+  .board{padding:16px;gap:14px}
+  .column{min-width:270px;max-width:270px}
+  .modal{max-width:95vw}
+}
+@media(max-width:480px){
+  .column{min-width:250px;max-width:250px}
+  .header-right .avatar-group .avatar:nth-child(n+3){display:none}
+}
+
+/* ── Mobile Search Toggle ── */
+.mobile-search-btn{
+  display:none;width:36px;height:36px;border-radius:var(--radius-sm);
+  background:var(--bg-tertiary);border:1px solid var(--border-color);
+  color:var(--text-secondary);cursor:pointer;
+  align-items:center;justify-content:center;
+}
+@media(max-width:768px){
+  .mobile-search-btn{display:flex}
+}
+.mobile-search-bar{
+  display:none;padding:10px 16px;background:var(--bg-secondary);
+  border-bottom:1px solid var(--border-color);
+}
+.mobile-search-bar.show{display:block}
+.mobile-search-bar input{
+  width:100%;height:38px;border-radius:var(--radius-md);
+  background:var(--bg-tertiary);border:1px solid var(--border-color);
+  color:var(--text-primary);padding:0 14px;
+  font-family:inherit;font-size:.85rem;outline:none;
+}
+.mobile-search-bar input:focus{border-color:var(--purple-500)}
+
+/* ── Tooltip ── */
+.tooltip{
+  position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
+  background:var(--bg-tertiary);border:1px solid var(--border-color);
+  padding:4px 10px;border-radius:6px;font-size:.7rem;color:var(--text-secondary);
+  white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;
+}
+.avatar:hover .tooltip{opacity:1}
+</style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header class="header">
+  <div class="header-left">
+    <div class="board-icon">T</div>
+    <div>
+      <div class="board-title">TaskFlow 보드</div>
+      <div class="board-subtitle">프로젝트 관리 워크스페이스</div>
+    </div>
+  </div>
+
+  <div class="header-center">
+    <div class="search-box">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="카드 검색..." oninput="filterCards()">
+    </div>
+    <button class="filter-btn" onclick="toggleFilterBar()" id="filterToggle">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+      필터
+    </button>
+  </div>
+
+  <div class="header-right">
+    <button class="mobile-search-btn" onclick="toggleMobileSearch()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+    <div class="avatar-group">
+      <div class="avatar avatar-a" title="김지현"><span>지현</span><div class="tooltip">김지현</div></div>
+      <div class="avatar avatar-b" title="박민수"><span>민수</span><div class="tooltip">박민수</div></div>
+      <div class="avatar avatar-c" title="이수진"><span>수진</span><div class="tooltip">이수진</div></div>
+      <div class="avatar avatar-d" title="정현우"><span>현우</span><div class="tooltip">정현우</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ── Mobile Search ── -->
+<div class="mobile-search-bar" id="mobileSearchBar">
+  <input type="text" placeholder="카드 검색..." oninput="this.value?document.getElementById('searchInput').value=this.value:0;filterCards()">
+</div>
+
+<!-- ── Filter Bar ── -->
+<div class="filter-bar" id="filterBar">
+  <span class="filter-label">라벨:</span>
+  <div class="label-filter" style="background:#f87171" data-color="#f87171" onclick="toggleLabelFilter(this)" title="빨강"></div>
+  <div class="label-filter" style="background:#fb923c" data-color="#fb923c" onclick="toggleLabelFilter(this)" title="주황"></div>
+  <div class="label-filter" style="background:#fbbf24" data-color="#fbbf24" onclick="toggleLabelFilter(this)" title="노랑"></div>
+  <div class="label-filter" style="background:#34d399" data-color="#34d399" onclick="toggleLabelFilter(this)" title="초록"></div>
+  <div class="label-filter" style="background:#60a5fa" data-color="#60a5fa" onclick="toggleLabelFilter(this)" title="파랑"></div>
+  <div class="label-filter" style="background:#a78bfa" data-color="#a78bfa" onclick="toggleLabelFilter(this)" title="보라"></div>
+  <div class="label-filter" style="background:#f472b6" data-color="#f472b6" onclick="toggleLabelFilter(this)" title="핑크"></div>
+  <div class="filter-sep"></div>
+  <button class="filter-btn" onclick="clearFilters()" style="height:28px;font-size:.72rem;padding:0 10px">초기화</button>
+</div>
+
+<!-- ── Board ── -->
+<div class="board" id="board"></div>
+
+<!-- ── Modal ── -->
+<div class="modal-overlay" id="modalOverlay" onclick="event.target===this&&closeModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">새 카드 추가</div>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>제목 *</label>
+        <input type="text" id="cardTitleInput" placeholder="카드 제목을 입력하세요">
+      </div>
+      <div class="form-group">
+        <label>설명</label>
+        <textarea id="cardDescInput" placeholder="카드 설명을 입력하세요"></textarea>
+      </div>
+      <div class="form-group">
+        <label>라벨 색상</label>
+        <div class="label-options" id="labelOptions"></div>
+      </div>
+      <div class="form-group">
+        <label>담당자</label>
+        <select id="cardAssigneeInput">
+          <option value="">미지정</option>
+          <option value="김지현">김지현</option>
+          <option value="박민수">박민수</option>
+          <option value="이수진">이수진</option>
+          <option value="정현우">정현우</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>마감일</label>
+        <input type="date" id="cardDueInput">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">취소</button>
+      <button class="btn btn-primary" onclick="addCard()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        추가
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Data ──
+const LABELS = [
+  { color: '#f87171', name: '긴급' },
+  { color: '#fb923c', name: '높음' },
+  { color: '#fbbf24', name: '보통' },
+  { color: '#34d399', name: '낮음' },
+  { color: '#60a5fa', name: '기능' },
+  { color: '#a78bfa', name: '개선' },
+  { color: '#f472b6', name: '버그' },
+];
+
+const ASSIGNEE_COLORS = {
+  '김지현': 'linear-gradient(135deg,#f472b6,#db2777)',
+  '박민수': 'linear-gradient(135deg,#818cf8,#6366f1)',
+  '이수진': 'linear-gradient(135deg,#34d399,#059669)',
+  '정현우': 'linear-gradient(135deg,#fbbf24,#d97706)',
+};
+
+const COLUMNS = [
+  { id: 'todo', title: '할 일', color: '#60a5fa', dot: '#60a5fa' },
+  { id: 'progress', title: '진행 중', color: '#fbbf24', dot: '#fbbf24' },
+  { id: 'review', title: '검토', color: '#a78bfa', dot: '#a78bfa' },
+  { id: 'done', title: '완료', color: '#34d399', dot: '#34d399' },
+];
+
+let cards = [
+  { id: 1, column: 'todo', title: '사용자 인증 시스템 설계', desc: 'JWT 기반 인증 플로우를 설계하고 API 엔드포인트를 정의합니다.', labels: ['#60a5fa','#a78bfa'], assignee: '김지현', due: '2026-03-20' },
+  { id: 2, column: 'todo', title: '데이터베이스 스키마 작성', desc: '사용자, 프로젝트, 태스크 테이블 ERD를 설계합니다.', labels: ['#fbbf24'], assignee: '박민수', due: '2026-03-18' },
+  { id: 3, column: 'todo', title: '모바일 반응형 검토', desc: '전체 페이지의 모바일 대응을 검토합니다.', labels: ['#fb923c'], assignee: '', due: '' },
+  { id: 4, column: 'progress', title: '대시보드 UI 구현', desc: '차트와 통계 위젯이 포함된 메인 대시보드를 구현합니다.', labels: ['#60a5fa'], assignee: '이수진', due: '2026-03-17' },
+  { id: 5, column: 'progress', title: 'API 서버 구축', desc: 'Express 기반 REST API 서버를 세팅합니다.', labels: ['#a78bfa','#34d399'], assignee: '정현우', due: '2026-03-19' },
+  { id: 6, column: 'review', title: '로그인 페이지 디자인', desc: '소셜 로그인 버튼 포함 로그인/회원가입 UI입니다.', labels: ['#f472b6'], assignee: '김지현', due: '2026-03-16' },
+  { id: 7, column: 'review', title: '결제 모듈 연동', desc: 'PG사 결제 API를 연동하고 테스트합니다.', labels: ['#f87171','#fbbf24'], assignee: '박민수', due: '2026-03-15' },
+  { id: 8, column: 'done', title: '프로젝트 초기 세팅', desc: '프로젝트 구조, ESLint, Prettier 설정을 완료했습니다.', labels: ['#34d399'], assignee: '이수진', due: '2026-03-10' },
+  { id: 9, column: 'done', title: 'CI/CD 파이프라인 구축', desc: 'GitHub Actions로 자동 배포를 설정했습니다.', labels: ['#a78bfa','#60a5fa'], assignee: '정현우', due: '2026-03-12' },
+];
+
+let nextId = 10;
+let currentColumnId = '';
+let selectedLabels = [];
+let activeFilterLabels = [];
+let draggedCard = null;
+
+// ── Init ──
+function init() {
+  renderBoard();
+  renderLabelOptions();
+  loadFromStorage();
+  renderAllCards();
+}
+
+function renderBoard() {
+  const board = document.getElementById('board');
+  board.innerHTML = COLUMNS.map(col => `
+    <div class="column" id="col-${col.id}">
+      <div class="column-header">
+        <div class="column-title-wrap">
+          <div class="column-dot" style="background:${col.dot}"></div>
+          <div class="column-title">${col.title}</div>
+          <div class="column-count" id="count-${col.id}">0</div>
+        </div>
+        <button class="column-add-btn" onclick="openModal('${col.id}')" title="카드 추가">+</button>
+      </div>
+      <div class="card-list" id="list-${col.id}"
+           ondragover="handleDragOver(event)"
+           ondragenter="handleDragEnter(event)"
+           ondragleave="handleDragLeave(event)"
+           ondrop="handleDrop(event, '${col.id}')">
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderLabelOptions() {
+  const container = document.getElementById('labelOptions');
+  container.innerHTML = LABELS.map(l => `
+    <div class="label-option" style="background:${l.color}" data-color="${l.color}"
+         onclick="toggleLabel(this)" title="${l.name}"></div>
+  `).join('');
+}
+
+function renderAllCards() {
+  COLUMNS.forEach(col => {
+    const list = document.getElementById('list-' + col.id);
+    const colCards = getFilteredCards(col.id);
+    const allColCards = cards.filter(c => c.column === col.id);
+    document.getElementById('count-' + col.id).textContent = allColCards.length;
+
+    if (colCards.length === 0) {
+      list.innerHTML = `<div class="empty-state">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
+        <p>${allColCards.length > 0 ? '필터 결과 없음' : '카드가 없습니다'}</p>
+      </div>`;
+      return;
+    }
+
+    list.innerHTML = colCards.map(card => renderCard(card)).join('');
+  });
+}
+
+function renderCard(card) {
+  const labelsHtml = card.labels.map(c => `<div class="card-label" style="background:${c}"></div>`).join('');
+  const dueHtml = card.due ? getDueHtml(card.due) : '';
+  const assigneeHtml = card.assignee ? getAssigneeHtml(card.assignee) : '';
+
+  return `<div class="card" draggable="true" data-id="${card.id}"
+               ondragstart="handleDragStart(event, ${card.id})"
+               ondragend="handleDragEnd(event)">
+    <button class="card-delete" onclick="deleteCard(${card.id})" title="삭제">&times;</button>
+    ${card.labels.length ? `<div class="card-labels">${labelsHtml}</div>` : ''}
+    <div class="card-title">${escHtml(card.title)}</div>
+    ${card.desc ? `<div class="card-desc">${escHtml(card.desc)}</div>` : ''}
+    <div class="card-footer">
+      <div class="card-meta">${dueHtml}</div>
+      ${assigneeHtml}
+    </div>
+  </div>`;
+}
+
+function getDueHtml(due) {
+  const d = new Date(due);
+  const now = new Date(); now.setHours(0,0,0,0);
+  const diff = Math.ceil((d - now) / 86400000);
+  let cls = '';
+  if (diff < 0) cls = ' overdue';
+  else if (diff <= 2) cls = ' soon';
+  const month = d.getMonth() + 1;
+  const day = d.getDate();
+  return `<div class="card-due${cls}">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    ${month}/${day}
+  </div>`;
+}
+
+function getAssigneeHtml(name) {
+  const bg = ASSIGNEE_COLORS[name] || 'linear-gradient(135deg,#6b7280,#4b5563)';
+  const short = name.slice(-2);
+  return `<div class="card-assignee" style="background:${bg}" title="${name}">${short}</div>`;
+}
+
+// ── Drag & Drop ──
+function handleDragStart(e, id) {
+  draggedCard = id;
+  e.target.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', id);
+}
+function handleDragEnd(e) {
+  e.target.classList.remove('dragging');
+  document.querySelectorAll('.card-list').forEach(l => l.classList.remove('drag-over'));
+  draggedCard = null;
+}
+function handleDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
+function handleDragEnter(e) {
+  e.preventDefault();
+  const list = e.target.closest('.card-list');
+  if (list) list.classList.add('drag-over');
+}
+function handleDragLeave(e) {
+  const list = e.target.closest('.card-list');
+  if (list && !list.contains(e.relatedTarget)) list.classList.remove('drag-over');
+}
+function handleDrop(e, colId) {
+  e.preventDefault();
+  const list = e.target.closest('.card-list');
+  if (list) list.classList.remove('drag-over');
+  if (draggedCard === null) return;
+  const card = cards.find(c => c.id === draggedCard);
+  if (card) { card.column = colId; saveAndRender(); }
+}
+
+// ── Modal ──
+function openModal(colId) {
+  currentColumnId = colId;
+  selectedLabels = [];
+  document.getElementById('cardTitleInput').value = '';
+  document.getElementById('cardDescInput').value = '';
+  document.getElementById('cardAssigneeInput').value = '';
+  document.getElementById('cardDueInput').value = '';
+  document.querySelectorAll('.label-option').forEach(el => el.classList.remove('selected'));
+  document.getElementById('modalOverlay').classList.add('show');
+  setTimeout(() => document.getElementById('cardTitleInput').focus(), 100);
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('show');
+}
+function toggleLabel(el) {
+  const color = el.dataset.color;
+  el.classList.toggle('selected');
+  if (selectedLabels.includes(color)) selectedLabels = selectedLabels.filter(c => c !== color);
+  else selectedLabels.push(color);
+}
+
+function addCard() {
+  const title = document.getElementById('cardTitleInput').value.trim();
+  if (!title) { document.getElementById('cardTitleInput').focus(); return; }
+  const card = {
+    id: nextId++,
+    column: currentColumnId,
+    title,
+    desc: document.getElementById('cardDescInput').value.trim(),
+    labels: [...selectedLabels],
+    assignee: document.getElementById('cardAssigneeInput').value,
+    due: document.getElementById('cardDueInput').value,
+  };
+  cards.push(card);
+  closeModal();
+  saveAndRender();
+}
+
+function deleteCard(id) {
+  cards = cards.filter(c => c.id !== id);
+  saveAndRender();
+}
+
+// ── Search & Filter ──
+function filterCards() { renderAllCards(); }
+
+function getFilteredCards(colId) {
+  const query = document.getElementById('searchInput').value.trim().toLowerCase();
+  return cards.filter(c => {
+    if (c.column !== colId) return false;
+    if (query && !c.title.toLowerCase().includes(query) && !c.desc.toLowerCase().includes(query) && !(c.assignee && c.assignee.toLowerCase().includes(query))) return false;
+    if (activeFilterLabels.length > 0 && !activeFilterLabels.some(l => c.labels.includes(l))) return false;
+    return true;
+  });
+}
+
+function toggleFilterBar() {
+  const bar = document.getElementById('filterBar');
+  const btn = document.getElementById('filterToggle');
+  bar.classList.toggle('show');
+  btn.classList.toggle('active');
+}
+function toggleLabelFilter(el) {
+  const color = el.dataset.color;
+  el.classList.toggle('active');
+  if (activeFilterLabels.includes(color)) activeFilterLabels = activeFilterLabels.filter(c => c !== color);
+  else activeFilterLabels.push(color);
+  renderAllCards();
+}
+function clearFilters() {
+  activeFilterLabels = [];
+  document.querySelectorAll('.label-filter').forEach(el => el.classList.remove('active'));
+  document.getElementById('searchInput').value = '';
+  renderAllCards();
+}
+
+function toggleMobileSearch() {
+  document.getElementById('mobileSearchBar').classList.toggle('show');
+}
+
+// ── Persistence ──
+function saveAndRender() {
+  try { localStorage.setItem('kanban-cards', JSON.stringify(cards)); localStorage.setItem('kanban-nextId', nextId); } catch(e) {}
+  renderAllCards();
+}
+function loadFromStorage() {
+  try {
+    const saved = localStorage.getItem('kanban-cards');
+    const savedId = localStorage.getItem('kanban-nextId');
+    if (saved) { cards = JSON.parse(saved); }
+    if (savedId) { nextId = parseInt(savedId, 10); }
+  } catch(e) {}
+}
+
+// ── Util ──
+function escHtml(s) {
+  const d = document.createElement('div'); d.textContent = s; return d.innerHTML;
+}
+
+// ── Keyboard ──
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Enter' && document.getElementById('modalOverlay').classList.contains('show')) {
+    if (document.activeElement.tagName !== 'TEXTAREA') addCard();
+  }
+});
+
+init();
+</script>
+</body>
+</html>

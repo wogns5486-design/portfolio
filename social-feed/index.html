@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>소셜피드 - Social Feed</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#fafafa;--white:#fff;--text:#262626;--text-secondary:#8e8e8e;
+  --border:#dbdbdb;--pink:#e1306c;--purple:#833ab4;--orange:#f77737;
+  --blue:#405de6;--gradient:linear-gradient(135deg,#833ab4,#e1306c,#f77737);
+  --gradient-soft:linear-gradient(135deg,#f8e8ff,#ffe0ec,#fff0e0);
+  --shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 8px 30px rgba(0,0,0,.12);
+  --radius:12px;--radius-lg:16px;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.5;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+button{border:none;background:none;cursor:pointer;font-family:inherit;color:inherit}
+input,textarea{font-family:inherit;border:none;outline:none}
+img{display:block;max-width:100%}
+
+/* Top Nav */
+.top-nav{position:fixed;top:0;left:0;right:0;height:60px;background:var(--white);border-bottom:1px solid var(--border);z-index:100;display:flex;align-items:center;justify-content:center}
+.top-nav-inner{width:100%;max-width:975px;padding:0 20px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-size:22px;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-.5px}
+.nav-search{position:relative;display:flex;align-items:center}
+.nav-search input{width:220px;height:36px;padding:0 16px 0 36px;background:#efefef;border-radius:8px;font-size:14px;transition:all .2s}
+.nav-search input:focus{background:#fff;border:1px solid var(--border);width:260px}
+.nav-search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-secondary)}
+.nav-icons{display:flex;align-items:center;gap:20px}
+.nav-icons button{position:relative;color:var(--text);transition:transform .15s}
+.nav-icons button:hover{transform:scale(1.1)}
+.nav-icons .badge{position:absolute;top:-6px;right:-6px;width:18px;height:18px;background:var(--pink);color:#fff;font-size:10px;font-weight:700;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.nav-profile-pic{width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid transparent;cursor:pointer;transition:border-color .2s}
+.nav-profile-pic:hover{border-color:var(--pink)}
+
+/* Layout */
+.app{padding-top:60px;display:flex;justify-content:center;gap:28px;max-width:975px;margin:0 auto;padding-left:20px;padding-right:20px}
+.main-feed{flex:1;max-width:470px;padding:20px 0 80px}
+.sidebar{width:320px;padding:28px 0 20px;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto}
+
+/* Stories */
+.stories{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:24px;overflow:hidden}
+.stories-scroll{display:flex;gap:16px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;padding:2px}
+.stories-scroll::-webkit-scrollbar{display:none}
+.story-item{display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;cursor:pointer}
+.story-ring{width:66px;height:66px;border-radius:50%;padding:3px;background:var(--gradient);transition:transform .2s}
+.story-ring:hover{transform:scale(1.05)}
+.story-ring.seen{background:var(--border)}
+.story-img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:3px solid var(--white)}
+.story-name{font-size:11px;color:var(--text);max-width:66px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center}
+.story-add{width:66px;height:66px;border-radius:50%;background:#efefef;display:flex;align-items:center;justify-content:center;border:none;transition:transform .2s}
+.story-add:hover{transform:scale(1.05)}
+
+/* New Post Button (mobile) */
+.new-post-btn{display:none}
+
+/* Feed Card */
+.feed-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:20px;overflow:hidden;animation:fadeInUp .4s ease}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.card-header{display:flex;align-items:center;padding:14px 16px;gap:12px}
+.card-avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;cursor:pointer}
+.card-user-info{flex:1}
+.card-username{font-size:14px;font-weight:600;cursor:pointer}
+.card-username:hover{color:var(--text-secondary)}
+.card-location{font-size:12px;color:var(--text-secondary)}
+.card-more{color:var(--text);padding:4px}
+.card-image-wrap{position:relative;background:#efefef;aspect-ratio:1;overflow:hidden}
+.card-image-wrap img{width:100%;height:100%;object-fit:cover}
+.card-image-wrap .dbl-heart{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);font-size:80px;color:#fff;filter:drop-shadow(0 2px 8px rgba(0,0,0,.3));pointer-events:none;z-index:5}
+.card-image-wrap .dbl-heart.show{animation:heartPop .8s ease forwards}
+@keyframes heartPop{0%{transform:translate(-50%,-50%) scale(0);opacity:1}15%{transform:translate(-50%,-50%) scale(1.2)}30%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{transform:translate(-50%,-50%) scale(1);opacity:0}}
+.card-actions{display:flex;align-items:center;padding:10px 16px 4px;gap:14px}
+.card-actions button{transition:transform .15s}
+.card-actions button:hover{transform:scale(1.15)}
+.card-actions button.liked svg{fill:var(--pink);color:var(--pink);animation:likeScale .35s ease}
+@keyframes likeScale{0%{transform:scale(1)}25%{transform:scale(1.3)}50%{transform:scale(.9)}100%{transform:scale(1)}}
+.card-actions .right-actions{margin-left:auto}
+.card-likes{padding:4px 16px;font-size:14px;font-weight:600}
+.card-caption{padding:2px 16px 4px;font-size:14px}
+.card-caption .cap-user{font-weight:600;margin-right:4px;cursor:pointer}
+.card-comments-preview{padding:2px 16px;font-size:14px;color:var(--text-secondary);cursor:pointer}
+.card-comment-item{padding:2px 16px;font-size:14px}
+.card-comment-item .cap-user{font-weight:600;margin-right:4px}
+.card-time{padding:4px 16px;font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.2px}
+.card-add-comment{display:flex;align-items:center;padding:12px 16px;border-top:1px solid var(--border);gap:12px}
+.card-add-comment input{flex:1;font-size:14px;background:transparent}
+.card-add-comment .post-btn{color:var(--blue);font-weight:600;font-size:14px;opacity:.4;pointer-events:none;transition:opacity .2s}
+.card-add-comment .post-btn.active{opacity:1;pointer-events:auto}
+
+/* Sidebar */
+.sidebar-profile{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+.sidebar-profile img{width:56px;height:56px;border-radius:50%;object-fit:cover;cursor:pointer}
+.sidebar-profile-info{flex:1}
+.sidebar-profile-info .sp-name{font-size:14px;font-weight:600}
+.sidebar-profile-info .sp-full{font-size:14px;color:var(--text-secondary)}
+.sidebar-switch{color:var(--blue);font-size:12px;font-weight:600}
+.sidebar-section{margin-bottom:24px}
+.sidebar-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.sidebar-section-header h4{font-size:14px;font-weight:600;color:var(--text-secondary)}
+.sidebar-section-header button{font-size:12px;font-weight:600;color:var(--text)}
+.suggest-item{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.suggest-item img{width:36px;height:36px;border-radius:50%;object-fit:cover;cursor:pointer}
+.suggest-item .si-info{flex:1}
+.suggest-item .si-name{font-size:13px;font-weight:600;cursor:pointer}
+.suggest-item .si-reason{font-size:12px;color:var(--text-secondary)}
+.follow-btn{font-size:12px;font-weight:600;color:var(--blue);transition:all .2s}
+.follow-btn.following{color:var(--text);background:#efefef;padding:4px 12px;border-radius:6px}
+.trending-list{display:flex;flex-wrap:wrap;gap:8px}
+.trending-tag{display:inline-block;padding:6px 14px;background:var(--gradient-soft);border-radius:20px;font-size:13px;font-weight:500;color:var(--purple);cursor:pointer;transition:all .2s}
+.trending-tag:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.sidebar-footer{font-size:11px;color:#c7c7c7;line-height:1.8}
+.sidebar-footer a{color:#c7c7c7}
+.sidebar-footer a:hover{text-decoration:underline}
+
+/* New Post Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-overlay.open{opacity:1;pointer-events:auto}
+.modal{background:var(--white);border-radius:var(--radius-lg);width:90%;max-width:500px;max-height:90vh;overflow:hidden;transform:scale(.9);transition:transform .25s}
+.modal-overlay.open .modal{transform:scale(1)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);font-weight:600}
+.modal-header button{font-size:14px}
+.modal-header .share-btn{color:var(--blue);font-weight:600;opacity:.4;pointer-events:none}
+.modal-header .share-btn.active{opacity:1;pointer-events:auto}
+.modal-body{padding:16px}
+.modal-user{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.modal-user img{width:36px;height:36px;border-radius:50%;object-fit:cover}
+.modal-user span{font-weight:600;font-size:14px}
+.modal-body textarea{width:100%;height:120px;resize:none;font-size:15px;border:none;outline:none;padding:0;line-height:1.6}
+.modal-body textarea::placeholder{color:var(--text-secondary)}
+.modal-img-preview{margin-top:12px;border-radius:var(--radius);overflow:hidden;display:none;position:relative}
+.modal-img-preview img{width:100%;max-height:300px;object-fit:cover}
+.modal-img-preview .remove-img{position:absolute;top:8px;right:8px;width:28px;height:28px;background:rgba(0,0,0,.6);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px}
+.modal-footer{display:flex;align-items:center;padding:12px 16px;border-top:1px solid var(--border);gap:16px}
+.modal-footer button{color:var(--text-secondary);transition:color .2s}
+.modal-footer button:hover{color:var(--text)}
+.modal-footer input[type=file]{display:none}
+
+/* Bottom Nav (Mobile) */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:50px;background:var(--white);border-top:1px solid var(--border);z-index:100;align-items:center;justify-content:space-around;padding:0 8px}
+.bottom-nav button{color:var(--text);padding:8px}
+.bottom-nav .bnav-create{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:2px solid var(--text);border-radius:8px}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#ccc;border-radius:3px}
+
+/* Responsive */
+@media(max-width:999px){
+  .sidebar{display:none}
+  .main-feed{max-width:600px}
+}
+@media(max-width:640px){
+  .top-nav-inner{padding:0 12px}
+  .nav-search{display:none}
+  .main-feed{padding:12px 0 70px}
+  .app{padding-left:0;padding-right:0}
+  .feed-card{border-radius:0;border-left:none;border-right:none;margin-bottom:12px}
+  .stories{border-radius:0;border-left:none;border-right:none;margin-bottom:12px}
+  .bottom-nav{display:flex}
+  .new-post-btn{display:block}
+}
+</style>
+</head>
+<body>
+
+<!-- Top Navigation -->
+<nav class="top-nav">
+  <div class="top-nav-inner">
+    <a href="#" class="nav-logo">소셜피드</a>
+    <div class="nav-search">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input type="text" placeholder="검색">
+    </div>
+    <div class="nav-icons">
+      <button onclick="openModal()" title="새 게시물">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 8v8M8 12h8"/></svg>
+      </button>
+      <button title="알림">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        <span class="badge">3</span>
+      </button>
+      <button title="메시지">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        <span class="badge">5</span>
+      </button>
+      <img class="nav-profile-pic" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop" alt="프로필">
+    </div>
+  </div>
+</nav>
+
+<div class="app">
+  <!-- Main Feed -->
+  <main class="main-feed">
+    <!-- Stories -->
+    <div class="stories">
+      <div class="stories-scroll" id="storiesScroll">
+        <!-- My story -->
+        <div class="story-item">
+          <div class="story-ring" style="background:none">
+            <div style="position:relative;width:100%;height:100%">
+              <img class="story-img" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&h=150&fit=crop" alt="내 스토리" style="border-color:#efefef">
+              <div style="position:absolute;bottom:-2px;right:-2px;width:22px;height:22px;background:var(--blue);border:2px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700">+</div>
+            </div>
+          </div>
+          <span class="story-name">내 스토리</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feed Cards -->
+    <div id="feedContainer"></div>
+  </main>
+
+  <!-- Sidebar (Desktop) -->
+  <aside class="sidebar">
+    <div class="sidebar-profile">
+      <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&h=120&fit=crop" alt="프로필">
+      <div class="sidebar-profile-info">
+        <div class="sp-name">design_master</div>
+        <div class="sp-full">김디자인</div>
+      </div>
+      <button class="sidebar-switch">전환</button>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-header">
+        <h4>회원님을 위한 추천</h4>
+        <button>모두 보기</button>
+      </div>
+      <div id="suggestList"></div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-header">
+        <h4>인기 해시태그</h4>
+        <button>더보기</button>
+      </div>
+      <div class="trending-list" id="trendingList"></div>
+    </div>
+
+    <div class="sidebar-footer">
+      <p>소개 &middot; 도움말 &middot; 홍보 &middot; API &middot; 채용 &middot; 개인정보처리방침 &middot; 약관</p>
+      <p style="margin-top:12px">&copy; 2026 소셜피드</p>
+    </div>
+  </aside>
+</div>
+
+<!-- Bottom Nav (Mobile) -->
+<div class="bottom-nav">
+  <button><svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1h-2z" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
+  <button><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></button>
+  <button class="bnav-create" onclick="openModal()"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+  <button><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
+  <button><img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=60&h=60&fit=crop" style="width:26px;height:26px;border-radius:50%;object-fit:cover"></button>
+</div>
+
+<!-- New Post Modal -->
+<div class="modal-overlay" id="postModal">
+  <div class="modal">
+    <div class="modal-header">
+      <button onclick="closeModal()">취소</button>
+      <span>새 게시물 작성</span>
+      <button class="share-btn" id="shareBtn" onclick="submitPost()">공유</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-user">
+        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&h=80&fit=crop" alt="프로필">
+        <span>design_master</span>
+      </div>
+      <textarea id="postText" placeholder="문구를 입력하세요..." oninput="toggleShareBtn()"></textarea>
+      <div class="modal-img-preview" id="imgPreview">
+        <img id="previewImg" src="" alt="미리보기">
+        <button class="remove-img" onclick="removePreviewImg()">&times;</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button onclick="document.getElementById('fileInput').click()" title="사진 추가">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+      </button>
+      <button title="위치 추가">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      </button>
+      <button title="이모지">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
+      </button>
+      <input type="file" id="fileInput" accept="image/*" onchange="previewImage(event)">
+    </div>
+  </div>
+</div>
+
+<script>
+// Data
+const storyUsers = [
+  {name:'수진', img:'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop', seen:false},
+  {name:'민준', img:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop', seen:false},
+  {name:'하늘', img:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=150&h=150&fit=crop', seen:false},
+  {name:'준혁', img:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop', seen:true},
+  {name:'서아', img:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop', seen:false},
+  {name:'도윤', img:'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop', seen:true},
+  {name:'예은', img:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop', seen:false},
+  {name:'지호', img:'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop', seen:true},
+  {name:'유나', img:'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop', seen:false},
+];
+
+const posts = [
+  {
+    user:'travel_with_sj', name:'수진', avatar:'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop',
+    location:'제주도, 한국',
+    image:'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&h=800&fit=crop',
+    likes:1247, caption:'제주도의 아침은 언제나 특별해요 🌅 오늘도 아름다운 하루의 시작!',
+    comments:[{user:'min_joon',text:'진짜 예쁘다!! 나도 가고싶어 😍'},{user:'sky_h',text:'저기 어디예요? 위치 알려주세요!'}],
+    time:'2시간 전'
+  },
+  {
+    user:'cafe_minjoon', name:'민준', avatar:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop',
+    location:'성수동 카페거리',
+    image:'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&h=800&fit=crop',
+    likes:834, caption:'오늘의 커피 한 잔 ☕ 성수동 신상 카페 발견! 분위기 진짜 좋다',
+    comments:[{user:'design_master',text:'여기 인테리어 대박이네요!'},{user:'yena_art',text:'다음에 같이 가요~'}],
+    time:'4시간 전'
+  },
+  {
+    user:'sky_hanuel', name:'하늘', avatar:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=100&h=100&fit=crop',
+    location:'서울숲',
+    image:'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&h=800&fit=crop',
+    likes:2103, caption:'봄이 오고 있어요 🌸 서울숲에서 산책하기 좋은 날씨',
+    comments:[{user:'travel_with_sj',text:'벚꽃 피면 또 가자!'},{user:'doyun_fit',text:'날씨 진짜 좋았겠다'}],
+    time:'6시간 전'
+  },
+  {
+    user:'foodie_seoa', name:'서아', avatar:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop',
+    location:'을지로 맛집',
+    image:'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=800&fit=crop',
+    likes:956, caption:'을지로에서 발견한 숨은 맛집! 파스타가 진짜 미쳤어요 🍝',
+    comments:[{user:'cafe_minjoon',text:'여기 어디야?? 주소 좀!'},{user:'sky_hanuel',text:'맛있겠다 ㅠㅠ'}],
+    time:'8시간 전'
+  },
+  {
+    user:'doyun_fit', name:'도윤', avatar:'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop',
+    location:'한강 러닝 코스',
+    image:'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=800&h=800&fit=crop',
+    likes:1589, caption:'오늘 10km 완주! 💪 매일 조금씩 성장하는 중',
+    comments:[{user:'jiho_photo',text:'대단해요 형!'},{user:'yuna_daily',text:'동기부여 받고 갑니다 👏'}],
+    time:'12시간 전'
+  },
+  {
+    user:'yena_art', name:'예은', avatar:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop',
+    location:'홍대 작업실',
+    image:'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800&h=800&fit=crop',
+    likes:2451, caption:'새로운 작품 완성! 🎨 이번엔 수채화로 도전해봤어요',
+    comments:[{user:'design_master',text:'색감이 너무 예뻐요!'},{user:'foodie_seoa',text:'와 진짜 재능있다..'}],
+    time:'1일 전'
+  }
+];
+
+const suggestions = [
+  {name:'photo_jiho', full:'지호 | 포토그래퍼', img:'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop', reason:'회원님을 팔로우합니다'},
+  {name:'yuna_daily', full:'유나 | 일상', img:'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop', reason:'min_joon님 외 3명이 팔로우'},
+  {name:'cook_master', full:'셰프 현우', img:'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop', reason:'회원님을 위한 추천'},
+  {name:'yoga_somi', full:'소미 | 요가', img:'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop', reason:'sky_hanuel님이 팔로우'},
+  {name:'dev_woojin', full:'우진 | 개발자', img:'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=100&h=100&fit=crop', reason:'회원님을 위한 추천'},
+];
+
+const trendingTags = ['#봄나들이','#카페투어','#오운완','#맛스타그램','#일상','#서울여행','#OOTD','#홈카페','#야경','#브이로그'];
+
+// Render Stories
+const storiesScroll = document.getElementById('storiesScroll');
+storyUsers.forEach(s => {
+  storiesScroll.insertAdjacentHTML('beforeend', `
+    <div class="story-item">
+      <div class="story-ring ${s.seen ? 'seen' : ''}">
+        <img class="story-img" src="${s.img}" alt="${s.name}">
+      </div>
+      <span class="story-name">${s.name}</span>
+    </div>
+  `);
+});
+
+// Render Feed
+const feedContainer = document.getElementById('feedContainer');
+const likedPosts = new Set();
+
+function renderFeed() {
+  feedContainer.innerHTML = '';
+  posts.forEach((p, i) => {
+    const isLiked = likedPosts.has(i);
+    const likeCount = p.likes + (isLiked ? 1 : 0);
+    feedContainer.insertAdjacentHTML('beforeend', `
+      <article class="feed-card" id="post-${i}">
+        <div class="card-header">
+          <img class="card-avatar" src="${p.avatar}" alt="${p.name}">
+          <div class="card-user-info">
+            <div class="card-username">${p.user}</div>
+            ${p.location ? `<div class="card-location">${p.location}</div>` : ''}
+          </div>
+          <button class="card-more"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="6" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="18" r="1.5"/></svg></button>
+        </div>
+        <div class="card-image-wrap" ondblclick="doubleTapLike(${i}, this)">
+          <img src="${p.image}" alt="게시물 이미지" loading="lazy">
+          <span class="dbl-heart" id="dblHeart-${i}">&#10084;</span>
+        </div>
+        <div class="card-actions">
+          <button class="${isLiked ? 'liked' : ''}" onclick="toggleLike(${i})" aria-label="좋아요">
+            <svg width="24" height="24" fill="${isLiked ? 'var(--pink)' : 'none'}" stroke="${isLiked ? 'var(--pink)' : 'currentColor'}" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          </button>
+          <button aria-label="댓글" onclick="focusComment(${i})">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          </button>
+          <button aria-label="공유">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          </button>
+          <span class="right-actions">
+            <button aria-label="저장">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+            </button>
+          </span>
+        </div>
+        <div class="card-likes">좋아요 <span id="likeCount-${i}">${likeCount.toLocaleString()}</span>개</div>
+        <div class="card-caption"><span class="cap-user">${p.user}</span>${p.caption}</div>
+        ${p.comments.length > 2 ? `<div class="card-comments-preview">댓글 ${p.comments.length}개 모두 보기</div>` : ''}
+        <div id="commentsList-${i}">
+          ${p.comments.map(c => `<div class="card-comment-item"><span class="cap-user">${c.user}</span>${c.text}</div>`).join('')}
+        </div>
+        <div class="card-time">${p.time}</div>
+        <div class="card-add-comment">
+          <span style="font-size:20px;cursor:pointer">😊</span>
+          <input type="text" placeholder="댓글 달기..." id="commentInput-${i}" oninput="toggleCommentBtn(${i})">
+          <button class="post-btn" id="commentBtn-${i}" onclick="addComment(${i})">게시</button>
+        </div>
+      </article>
+    `);
+  });
+}
+
+function toggleLike(idx) {
+  if (likedPosts.has(idx)) {
+    likedPosts.delete(idx);
+  } else {
+    likedPosts.add(idx);
+  }
+  const card = document.getElementById(`post-${idx}`);
+  const btn = card.querySelector('.card-actions button:first-child');
+  const isLiked = likedPosts.has(idx);
+  const likeCount = posts[idx].likes + (isLiked ? 1 : 0);
+  btn.className = isLiked ? 'liked' : '';
+  btn.innerHTML = `<svg width="24" height="24" fill="${isLiked ? 'var(--pink)' : 'none'}" stroke="${isLiked ? 'var(--pink)' : 'currentColor'}" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>`;
+  document.getElementById(`likeCount-${idx}`).textContent = likeCount.toLocaleString();
+}
+
+function doubleTapLike(idx, wrap) {
+  if (!likedPosts.has(idx)) {
+    likedPosts.add(idx);
+    const card = document.getElementById(`post-${idx}`);
+    const btn = card.querySelector('.card-actions button:first-child');
+    const likeCount = posts[idx].likes + 1;
+    btn.className = 'liked';
+    btn.innerHTML = `<svg width="24" height="24" fill="var(--pink)" stroke="var(--pink)" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>`;
+    document.getElementById(`likeCount-${idx}`).textContent = likeCount.toLocaleString();
+  }
+  const heart = document.getElementById(`dblHeart-${idx}`);
+  heart.classList.remove('show');
+  void heart.offsetWidth;
+  heart.classList.add('show');
+  setTimeout(() => heart.classList.remove('show'), 900);
+}
+
+function focusComment(idx) {
+  document.getElementById(`commentInput-${idx}`).focus();
+}
+
+function toggleCommentBtn(idx) {
+  const input = document.getElementById(`commentInput-${idx}`);
+  const btn = document.getElementById(`commentBtn-${idx}`);
+  btn.classList.toggle('active', input.value.trim().length > 0);
+}
+
+function addComment(idx) {
+  const input = document.getElementById(`commentInput-${idx}`);
+  const text = input.value.trim();
+  if (!text) return;
+  posts[idx].comments.push({user: 'design_master', text});
+  const list = document.getElementById(`commentsList-${idx}`);
+  list.insertAdjacentHTML('beforeend', `<div class="card-comment-item"><span class="cap-user">design_master</span>${text}</div>`);
+  input.value = '';
+  document.getElementById(`commentBtn-${idx}`).classList.remove('active');
+}
+
+// Render Sidebar
+const suggestList = document.getElementById('suggestList');
+suggestions.forEach((s, i) => {
+  suggestList.insertAdjacentHTML('beforeend', `
+    <div class="suggest-item">
+      <img src="${s.img}" alt="${s.full}">
+      <div class="si-info">
+        <div class="si-name">${s.name}</div>
+        <div class="si-reason">${s.reason}</div>
+      </div>
+      <button class="follow-btn" id="followBtn-${i}" onclick="toggleFollow(${i})">${'팔로우'}</button>
+    </div>
+  `);
+});
+
+function toggleFollow(idx) {
+  const btn = document.getElementById(`followBtn-${idx}`);
+  if (btn.classList.contains('following')) {
+    btn.classList.remove('following');
+    btn.textContent = '팔로우';
+  } else {
+    btn.classList.add('following');
+    btn.textContent = '팔로잉';
+  }
+}
+
+const trendingList = document.getElementById('trendingList');
+trendingTags.forEach(tag => {
+  trendingList.insertAdjacentHTML('beforeend', `<span class="trending-tag">${tag}</span>`);
+});
+
+// Modal
+function openModal() {
+  document.getElementById('postModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('postModal').classList.remove('open');
+  document.body.style.overflow = '';
+  document.getElementById('postText').value = '';
+  removePreviewImg();
+  document.getElementById('shareBtn').classList.remove('active');
+}
+function toggleShareBtn() {
+  const text = document.getElementById('postText').value.trim();
+  document.getElementById('shareBtn').classList.toggle('active', text.length > 0);
+}
+
+let selectedImgUrl = '';
+const unsplashNewPostImages = [
+  'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=800&fit=crop',
+  'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&h=800&fit=crop',
+  'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=800&fit=crop',
+];
+
+function previewImage(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    selectedImgUrl = ev.target.result;
+    document.getElementById('previewImg').src = selectedImgUrl;
+    document.getElementById('imgPreview').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function removePreviewImg() {
+  selectedImgUrl = '';
+  document.getElementById('imgPreview').style.display = 'none';
+  document.getElementById('previewImg').src = '';
+  document.getElementById('fileInput').value = '';
+}
+
+function submitPost() {
+  const text = document.getElementById('postText').value.trim();
+  if (!text) return;
+  const img = selectedImgUrl || unsplashNewPostImages[Math.floor(Math.random() * unsplashNewPostImages.length)];
+  posts.unshift({
+    user: 'design_master', name: '김디자인',
+    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop',
+    location: '', image: img,
+    likes: 0, caption: text,
+    comments: [], time: '방금 전'
+  });
+  // Shift liked indices
+  const newLiked = new Set();
+  likedPosts.forEach(v => newLiked.add(v + 1));
+  likedPosts.clear();
+  newLiked.forEach(v => likedPosts.add(v));
+  closeModal();
+  renderFeed();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+// Close modal on overlay click
+document.getElementById('postModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// Init
+renderFeed();
+</script>
+</body>
+</html>

@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProSound X1 Pro - 프리미엄 무선 이어폰 | TechStore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --black: #1d1d1f;
+  --gray-900: #333336;
+  --gray-700: #56565a;
+  --gray-500: #86868b;
+  --gray-300: #d2d2d7;
+  --gray-100: #f5f5f7;
+  --white: #ffffff;
+  --blue: #0071e3;
+  --blue-hover: #0077ed;
+  --green: #30d158;
+  --orange: #ff9f0a;
+  --red: #ff453a;
+  --gold: #f5c518;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+  --shadow-xl: 0 16px 48px rgba(0,0,0,0.16);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --transition: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--black);
+  background: var(--white);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ─── NAV ─── */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--black);
+  text-decoration: none;
+}
+
+.nav-logo span { color: var(--blue); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--gray-700);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.nav-links a:hover { color: var(--black); }
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--gray-100);
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.nav-search:hover { background: var(--gray-300); }
+
+.nav-search svg { width: 16px; height: 16px; color: var(--gray-500); }
+.nav-search span { font-size: 13px; color: var(--gray-500); font-family: inherit; }
+
+.cart-btn {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  transition: transform var(--transition);
+}
+
+.cart-btn:hover { transform: scale(1.1); }
+.cart-btn svg { width: 22px; height: 22px; color: var(--black); }
+
+.cart-badge {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  background: var(--blue);
+  color: var(--white);
+  font-size: 10px;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition);
+}
+
+.nav-mobile-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.nav-mobile-toggle svg { width: 24px; height: 24px; }
+
+/* ─── BREADCRUMB ─── */
+.breadcrumb {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--gray-500);
+}
+
+.breadcrumb a {
+  color: var(--gray-500);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.breadcrumb a:hover { color: var(--blue); }
+.breadcrumb span { color: var(--gray-300); }
+
+/* ─── PRODUCT SECTION ─── */
+.product-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 24px 64px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: start;
+}
+
+/* Gallery */
+.gallery {
+  position: sticky;
+  top: 80px;
+}
+
+.gallery-main {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--radius-xl);
+  background: var(--gray-100);
+  overflow: hidden;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.gallery-main img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.gallery-main img.zoom {
+  transform: scale(1.5);
+  cursor: zoom-out;
+}
+
+.gallery-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: var(--red);
+  color: var(--white);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+  z-index: 2;
+}
+
+.gallery-thumbs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.gallery-thumb {
+  aspect-ratio: 1;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+  background: var(--gray-100);
+}
+
+.gallery-thumb:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.gallery-thumb.active {
+  border-color: var(--black);
+}
+
+.gallery-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Product Info */
+.product-info {
+  padding-top: 8px;
+}
+
+.product-tag {
+  display: inline-block;
+  background: var(--blue);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.product-title {
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -1px;
+  margin-bottom: 8px;
+  color: var(--black);
+}
+
+.product-subtitle {
+  font-size: 16px;
+  color: var(--gray-500);
+  margin-bottom: 20px;
+  font-weight: 400;
+}
+
+.rating-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stars {
+  display: flex;
+  gap: 2px;
+}
+
+.stars svg {
+  width: 18px;
+  height: 18px;
+  fill: var(--gold);
+}
+
+.stars svg.half {
+  fill: url(#half-star-grad);
+}
+
+.rating-score {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--black);
+}
+
+.rating-count {
+  font-size: 14px;
+  color: var(--gray-500);
+}
+
+.rating-count a {
+  color: var(--blue);
+  text-decoration: none;
+}
+
+.rating-count a:hover { text-decoration: underline; }
+
+/* Divider */
+.divider {
+  height: 1px;
+  background: var(--gray-300);
+  margin: 24px 0;
+  opacity: 0.5;
+}
+
+/* Price */
+.price-block { margin-bottom: 28px; }
+
+.price-current {
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: var(--black);
+}
+
+.price-original {
+  font-size: 20px;
+  color: var(--gray-500);
+  text-decoration: line-through;
+  margin-left: 12px;
+  font-weight: 400;
+}
+
+.price-discount {
+  display: inline-block;
+  background: rgba(255,69,58,0.1);
+  color: var(--red);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin-left: 12px;
+}
+
+.price-info {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--gray-500);
+}
+
+.price-info svg {
+  width: 14px;
+  height: 14px;
+  vertical-align: -2px;
+  margin-right: 4px;
+}
+
+/* Color picker */
+.option-label {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--black);
+}
+
+.option-label span {
+  font-weight: 400;
+  color: var(--gray-500);
+}
+
+.color-options {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.color-swatch {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  position: relative;
+  transition: transform var(--transition), box-shadow var(--transition);
+  outline: none;
+}
+
+.color-swatch::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  transition: border-color var(--transition);
+}
+
+.color-swatch:hover {
+  transform: scale(1.1);
+}
+
+.color-swatch.active::after {
+  border-color: var(--black);
+}
+
+.color-swatch[data-color="midnight"] { background: #1d1d1f; }
+.color-swatch[data-color="silver"] { background: linear-gradient(135deg, #e3e3e8, #c7c7cc); }
+.color-swatch[data-color="blue"] { background: linear-gradient(135deg, #5eb0ef, #0071e3); }
+
+/* Quantity */
+.quantity-block { margin-bottom: 28px; }
+
+.quantity-selector {
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid var(--gray-300);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--white);
+}
+
+.qty-btn {
+  width: 44px;
+  height: 44px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--black);
+  transition: background var(--transition);
+  user-select: none;
+}
+
+.qty-btn:hover { background: var(--gray-100); }
+.qty-btn:disabled { color: var(--gray-300); cursor: default; }
+.qty-btn:disabled:hover { background: none; }
+
+.qty-value {
+  width: 52px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: inherit;
+  border: none;
+  border-left: 1.5px solid var(--gray-300);
+  border-right: 1.5px solid var(--gray-300);
+  outline: none;
+  -moz-appearance: textfield;
+  height: 44px;
+}
+
+.qty-value::-webkit-outer-spin-button,
+.qty-value::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+/* Buttons */
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.btn {
+  flex: 1;
+  height: 56px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn svg { width: 20px; height: 20px; }
+
+.btn-primary {
+  background: var(--black);
+  color: var(--white);
+}
+
+.btn-primary:hover {
+  background: var(--gray-900);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-primary:active { transform: translateY(0); }
+
+.btn-secondary {
+  background: var(--blue);
+  color: var(--white);
+}
+
+.btn-secondary:hover {
+  background: var(--blue-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0,113,227,0.3);
+}
+
+.btn-secondary:active { transform: translateY(0); }
+
+.btn-icon {
+  flex: none;
+  width: 56px;
+  background: var(--gray-100);
+  color: var(--gray-700);
+}
+
+.btn-icon:hover {
+  background: var(--gray-300);
+  color: var(--black);
+}
+
+/* Delivery info */
+.delivery-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background: var(--gray-100);
+  border-radius: var(--radius-md);
+}
+
+.delivery-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.delivery-row svg {
+  width: 20px;
+  height: 20px;
+  color: var(--blue);
+  flex-shrink: 0;
+}
+
+.delivery-row strong { font-weight: 600; }
+
+/* ─── TABS ─── */
+.tabs-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+.tabs-header {
+  display: flex;
+  border-bottom: 1px solid var(--gray-300);
+  margin-bottom: 40px;
+}
+
+.tab-btn {
+  padding: 16px 32px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--gray-500);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color var(--transition), border-color var(--transition);
+  position: relative;
+}
+
+.tab-btn:hover { color: var(--black); }
+
+.tab-btn.active {
+  color: var(--black);
+  border-bottom-color: var(--black);
+}
+
+.tab-content { display: none; }
+.tab-content.active { display: block; animation: fadeUp 0.4s ease; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Tab: Description */
+.desc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  margin-bottom: 48px;
+}
+
+.desc-grid.reverse { direction: rtl; }
+.desc-grid.reverse > * { direction: ltr; }
+
+.desc-image {
+  width: 100%;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+.desc-image img {
+  width: 100%;
+  display: block;
+  border-radius: var(--radius-xl);
+}
+
+.desc-text h3 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+.desc-text p {
+  font-size: 15px;
+  color: var(--gray-700);
+  line-height: 1.8;
+  margin-bottom: 16px;
+}
+
+.feature-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.feature-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--gray-700);
+}
+
+.feature-list li svg {
+  width: 18px;
+  height: 18px;
+  color: var(--green);
+  flex-shrink: 0;
+}
+
+/* Tab: Specs */
+.spec-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.spec-table tr {
+  border-bottom: 1px solid var(--gray-100);
+  transition: background var(--transition);
+}
+
+.spec-table tr:hover { background: var(--gray-100); }
+
+.spec-table th, .spec-table td {
+  padding: 16px 20px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.spec-table th {
+  font-weight: 600;
+  color: var(--black);
+  width: 200px;
+  background: var(--gray-100);
+  border-radius: 8px 0 0 8px;
+}
+
+.spec-table td {
+  color: var(--gray-700);
+}
+
+/* Tab: Reviews */
+.reviews-header {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 48px;
+  margin-bottom: 40px;
+  padding: 32px;
+  background: var(--gray-100);
+  border-radius: var(--radius-lg);
+}
+
+.reviews-score {
+  text-align: center;
+}
+
+.reviews-score .big-score {
+  font-size: 56px;
+  font-weight: 800;
+  letter-spacing: -2px;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.reviews-score .stars-row {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+  margin-bottom: 4px;
+}
+
+.reviews-score .stars-row svg { width: 16px; height: 16px; fill: var(--gold); }
+
+.reviews-score .total {
+  font-size: 13px;
+  color: var(--gray-500);
+}
+
+.rating-bars {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.bar-row .label {
+  width: 40px;
+  text-align: right;
+  font-weight: 500;
+  color: var(--gray-700);
+}
+
+.bar-track {
+  flex: 1;
+  height: 8px;
+  background: rgba(0,0,0,0.06);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background: var(--gold);
+  border-radius: 4px;
+  transition: width 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.bar-row .count {
+  width: 36px;
+  font-size: 12px;
+  color: var(--gray-500);
+}
+
+/* Review cards */
+.review-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.review-card {
+  padding: 24px;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-md);
+  transition: box-shadow var(--transition);
+}
+
+.review-card:hover { box-shadow: var(--shadow-md); }
+
+.review-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.review-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--gray-700);
+}
+
+.review-meta { flex: 1; }
+
+.review-meta .name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.review-meta .date {
+  font-size: 12px;
+  color: var(--gray-500);
+}
+
+.review-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.review-stars svg { width: 14px; height: 14px; fill: var(--gold); }
+.review-stars svg.empty { fill: var(--gray-300); }
+
+.review-body {
+  font-size: 14px;
+  color: var(--gray-700);
+  line-height: 1.7;
+}
+
+.review-verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--green);
+  font-weight: 500;
+}
+
+.review-verified svg { width: 14px; height: 14px; }
+
+/* ─── RECOMMENDATIONS ─── */
+.reco-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+.reco-section h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 32px;
+  letter-spacing: -0.5px;
+}
+
+.reco-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.reco-card {
+  background: var(--gray-100);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition);
+  text-decoration: none;
+  color: inherit;
+}
+
+.reco-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-xl);
+}
+
+.reco-card-img {
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+
+.reco-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.reco-card:hover .reco-card-img img { transform: scale(1.05); }
+
+.reco-card-body { padding: 16px 20px 20px; }
+
+.reco-card-body h4 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.reco-card-body .reco-price {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.reco-card-body .reco-price-old {
+  font-size: 13px;
+  color: var(--gray-500);
+  text-decoration: line-through;
+  margin-left: 6px;
+  font-weight: 400;
+}
+
+/* ─── CART PANEL ─── */
+.cart-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 200;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition), visibility var(--transition);
+}
+
+.cart-overlay.open { opacity: 1; visibility: visible; }
+
+.cart-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 420px;
+  max-width: 100%;
+  height: 100%;
+  background: var(--white);
+  z-index: 201;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+  display: flex;
+  flex-direction: column;
+  box-shadow: -8px 0 32px rgba(0,0,0,0.1);
+}
+
+.cart-panel.open { transform: translateX(0); }
+
+.cart-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.cart-panel-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.cart-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--gray-100);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition);
+}
+
+.cart-close:hover { background: var(--gray-300); }
+.cart-close svg { width: 18px; height: 18px; }
+
+.cart-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.cart-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--gray-500);
+}
+
+.cart-empty svg {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+  color: var(--gray-300);
+}
+
+.cart-empty p {
+  font-size: 15px;
+}
+
+.cart-item {
+  display: flex;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--gray-100);
+  animation: fadeUp 0.3s ease;
+}
+
+.cart-item-img {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--gray-100);
+  flex-shrink: 0;
+}
+
+.cart-item-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cart-item-info { flex: 1; }
+
+.cart-item-info h4 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.cart-item-info .cart-item-variant {
+  font-size: 12px;
+  color: var(--gray-500);
+  margin-bottom: 8px;
+}
+
+.cart-item-info .cart-item-price {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.cart-item-remove {
+  background: none;
+  border: none;
+  color: var(--gray-500);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 4px;
+  transition: color var(--transition);
+}
+
+.cart-item-remove:hover { color: var(--red); }
+
+.cart-panel-footer {
+  padding: 20px 24px;
+  border-top: 1px solid var(--gray-100);
+}
+
+.cart-total-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  font-size: 16px;
+}
+
+.cart-total-row .label { color: var(--gray-700); }
+.cart-total-row .value { font-weight: 700; font-size: 20px; }
+
+.cart-checkout-btn {
+  width: 100%;
+  height: 52px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--blue);
+  color: var(--white);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.cart-checkout-btn:hover { background: var(--blue-hover); }
+
+/* ─── TOAST ─── */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--black);
+  color: var(--white);
+  padding: 14px 28px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 300;
+  box-shadow: var(--shadow-xl);
+  transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast svg { width: 20px; height: 20px; color: var(--green); }
+
+/* ─── FOOTER ─── */
+.footer {
+  background: var(--gray-100);
+  padding: 40px 24px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--gray-500);
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 1024px) {
+  .product-section { gap: 40px; }
+  .desc-grid { gap: 32px; }
+  .reco-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-mobile-toggle { display: block; }
+  .nav-search span { display: none; }
+
+  .product-section {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding-bottom: 40px;
+  }
+
+  .gallery { position: static; }
+
+  .product-title { font-size: 28px; }
+  .price-current { font-size: 32px; }
+
+  .desc-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .desc-grid.reverse { direction: ltr; }
+
+  .reviews-header {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .tab-btn {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  .reco-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+  .action-buttons { flex-wrap: wrap; }
+  .btn { min-width: calc(50% - 6px); }
+
+  .spec-table th { width: 120px; }
+}
+
+@media (max-width: 480px) {
+  .nav-inner { padding: 0 16px; }
+  .product-section { padding: 12px 16px 32px; }
+  .tabs-section { padding: 0 16px 48px; }
+  .reco-section { padding: 0 16px 48px; }
+
+  .gallery-thumbs { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .product-title { font-size: 24px; }
+  .price-current { font-size: 28px; }
+  .price-original { font-size: 16px; }
+
+  .reco-grid { grid-template-columns: 1fr 1fr; }
+
+  .cart-panel { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- SVG defs -->
+<svg style="display:none">
+  <defs>
+    <linearGradient id="half-star-grad">
+      <stop offset="50%" stop-color="#f5c518"/>
+      <stop offset="50%" stop-color="#d2d2d7"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">Tech<span>Store</span></a>
+    <ul class="nav-links">
+      <li><a href="#">이어폰</a></li>
+      <li><a href="#">헤드폰</a></li>
+      <li><a href="#">스피커</a></li>
+      <li><a href="#">액세서리</a></li>
+      <li><a href="#">고객지원</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="nav-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <span>검색</span>
+      </button>
+      <button class="cart-btn" onclick="toggleCart()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+      <button class="nav-mobile-toggle" onclick="document.querySelector('.nav-links').classList.toggle('show')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <a href="#">홈</a> <span>/</span>
+  <a href="#">이어폰</a> <span>/</span>
+  <a href="#">무선 이어폰</a> <span>/</span>
+  ProSound X1 Pro
+</div>
+
+<!-- PRODUCT -->
+<section class="product-section">
+  <!-- Gallery -->
+  <div class="gallery">
+    <div class="gallery-main">
+      <span class="gallery-badge">BEST</span>
+      <img id="mainImage" src="https://images.unsplash.com/photo-1590658268037-6bf12f032f55?w=800&q=80" alt="ProSound X1 Pro 무선 이어폰" onclick="this.classList.toggle('zoom')">
+    </div>
+    <div class="gallery-thumbs">
+      <div class="gallery-thumb active" onclick="changeImage(0, this)">
+        <img src="https://images.unsplash.com/photo-1590658268037-6bf12f032f55?w=200&q=80" alt="썸네일 1">
+      </div>
+      <div class="gallery-thumb" onclick="changeImage(1, this)">
+        <img src="https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=200&q=80" alt="썸네일 2">
+      </div>
+      <div class="gallery-thumb" onclick="changeImage(2, this)">
+        <img src="https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=200&q=80" alt="썸네일 3">
+      </div>
+      <div class="gallery-thumb" onclick="changeImage(3, this)">
+        <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&q=80" alt="썸네일 4">
+      </div>
+    </div>
+  </div>
+
+  <!-- Info -->
+  <div class="product-info">
+    <span class="product-tag">신제품</span>
+    <h1 class="product-title">ProSound X1 Pro</h1>
+    <p class="product-subtitle">프리미엄 액티브 노이즈 캔슬링 무선 이어폰</p>
+
+    <div class="rating-row">
+      <div class="stars">
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24" class="half"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </div>
+      <span class="rating-score">4.8</span>
+      <span class="rating-count"><a href="#" onclick="switchTab(2);return false">2,847개 리뷰</a></span>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="price-block">
+      <span class="price-current">₩259,000</span>
+      <span class="price-original">₩349,000</span>
+      <span class="price-discount">26% OFF</span>
+      <div class="price-info">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+        무료 배송 · 카드 최대 12개월 무이자 할부
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Color -->
+    <div class="color-block">
+      <p class="option-label">색상: <span id="colorName">미드나이트 블랙</span></p>
+      <div class="color-options">
+        <button class="color-swatch active" data-color="midnight" data-name="미드나이트 블랙" onclick="selectColor(this)"></button>
+        <button class="color-swatch" data-color="silver" data-name="스타라이트 실버" onclick="selectColor(this)"></button>
+        <button class="color-swatch" data-color="blue" data-name="오션 블루" onclick="selectColor(this)"></button>
+      </div>
+    </div>
+
+    <!-- Quantity -->
+    <div class="quantity-block">
+      <p class="option-label">수량</p>
+      <div class="quantity-selector">
+        <button class="qty-btn" onclick="changeQty(-1)" id="qtyMinus" disabled>&minus;</button>
+        <input type="number" class="qty-value" id="qtyValue" value="1" min="1" max="10" onchange="validateQty()">
+        <button class="qty-btn" onclick="changeQty(1)">&plus;</button>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="action-buttons">
+      <button class="btn btn-primary" onclick="addToCart()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        장바구니 담기
+      </button>
+      <button class="btn btn-secondary" onclick="buyNow()">바로 구매</button>
+      <button class="btn btn-icon" title="위시리스트">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/></svg>
+      </button>
+    </div>
+
+    <!-- Delivery -->
+    <div class="delivery-info">
+      <div class="delivery-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="16" height="13" x="6" y="4" rx="2"/><path d="m2 7 4-3"/><path d="m22 7-4-3"/><path d="M10 4v4"/><path d="M14 4v4"/></svg>
+        <span><strong>오늘 출발</strong> — 지금 주문 시 내일 도착</span>
+      </div>
+      <div class="delivery-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
+        <span><strong>1년 무상 보증</strong> — 정품 등록 시 6개월 추가</span>
+      </div>
+      <div class="delivery-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+        <span><strong>30일 무료 반품</strong> — 개봉 후에도 가능</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<section class="tabs-section">
+  <div class="tabs-header">
+    <button class="tab-btn active" onclick="switchTab(0)">상품 설명</button>
+    <button class="tab-btn" onclick="switchTab(1)">상세 스펙</button>
+    <button class="tab-btn" onclick="switchTab(2)">리뷰 (2,847)</button>
+  </div>
+
+  <!-- Tab 0: Description -->
+  <div class="tab-content active" id="tab0">
+    <div class="desc-grid">
+      <div class="desc-image">
+        <img src="https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=600&q=80" alt="노이즈 캔슬링">
+      </div>
+      <div class="desc-text">
+        <h3>업계 최고 수준의 노이즈 캔슬링</h3>
+        <p>독자 개발 ANC 칩이 주변 소음을 최대 98%까지 차단합니다. 비행기 안에서도, 카페에서도, 오직 음악에만 집중할 수 있습니다.</p>
+        <ul class="feature-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>적응형 ANC 3단계 자동 조절</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>외부 소리 듣기 (투명 모드)</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>바람 소음 저감 기술</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="desc-grid reverse">
+      <div class="desc-image">
+        <img src="https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=600&q=80" alt="사운드 퀄리티">
+      </div>
+      <div class="desc-text">
+        <h3>하이파이 사운드 그 이상</h3>
+        <p>커스텀 11mm 드라이버와 LDAC 코덱 지원으로 스튜디오급 음질을 무선으로 경험하세요. 공간 오디오가 360도 입체감을 선사합니다.</p>
+        <ul class="feature-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Hi-Res Audio 인증 (LDAC)</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Dolby Atmos 공간 오디오</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>맞춤형 EQ 프로필 설정</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 1: Specs -->
+  <div class="tab-content" id="tab1">
+    <table class="spec-table">
+      <tr><th>드라이버</th><td>커스텀 11mm 다이나믹 드라이버</td></tr>
+      <tr><th>주파수 응답</th><td>20Hz ~ 40kHz</td></tr>
+      <tr><th>노이즈 캔슬링</th><td>하이브리드 ANC (최대 -42dB)</td></tr>
+      <tr><th>코덱</th><td>SBC, AAC, LDAC, aptX Adaptive</td></tr>
+      <tr><th>블루투스</th><td>Bluetooth 5.3</td></tr>
+      <tr><th>배터리</th><td>이어폰 8시간 / 케이스 포함 36시간</td></tr>
+      <tr><th>충전</th><td>USB-C / Qi 무선 충전</td></tr>
+      <tr><th>급속 충전</th><td>10분 충전 → 2시간 재생</td></tr>
+      <tr><th>방수 등급</th><td>IPX5 (생활 방수)</td></tr>
+      <tr><th>무게</th><td>이어폰 5.4g (개당) / 케이스 48g</td></tr>
+      <tr><th>연결</th><td>멀티포인트 (2대 동시 연결)</td></tr>
+      <tr><th>마이크</th><td>6마이크 어레이 (통화 노이즈 캔슬링)</td></tr>
+      <tr><th>센서</th><td>착용 감지, 터치 컨트롤, 헤드 트래킹</td></tr>
+      <tr><th>호환성</th><td>iOS / Android / Windows / macOS</td></tr>
+      <tr><th>구성품</th><td>이어폰, 충전 케이스, USB-C 케이블, 이어팁(S/M/L), 설명서</td></tr>
+    </table>
+  </div>
+
+  <!-- Tab 2: Reviews -->
+  <div class="tab-content" id="tab2">
+    <div class="reviews-header">
+      <div class="reviews-score">
+        <div class="big-score">4.8</div>
+        <div class="stars-row">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" style="fill:url(#half-star-grad)"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <p class="total">2,847개 리뷰</p>
+      </div>
+      <div class="rating-bars">
+        <div class="bar-row"><span class="label">5점</span><div class="bar-track"><div class="bar-fill" style="width:72%"></div></div><span class="count">2,050</span></div>
+        <div class="bar-row"><span class="label">4점</span><div class="bar-track"><div class="bar-fill" style="width:18%"></div></div><span class="count">512</span></div>
+        <div class="bar-row"><span class="label">3점</span><div class="bar-track"><div class="bar-fill" style="width:6%"></div></div><span class="count">171</span></div>
+        <div class="bar-row"><span class="label">2점</span><div class="bar-track"><div class="bar-fill" style="width:3%"></div></div><span class="count">85</span></div>
+        <div class="bar-row"><span class="label">1점</span><div class="bar-track"><div class="bar-fill" style="width:1%"></div></div><span class="count">29</span></div>
+      </div>
+    </div>
+
+    <div class="review-list">
+      <div class="review-card">
+        <div class="review-top">
+          <div class="review-avatar">김</div>
+          <div class="review-meta">
+            <div class="name">김민수</div>
+            <div class="date">2026.03.10</div>
+          </div>
+          <div class="review-stars">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+        </div>
+        <div class="review-body">노이즈 캔슬링 성능이 정말 놀랍습니다. 지하철에서 음악 들을 때 주변 소음이 거의 안 들려요. 음질도 이 가격대에서는 최고 수준이라고 생각합니다. 착용감도 가볍고 오래 써도 귀가 안 아파요.</div>
+        <span class="review-verified"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>구매 인증 리뷰</span>
+      </div>
+
+      <div class="review-card">
+        <div class="review-top">
+          <div class="review-avatar">이</div>
+          <div class="review-meta">
+            <div class="name">이서연</div>
+            <div class="date">2026.03.08</div>
+          </div>
+          <div class="review-stars">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+        </div>
+        <div class="review-body">오션 블루 색상 구매했는데 실물이 더 예뻐요! 케이스도 고급스럽고, 무선 충전 되는 게 너무 편합니다. 통화 품질도 상대방이 잘 들린다고 하네요. 강력 추천합니다.</div>
+        <span class="review-verified"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>구매 인증 리뷰</span>
+      </div>
+
+      <div class="review-card">
+        <div class="review-top">
+          <div class="review-avatar">박</div>
+          <div class="review-meta">
+            <div class="name">박준호</div>
+            <div class="date">2026.03.05</div>
+          </div>
+          <div class="review-stars">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24" class="empty"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+        </div>
+        <div class="review-body">음질과 ANC는 확실히 좋습니다. 다만 이어팁이 조금 딱딱한 편이라 컴플라이 폼팁으로 교체하니 착용감이 훨씬 나아졌어요. 배터리도 공식 스펙만큼 잘 가는 편입니다.</div>
+        <span class="review-verified"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>구매 인증 리뷰</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RECOMMENDATIONS -->
+<section class="reco-section">
+  <h2>함께 보면 좋은 상품</h2>
+  <div class="reco-grid">
+    <a href="#" class="reco-card">
+      <div class="reco-card-img"><img src="https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400&q=80" alt="무선 헤드폰"></div>
+      <div class="reco-card-body">
+        <h4>ProSound H3 헤드폰</h4>
+        <span class="reco-price">₩189,000 <span class="reco-price-old">₩249,000</span></span>
+      </div>
+    </a>
+    <a href="#" class="reco-card">
+      <div class="reco-card-img"><img src="https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&q=80" alt="무선 충전기"></div>
+      <div class="reco-card-body">
+        <h4>MagCharge 무선 충전 패드</h4>
+        <span class="reco-price">₩39,000 <span class="reco-price-old">₩55,000</span></span>
+      </div>
+    </a>
+    <a href="#" class="reco-card">
+      <div class="reco-card-img"><img src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80" alt="이어폰 케이스"></div>
+      <div class="reco-card-body">
+        <h4>X1 Pro 실리콘 케이스</h4>
+        <span class="reco-price">₩19,000</span>
+      </div>
+    </a>
+    <a href="#" class="reco-card">
+      <div class="reco-card-img"><img src="https://images.unsplash.com/photo-1524678606370-a47ad25cb82a?w=400&q=80" alt="블루투스 스피커"></div>
+      <div class="reco-card-body">
+        <h4>SoundBox Mini 스피커</h4>
+        <span class="reco-price">₩79,000 <span class="reco-price-old">₩99,000</span></span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>&copy; 2026 TechStore. All rights reserved. 이 페이지는 포트폴리오 데모용입니다.</p>
+</footer>
+
+<!-- CART PANEL -->
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-panel" id="cartPanel">
+  <div class="cart-panel-header">
+    <h3>장바구니</h3>
+    <button class="cart-close" onclick="toggleCart()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+  </div>
+  <div class="cart-panel-body" id="cartBody">
+    <div class="cart-empty" id="cartEmpty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      <p>장바구니가 비어있습니다</p>
+    </div>
+  </div>
+  <div class="cart-panel-footer" id="cartFooter" style="display:none">
+    <div class="cart-total-row">
+      <span class="label">합계</span>
+      <span class="value" id="cartTotal">₩0</span>
+    </div>
+    <button class="cart-checkout-btn" onclick="alert('결제 페이지로 이동합니다 (데모)')">결제하기</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toastMsg">장바구니에 추가되었습니다</span>
+</div>
+
+<script>
+// ─── Image Gallery ───
+const images = [
+  'https://images.unsplash.com/photo-1590658268037-6bf12f032f55?w=800&q=80',
+  'https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=800&q=80',
+  'https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=800&q=80',
+  'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80'
+];
+
+function changeImage(index, thumb) {
+  const main = document.getElementById('mainImage');
+  main.classList.remove('zoom');
+  main.style.opacity = '0';
+  setTimeout(() => {
+    main.src = images[index];
+    main.style.opacity = '1';
+  }, 200);
+  document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+  thumb.classList.add('active');
+}
+
+// ─── Color Selection ───
+function selectColor(btn) {
+  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('colorName').textContent = btn.dataset.name;
+}
+
+// ─── Quantity ───
+function changeQty(delta) {
+  const input = document.getElementById('qtyValue');
+  let val = parseInt(input.value) + delta;
+  val = Math.max(1, Math.min(10, val));
+  input.value = val;
+  document.getElementById('qtyMinus').disabled = val <= 1;
+}
+
+function validateQty() {
+  const input = document.getElementById('qtyValue');
+  let val = parseInt(input.value);
+  if (isNaN(val) || val < 1) val = 1;
+  if (val > 10) val = 10;
+  input.value = val;
+  document.getElementById('qtyMinus').disabled = val <= 1;
+}
+
+// ─── Tabs ───
+function switchTab(index) {
+  document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', i === index);
+  });
+  document.querySelectorAll('.tab-content').forEach((tab, i) => {
+    tab.classList.toggle('active', i === index);
+  });
+  if (index === 2) {
+    document.querySelectorAll('.bar-fill').forEach(bar => {
+      const w = bar.style.width;
+      bar.style.width = '0';
+      setTimeout(() => { bar.style.width = w; }, 100);
+    });
+  }
+  document.querySelector('.tabs-header').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ─── Cart ───
+let cart = [];
+
+function toggleCart() {
+  const overlay = document.getElementById('cartOverlay');
+  const panel = document.getElementById('cartPanel');
+  const isOpen = panel.classList.contains('open');
+  if (isOpen) {
+    panel.classList.remove('open');
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  } else {
+    panel.classList.add('open');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function addToCart() {
+  const color = document.querySelector('.color-swatch.active').dataset.name;
+  const qty = parseInt(document.getElementById('qtyValue').value);
+  const price = 259000;
+
+  const existing = cart.find(item => item.color === color);
+  if (existing) {
+    existing.qty += qty;
+  } else {
+    cart.push({
+      name: 'ProSound X1 Pro',
+      color: color,
+      price: price,
+      qty: qty,
+      image: images[0]
+    });
+  }
+
+  updateCartUI();
+  showToast('장바구니에 추가되었습니다');
+  setTimeout(() => toggleCart(), 600);
+}
+
+function buyNow() {
+  addToCart();
+  setTimeout(() => alert('결제 페이지로 이동합니다 (데모)'), 800);
+}
+
+function removeFromCart(index) {
+  cart.splice(index, 1);
+  updateCartUI();
+  if (cart.length === 0) {
+    toggleCart();
+  }
+}
+
+function updateCartUI() {
+  const badge = document.getElementById('cartBadge');
+  const body = document.getElementById('cartBody');
+  const empty = document.getElementById('cartEmpty');
+  const footer = document.getElementById('cartFooter');
+  const totalEl = document.getElementById('cartTotal');
+
+  const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+  const totalPrice = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+
+  badge.textContent = totalQty;
+  badge.style.transform = 'scale(1.3)';
+  setTimeout(() => { badge.style.transform = 'scale(1)'; }, 200);
+
+  if (cart.length === 0) {
+    empty.style.display = '';
+    footer.style.display = 'none';
+    body.querySelectorAll('.cart-item').forEach(el => el.remove());
+    return;
+  }
+
+  empty.style.display = 'none';
+  footer.style.display = '';
+  totalEl.textContent = '₩' + totalPrice.toLocaleString();
+
+  body.querySelectorAll('.cart-item').forEach(el => el.remove());
+
+  cart.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'cart-item';
+    div.innerHTML = `
+      <div class="cart-item-img"><img src="${item.image}" alt="${item.name}"></div>
+      <div class="cart-item-info">
+        <h4>${item.name}</h4>
+        <div class="cart-item-variant">${item.color} · ${item.qty}개</div>
+        <div class="cart-item-price">₩${(item.price * item.qty).toLocaleString()}</div>
+      </div>
+      <button class="cart-item-remove" onclick="removeFromCart(${i})">삭제</button>
+    `;
+    body.appendChild(div);
+  });
+}
+
+// ─── Toast ───
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// ─── Animate bars on scroll ───
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.bar-fill').forEach(bar => {
+        const w = bar.style.width;
+        bar.style.width = '0';
+        setTimeout(() => { bar.style.width = w; }, 200);
+      });
+    }
+  });
+}, { threshold: 0.3 });
+
+const reviewsHeader = document.querySelector('.reviews-header');
+if (reviewsHeader) observer.observe(reviewsHeader);
+</script>
+</body>
+</html>

@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>뷰티살롱 온라인 예약</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --mint: #2dd4a8;
+  --mint-light: #a7f3d0;
+  --mint-pale: #ecfdf5;
+  --teal: #0d9488;
+  --teal-dark: #0f766e;
+  --white: #ffffff;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+  --radius: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--gray-50);
+  color: var(--gray-800);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── Header ── */
+.header {
+  background: linear-gradient(135deg, var(--teal) 0%, var(--mint) 100%);
+  color: var(--white);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(13,148,136,0.3);
+}
+
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-icon {
+  width: 44px;
+  height: 44px;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.logo h1 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.logo p {
+  font-size: 12px;
+  opacity: 0.85;
+  font-weight: 400;
+}
+
+.header-badge {
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.header-badge .dot {
+  width: 8px;
+  height: 8px;
+  background: #34d399;
+  border-radius: 50%;
+  animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ── Progress Steps ── */
+.progress-bar {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px 0;
+}
+
+.steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  position: relative;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 2;
+  cursor: default;
+}
+
+.step-num {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  background: var(--gray-200);
+  color: var(--gray-400);
+  transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+  border: 3px solid transparent;
+}
+
+.step.active .step-num {
+  background: var(--teal);
+  color: var(--white);
+  border-color: var(--mint-light);
+  box-shadow: 0 0 0 4px rgba(45,212,168,0.2);
+}
+
+.step.completed .step-num {
+  background: var(--mint);
+  color: var(--white);
+}
+
+.step-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--gray-400);
+  transition: color 0.3s;
+  white-space: nowrap;
+}
+
+.step.active .step-label,
+.step.completed .step-label {
+  color: var(--teal);
+  font-weight: 600;
+}
+
+.step-line {
+  width: 60px;
+  height: 3px;
+  background: var(--gray-200);
+  border-radius: 2px;
+  margin-bottom: 24px;
+  transition: background 0.4s;
+}
+
+.step-line.done {
+  background: var(--mint);
+}
+
+/* ── Main Layout ── */
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.booking-section {
+  display: none;
+  animation: fadeSlideIn 0.5s ease;
+}
+
+.booking-section.active {
+  display: block;
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.section-header {
+  margin-bottom: 24px;
+}
+
+.section-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 4px;
+  letter-spacing: -0.5px;
+}
+
+.section-header p {
+  font-size: 14px;
+  color: var(--gray-500);
+}
+
+/* ── Card Base ── */
+.card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--gray-100);
+  overflow: hidden;
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+
+/* ── Service Selection ── */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.service-card {
+  background: var(--white);
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  position: relative;
+  overflow: hidden;
+}
+
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--teal), var(--mint));
+  transform: scaleX(0);
+  transition: transform 0.3s;
+}
+
+.service-card:hover {
+  border-color: var(--mint-light);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.service-card.selected {
+  border-color: var(--teal);
+  background: var(--mint-pale);
+  box-shadow: 0 0 0 3px rgba(13,148,136,0.15);
+}
+
+.service-card.selected::before {
+  transform: scaleX(1);
+}
+
+.service-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.service-card:nth-child(1) .service-icon { background: #fef3c7; }
+.service-card:nth-child(2) .service-icon { background: #fce7f3; }
+.service-card:nth-child(3) .service-icon { background: #dbeafe; }
+.service-card:nth-child(4) .service-icon { background: #ede9fe; }
+.service-card:nth-child(5) .service-icon { background: #d1fae5; }
+.service-card:nth-child(6) .service-icon { background: #fee2e2; }
+
+.service-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin-bottom: 4px;
+}
+
+.service-desc {
+  font-size: 13px;
+  color: var(--gray-500);
+  margin-bottom: 12px;
+}
+
+.service-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.service-duration {
+  font-size: 12px;
+  color: var(--gray-400);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.service-price {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--teal);
+}
+
+.service-check {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--teal);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.3s;
+}
+
+.service-card.selected .service-check {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ── Staff Selection ── */
+.staff-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.staff-card {
+  background: var(--white);
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  position: relative;
+}
+
+.staff-card:hover {
+  border-color: var(--mint-light);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.staff-card.selected {
+  border-color: var(--teal);
+  background: var(--mint-pale);
+  box-shadow: 0 0 0 3px rgba(13,148,136,0.15);
+}
+
+.staff-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin: 0 auto 14px;
+  overflow: hidden;
+  border: 3px solid var(--gray-200);
+  transition: border-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  background: linear-gradient(135deg, var(--mint-pale), #f0fdfa);
+}
+
+.staff-card.selected .staff-avatar {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(13,148,136,0.2);
+}
+
+.staff-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin-bottom: 2px;
+}
+
+.staff-role {
+  font-size: 13px;
+  color: var(--gray-500);
+  margin-bottom: 8px;
+}
+
+.staff-rating {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--gray-600);
+}
+
+.staff-rating .stars {
+  color: #fbbf24;
+  letter-spacing: 1px;
+}
+
+.staff-check {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--teal);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.3s;
+}
+
+.staff-card.selected .staff-check {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ── Calendar ── */
+.calendar-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.calendar-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--gray-100);
+  padding: 24px;
+}
+
+.cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.cal-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+
+.cal-nav {
+  display: flex;
+  gap: 8px;
+}
+
+.cal-nav button {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--gray-200);
+  background: var(--white);
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--gray-600);
+  transition: all 0.2s;
+}
+
+.cal-nav button:hover {
+  background: var(--gray-50);
+  border-color: var(--gray-300);
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.cal-day-name {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gray-400);
+  padding: 8px 0;
+  text-transform: uppercase;
+}
+
+.cal-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--gray-700);
+  position: relative;
+}
+
+.cal-day:hover:not(.disabled):not(.empty) {
+  background: var(--mint-pale);
+  color: var(--teal);
+}
+
+.cal-day.today {
+  background: var(--gray-100);
+  font-weight: 700;
+}
+
+.cal-day.selected {
+  background: var(--teal);
+  color: var(--white);
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(13,148,136,0.3);
+}
+
+.cal-day.disabled {
+  color: var(--gray-300);
+  cursor: default;
+}
+
+.cal-day.empty {
+  cursor: default;
+}
+
+.cal-day.sunday { color: #ef4444; }
+.cal-day.sunday.disabled { color: #fca5a5; }
+.cal-day.sunday.selected { color: var(--white); }
+
+/* ── Time Slots ── */
+.time-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--gray-100);
+  padding: 24px;
+}
+
+.time-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 6px;
+}
+
+.time-card .selected-date {
+  font-size: 14px;
+  color: var(--teal);
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.time-period {
+  margin-bottom: 20px;
+}
+
+.time-period-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gray-400);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.time-slots {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.time-slot {
+  padding: 12px 8px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 10px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--gray-700);
+  background: var(--white);
+}
+
+.time-slot:hover:not(.disabled) {
+  border-color: var(--mint);
+  background: var(--mint-pale);
+  color: var(--teal);
+}
+
+.time-slot.selected {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: var(--white);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(13,148,136,0.3);
+}
+
+.time-slot.disabled {
+  color: var(--gray-300);
+  background: var(--gray-50);
+  cursor: default;
+  border-color: var(--gray-100);
+}
+
+.no-date-msg {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--gray-400);
+}
+
+.no-date-msg .icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.no-date-msg p {
+  font-size: 15px;
+}
+
+/* ── Booking Form ── */
+.form-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--gray-100);
+  padding: 32px;
+  max-width: 640px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gray-700);
+  margin-bottom: 6px;
+}
+
+.form-group label .required {
+  color: #ef4444;
+  margin-left: 2px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 10px;
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--gray-800);
+  background: var(--white);
+  transition: all 0.2s;
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(13,148,136,0.12);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--gray-400);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Summary sidebar */
+.form-layout {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 24px;
+  align-items: start;
+}
+
+.summary-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--gray-100);
+  padding: 24px;
+  position: sticky;
+  top: 100px;
+}
+
+.summary-card h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.summary-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--gray-50);
+}
+
+.summary-item:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.summary-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--mint-pale);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.summary-label {
+  font-size: 12px;
+  color: var(--gray-400);
+  font-weight: 500;
+}
+
+.summary-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gray-800);
+  margin-top: 2px;
+}
+
+.summary-total {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 2px solid var(--gray-100);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.summary-total .label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gray-600);
+}
+
+.summary-total .amount {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--teal);
+}
+
+/* ── Buttons ── */
+.btn-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+  justify-content: flex-end;
+}
+
+.btn {
+  padding: 14px 32px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--teal), var(--mint));
+  color: var(--white);
+  box-shadow: 0 4px 14px rgba(13,148,136,0.3);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 6px 20px rgba(13,148,136,0.4);
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  background: var(--white);
+  color: var(--gray-600);
+  border: 1.5px solid var(--gray-200);
+}
+
+.btn-secondary:hover {
+  background: var(--gray-50);
+  border-color: var(--gray-300);
+}
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+  padding: 24px;
+}
+
+.modal-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal {
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  max-width: 480px;
+  width: 100%;
+  padding: 0;
+  transform: scale(0.9) translateY(20px);
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+}
+
+.modal-overlay.show .modal {
+  transform: scale(1) translateY(0);
+}
+
+.modal-top {
+  background: linear-gradient(135deg, var(--teal), var(--mint));
+  padding: 40px 32px;
+  text-align: center;
+  color: var(--white);
+}
+
+.modal-top .check-circle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  animation: scaleIn 0.5s 0.3s both;
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+}
+
+.modal-top h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.modal-top p {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.modal-body {
+  padding: 28px 32px;
+}
+
+.modal-detail {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.modal-detail:last-child {
+  border-bottom: none;
+}
+
+.modal-detail .md-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--mint-pale);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.modal-detail .md-label {
+  font-size: 12px;
+  color: var(--gray-400);
+}
+
+.modal-detail .md-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--gray-800);
+}
+
+.modal-footer {
+  padding: 0 32px 28px;
+  display: flex;
+  gap: 12px;
+}
+
+.modal-footer .btn {
+  flex: 1;
+  justify-content: center;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .header-inner {
+    padding: 16px 20px;
+  }
+  .header-badge { display: none; }
+  .logo h1 { font-size: 18px; }
+
+  .steps { gap: 0; }
+  .step-line { width: 30px; }
+  .step-label { font-size: 10px; }
+  .step-num { width: 32px; height: 32px; font-size: 12px; }
+
+  .main { padding: 16px; }
+  .section-header h2 { font-size: 20px; }
+
+  .services-grid { grid-template-columns: 1fr; }
+  .staff-grid { grid-template-columns: repeat(2, 1fr); }
+
+  .calendar-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .time-slots {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .form-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-card {
+    position: static;
+  }
+
+  .btn-row {
+    flex-direction: column;
+  }
+  .btn-row .btn { width: 100%; justify-content: center; }
+
+  .modal-body { padding: 20px; }
+  .modal-footer { padding: 0 20px 20px; flex-direction: column; }
+}
+
+@media (max-width: 480px) {
+  .staff-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .staff-card { padding: 16px; }
+  .staff-avatar { width: 60px; height: 60px; font-size: 28px; }
+  .time-slots { grid-template-columns: repeat(2, 1fr); }
+  .service-card { padding: 18px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">✂️</div>
+      <div>
+        <h1>뷰티살롱 예약</h1>
+        <p>Beauty Salon Booking</p>
+      </div>
+    </div>
+    <div class="header-badge">
+      <span class="dot"></span>
+      온라인 예약 가능
+    </div>
+  </div>
+</header>
+
+<!-- Progress Steps -->
+<div class="progress-bar">
+  <div class="steps">
+    <div class="step active" data-step="1">
+      <div class="step-num">1</div>
+      <div class="step-label">서비스 선택</div>
+    </div>
+    <div class="step-line" id="line1"></div>
+    <div class="step" data-step="2">
+      <div class="step-num">2</div>
+      <div class="step-label">담당자 선택</div>
+    </div>
+    <div class="step-line" id="line2"></div>
+    <div class="step" data-step="3">
+      <div class="step-num">3</div>
+      <div class="step-label">날짜 / 시간</div>
+    </div>
+    <div class="step-line" id="line3"></div>
+    <div class="step" data-step="4">
+      <div class="step-num">4</div>
+      <div class="step-label">예약 정보</div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<main class="main">
+
+  <!-- Step 1: Service Selection -->
+  <section class="booking-section active" id="step1">
+    <div class="section-header">
+      <h2>어떤 서비스를 원하시나요?</h2>
+      <p>원하시는 시술을 선택해주세요</p>
+    </div>
+    <div class="services-grid" id="serviceGrid"></div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="toStep2" disabled>다음 단계 →</button>
+    </div>
+  </section>
+
+  <!-- Step 2: Staff Selection -->
+  <section class="booking-section" id="step2">
+    <div class="section-header">
+      <h2>담당자를 선택해주세요</h2>
+      <p>원하시는 디자이너 또는 네일 아티스트를 선택하세요</p>
+    </div>
+    <div class="staff-grid" id="staffGrid"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goToStep(1)">← 이전</button>
+      <button class="btn btn-primary" id="toStep3" disabled>다음 단계 →</button>
+    </div>
+  </section>
+
+  <!-- Step 3: Date & Time -->
+  <section class="booking-section" id="step3">
+    <div class="section-header">
+      <h2>날짜와 시간을 선택하세요</h2>
+      <p>원하시는 예약 날짜와 시간대를 선택해주세요</p>
+    </div>
+    <div class="calendar-wrapper">
+      <div class="calendar-card">
+        <div class="cal-header">
+          <h3 id="calTitle"></h3>
+          <div class="cal-nav">
+            <button onclick="changeMonth(-1)">‹</button>
+            <button onclick="changeMonth(1)">›</button>
+          </div>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+      </div>
+      <div class="time-card" id="timeCard">
+        <div class="no-date-msg" id="noDateMsg">
+          <div class="icon">📅</div>
+          <p>날짜를 먼저 선택해주세요</p>
+        </div>
+        <div id="timeContent" style="display:none;">
+          <h3>시간 선택</h3>
+          <div class="selected-date" id="selectedDateText"></div>
+          <div class="time-period">
+            <div class="time-period-label">오전</div>
+            <div class="time-slots" id="morningSlots"></div>
+          </div>
+          <div class="time-period">
+            <div class="time-period-label">오후</div>
+            <div class="time-slots" id="afternoonSlots"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goToStep(2)">← 이전</button>
+      <button class="btn btn-primary" id="toStep4" disabled>다음 단계 →</button>
+    </div>
+  </section>
+
+  <!-- Step 4: Booking Form -->
+  <section class="booking-section" id="step4">
+    <div class="section-header">
+      <h2>예약 정보를 입력해주세요</h2>
+      <p>마지막 단계입니다! 정보를 입력하고 예약을 완료하세요</p>
+    </div>
+    <div class="form-layout">
+      <div class="form-card">
+        <div class="form-group">
+          <label>이름 <span class="required">*</span></label>
+          <input type="text" id="custName" placeholder="홍길동">
+        </div>
+        <div class="form-group">
+          <label>연락처 <span class="required">*</span></label>
+          <input type="tel" id="custPhone" placeholder="010-1234-5678">
+        </div>
+        <div class="form-group">
+          <label>메모 <span style="color:var(--gray-400);font-weight:400">(선택)</span></label>
+          <textarea id="custMemo" placeholder="요청사항이나 참고사항을 자유롭게 작성해주세요"></textarea>
+        </div>
+        <div class="btn-row" style="margin-top:24px;">
+          <button class="btn btn-secondary" onclick="goToStep(3)">← 이전</button>
+          <button class="btn btn-primary" id="submitBtn" disabled onclick="submitBooking()">예약 확정하기 ✓</button>
+        </div>
+      </div>
+      <div class="summary-card" id="summaryCard">
+        <h3>예약 요약</h3>
+        <div id="summaryContent"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Confirmation Modal -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal">
+    <div class="modal-top">
+      <div class="check-circle">✓</div>
+      <h2>예약이 완료되었습니다!</h2>
+      <p>확인 문자가 발송됩니다</p>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">닫기</button>
+      <button class="btn btn-primary" onclick="resetBooking()">새 예약하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Data ──
+const services = [
+  { id: 1, name: '커트', desc: '스타일에 맞는 맞춤 커트', icon: '✂️', duration: '30분', price: 25000 },
+  { id: 2, name: '펌', desc: '볼륨펌, 매직 등 다양한 펌', icon: '💇‍♀️', duration: '2시간', price: 80000 },
+  { id: 3, name: '염색', desc: '트렌디한 컬러 염색', icon: '🎨', duration: '1시간 30분', price: 60000 },
+  { id: 4, name: '네일 아트', desc: '젤네일, 아트 네일', icon: '💅', duration: '1시간', price: 45000 },
+  { id: 5, name: '두피 케어', desc: '두피 스케일링 & 영양 관리', icon: '🌿', duration: '40분', price: 35000 },
+  { id: 6, name: '속눈썹 연장', desc: '자연스러운 속눈썹 연장', icon: '👁️', duration: '1시간', price: 50000 }
+];
+
+const staff = [
+  { id: 1, name: '김서연', role: '수석 디자이너', emoji: '👩‍🦰', rating: 4.9, reviews: 328 },
+  { id: 2, name: '이준호', role: '스타일 디렉터', emoji: '👨‍🦱', rating: 4.8, reviews: 256 },
+  { id: 3, name: '박지은', role: '네일 아티스트', emoji: '👩', rating: 4.9, reviews: 412 },
+  { id: 4, name: '최민수', role: '컬러리스트', emoji: '👨', rating: 4.7, reviews: 189 }
+];
+
+// ── State ──
+let selectedService = null;
+let selectedStaff = null;
+let selectedDate = null;
+let selectedTime = null;
+let currentStep = 1;
+let calYear, calMonth;
+
+// Init calendar to current month
+const today = new Date();
+calYear = today.getFullYear();
+calMonth = today.getMonth();
+
+// ── Render Services ──
+function renderServices() {
+  const grid = document.getElementById('serviceGrid');
+  grid.innerHTML = services.map(s => `
+    <div class="service-card" data-id="${s.id}" onclick="selectService(${s.id})">
+      <div class="service-check">✓</div>
+      <div class="service-icon">${s.icon}</div>
+      <div class="service-name">${s.name}</div>
+      <div class="service-desc">${s.desc}</div>
+      <div class="service-meta">
+        <span class="service-duration">⏱ ${s.duration}</span>
+        <span class="service-price">${s.price.toLocaleString()}원</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectService(id) {
+  selectedService = services.find(s => s.id === id);
+  document.querySelectorAll('.service-card').forEach(c => {
+    c.classList.toggle('selected', +c.dataset.id === id);
+  });
+  document.getElementById('toStep2').disabled = false;
+}
+
+// ── Render Staff ──
+function renderStaff() {
+  const grid = document.getElementById('staffGrid');
+  grid.innerHTML = staff.map(s => `
+    <div class="staff-card" data-id="${s.id}" onclick="selectStaff(${s.id})">
+      <div class="staff-check">✓</div>
+      <div class="staff-avatar">${s.emoji}</div>
+      <div class="staff-name">${s.name}</div>
+      <div class="staff-role">${s.role}</div>
+      <div class="staff-rating">
+        <span class="stars">★★★★★</span>
+        <span>${s.rating} (${s.reviews})</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectStaff(id) {
+  selectedStaff = staff.find(s => s.id === id);
+  document.querySelectorAll('.staff-card').forEach(c => {
+    c.classList.toggle('selected', +c.dataset.id === id);
+  });
+  document.getElementById('toStep3').disabled = false;
+}
+
+// ── Calendar ──
+function renderCalendar() {
+  const months = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  document.getElementById('calTitle').textContent = `${calYear}년 ${months[calMonth]}`;
+
+  const grid = document.getElementById('calGrid');
+  const dayNames = ['일','월','화','수','목','금','토'];
+
+  let html = dayNames.map(d => `<div class="cal-day-name">${d}</div>`).join('');
+
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+
+  for (let i = 0; i < firstDay; i++) {
+    html += '<div class="cal-day empty"></div>';
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(calYear, calMonth, d);
+    const isPast = date < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const isToday = date.toDateString() === today.toDateString();
+    const isSel = selectedDate && date.toDateString() === selectedDate.toDateString();
+    const isSunday = date.getDay() === 0;
+
+    let cls = 'cal-day';
+    if (isPast) cls += ' disabled';
+    if (isToday) cls += ' today';
+    if (isSel) cls += ' selected';
+    if (isSunday) cls += ' sunday';
+
+    html += `<div class="${cls}" onclick="${isPast ? '' : `selectDate(${calYear},${calMonth},${d})`}">${d}</div>`;
+  }
+
+  grid.innerHTML = html;
+}
+
+function changeMonth(delta) {
+  calMonth += delta;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  if (calMonth < 0) { calMonth = 11; calYear--; }
+  renderCalendar();
+}
+
+function selectDate(y, m, d) {
+  selectedDate = new Date(y, m, d);
+  selectedTime = null;
+  document.getElementById('toStep4').disabled = true;
+  renderCalendar();
+  renderTimeSlots();
+}
+
+// ── Time Slots ──
+function renderTimeSlots() {
+  if (!selectedDate) return;
+
+  document.getElementById('noDateMsg').style.display = 'none';
+  document.getElementById('timeContent').style.display = 'block';
+
+  const months = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  const days = ['일','월','화','수','목','금','토'];
+  document.getElementById('selectedDateText').textContent =
+    `${selectedDate.getFullYear()}년 ${months[selectedDate.getMonth()]} ${selectedDate.getDate()}일 (${days[selectedDate.getDay()]})`;
+
+  // Generate random availability
+  const morningSlots = [];
+  const afternoonSlots = [];
+
+  for (let h = 9; h < 12; h++) {
+    for (let m = 0; m < 60; m += 30) {
+      const time = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+      const disabled = Math.random() < 0.2;
+      morningSlots.push({ time, disabled });
+    }
+  }
+
+  for (let h = 12; h < 18; h++) {
+    for (let m = 0; m < 60; m += 30) {
+      const time = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+      const disabled = Math.random() < 0.25;
+      afternoonSlots.push({ time, disabled });
+    }
+  }
+
+  document.getElementById('morningSlots').innerHTML = morningSlots.map(s => {
+    const sel = selectedTime === s.time ? ' selected' : '';
+    const dis = s.disabled ? ' disabled' : '';
+    return `<div class="time-slot${sel}${dis}" onclick="${s.disabled ? '' : `selectTime('${s.time}')`}">${s.time}</div>`;
+  }).join('');
+
+  document.getElementById('afternoonSlots').innerHTML = afternoonSlots.map(s => {
+    const sel = selectedTime === s.time ? ' selected' : '';
+    const dis = s.disabled ? ' disabled' : '';
+    return `<div class="time-slot${sel}${dis}" onclick="${s.disabled ? '' : `selectTime('${s.time}')`}">${s.time}</div>`;
+  }).join('');
+}
+
+function selectTime(time) {
+  selectedTime = time;
+  document.querySelectorAll('.time-slot').forEach(s => {
+    s.classList.toggle('selected', s.textContent === time);
+  });
+  document.getElementById('toStep4').disabled = false;
+}
+
+// ── Step Navigation ──
+function goToStep(step) {
+  currentStep = step;
+  document.querySelectorAll('.booking-section').forEach(s => s.classList.remove('active'));
+  document.getElementById(`step${step}`).classList.add('active');
+
+  document.querySelectorAll('.step').forEach(s => {
+    const n = +s.dataset.step;
+    s.classList.remove('active', 'completed');
+    if (n === step) s.classList.add('active');
+    if (n < step) s.classList.add('completed');
+  });
+
+  document.getElementById('line1').classList.toggle('done', step > 1);
+  document.getElementById('line2').classList.toggle('done', step > 2);
+  document.getElementById('line3').classList.toggle('done', step > 3);
+
+  if (step === 3) {
+    renderCalendar();
+    if (selectedDate) renderTimeSlots();
+  }
+
+  if (step === 4) renderSummary();
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.getElementById('toStep2').addEventListener('click', () => goToStep(2));
+document.getElementById('toStep3').addEventListener('click', () => goToStep(3));
+document.getElementById('toStep4').addEventListener('click', () => goToStep(4));
+
+// ── Summary ──
+function renderSummary() {
+  const months = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  const days = ['일','월','화','수','목','금','토'];
+  const dateStr = selectedDate
+    ? `${selectedDate.getMonth()+1}월 ${selectedDate.getDate()}일 (${days[selectedDate.getDay()]})`
+    : '-';
+
+  document.getElementById('summaryContent').innerHTML = `
+    <div class="summary-item">
+      <div class="summary-icon">${selectedService?.icon || '✂️'}</div>
+      <div>
+        <div class="summary-label">서비스</div>
+        <div class="summary-value">${selectedService?.name || '-'}</div>
+      </div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-icon">👤</div>
+      <div>
+        <div class="summary-label">담당자</div>
+        <div class="summary-value">${selectedStaff?.name || '-'} ${selectedStaff ? `(${selectedStaff.role})` : ''}</div>
+      </div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-icon">📅</div>
+      <div>
+        <div class="summary-label">날짜</div>
+        <div class="summary-value">${dateStr}</div>
+      </div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-icon">⏰</div>
+      <div>
+        <div class="summary-label">시간</div>
+        <div class="summary-value">${selectedTime || '-'}</div>
+      </div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-icon">⏱</div>
+      <div>
+        <div class="summary-label">소요시간</div>
+        <div class="summary-value">${selectedService?.duration || '-'}</div>
+      </div>
+    </div>
+    <div class="summary-total">
+      <span class="label">예상 금액</span>
+      <span class="amount">${selectedService ? selectedService.price.toLocaleString() + '원' : '-'}</span>
+    </div>
+  `;
+}
+
+// ── Form Validation ──
+const nameInput = document.getElementById('custName');
+const phoneInput = document.getElementById('custPhone');
+const submitBtn = document.getElementById('submitBtn');
+
+function validateForm() {
+  const valid = nameInput.value.trim().length >= 2 && phoneInput.value.trim().length >= 10;
+  submitBtn.disabled = !valid;
+}
+
+nameInput.addEventListener('input', validateForm);
+phoneInput.addEventListener('input', function() {
+  let v = this.value.replace(/[^\d]/g, '');
+  if (v.length > 3 && v.length <= 7) {
+    v = v.slice(0,3) + '-' + v.slice(3);
+  } else if (v.length > 7) {
+    v = v.slice(0,3) + '-' + v.slice(3,7) + '-' + v.slice(7,11);
+  }
+  this.value = v;
+  validateForm();
+});
+
+// ── Submit ──
+function submitBooking() {
+  const months = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  const days = ['일','월','화','수','목','금','토'];
+  const dateStr = `${selectedDate.getFullYear()}년 ${selectedDate.getMonth()+1}월 ${selectedDate.getDate()}일 (${days[selectedDate.getDay()]})`;
+
+  document.getElementById('modalBody').innerHTML = `
+    <div class="modal-detail">
+      <div class="md-icon">${selectedService.icon}</div>
+      <div>
+        <div class="md-label">서비스</div>
+        <div class="md-value">${selectedService.name} · ${selectedService.price.toLocaleString()}원</div>
+      </div>
+    </div>
+    <div class="modal-detail">
+      <div class="md-icon">👤</div>
+      <div>
+        <div class="md-label">담당자</div>
+        <div class="md-value">${selectedStaff.name} (${selectedStaff.role})</div>
+      </div>
+    </div>
+    <div class="modal-detail">
+      <div class="md-icon">📅</div>
+      <div>
+        <div class="md-label">일시</div>
+        <div class="md-value">${dateStr} ${selectedTime}</div>
+      </div>
+    </div>
+    <div class="modal-detail">
+      <div class="md-icon">📞</div>
+      <div>
+        <div class="md-label">예약자</div>
+        <div class="md-value">${nameInput.value} · ${phoneInput.value}</div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('confirmModal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('confirmModal').classList.remove('show');
+}
+
+function resetBooking() {
+  selectedService = null;
+  selectedStaff = null;
+  selectedDate = null;
+  selectedTime = null;
+  nameInput.value = '';
+  phoneInput.value = '';
+  document.getElementById('custMemo').value = '';
+
+  closeModal();
+  renderServices();
+  renderStaff();
+
+  document.getElementById('toStep2').disabled = true;
+  document.getElementById('toStep3').disabled = true;
+  document.getElementById('toStep4').disabled = true;
+  submitBtn.disabled = true;
+
+  document.getElementById('noDateMsg').style.display = '';
+  document.getElementById('timeContent').style.display = 'none';
+
+  goToStep(1);
+}
+
+// Close modal on overlay click
+document.getElementById('confirmModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ── Init ──
+renderServices();
+renderStaff();
+</script>
+
+</body>
+</html>
