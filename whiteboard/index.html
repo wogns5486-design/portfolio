@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>화이트보드 - 온라인 드로잉</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #f8f9fa;
+  --surface: #ffffff;
+  --border: #e2e5e9;
+  --text: #1a1d21;
+  --text-secondary: #6b7280;
+  --primary: #3b82f6;
+  --primary-hover: #2563eb;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --radius: 10px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.header h1 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.3px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Toolbar */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.tool-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  background: var(--bg);
+  border-radius: var(--radius);
+}
+
+.tool-group-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-right: 4px;
+  padding-left: 6px;
+}
+
+.tool-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  color: var(--text-secondary);
+  position: relative;
+}
+
+.tool-btn:hover { background: var(--border); color: var(--text); }
+.tool-btn.active { background: var(--primary); color: #fff; box-shadow: 0 2px 6px rgba(59,130,246,0.3); }
+
+.tool-btn svg { width: 18px; height: 18px; }
+
+/* Color palette */
+.color-palette {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.color-swatch {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.color-swatch:hover { transform: scale(1.15); }
+.color-swatch.active { border-color: var(--text); box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--text); transform: scale(1.1); }
+
+/* Slider */
+.slider-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  background: var(--bg);
+  border-radius: var(--radius);
+}
+
+.slider-group label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.slider-group input[type="range"] {
+  width: 100px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.slider-value {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  min-width: 28px;
+  text-align: center;
+}
+
+/* Action buttons */
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.action-btn:hover { background: var(--bg); border-color: #ccc; }
+.action-btn.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+.action-btn.primary:hover { background: var(--primary-hover); }
+.action-btn.danger { color: #ef4444; border-color: #fca5a5; }
+.action-btn.danger:hover { background: #fef2f2; }
+
+.action-btn svg { width: 16px; height: 16px; }
+
+/* Canvas area */
+.canvas-wrap {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+canvas {
+  display: block;
+  background: #ffffff;
+  cursor: crosshair;
+}
+
+/* Text input overlay */
+.text-input-overlay {
+  position: absolute;
+  display: none;
+  z-index: 20;
+}
+
+.text-input-overlay textarea {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  padding: 6px 10px;
+  border: 2px solid var(--primary);
+  border-radius: 6px;
+  outline: none;
+  resize: both;
+  min-width: 120px;
+  min-height: 36px;
+  background: rgba(255,255,255,0.95);
+}
+
+/* Tooltip */
+.tool-btn[title]::after {
+  content: attr(title);
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  background: var(--text);
+  color: #fff;
+  font-size: 11px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+  z-index: 100;
+}
+.tool-btn[title]:hover::after { opacity: 1; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header { padding: 8px 12px; }
+  .header h1 { font-size: 15px; }
+  .toolbar { padding: 8px 12px; gap: 8px; }
+  .tool-group-label { display: none; }
+  .slider-group input[type="range"] { width: 70px; }
+  .action-btn span { display: none; }
+  .action-btn { padding: 8px 10px; }
+}
+
+@media (max-width: 480px) {
+  .color-swatch { width: 22px; height: 22px; }
+  .tool-btn { width: 32px; height: 32px; }
+  .tool-btn svg { width: 16px; height: 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>화이트보드</h1>
+  <div class="header-actions">
+    <button class="action-btn" id="undoBtn" title="실행취소 (Ctrl+Z)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+      <span>실행취소</span>
+    </button>
+    <button class="action-btn danger" id="clearBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+      <span>전체 지우기</span>
+    </button>
+    <button class="action-btn primary" id="downloadBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <span>PNG 저장</span>
+    </button>
+  </div>
+</div>
+
+<div class="toolbar">
+  <!-- Drawing tools -->
+  <div class="tool-group">
+    <span class="tool-group-label">도구</span>
+    <button class="tool-btn active" data-tool="pen" title="펜">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+    </button>
+    <button class="tool-btn" data-tool="eraser" title="지우개">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20H7L3 16l9-9 8 8-4 4z"/><path d="M6.5 13.5l5-5"/><line x1="18" y1="20" x2="22" y2="20"/></svg>
+    </button>
+    <button class="tool-btn" data-tool="rect" title="사각형">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+    </button>
+    <button class="tool-btn" data-tool="circle" title="원">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>
+    </button>
+    <button class="tool-btn" data-tool="line" title="직선">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="19" x2="19" y2="5"/></svg>
+    </button>
+    <button class="tool-btn" data-tool="text" title="텍스트">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+    </button>
+  </div>
+
+  <!-- Colors -->
+  <div class="color-palette">
+    <div class="color-swatch active" data-color="#1a1d21" style="background:#1a1d21" title="검정"></div>
+    <div class="color-swatch" data-color="#6b7280" style="background:#6b7280" title="회색"></div>
+    <div class="color-swatch" data-color="#ef4444" style="background:#ef4444" title="빨강"></div>
+    <div class="color-swatch" data-color="#f97316" style="background:#f97316" title="주황"></div>
+    <div class="color-swatch" data-color="#eab308" style="background:#eab308" title="노랑"></div>
+    <div class="color-swatch" data-color="#22c55e" style="background:#22c55e" title="초록"></div>
+    <div class="color-swatch" data-color="#3b82f6" style="background:#3b82f6" title="파랑"></div>
+    <div class="color-swatch" data-color="#8b5cf6" style="background:#8b5cf6" title="보라"></div>
+    <div class="color-swatch" data-color="#ec4899" style="background:#ec4899" title="핑크"></div>
+    <div class="color-swatch" data-color="#ffffff" style="background:#ffffff; border: 1px solid #ddd" title="흰색"></div>
+  </div>
+
+  <!-- Stroke width -->
+  <div class="slider-group">
+    <label>굵기</label>
+    <input type="range" id="strokeSlider" min="1" max="30" value="3">
+    <span class="slider-value" id="strokeValue">3px</span>
+  </div>
+</div>
+
+<div class="canvas-wrap" id="canvasWrap">
+  <canvas id="canvas"></canvas>
+  <div class="text-input-overlay" id="textOverlay">
+    <textarea id="textInput" placeholder="텍스트 입력..." rows="2"></textarea>
+  </div>
+</div>
+
+<script>
+(() => {
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  const wrap = document.getElementById('canvasWrap');
+  const textOverlay = document.getElementById('textOverlay');
+  const textInput = document.getElementById('textInput');
+  const strokeSlider = document.getElementById('strokeSlider');
+  const strokeValue = document.getElementById('strokeValue');
+
+  // State
+  let currentTool = 'pen';
+  let currentColor = '#1a1d21';
+  let lineWidth = 3;
+  let isDrawing = false;
+  let startX, startY;
+  let history = [];
+  let maxHistory = 50;
+
+  // Resize canvas
+  function resizeCanvas() {
+    const rect = wrap.getBoundingClientRect();
+    const imgData = history.length > 0 ? history[history.length - 1] : null;
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    if (imgData) {
+      const img = new Image();
+      img.onload = () => {
+        ctx.drawImage(img, 0, 0);
+      };
+      img.src = imgData;
+    }
+  }
+
+  function saveState() {
+    if (history.length >= maxHistory) history.shift();
+    history.push(canvas.toDataURL());
+  }
+
+  function undo() {
+    if (history.length === 0) return;
+    history.pop();
+    if (history.length === 0) {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      return;
+    }
+    const img = new Image();
+    img.onload = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+    };
+    img.src = history[history.length - 1];
+  }
+
+  function clearCanvas() {
+    saveState();
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    saveState();
+  }
+
+  function downloadPNG() {
+    const link = document.createElement('a');
+    link.download = 'whiteboard.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }
+
+  // Get position from event
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches ? e.touches[0] : e;
+    return {
+      x: touch.clientX - rect.left,
+      y: touch.clientY - rect.top
+    };
+  }
+
+  // Snapshot for shape preview
+  let snapshot = null;
+
+  function startDraw(e) {
+    if (currentTool === 'text') return;
+    e.preventDefault();
+    isDrawing = true;
+    const pos = getPos(e);
+    startX = pos.x;
+    startY = pos.y;
+
+    if (currentTool === 'pen' || currentTool === 'eraser') {
+      ctx.beginPath();
+      ctx.moveTo(startX, startY);
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = currentTool === 'eraser' ? '#ffffff' : currentColor;
+      ctx.lineWidth = currentTool === 'eraser' ? lineWidth * 3 : lineWidth;
+    }
+
+    // Save snapshot for shape tools
+    if (['rect', 'circle', 'line'].includes(currentTool)) {
+      snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    }
+  }
+
+  function draw(e) {
+    if (!isDrawing) return;
+    e.preventDefault();
+    const pos = getPos(e);
+
+    if (currentTool === 'pen' || currentTool === 'eraser') {
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
+    } else if (currentTool === 'rect') {
+      ctx.putImageData(snapshot, 0, 0);
+      ctx.beginPath();
+      ctx.strokeStyle = currentColor;
+      ctx.lineWidth = lineWidth;
+      ctx.lineJoin = 'miter';
+      ctx.strokeRect(startX, startY, pos.x - startX, pos.y - startY);
+    } else if (currentTool === 'circle') {
+      ctx.putImageData(snapshot, 0, 0);
+      ctx.beginPath();
+      ctx.strokeStyle = currentColor;
+      ctx.lineWidth = lineWidth;
+      const rx = Math.abs(pos.x - startX) / 2;
+      const ry = Math.abs(pos.y - startY) / 2;
+      const cx = startX + (pos.x - startX) / 2;
+      const cy = startY + (pos.y - startY) / 2;
+      ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    } else if (currentTool === 'line') {
+      ctx.putImageData(snapshot, 0, 0);
+      ctx.beginPath();
+      ctx.strokeStyle = currentColor;
+      ctx.lineWidth = lineWidth;
+      ctx.lineCap = 'round';
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
+    }
+  }
+
+  function endDraw(e) {
+    if (!isDrawing) return;
+    isDrawing = false;
+    snapshot = null;
+    saveState();
+  }
+
+  // Text tool
+  function handleTextClick(e) {
+    if (currentTool !== 'text') return;
+    const pos = getPos(e);
+    textOverlay.style.display = 'block';
+    textOverlay.style.left = pos.x + 'px';
+    textOverlay.style.top = pos.y + 'px';
+    textInput.value = '';
+    textInput.style.color = currentColor;
+    textInput.style.fontSize = Math.max(16, lineWidth * 4) + 'px';
+    textInput.focus();
+  }
+
+  function commitText() {
+    const text = textInput.value.trim();
+    if (!text) {
+      textOverlay.style.display = 'none';
+      return;
+    }
+    const x = parseInt(textOverlay.style.left);
+    const y = parseInt(textOverlay.style.top);
+    const fontSize = Math.max(16, lineWidth * 4);
+
+    ctx.font = `${fontSize}px 'Inter', sans-serif`;
+    ctx.fillStyle = currentColor;
+    ctx.textBaseline = 'top';
+
+    const lines = text.split('\n');
+    lines.forEach((line, i) => {
+      ctx.fillText(line, x, y + i * (fontSize * 1.3));
+    });
+
+    textOverlay.style.display = 'none';
+    textInput.value = '';
+    saveState();
+  }
+
+  textInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      commitText();
+    }
+    if (e.key === 'Escape') {
+      textOverlay.style.display = 'none';
+      textInput.value = '';
+    }
+  });
+
+  textInput.addEventListener('blur', commitText);
+
+  // Tool selection
+  document.querySelectorAll('.tool-btn[data-tool]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tool-btn[data-tool]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentTool = btn.dataset.tool;
+      canvas.style.cursor = currentTool === 'eraser' ? 'cell' :
+                             currentTool === 'text' ? 'text' : 'crosshair';
+    });
+  });
+
+  // Color selection
+  document.querySelectorAll('.color-swatch').forEach(swatch => {
+    swatch.addEventListener('click', () => {
+      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+      swatch.classList.add('active');
+      currentColor = swatch.dataset.color;
+    });
+  });
+
+  // Stroke slider
+  strokeSlider.addEventListener('input', () => {
+    lineWidth = parseInt(strokeSlider.value);
+    strokeValue.textContent = lineWidth + 'px';
+  });
+
+  // Button actions
+  document.getElementById('undoBtn').addEventListener('click', undo);
+  document.getElementById('clearBtn').addEventListener('click', clearCanvas);
+  document.getElementById('downloadBtn').addEventListener('click', downloadPNG);
+
+  // Keyboard shortcut
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 'z') {
+      e.preventDefault();
+      undo();
+    }
+  });
+
+  // Canvas events - mouse
+  canvas.addEventListener('mousedown', (e) => { startDraw(e); handleTextClick(e); });
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mouseup', endDraw);
+  canvas.addEventListener('mouseleave', endDraw);
+
+  // Canvas events - touch
+  canvas.addEventListener('touchstart', (e) => { startDraw(e); handleTextClick(e); }, { passive: false });
+  canvas.addEventListener('touchmove', draw, { passive: false });
+  canvas.addEventListener('touchend', endDraw);
+
+  // Init
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+  saveState();
+})();
+</script>
+</body>
+</html>

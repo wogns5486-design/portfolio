@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>만능 단위 변환기</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --teal:#0d9488;--teal-light:#14b8a6;--teal-dark:#0f766e;
+  --teal-50:#f0fdfa;--teal-100:#ccfbf1;--teal-200:#99f6e4;
+  --white:#ffffff;--gray-50:#f9fafb;--gray-100:#f3f4f6;
+  --gray-200:#e5e7eb;--gray-300:#d1d5db;--gray-400:#9ca3af;
+  --gray-500:#6b7280;--gray-600:#4b5563;--gray-700:#374151;
+  --gray-800:#1f2937;--gray-900:#111827;
+  --shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06);
+  --shadow-md:0 4px 6px rgba(0,0,0,.07),0 2px 4px rgba(0,0,0,.06);
+  --shadow-lg:0 10px 15px rgba(0,0,0,.1),0 4px 6px rgba(0,0,0,.05);
+  --radius:12px;--radius-sm:8px;
+}
+body{font-family:'Inter',sans-serif;background:var(--gray-50);color:var(--gray-800);min-height:100vh;line-height:1.6}
+
+/* Header */
+.header{background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:var(--white);padding:28px 20px;text-align:center;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,.08) 0%,transparent 60%);pointer-events:none}
+.header h1{font-size:1.75rem;font-weight:700;letter-spacing:-.02em;position:relative}
+.header p{font-size:.9rem;opacity:.85;margin-top:4px;font-weight:300;position:relative}
+
+/* Container */
+.container{max-width:640px;margin:0 auto;padding:20px 16px 100px}
+
+/* Categories */
+.categories{display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px;margin-bottom:20px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.categories::-webkit-scrollbar{display:none}
+.cat-btn{flex-shrink:0;padding:8px 16px;border-radius:20px;border:1.5px solid var(--gray-200);background:var(--white);color:var(--gray-600);font-size:.82rem;font-weight:500;cursor:pointer;transition:all .2s;font-family:inherit;white-space:nowrap}
+.cat-btn:hover{border-color:var(--teal-light);color:var(--teal)}
+.cat-btn.active{background:var(--teal);color:var(--white);border-color:var(--teal);box-shadow:0 2px 8px rgba(13,148,136,.3)}
+.cat-btn .icon{margin-right:5px;font-size:.95rem}
+
+/* Converter Card */
+.card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow-md);padding:24px 20px;margin-bottom:16px}
+.card-title{font-size:.8rem;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px}
+
+.input-group{margin-bottom:16px}
+.input-group label{display:block;font-size:.8rem;font-weight:500;color:var(--gray-500);margin-bottom:6px}
+.input-row{display:flex;gap:10px}
+.input-row select{flex:1;min-width:0;padding:10px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:.9rem;font-family:inherit;color:var(--gray-700);background:var(--gray-50);cursor:pointer;transition:border-color .2s;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+.input-row select:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(13,148,136,.1)}
+.input-row input{flex:1.2;min-width:0;padding:10px 14px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:1.1rem;font-family:inherit;font-weight:600;color:var(--gray-800);transition:border-color .2s}
+.input-row input:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(13,148,136,.1)}
+
+/* Swap Button */
+.swap-wrap{display:flex;justify-content:center;margin:8px 0}
+.swap-btn{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--gray-200);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s;color:var(--gray-400);font-size:1.1rem}
+.swap-btn:hover{border-color:var(--teal);color:var(--teal);transform:rotate(180deg);box-shadow:var(--shadow)}
+
+/* Result */
+.result-box{background:var(--teal-50);border:1.5px solid var(--teal-200);border-radius:var(--radius-sm);padding:16px;text-align:center;margin-top:4px}
+.result-value{font-size:1.6rem;font-weight:700;color:var(--teal-dark)}
+.result-label{font-size:.8rem;color:var(--gray-500);margin-top:2px}
+.result-formula{font-size:.75rem;color:var(--gray-400);margin-top:8px;font-style:italic}
+
+/* Action Buttons */
+.actions{display:flex;gap:8px;margin-top:14px;justify-content:center}
+.act-btn{padding:7px 14px;border-radius:20px;border:1.5px solid var(--gray-200);background:var(--white);color:var(--gray-500);font-size:.78rem;font-weight:500;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;gap:4px}
+.act-btn:hover{border-color:var(--teal);color:var(--teal)}
+.act-btn.fav-active{background:var(--teal-50);border-color:var(--teal);color:var(--teal)}
+
+/* Favorites & History Sections */
+.section-title{font-size:.85rem;font-weight:600;color:var(--gray-700);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.section-title span{font-size:1rem}
+
+.fav-list,.history-list{display:flex;flex-direction:column;gap:6px}
+.fav-item,.history-item{display:flex;align-items:center;background:var(--white);border-radius:var(--radius-sm);padding:10px 14px;box-shadow:var(--shadow);cursor:pointer;transition:all .2s;gap:10px}
+.fav-item:hover,.history-item:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.fav-item .fi-cat,.history-item .hi-cat{font-size:.65rem;font-weight:600;color:var(--white);background:var(--teal);padding:2px 8px;border-radius:10px;white-space:nowrap}
+.fav-item .fi-text,.history-item .hi-text{flex:1;font-size:.82rem;color:var(--gray-700);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fav-item .fi-del,.history-item .hi-time{font-size:.7rem;color:var(--gray-400);flex-shrink:0}
+.fav-item .fi-del{cursor:pointer;padding:2px 6px;border-radius:4px;transition:all .15s}
+.fav-item .fi-del:hover{background:var(--gray-100);color:var(--gray-600)}
+.history-clear{font-size:.75rem;color:var(--gray-400);cursor:pointer;margin-left:auto;transition:color .2s}
+.history-clear:hover{color:var(--teal)}
+
+.empty-state{text-align:center;padding:20px;color:var(--gray-400);font-size:.82rem}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--gray-800);color:var(--white);padding:10px 20px;border-radius:20px;font-size:.82rem;font-weight:500;opacity:0;transition:all .3s;z-index:999;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* Responsive */
+@media(max-width:480px){
+  .header h1{font-size:1.4rem}
+  .container{padding:16px 12px 80px}
+  .card{padding:18px 14px}
+  .result-value{font-size:1.3rem}
+  .input-row{flex-direction:column;gap:8px}
+  .input-row select,.input-row input{flex:unset;width:100%}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>만능 단위 변환기</h1>
+  <p>7가지 카테고리 | 실시간 변환</p>
+</div>
+
+<div class="container">
+  <!-- Categories -->
+  <div class="categories" id="categories"></div>
+
+  <!-- Converter -->
+  <div class="card">
+    <div class="card-title" id="cardTitle">길이</div>
+    <div class="input-group">
+      <label>변환할 값</label>
+      <div class="input-row">
+        <select id="fromUnit"></select>
+        <input type="number" id="fromValue" value="1" placeholder="값 입력">
+      </div>
+    </div>
+    <div class="swap-wrap">
+      <button class="swap-btn" id="swapBtn" title="단위 교환">&#8645;</button>
+    </div>
+    <div class="input-group">
+      <label>변환 결과</label>
+      <div class="input-row">
+        <select id="toUnit"></select>
+        <input type="number" id="toValue" readonly placeholder="결과" tabindex="-1" style="background:var(--gray-50);cursor:default">
+      </div>
+    </div>
+    <div class="result-box">
+      <div class="result-value" id="resultValue">-</div>
+      <div class="result-label" id="resultLabel"></div>
+      <div class="result-formula" id="resultFormula"></div>
+    </div>
+    <div class="actions">
+      <button class="act-btn" id="favBtn" onclick="toggleFavorite()"><span>&#9734;</span> 즐겨찾기</button>
+      <button class="act-btn" onclick="copyResult()"><span>&#128203;</span> 복사</button>
+    </div>
+  </div>
+
+  <!-- Favorites -->
+  <div class="card" id="favSection" style="display:none">
+    <div class="section-title"><span>&#11088;</span> 즐겨찾기</div>
+    <div class="fav-list" id="favList"></div>
+  </div>
+
+  <!-- History -->
+  <div class="card" id="historySection" style="display:none">
+    <div class="section-title">
+      <span>&#128337;</span> 최근 변환
+      <span class="history-clear" id="historyClear" onclick="clearHistory()">전체 삭제</span>
+    </div>
+    <div class="history-list" id="historyList"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== Data ===== */
+const CATEGORIES = [
+  { id:'length',  name:'길이',   icon:'📏' },
+  { id:'weight',  name:'무게',   icon:'⚖️' },
+  { id:'temp',    name:'온도',   icon:'🌡️' },
+  { id:'area',    name:'면적',   icon:'📐' },
+  { id:'volume',  name:'부피',   icon:'🧪' },
+  { id:'speed',   name:'속도',   icon:'🚀' },
+  { id:'data',    name:'데이터', icon:'💾' }
+];
+
+// Units: value is conversion factor to base unit (first unit)
+const UNITS = {
+  length: {
+    base: 'm',
+    units: [
+      { id:'mm', name:'밀리미터 (mm)', factor:0.001 },
+      { id:'cm', name:'센티미터 (cm)', factor:0.01 },
+      { id:'m',  name:'미터 (m)',      factor:1 },
+      { id:'km', name:'킬로미터 (km)', factor:1000 },
+      { id:'in', name:'인치 (in)',     factor:0.0254 },
+      { id:'ft', name:'피트 (ft)',     factor:0.3048 },
+      { id:'yd', name:'야드 (yd)',     factor:0.9144 },
+      { id:'mi', name:'마일 (mi)',     factor:1609.344 }
+    ]
+  },
+  weight: {
+    base: 'kg',
+    units: [
+      { id:'mg', name:'밀리그램 (mg)', factor:0.000001 },
+      { id:'g',  name:'그램 (g)',      factor:0.001 },
+      { id:'kg', name:'킬로그램 (kg)', factor:1 },
+      { id:'t',  name:'톤 (t)',        factor:1000 },
+      { id:'oz', name:'온스 (oz)',     factor:0.0283495 },
+      { id:'lb', name:'파운드 (lb)',   factor:0.453592 },
+      { id:'근', name:'근',           factor:0.6 },
+      { id:'관', name:'관',           factor:3.75 }
+    ]
+  },
+  temp: {
+    base: 'C',
+    units: [
+      { id:'C', name:'섭씨 (°C)' },
+      { id:'F', name:'화씨 (°F)' },
+      { id:'K', name:'켈빈 (K)' },
+      { id:'R', name:'랭킨 (°R)' },
+      { id:'Re',name:'레오뮈르 (°Ré)' }
+    ],
+    convert(val, from, to) {
+      // Convert to Celsius first
+      let c;
+      switch(from) {
+        case 'C': c=val; break;
+        case 'F': c=(val-32)*5/9; break;
+        case 'K': c=val-273.15; break;
+        case 'R': c=(val-491.67)*5/9; break;
+        case 'Re':c=val*5/4; break;
+      }
+      // Convert from Celsius to target
+      switch(to) {
+        case 'C': return c;
+        case 'F': return c*9/5+32;
+        case 'K': return c+273.15;
+        case 'R': return (c+273.15)*9/5;
+        case 'Re':return c*4/5;
+      }
+    }
+  },
+  area: {
+    base: 'm2',
+    units: [
+      { id:'cm2', name:'제곱센티미터 (cm²)', factor:0.0001 },
+      { id:'m2',  name:'제곱미터 (m²)',      factor:1 },
+      { id:'km2', name:'제곱킬로미터 (km²)', factor:1e6 },
+      { id:'ha',  name:'헥타르 (ha)',        factor:10000 },
+      { id:'ac',  name:'에이커 (ac)',        factor:4046.8564 },
+      { id:'ft2', name:'제곱피트 (ft²)',     factor:0.092903 },
+      { id:'평',  name:'평',               factor:3.305785 },
+      { id:'a',   name:'아르 (a)',          factor:100 }
+    ]
+  },
+  volume: {
+    base: 'L',
+    units: [
+      { id:'mL', name:'밀리리터 (mL)', factor:0.001 },
+      { id:'L',  name:'리터 (L)',      factor:1 },
+      { id:'m3', name:'세제곱미터 (m³)',factor:1000 },
+      { id:'gal',name:'갤런 (gal)',    factor:3.78541 },
+      { id:'qt', name:'쿼트 (qt)',     factor:0.946353 },
+      { id:'pt', name:'파인트 (pt)',   factor:0.473176 },
+      { id:'cup',name:'컵 (cup)',      factor:0.236588 },
+      { id:'oz', name:'액량온스 (fl oz)',factor:0.0295735 }
+    ]
+  },
+  speed: {
+    base: 'ms',
+    units: [
+      { id:'ms',   name:'m/s',          factor:1 },
+      { id:'kmh',  name:'km/h',         factor:0.277778 },
+      { id:'mph',  name:'mph',          factor:0.44704 },
+      { id:'kn',   name:'노트 (knot)',  factor:0.514444 },
+      { id:'mach', name:'마하 (Mach)',   factor:343 },
+      { id:'c',    name:'광속 (c)',      factor:299792458 }
+    ]
+  },
+  data: {
+    base: 'B',
+    units: [
+      { id:'bit',name:'비트 (bit)',     factor:0.125 },
+      { id:'B',  name:'바이트 (B)',     factor:1 },
+      { id:'KB', name:'킬로바이트 (KB)',factor:1024 },
+      { id:'MB', name:'메가바이트 (MB)',factor:1048576 },
+      { id:'GB', name:'기가바이트 (GB)',factor:1073741824 },
+      { id:'TB', name:'테라바이트 (TB)',factor:1099511627776 },
+      { id:'PB', name:'페타바이트 (PB)',factor:1125899906842624 }
+    ]
+  }
+};
+
+/* ===== State ===== */
+let currentCat = 'length';
+let favorites = JSON.parse(localStorage.getItem('uc_favs') || '[]');
+let history = JSON.parse(localStorage.getItem('uc_hist') || '[]');
+
+const $ = id => document.getElementById(id);
+
+/* ===== Init ===== */
+function init() {
+  renderCategories();
+  selectCategory('length');
+  renderFavorites();
+  renderHistory();
+}
+
+/* ===== Categories ===== */
+function renderCategories() {
+  const el = $('categories');
+  el.innerHTML = CATEGORIES.map(c =>
+    `<button class="cat-btn" data-id="${c.id}"><span class="icon">${c.icon}</span>${c.name}</button>`
+  ).join('');
+  el.addEventListener('click', e => {
+    const btn = e.target.closest('.cat-btn');
+    if (btn) selectCategory(btn.dataset.id);
+  });
+}
+
+function selectCategory(id) {
+  currentCat = id;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b.dataset.id === id));
+  const cat = CATEGORIES.find(c => c.id === id);
+  $('cardTitle').textContent = cat.name;
+  populateSelects();
+  convert();
+  updateFavBtn();
+}
+
+function populateSelects() {
+  const data = UNITS[currentCat];
+  const opts = data.units.map((u, i) => `<option value="${u.id}">${u.name}</option>`).join('');
+  $('fromUnit').innerHTML = opts;
+  $('toUnit').innerHTML = opts;
+  // Default: first and second unit
+  if (data.units.length > 1) $('toUnit').selectedIndex = 1;
+}
+
+/* ===== Conversion ===== */
+function convert() {
+  const val = parseFloat($('fromValue').value);
+  const fromId = $('fromUnit').value;
+  const toId = $('toUnit').value;
+  const data = UNITS[currentCat];
+
+  if (isNaN(val)) {
+    $('resultValue').textContent = '-';
+    $('resultLabel').textContent = '';
+    $('resultFormula').textContent = '';
+    return;
+  }
+
+  let result;
+  if (data.convert) {
+    result = data.convert(val, fromId, toId);
+  } else {
+    const fromFactor = data.units.find(u => u.id === fromId).factor;
+    const toFactor = data.units.find(u => u.id === toId).factor;
+    result = val * fromFactor / toFactor;
+  }
+
+  const formatted = formatNumber(result);
+  const fromName = data.units.find(u => u.id === fromId).name;
+  const toName = data.units.find(u => u.id === toId).name;
+
+  $('resultValue').textContent = formatted;
+  $('resultLabel').textContent = `${val} ${fromId} = ${formatted} ${toId}`;
+  $('toValue').value = formatted;
+
+  // Formula hint
+  if (!data.convert) {
+    const fromF = data.units.find(u => u.id === fromId).factor;
+    const toF = data.units.find(u => u.id === toId).factor;
+    const ratio = fromF / toF;
+    $('resultFormula').textContent = `1 ${fromId} = ${formatNumber(ratio)} ${toId}`;
+  } else {
+    $('resultFormula').textContent = '';
+  }
+
+  // Add to history
+  addHistory(currentCat, val, fromId, toId, formatted);
+}
+
+function formatNumber(n) {
+  if (Math.abs(n) === 0) return '0';
+  if (Math.abs(n) >= 1e12 || (Math.abs(n) < 0.0001 && Math.abs(n) > 0)) {
+    return n.toExponential(6);
+  }
+  // Up to 8 decimal places, trim trailing zeros
+  const s = n.toFixed(8).replace(/\.?0+$/, '');
+  // Add comma separators to integer part
+  const parts = s.split('.');
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return parts.join('.');
+}
+
+/* ===== Swap ===== */
+$('swapBtn').addEventListener('click', () => {
+  const fromSel = $('fromUnit');
+  const toSel = $('toUnit');
+  const tmp = fromSel.value;
+  fromSel.value = toSel.value;
+  toSel.value = tmp;
+  // Also swap values
+  const resultVal = $('toValue').value;
+  if (resultVal && resultVal !== '-') {
+    $('fromValue').value = resultVal;
+  }
+  convert();
+  updateFavBtn();
+});
+
+/* ===== Event Listeners ===== */
+$('fromValue').addEventListener('input', convert);
+$('fromUnit').addEventListener('change', () => { convert(); updateFavBtn(); });
+$('toUnit').addEventListener('change', () => { convert(); updateFavBtn(); });
+
+/* ===== Favorites ===== */
+function getFavKey() {
+  return `${currentCat}|${$('fromUnit').value}|${$('toUnit').value}`;
+}
+
+function isFav() {
+  return favorites.includes(getFavKey());
+}
+
+function updateFavBtn() {
+  const btn = $('favBtn');
+  if (isFav()) {
+    btn.classList.add('fav-active');
+    btn.innerHTML = '<span>&#9733;</span> 즐겨찾기 해제';
+  } else {
+    btn.classList.remove('fav-active');
+    btn.innerHTML = '<span>&#9734;</span> 즐겨찾기';
+  }
+}
+
+function toggleFavorite() {
+  const key = getFavKey();
+  if (isFav()) {
+    favorites = favorites.filter(f => f !== key);
+    showToast('즐겨찾기에서 제거했습니다');
+  } else {
+    favorites.unshift(key);
+    showToast('즐겨찾기에 추가했습니다');
+  }
+  localStorage.setItem('uc_favs', JSON.stringify(favorites));
+  updateFavBtn();
+  renderFavorites();
+}
+
+function renderFavorites() {
+  const section = $('favSection');
+  const list = $('favList');
+  if (!favorites.length) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  list.innerHTML = favorites.map((key, i) => {
+    const [cat, from, to] = key.split('|');
+    const catData = CATEGORIES.find(c => c.id === cat);
+    const unitData = UNITS[cat];
+    const fromName = unitData.units.find(u => u.id === from)?.id || from;
+    const toName = unitData.units.find(u => u.id === to)?.id || to;
+    return `<div class="fav-item" onclick="loadFav('${key}')">
+      <span class="fi-cat">${catData?.icon || ''} ${catData?.name || cat}</span>
+      <span class="fi-text">${fromName} → ${toName}</span>
+      <span class="fi-del" onclick="event.stopPropagation();removeFav(${i})" title="삭제">✕</span>
+    </div>`;
+  }).join('');
+}
+
+function loadFav(key) {
+  const [cat, from, to] = key.split('|');
+  selectCategory(cat);
+  $('fromUnit').value = from;
+  $('toUnit').value = to;
+  convert();
+  updateFavBtn();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function removeFav(idx) {
+  favorites.splice(idx, 1);
+  localStorage.setItem('uc_favs', JSON.stringify(favorites));
+  updateFavBtn();
+  renderFavorites();
+  showToast('즐겨찾기에서 제거했습니다');
+}
+
+/* ===== History ===== */
+function addHistory(cat, val, from, to, result) {
+  const entry = { cat, val, from, to, result, time: Date.now() };
+  // Avoid duplicate of last entry
+  if (history.length && history[0].cat === cat && history[0].from === from && history[0].to === to && history[0].val === val) return;
+  history.unshift(entry);
+  if (history.length > 20) history = history.slice(0, 20);
+  localStorage.setItem('uc_hist', JSON.stringify(history));
+  renderHistory();
+}
+
+function renderHistory() {
+  const section = $('historySection');
+  const list = $('historyList');
+  if (!history.length) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  list.innerHTML = history.slice(0, 10).map(h => {
+    const catData = CATEGORIES.find(c => c.id === h.cat);
+    const ago = timeAgo(h.time);
+    return `<div class="history-item" onclick="loadHistory('${h.cat}','${h.from}','${h.to}',${h.val})">
+      <span class="hi-cat">${catData?.icon || ''} ${catData?.name || h.cat}</span>
+      <span class="hi-text">${h.val} ${h.from} = ${h.result} ${h.to}</span>
+      <span class="hi-time">${ago}</span>
+    </div>`;
+  }).join('');
+}
+
+function loadHistory(cat, from, to, val) {
+  selectCategory(cat);
+  $('fromUnit').value = from;
+  $('toUnit').value = to;
+  $('fromValue').value = val;
+  convert();
+  updateFavBtn();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function clearHistory() {
+  history = [];
+  localStorage.setItem('uc_hist', JSON.stringify(history));
+  renderHistory();
+  showToast('변환 기록을 삭제했습니다');
+}
+
+function timeAgo(ts) {
+  const diff = Math.floor((Date.now() - ts) / 1000);
+  if (diff < 60) return '방금';
+  if (diff < 3600) return `${Math.floor(diff/60)}분 전`;
+  if (diff < 86400) return `${Math.floor(diff/3600)}시간 전`;
+  return `${Math.floor(diff/86400)}일 전`;
+}
+
+/* ===== Copy ===== */
+function copyResult() {
+  const text = $('resultLabel').textContent;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => showToast('클립보드에 복사했습니다'));
+}
+
+/* ===== Toast ===== */
+function showToast(msg) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+/* ===== Start ===== */
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>해피펫 동물병원 | 24시간 응급진료</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --mint:#2EC4B6;--mint-dark:#1BA396;--mint-light:#E8FAF8;--mint-pale:#F0FDFB;
+  --white:#FFFFFF;--gray-50:#F9FAFB;--gray-100:#F3F4F6;--gray-200:#E5E7EB;
+  --gray-300:#D1D5DB;--gray-400:#9CA3AF;--gray-500:#6B7280;--gray-600:#4B5563;
+  --gray-700:#374151;--gray-800:#1F2937;--gray-900:#111827;
+  --coral:#FF6B6B;--yellow:#FFD93D;--blue:#4DA8DA;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.05);
+  --shadow:0 4px 6px -1px rgba(0,0,0,.07),0 2px 4px -2px rgba(0,0,0,.05);
+  --shadow-md:0 10px 15px -3px rgba(0,0,0,.08),0 4px 6px -4px rgba(0,0,0,.04);
+  --shadow-lg:0 20px 40px -8px rgba(0,0,0,.1);
+  --shadow-xl:0 25px 50px -12px rgba(0,0,0,.15);
+  --radius:12px;--radius-lg:20px;--radius-xl:28px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;color:var(--gray-800);background:var(--white);line-height:1.6;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+ul{list-style:none}
+img{max-width:100%;display:block}
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+
+/* ── NAV ── */
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--gray-100);transition:box-shadow .3s}
+.nav.scrolled{box-shadow:var(--shadow-md)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;max-width:1200px;margin:0 auto;padding:0 24px}
+.nav-logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.35rem;color:var(--mint)}
+.nav-logo svg{width:36px;height:36px}
+.nav-links{display:flex;gap:32px}
+.nav-links a{font-size:.93rem;font-weight:500;color:var(--gray-600);transition:color .2s}
+.nav-links a:hover{color:var(--mint)}
+.nav-cta{background:var(--mint);color:#fff;padding:10px 24px;border-radius:50px;font-weight:600;font-size:.9rem;transition:background .2s,transform .2s}
+.nav-cta:hover{background:var(--mint-dark);transform:translateY(-1px)}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px}
+.hamburger span{display:block;width:24px;height:2.5px;background:var(--gray-700);border-radius:2px;transition:transform .3s,opacity .3s}
+.mobile-menu{display:none;position:fixed;top:72px;left:0;right:0;background:var(--white);border-bottom:1px solid var(--gray-200);padding:20px 24px;flex-direction:column;gap:16px;box-shadow:var(--shadow-md)}
+.mobile-menu a{font-size:1rem;font-weight:500;color:var(--gray-700);padding:8px 0}
+.mobile-menu.open{display:flex}
+
+/* ── HERO ── */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;background:linear-gradient(135deg,var(--mint-pale) 0%,var(--white) 50%,var(--mint-light) 100%)}
+.hero-bg{position:absolute;inset:0;overflow:hidden}
+.hero-bg::before{content:'';position:absolute;top:-20%;right:-10%;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(46,196,182,.12) 0%,transparent 70%)}
+.hero-bg::after{content:'';position:absolute;bottom:-10%;left:-5%;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(46,196,182,.08) 0%,transparent 70%)}
+.hero-inner{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;padding:120px 0 80px}
+.hero-text h1{font-size:3.2rem;font-weight:900;line-height:1.15;color:var(--gray-900);margin-bottom:20px}
+.hero-text h1 .accent{color:var(--mint);position:relative}
+.hero-text h1 .accent::after{content:'';position:absolute;bottom:2px;left:0;right:0;height:8px;background:rgba(46,196,182,.2);border-radius:4px}
+.hero-text p{font-size:1.15rem;color:var(--gray-500);margin-bottom:36px;max-width:480px;line-height:1.7}
+.hero-badges{display:flex;gap:12px;margin-bottom:32px;flex-wrap:wrap}
+.hero-badge{display:flex;align-items:center;gap:6px;background:var(--white);border:1px solid var(--gray-200);padding:8px 16px;border-radius:50px;font-size:.85rem;font-weight:500;color:var(--gray-700);box-shadow:var(--shadow-sm)}
+.hero-badge svg{width:18px;height:18px;color:var(--mint)}
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;border-radius:50px;font-weight:600;font-size:1rem;border:none;cursor:pointer;transition:all .25s}
+.btn-primary{background:var(--mint);color:#fff;box-shadow:0 4px 14px rgba(46,196,182,.35)}
+.btn-primary:hover{background:var(--mint-dark);transform:translateY(-2px);box-shadow:0 6px 20px rgba(46,196,182,.4)}
+.btn-outline{background:var(--white);color:var(--mint);border:2px solid var(--mint)}
+.btn-outline:hover{background:var(--mint-light)}
+.hero-image{position:relative}
+.hero-image img{width:100%;border-radius:var(--radius-xl);box-shadow:var(--shadow-xl);object-fit:cover;aspect-ratio:4/3}
+.hero-float{position:absolute;background:var(--white);border-radius:var(--radius);padding:14px 20px;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:12px;animation:heroFloat 3s ease-in-out infinite}
+.hero-float-1{bottom:20px;left:-30px}
+.hero-float-2{top:20px;right:-20px;animation-delay:1.5s}
+.hero-float .icon-circle{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem}
+.hero-float .text-sm{font-size:.78rem;color:var(--gray-400)}
+.hero-float .text-md{font-size:.95rem;font-weight:700;color:var(--gray-800)}
+@keyframes heroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+/* ── EMERGENCY BAR ── */
+.emergency-bar{background:linear-gradient(135deg,var(--coral),#e55a5a);color:#fff;padding:14px 0;text-align:center;font-weight:600;font-size:.95rem;display:flex;align-items:center;justify-content:center;gap:10px}
+.emergency-bar .pulse{width:10px;height:10px;border-radius:50%;background:#fff;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+
+/* ── SECTIONS ── */
+.section{padding:100px 0}
+.section-alt{background:var(--gray-50)}
+.section-mint{background:var(--mint-pale)}
+.section-header{text-align:center;margin-bottom:60px}
+.section-header .badge{display:inline-flex;align-items:center;gap:6px;background:var(--mint-light);color:var(--mint-dark);padding:6px 16px;border-radius:50px;font-size:.82rem;font-weight:600;margin-bottom:14px}
+.section-header h2{font-size:2.4rem;font-weight:800;color:var(--gray-900);margin-bottom:14px}
+.section-header p{font-size:1.05rem;color:var(--gray-500);max-width:560px;margin:0 auto}
+
+/* ── DEPARTMENTS ── */
+.dept-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:24px}
+.dept-card{background:var(--white);border-radius:var(--radius-lg);padding:36px 24px;text-align:center;border:1px solid var(--gray-100);transition:all .3s;position:relative;overflow:hidden}
+.dept-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--mint);transform:scaleX(0);transition:transform .3s}
+.dept-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:var(--mint-light)}
+.dept-card:hover::before{transform:scaleX(1)}
+.dept-icon{width:68px;height:68px;border-radius:18px;background:var(--mint-light);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:1.8rem;transition:background .3s}
+.dept-card:hover .dept-icon{background:var(--mint);color:#fff}
+.dept-card h3{font-size:1.1rem;font-weight:700;margin-bottom:8px;color:var(--gray-900)}
+.dept-card p{font-size:.85rem;color:var(--gray-500);line-height:1.5}
+
+/* ── DOCTORS ── */
+.doc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:28px}
+.doc-card{background:var(--white);border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--gray-100);transition:all .3s}
+.doc-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
+.doc-photo{width:100%;aspect-ratio:1;object-fit:cover;background:var(--gray-100)}
+.doc-info{padding:24px}
+.doc-info h3{font-size:1.15rem;font-weight:700;color:var(--gray-900);margin-bottom:4px}
+.doc-info .role{font-size:.85rem;color:var(--mint);font-weight:600;margin-bottom:10px}
+.doc-info p{font-size:.83rem;color:var(--gray-500);line-height:1.5}
+.doc-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.doc-tag{font-size:.73rem;padding:4px 10px;border-radius:50px;background:var(--mint-light);color:var(--mint-dark);font-weight:500}
+
+/* ── SCHEDULE ── */
+.schedule-wrap{max-width:800px;margin:0 auto;background:var(--white);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-md);border:1px solid var(--gray-100)}
+.schedule-table{width:100%;border-collapse:collapse}
+.schedule-table thead{background:var(--mint)}
+.schedule-table th{padding:16px 24px;color:#fff;font-weight:600;font-size:.95rem;text-align:left}
+.schedule-table td{padding:14px 24px;font-size:.93rem;border-bottom:1px solid var(--gray-100);color:var(--gray-700)}
+.schedule-table tbody tr:hover{background:var(--mint-pale)}
+.schedule-table .day{font-weight:600;color:var(--gray-900)}
+.schedule-table .closed{color:var(--coral);font-weight:600}
+.schedule-note{padding:20px 24px;background:var(--mint-pale);font-size:.88rem;color:var(--gray-600);display:flex;align-items:center;gap:8px}
+.schedule-note svg{width:20px;height:20px;color:var(--mint);flex-shrink:0}
+
+/* ── RESERVATION FORM ── */
+.reservation-wrap{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.res-info{padding:40px;background:linear-gradient(135deg,var(--mint),var(--mint-dark));border-radius:var(--radius-lg);color:#fff}
+.res-info h3{font-size:1.6rem;font-weight:800;margin-bottom:16px}
+.res-info p{font-size:.95rem;opacity:.9;margin-bottom:28px;line-height:1.7}
+.res-features{display:flex;flex-direction:column;gap:16px}
+.res-feature{display:flex;align-items:center;gap:12px;font-size:.93rem;font-weight:500}
+.res-feature .check{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0}
+.res-form{background:var(--white);border-radius:var(--radius-lg);padding:40px;box-shadow:var(--shadow-lg);border:1px solid var(--gray-100)}
+.res-form h3{font-size:1.4rem;font-weight:700;margin-bottom:24px;color:var(--gray-900)}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-size:.88rem;font-weight:600;color:var(--gray-700);margin-bottom:6px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:12px 16px;border:1.5px solid var(--gray-200);border-radius:var(--radius);font-size:.93rem;font-family:'Inter',sans-serif;color:var(--gray-800);transition:border-color .2s,box-shadow .2s;background:var(--white)}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--mint);box-shadow:0 0 0 3px rgba(46,196,182,.15)}
+.form-group textarea{resize:vertical;min-height:100px}
+.form-submit{width:100%;padding:14px;background:var(--mint);color:#fff;border:none;border-radius:var(--radius);font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s,transform .2s;font-family:'Inter',sans-serif}
+.form-submit:hover{background:var(--mint-dark);transform:translateY(-1px)}
+
+/* ── LOCATION ── */
+.location-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.location-map{border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-md);aspect-ratio:4/3;background:var(--gray-100)}
+.location-map iframe{width:100%;height:100%;border:0}
+.location-details{display:flex;flex-direction:column;gap:24px}
+.loc-item{display:flex;gap:16px}
+.loc-icon{width:48px;height:48px;border-radius:14px;background:var(--mint-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.2rem}
+.loc-text h4{font-size:1rem;font-weight:700;color:var(--gray-900);margin-bottom:4px}
+.loc-text p{font-size:.9rem;color:var(--gray-500);line-height:1.5}
+
+/* ── EMERGENCY SECTION ── */
+.emergency-section{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;padding:80px 0;text-align:center;position:relative;overflow:hidden}
+.emergency-section::before{content:'';position:absolute;top:-100px;right:-100px;width:300px;height:300px;border-radius:50%;background:rgba(255,107,107,.1)}
+.emergency-section::after{content:'';position:absolute;bottom:-80px;left:-80px;width:250px;height:250px;border-radius:50%;background:rgba(46,196,182,.08)}
+.emergency-content{position:relative;z-index:1}
+.emergency-icon{width:80px;height:80px;border-radius:50%;background:var(--coral);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:2rem;animation:pulse-ring 2s infinite}
+@keyframes pulse-ring{0%{box-shadow:0 0 0 0 rgba(255,107,107,.5)}70%{box-shadow:0 0 0 20px rgba(255,107,107,0)}100%{box-shadow:0 0 0 0 rgba(255,107,107,0)}}
+.emergency-content h2{font-size:2.4rem;font-weight:800;margin-bottom:12px}
+.emergency-content p{font-size:1.1rem;opacity:.8;margin-bottom:32px;max-width:500px;margin-left:auto;margin-right:auto}
+.emergency-phone{font-size:2.8rem;font-weight:900;color:var(--coral);margin-bottom:12px;letter-spacing:1px}
+.emergency-phone a{color:var(--coral)}
+.emergency-sub{font-size:.95rem;opacity:.6}
+
+/* ── FOOTER ── */
+.footer{background:var(--gray-900);color:var(--gray-400);padding:60px 0 30px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+.footer-brand h3{font-size:1.3rem;font-weight:800;color:#fff;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.footer-brand h3 svg{width:28px;height:28px;color:var(--mint)}
+.footer-brand p{font-size:.88rem;line-height:1.7;max-width:280px}
+.footer-col h4{font-size:.9rem;font-weight:700;color:#fff;margin-bottom:16px}
+.footer-col a{display:block;font-size:.85rem;color:var(--gray-400);margin-bottom:10px;transition:color .2s}
+.footer-col a:hover{color:var(--mint)}
+.footer-bottom{border-top:1px solid var(--gray-700);padding-top:24px;text-align:center;font-size:.82rem;color:var(--gray-500)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:30px;right:30px;background:var(--mint);color:#fff;padding:16px 28px;border-radius:var(--radius);font-weight:600;font-size:.95rem;box-shadow:var(--shadow-lg);transform:translateY(120px);opacity:0;transition:all .4s;z-index:9999}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* ── SCROLL ANIMATIONS ── */
+.fade-up{opacity:0;transform:translateY(30px);transition:opacity .6s,transform .6s}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  .hero-inner{grid-template-columns:1fr;gap:40px;text-align:center;padding:100px 0 60px}
+  .hero-text p{margin:0 auto 28px}
+  .hero-btns,.hero-badges{justify-content:center}
+  .hero-image{max-width:500px;margin:0 auto}
+  .hero-float-1{left:10px;bottom:10px}.hero-float-2{right:10px;top:10px}
+  .dept-grid{grid-template-columns:repeat(3,1fr)}
+  .doc-grid{grid-template-columns:repeat(2,1fr)}
+  .reservation-wrap,.location-grid{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  .nav-links,.nav-cta{display:none}
+  .hamburger{display:flex}
+  .hero-text h1{font-size:2.2rem}
+  .section{padding:70px 0}
+  .section-header h2{font-size:1.8rem}
+  .dept-grid{grid-template-columns:repeat(2,1fr)}
+  .doc-grid{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+  .res-form{padding:28px}
+  .res-info{padding:28px}
+  .emergency-phone{font-size:2rem}
+  .footer-grid{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  .hero-text h1{font-size:1.8rem}
+  .dept-grid{grid-template-columns:1fr}
+  .hero-float{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <svg viewBox="0 0 36 36" fill="none"><path d="M18 3C10 3 4 8 4 15c0 5 3 9 7 11v4c0 1 .5 2 1.5 2H18c5 0 14-4 14-14C32 9 26 3 18 3z" fill="currentColor" opacity=".15"/><path d="M12 14c0-1.5 1-3 2.5-3s2.5 1.5 2.5 3-1 2-2.5 2-2.5-.5-2.5-2z" fill="currentColor"/><path d="M19 14c0-1.5 1-3 2.5-3S24 12.5 24 14s-1 2-2.5 2S19 14.5 19 14z" fill="currentColor"/><path d="M14 20c0 0 1.5 3 4 3s4-3 4-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      해피펫 동물병원
+    </a>
+    <div class="nav-links">
+      <a href="#departments">진료과목</a>
+      <a href="#doctors">의료진</a>
+      <a href="#schedule">진료시간</a>
+      <a href="#reservation">온라인 예약</a>
+      <a href="#location">오시는 길</a>
+    </div>
+    <a href="#reservation" class="nav-cta">예약하기</a>
+    <button class="hamburger" id="hamburger" aria-label="메뉴 열기">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#departments" onclick="closeMobile()">진료과목</a>
+    <a href="#doctors" onclick="closeMobile()">의료진</a>
+    <a href="#schedule" onclick="closeMobile()">진료시간</a>
+    <a href="#reservation" onclick="closeMobile()">온라인 예약</a>
+    <a href="#location" onclick="closeMobile()">오시는 길</a>
+    <a href="#emergency" onclick="closeMobile()">24시 응급</a>
+  </div>
+</nav>
+
+<!-- EMERGENCY BAR -->
+<div class="emergency-bar" style="margin-top:72px">
+  <span class="pulse"></span>
+  24시간 응급 진료 운영 중 &nbsp;|&nbsp; <strong>02-1234-5678</strong>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="container hero-inner">
+    <div class="hero-text fade-up">
+      <div class="hero-badges">
+        <span class="hero-badge">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a6 6 0 00-6 6c0 4.5 6 10 6 10s6-5.5 6-10a6 6 0 00-6-6zm0 8a2 2 0 110-4 2 2 0 010 4z"/></svg>
+          서울 강남구
+        </span>
+        <span class="hero-badge">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>
+          24시간 운영
+        </span>
+      </div>
+      <h1>소중한 반려동물의<br><span class="accent">건강한 행복</span>을<br>함께 지킵니다</h1>
+      <p>15년 이상의 진료 경험과 최신 의료 장비로 반려동물에게 최상의 의료 서비스를 제공합니다. 내과부터 외과까지 전 분야 전문의 진료.</p>
+      <div class="hero-btns">
+        <a href="#reservation" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
+          온라인 예약
+        </a>
+        <a href="tel:0212345678" class="btn btn-outline">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/></svg>
+          전화 상담
+        </a>
+      </div>
+    </div>
+    <div class="hero-image fade-up" style="transition-delay:.2s">
+      <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=80" alt="행복한 강아지">
+      <div class="hero-float hero-float-1">
+        <div class="icon-circle" style="background:var(--mint-light)">🐾</div>
+        <div>
+          <div class="text-sm">누적 진료</div>
+          <div class="text-md">50,000+ 건</div>
+        </div>
+      </div>
+      <div class="hero-float hero-float-2">
+        <div class="icon-circle" style="background:#FFF3E0">⭐</div>
+        <div>
+          <div class="text-sm">보호자 만족도</div>
+          <div class="text-md">4.9 / 5.0</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEPARTMENTS -->
+<section class="section section-alt" id="departments">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="badge">🏥 진료과목</span>
+      <h2>전문 분야별 최적의 진료</h2>
+      <p>각 분야 전문 수의사가 체계적인 진료를 제공합니다</p>
+    </div>
+    <div class="dept-grid">
+      <div class="dept-card fade-up">
+        <div class="dept-icon">🩺</div>
+        <h3>내과</h3>
+        <p>소화기, 호흡기, 내분비 등 내과 전반 질환의 정밀 진단과 치료</p>
+      </div>
+      <div class="dept-card fade-up" style="transition-delay:.1s">
+        <div class="dept-icon">🔬</div>
+        <h3>외과</h3>
+        <p>정형외과, 연부조직 수술, 중성화 등 전문 외과 수술 진행</p>
+      </div>
+      <div class="dept-card fade-up" style="transition-delay:.2s">
+        <div class="dept-icon">🧴</div>
+        <h3>피부과</h3>
+        <p>알레르기, 아토피, 곰팡이 감염 등 피부 질환 전문 치료</p>
+      </div>
+      <div class="dept-card fade-up" style="transition-delay:.3s">
+        <div class="dept-icon">🦷</div>
+        <h3>치과</h3>
+        <p>스케일링, 발치, 구강 관리 등 전문 치과 진료 서비스</p>
+      </div>
+      <div class="dept-card fade-up" style="transition-delay:.4s">
+        <div class="dept-icon">📋</div>
+        <h3>건강검진</h3>
+        <p>혈액검사, 영상검사, 종합검진 패키지로 조기 질환 발견</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOCTORS -->
+<section class="section" id="doctors">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="badge">👨‍⚕️ 의료진 소개</span>
+      <h2>경험 풍부한 전문 수의사</h2>
+      <p>반려동물의 건강을 최우선으로 생각하는 의료진입니다</p>
+    </div>
+    <div class="doc-grid">
+      <div class="doc-card fade-up">
+        <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop&q=80" alt="김도현 원장" class="doc-photo">
+        <div class="doc-info">
+          <h3>김도현 원장</h3>
+          <div class="role">대표 원장 · 외과 전문</div>
+          <p>서울대 수의학과 졸업<br>외과 전문의 자격 취득</p>
+          <div class="doc-tags">
+            <span class="doc-tag">정형외과</span>
+            <span class="doc-tag">중성화</span>
+            <span class="doc-tag">응급수술</span>
+          </div>
+        </div>
+      </div>
+      <div class="doc-card fade-up" style="transition-delay:.1s">
+        <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop&q=80" alt="박수진 원장" class="doc-photo">
+        <div class="doc-info">
+          <h3>박수진 원장</h3>
+          <div class="role">내과 전문</div>
+          <p>건국대 수의학과 졸업<br>내과 전문의 15년 경력</p>
+          <div class="doc-tags">
+            <span class="doc-tag">소화기</span>
+            <span class="doc-tag">호흡기</span>
+            <span class="doc-tag">내분비</span>
+          </div>
+        </div>
+      </div>
+      <div class="doc-card fade-up" style="transition-delay:.2s">
+        <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&h=400&fit=crop&q=80" alt="이준호 수의사" class="doc-photo">
+        <div class="doc-info">
+          <h3>이준호 수의사</h3>
+          <div class="role">피부 · 치과 전문</div>
+          <p>충남대 수의학과 졸업<br>피부과·치과 전문 수련</p>
+          <div class="doc-tags">
+            <span class="doc-tag">아토피</span>
+            <span class="doc-tag">스케일링</span>
+            <span class="doc-tag">구강관리</span>
+          </div>
+        </div>
+      </div>
+      <div class="doc-card fade-up" style="transition-delay:.3s">
+        <img src="https://images.unsplash.com/photo-1594824476967-48c8b964d8a0?w=400&h=400&fit=crop&q=80" alt="최예린 수의사" class="doc-photo">
+        <div class="doc-info">
+          <h3>최예린 수의사</h3>
+          <div class="role">영상의학 · 건강검진</div>
+          <p>전북대 수의학과 졸업<br>영상의학 전문 수련</p>
+          <div class="doc-tags">
+            <span class="doc-tag">초음파</span>
+            <span class="doc-tag">X-ray</span>
+            <span class="doc-tag">종합검진</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCHEDULE -->
+<section class="section section-alt" id="schedule">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="badge">🕐 진료시간</span>
+      <h2>진료시간 안내</h2>
+      <p>정규 진료 외 24시간 응급 진료를 운영합니다</p>
+    </div>
+    <div class="schedule-wrap fade-up">
+      <table class="schedule-table">
+        <thead>
+          <tr>
+            <th>요일</th>
+            <th>진료시간</th>
+            <th>점심시간</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="day">월요일</td><td>09:00 ~ 20:00</td><td>12:30 ~ 13:30</td></tr>
+          <tr><td class="day">화요일</td><td>09:00 ~ 20:00</td><td>12:30 ~ 13:30</td></tr>
+          <tr><td class="day">수요일</td><td>09:00 ~ 20:00</td><td>12:30 ~ 13:30</td></tr>
+          <tr><td class="day">목요일</td><td>09:00 ~ 20:00</td><td>12:30 ~ 13:30</td></tr>
+          <tr><td class="day">금요일</td><td>09:00 ~ 20:00</td><td>12:30 ~ 13:30</td></tr>
+          <tr><td class="day">토요일</td><td>09:00 ~ 17:00</td><td>12:30 ~ 13:30</td></tr>
+          <tr><td class="day">일요일</td><td>10:00 ~ 15:00</td><td class="closed">점심 없음</td></tr>
+          <tr><td class="day" style="color:var(--coral)">공휴일</td><td>10:00 ~ 15:00</td><td class="closed">점심 없음</td></tr>
+        </tbody>
+      </table>
+      <div class="schedule-note">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+        응급 진료는 24시간 연중무휴 운영됩니다. 야간/공휴일 응급 진료 시 별도 응급 수가가 적용됩니다.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESERVATION -->
+<section class="section section-mint" id="reservation">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="badge">📅 온라인 예약</span>
+      <h2>간편하게 예약하세요</h2>
+      <p>온라인으로 미리 예약하시면 대기 없이 편하게 진료받으실 수 있습니다</p>
+    </div>
+    <div class="reservation-wrap">
+      <div class="res-info fade-up">
+        <h3>예약 안내</h3>
+        <p>온라인 예약은 희망 일시를 선택하신 후 병원에서 확인 연락을 드립니다. 응급 상황 시에는 전화로 연락해 주세요.</p>
+        <div class="res-features">
+          <div class="res-feature">
+            <span class="check">✓</span>
+            대기 시간 없이 바로 진료
+          </div>
+          <div class="res-feature">
+            <span class="check">✓</span>
+            예약 전 전화 확인 연락
+          </div>
+          <div class="res-feature">
+            <span class="check">✓</span>
+            예약 변경 및 취소 가능
+          </div>
+          <div class="res-feature">
+            <span class="check">✓</span>
+            카카오톡 알림 발송
+          </div>
+          <div class="res-feature">
+            <span class="check">✓</span>
+            24시간 응급 진료 별도 접수
+          </div>
+        </div>
+      </div>
+      <form class="res-form fade-up" id="reservationForm" style="transition-delay:.15s">
+        <h3>예약 신청서</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>보호자 이름 *</label>
+            <input type="text" placeholder="홍길동" required>
+          </div>
+          <div class="form-group">
+            <label>연락처 *</label>
+            <input type="tel" placeholder="010-0000-0000" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>반려동물 이름 *</label>
+            <input type="text" placeholder="반려동물 이름" required>
+          </div>
+          <div class="form-group">
+            <label>동물 종류 *</label>
+            <select required>
+              <option value="">선택하세요</option>
+              <option>강아지</option>
+              <option>고양이</option>
+              <option>기타</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>품종</label>
+            <input type="text" placeholder="품종 입력">
+          </div>
+          <div class="form-group">
+            <label>나이</label>
+            <input type="text" placeholder="예: 3살">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>희망 날짜 *</label>
+            <input type="date" required>
+          </div>
+          <div class="form-group">
+            <label>희망 시간 *</label>
+            <select required>
+              <option value="">선택하세요</option>
+              <option>09:00</option><option>09:30</option>
+              <option>10:00</option><option>10:30</option>
+              <option>11:00</option><option>11:30</option>
+              <option>13:30</option><option>14:00</option>
+              <option>14:30</option><option>15:00</option>
+              <option>15:30</option><option>16:00</option>
+              <option>16:30</option><option>17:00</option>
+              <option>17:30</option><option>18:00</option>
+              <option>18:30</option><option>19:00</option>
+              <option>19:30</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>진료 과목 *</label>
+          <select required>
+            <option value="">선택하세요</option>
+            <option>내과</option>
+            <option>외과</option>
+            <option>피부과</option>
+            <option>치과</option>
+            <option>건강검진</option>
+            <option>기타</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>증상 및 특이사항</label>
+          <textarea placeholder="반려동물의 현재 증상이나 전달사항을 적어주세요."></textarea>
+        </div>
+        <button type="submit" class="form-submit">예약 신청하기</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- LOCATION -->
+<section class="section" id="location">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="badge">📍 오시는 길</span>
+      <h2>병원 위치 안내</h2>
+      <p>편리한 교통과 넓은 주차공간을 갖추고 있습니다</p>
+    </div>
+    <div class="location-grid">
+      <div class="location-map fade-up">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3165.2!2d127.028!3d37.497!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2z6rCV64Ko!5e0!3m2!1sko!2skr!4v1" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+      <div class="location-details fade-up" style="transition-delay:.15s">
+        <div class="loc-item">
+          <div class="loc-icon">📍</div>
+          <div class="loc-text">
+            <h4>주소</h4>
+            <p>서울특별시 강남구 테헤란로 123, 해피펫빌딩 1~2층</p>
+          </div>
+        </div>
+        <div class="loc-item">
+          <div class="loc-icon">🚇</div>
+          <div class="loc-text">
+            <h4>지하철</h4>
+            <p>2호선 강남역 3번 출구에서 도보 5분<br>신분당선 강남역 5번 출구에서 도보 3분</p>
+          </div>
+        </div>
+        <div class="loc-item">
+          <div class="loc-icon">🚌</div>
+          <div class="loc-text">
+            <h4>버스</h4>
+            <p>간선: 140, 144, 145, 341<br>지선: 3412, 4412</p>
+          </div>
+        </div>
+        <div class="loc-item">
+          <div class="loc-icon">🅿️</div>
+          <div class="loc-text">
+            <h4>주차 안내</h4>
+            <p>건물 지하 1~2층 전용 주차장 (진료 시 2시간 무료)</p>
+          </div>
+        </div>
+        <div class="loc-item">
+          <div class="loc-icon">📞</div>
+          <div class="loc-text">
+            <h4>연락처</h4>
+            <p>대표전화: 02-1234-5678<br>응급전화: 02-1234-9999</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EMERGENCY SECTION -->
+<section class="emergency-section" id="emergency">
+  <div class="container emergency-content">
+    <div class="emergency-icon">🚨</div>
+    <h2>24시간 응급 진료</h2>
+    <p>야간, 주말, 공휴일 관계없이 언제든지 응급 진료가 가능합니다</p>
+    <div class="emergency-phone"><a href="tel:0212349999">02-1234-9999</a></div>
+    <p class="emergency-sub">응급 상황 시 내원 전 전화 연락 부탁드립니다</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>
+          <svg viewBox="0 0 36 36" fill="none"><path d="M18 3C10 3 4 8 4 15c0 5 3 9 7 11v4c0 1 .5 2 1.5 2H18c5 0 14-4 14-14C32 9 26 3 18 3z" fill="currentColor" opacity=".3"/><path d="M12 14c0-1.5 1-3 2.5-3s2.5 1.5 2.5 3-1 2-2.5 2-2.5-.5-2.5-2z" fill="currentColor"/><path d="M19 14c0-1.5 1-3 2.5-3S24 12.5 24 14s-1 2-2.5 2S19 14.5 19 14z" fill="currentColor"/></svg>
+          해피펫 동물병원
+        </h3>
+        <p>소중한 반려동물의 건강한 행복을 함께 지키는 해피펫 동물병원입니다. 24시간 응급 진료 운영.</p>
+      </div>
+      <div class="footer-col">
+        <h4>진료 안내</h4>
+        <a href="#departments">진료과목</a>
+        <a href="#doctors">의료진 소개</a>
+        <a href="#schedule">진료시간</a>
+        <a href="#emergency">응급 진료</a>
+      </div>
+      <div class="footer-col">
+        <h4>이용 안내</h4>
+        <a href="#reservation">온라인 예약</a>
+        <a href="#location">오시는 길</a>
+        <a href="#">주차 안내</a>
+        <a href="#">비용 안내</a>
+      </div>
+      <div class="footer-col">
+        <h4>연락처</h4>
+        <a href="tel:0212345678">대표: 02-1234-5678</a>
+        <a href="tel:0212349999">응급: 02-1234-9999</a>
+        <a href="#">카카오톡 상담</a>
+        <a href="#">인스타그램</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2024 해피펫 동물병원. All rights reserved.
+    </div>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// Nav scroll effect
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 10);
+});
+
+// Mobile menu
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  mobileMenu.classList.toggle('open');
+  const spans = hamburger.querySelectorAll('span');
+  if (mobileMenu.classList.contains('open')) {
+    spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+    spans[1].style.opacity = '0';
+    spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+  } else {
+    spans[0].style.transform = '';
+    spans[1].style.opacity = '';
+    spans[2].style.transform = '';
+  }
+});
+function closeMobile() {
+  mobileMenu.classList.remove('open');
+  const spans = hamburger.querySelectorAll('span');
+  spans[0].style.transform = '';
+  spans[1].style.opacity = '';
+  spans[2].style.transform = '';
+}
+
+// Scroll animations
+const fadeEls = document.querySelectorAll('.fade-up');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+fadeEls.forEach(el => observer.observe(el));
+
+// Toast
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+// Reservation form
+document.getElementById('reservationForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  showToast('예약이 접수되었습니다! 확인 연락을 드리겠습니다.');
+  this.reset();
+});
+
+// Set min date to today for date input
+const dateInput = document.querySelector('input[type="date"]');
+if (dateInput) {
+  const today = new Date().toISOString().split('T')[0];
+  dateInput.setAttribute('min', today);
+}
+</script>
+</body>
+</html>
