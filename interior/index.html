@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INTERIO - 공간의 가치를 디자인합니다</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --white: #ffffff;
+  --beige: #f5f0eb;
+  --beige-dark: #e8ddd3;
+  --text: #2c2c2c;
+  --text-light: #6b6b6b;
+  --accent: #a0845e;
+  --accent-dark: #8a7050;
+  --border: #e0d8cf;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  color: var(--text);
+  background: var(--white);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ── Navigation ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 20px 5%;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  transition: box-shadow 0.3s;
+}
+nav.scrolled { box-shadow: 0 2px 24px rgba(0,0,0,0.06); }
+.logo { font-size: 1.4rem; font-weight: 700; letter-spacing: 3px; color: var(--text); text-decoration: none; }
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a { text-decoration: none; color: var(--text-light); font-size: 0.9rem; font-weight: 500; transition: color 0.3s; }
+.nav-links a:hover { color: var(--accent); }
+.hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; }
+.hamburger span { display: block; width: 24px; height: 2px; background: var(--text); transition: 0.3s; }
+
+/* ── Hero ── */
+.hero {
+  position: relative;
+  height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background: url('https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1920&q=80') center/cover no-repeat;
+}
+.hero-bg::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.25), rgba(0,0,0,0.45));
+}
+.hero-content { position: relative; z-index: 2; color: #fff; padding: 0 20px; }
+.hero-content h1 {
+  font-size: clamp(2rem, 5vw, 3.8rem);
+  font-weight: 300;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+  line-height: 1.3;
+}
+.hero-content h1 strong { font-weight: 700; }
+.hero-content p {
+  font-size: clamp(0.95rem, 1.5vw, 1.15rem);
+  font-weight: 300;
+  opacity: 0.9;
+  margin-bottom: 36px;
+}
+.btn {
+  display: inline-block;
+  padding: 14px 40px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: all 0.3s;
+  cursor: pointer;
+  border: none;
+  font-family: 'Inter', sans-serif;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-dark); transform: translateY(-2px); }
+.btn-outline { border: 2px solid #fff; color: #fff; background: transparent; margin-left: 12px; }
+.btn-outline:hover { background: rgba(255,255,255,0.15); }
+.scroll-indicator {
+  position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+  z-index: 2; animation: bounce 2s infinite;
+}
+.scroll-indicator span {
+  display: block; width: 28px; height: 28px;
+  border-right: 2px solid rgba(255,255,255,0.7);
+  border-bottom: 2px solid rgba(255,255,255,0.7);
+  transform: rotate(45deg);
+}
+@keyframes bounce { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(12px); } }
+
+/* ── Section common ── */
+section { padding: 100px 5%; }
+.section-header { text-align: center; margin-bottom: 60px; }
+.section-header h2 {
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 300;
+  margin-bottom: 12px;
+}
+.section-header h2 strong { font-weight: 700; }
+.section-header p { color: var(--text-light); font-size: 1rem; max-width: 560px; margin: 0 auto; }
+.section-beige { background: var(--beige); }
+
+/* ── Portfolio Gallery ── */
+.filter-bar {
+  display: flex; justify-content: center; flex-wrap: wrap; gap: 12px;
+  margin-bottom: 40px;
+}
+.filter-btn {
+  padding: 10px 24px;
+  border: 1px solid var(--border);
+  background: var(--white);
+  border-radius: 30px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: 'Inter', sans-serif;
+}
+.filter-btn.active, .filter-btn:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.gallery-item {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  aspect-ratio: 4/3;
+  transition: transform 0.4s;
+}
+.gallery-item:hover { transform: translateY(-4px); }
+.gallery-item img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.5s;
+}
+.gallery-item:hover img { transform: scale(1.06); }
+.gallery-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 50%);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.gallery-item:hover .gallery-overlay { opacity: 1; }
+.gallery-overlay h3 { color: #fff; font-size: 1.05rem; font-weight: 600; }
+.gallery-overlay span { color: rgba(255,255,255,0.8); font-size: 0.85rem; margin-top: 4px; }
+
+/* ── Lightbox ── */
+.lightbox {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.92);
+  display: none; align-items: center; justify-content: center;
+}
+.lightbox.active { display: flex; }
+.lightbox img {
+  max-width: 85vw; max-height: 80vh;
+  border-radius: 6px;
+  object-fit: contain;
+}
+.lightbox-close, .lightbox-prev, .lightbox-next {
+  position: absolute;
+  background: none; border: none;
+  color: #fff; font-size: 2rem;
+  cursor: pointer;
+  padding: 16px;
+  transition: opacity 0.3s;
+  opacity: 0.7;
+}
+.lightbox-close:hover, .lightbox-prev:hover, .lightbox-next:hover { opacity: 1; }
+.lightbox-close { top: 20px; right: 30px; font-size: 2.4rem; }
+.lightbox-prev { left: 20px; top: 50%; transform: translateY(-50%); }
+.lightbox-next { right: 20px; top: 50%; transform: translateY(-50%); }
+.lightbox-caption {
+  position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+  color: rgba(255,255,255,0.8); font-size: 0.95rem; text-align: center;
+}
+
+/* ── Simulator ── */
+.simulator-wrap {
+  max-width: 900px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 280px; gap: 40px;
+  align-items: start;
+}
+.room-preview {
+  position: relative;
+  aspect-ratio: 16/10;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+  transition: background-color 0.5s;
+  background-color: #f5f0eb;
+}
+.room-preview .furniture {
+  position: absolute; inset: 0;
+  background: url('https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80') center/cover no-repeat;
+  mix-blend-mode: multiply;
+  opacity: 0.85;
+}
+.room-overlay-text {
+  position: absolute; bottom: 16px; left: 20px;
+  background: rgba(255,255,255,0.88); padding: 8px 16px;
+  border-radius: 6px; font-size: 0.82rem; font-weight: 500; color: var(--text);
+}
+.color-panel h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
+.color-panel p { font-size: 0.85rem; color: var(--text-light); margin-bottom: 20px; }
+.color-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.color-swatch {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 2px solid var(--border);
+  cursor: pointer;
+  transition: all 0.3s;
+  background: var(--white);
+}
+.color-swatch:hover, .color-swatch.active { border-color: var(--accent); box-shadow: 0 2px 12px rgba(160,132,94,0.15); }
+.color-swatch .dot {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 2px solid rgba(0,0,0,0.08); flex-shrink: 0;
+}
+.color-swatch .label { font-size: 0.8rem; font-weight: 500; }
+
+/* ── Testimonials ── */
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 28px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.testimonial-card {
+  background: var(--white);
+  padding: 36px;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+  border: 1px solid var(--border);
+}
+.testimonial-stars { color: #e8b94a; font-size: 1rem; margin-bottom: 16px; letter-spacing: 2px; }
+.testimonial-card blockquote {
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: var(--text);
+  margin-bottom: 20px;
+  font-style: italic;
+}
+.testimonial-author { display: flex; align-items: center; gap: 12px; }
+.testimonial-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--beige);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 1rem; color: var(--accent);
+}
+.testimonial-info .name { font-weight: 600; font-size: 0.9rem; }
+.testimonial-info .detail { font-size: 0.8rem; color: var(--text-light); }
+
+/* ── Contact Form ── */
+.contact-wrap {
+  max-width: 640px;
+  margin: 0 auto;
+  background: var(--white);
+  padding: 48px;
+  border-radius: 16px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.06);
+  border: 1px solid var(--border);
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.form-group { display: flex; flex-direction: column; }
+.form-group.full { grid-column: 1 / -1; }
+.form-group label {
+  font-size: 0.85rem; font-weight: 500;
+  margin-bottom: 6px; color: var(--text);
+}
+.form-group input, .form-group select, .form-group textarea {
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.92rem;
+  font-family: 'Inter', sans-serif;
+  color: var(--text);
+  background: #fafaf8;
+  transition: border-color 0.3s;
+  outline: none;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  border-color: var(--accent);
+}
+.form-group textarea { resize: vertical; min-height: 120px; }
+.form-submit {
+  text-align: center;
+  margin-top: 28px;
+}
+.form-submit .btn { padding: 16px 56px; font-size: 1rem; }
+
+/* ── Footer ── */
+footer {
+  background: var(--text);
+  color: rgba(255,255,255,0.7);
+  padding: 48px 5%;
+  text-align: center;
+}
+footer .footer-logo { color: #fff; font-size: 1.2rem; font-weight: 700; letter-spacing: 3px; margin-bottom: 12px; }
+footer p { font-size: 0.85rem; line-height: 1.8; }
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0;
+    flex-direction: column; background: var(--white); padding: 20px 5%;
+    border-bottom: 1px solid var(--border); gap: 16px;
+  }
+  .nav-links.open { display: flex; }
+  .hamburger { display: flex; }
+  .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+  .simulator-wrap { grid-template-columns: 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+  .contact-wrap { padding: 28px 20px; }
+  .hero-content h1 { font-size: 1.8rem; }
+  section { padding: 70px 5%; }
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav id="navbar">
+  <a href="#" class="logo">INTERIO</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#portfolio">포트폴리오</a></li>
+    <li><a href="#simulator">시뮬레이터</a></li>
+    <li><a href="#reviews">고객 후기</a></li>
+    <li><a href="#contact">상담 신청</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="메뉴 열기">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <h1><strong>공간의 가치</strong>를<br>디자인합니다</h1>
+    <p>당신의 라이프스타일에 맞는 인테리어, INTERIO가 완성합니다</p>
+    <a href="#portfolio" class="btn btn-primary">프로젝트 보기</a>
+    <a href="#contact" class="btn btn-outline">무료 상담</a>
+  </div>
+  <div class="scroll-indicator"><span></span></div>
+</section>
+
+<!-- Portfolio Gallery -->
+<section id="portfolio">
+  <div class="section-header">
+    <h2>프로젝트 <strong>포트폴리오</strong></h2>
+    <p>공간마다 다른 이야기, 우리가 만든 인테리어를 만나보세요</p>
+  </div>
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">전체</button>
+    <button class="filter-btn" data-filter="living">거실</button>
+    <button class="filter-btn" data-filter="kitchen">주방</button>
+    <button class="filter-btn" data-filter="bedroom">침실</button>
+    <button class="filter-btn" data-filter="bathroom">욕실</button>
+    <button class="filter-btn" data-filter="office">사무실</button>
+  </div>
+  <div class="gallery-grid" id="galleryGrid"></div>
+</section>
+
+<!-- Simulator -->
+<section id="simulator" class="section-beige">
+  <div class="section-header">
+    <h2>벽 색상 <strong>시뮬레이터</strong></h2>
+    <p>원하는 색상을 선택하면 공간이 어떻게 변하는지 확인해보세요</p>
+  </div>
+  <div class="simulator-wrap">
+    <div class="room-preview" id="roomPreview">
+      <div class="furniture"></div>
+      <div class="room-overlay-text" id="colorLabel">내추럴 베이지</div>
+    </div>
+    <div class="color-panel">
+      <h3>벽 색상 선택</h3>
+      <p>8가지 컬러 중 원하는 색상을 골라보세요</p>
+      <div class="color-options" id="colorOptions"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section id="reviews">
+  <div class="section-header">
+    <h2>고객 <strong>후기</strong></h2>
+    <p>INTERIO와 함께한 고객님들의 생생한 이야기</p>
+  </div>
+  <div class="testimonials-grid">
+    <div class="testimonial-card">
+      <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <blockquote>"30평 아파트 전체 리모델링을 맡겼는데, 상상 이상의 결과물이었어요. 특히 거실 조명 설계가 정말 감각적이었습니다. 매일 집에 오는 게 행복해요."</blockquote>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">김</div>
+        <div class="testimonial-info">
+          <div class="name">김서연</div>
+          <div class="detail">서울 마포구 · 30평 아파트</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <blockquote>"사무실 인테리어를 의뢰했는데, 직원들의 만족도가 확 올랐습니다. 업무 효율도 좋아진 것 같고, 클라이언트 방문 시 반응이 정말 좋아요."</blockquote>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">박</div>
+        <div class="testimonial-info">
+          <div class="name">박준혁</div>
+          <div class="detail">강남구 · 60평 오피스</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <blockquote>"주방과 욕실 리모델링을 했는데, 제한된 예산 안에서 최대한의 결과를 뽑아주셨어요. 소통도 빠르고 꼼꼼하게 챙겨주셔서 감사합니다."</blockquote>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">이</div>
+        <div class="testimonial-info">
+          <div class="name">이하은</div>
+          <div class="detail">분당구 · 24평 아파트</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Form -->
+<section id="contact" class="section-beige">
+  <div class="section-header">
+    <h2>무료 <strong>상담 신청</strong></h2>
+    <p>편하게 문의해주세요. 48시간 내 전문 디자이너가 연락드립니다</p>
+  </div>
+  <div class="contact-wrap">
+    <form id="contactForm" onsubmit="handleSubmit(event)">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="name">이름</label>
+          <input type="text" id="name" placeholder="홍길동" required>
+        </div>
+        <div class="form-group">
+          <label for="phone">연락처</label>
+          <input type="tel" id="phone" placeholder="010-0000-0000" required>
+        </div>
+        <div class="form-group">
+          <label for="space">공간 유형</label>
+          <select id="space" required>
+            <option value="" disabled selected>선택해주세요</option>
+            <option>아파트</option>
+            <option>빌라/주택</option>
+            <option>오피스</option>
+            <option>상업공간</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="size">평수</label>
+          <input type="text" id="size" placeholder="예: 30평">
+        </div>
+        <div class="form-group full">
+          <label for="message">요청사항</label>
+          <textarea id="message" placeholder="원하시는 스타일이나 예산, 일정 등을 알려주세요"></textarea>
+        </div>
+      </div>
+      <div class="form-submit">
+        <button type="submit" class="btn btn-primary">상담 신청하기</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+  <button class="lightbox-prev" onclick="navigateLightbox(-1)">&#10094;</button>
+  <button class="lightbox-next" onclick="navigateLightbox(1)">&#10095;</button>
+  <img id="lightboxImg" src="" alt="">
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-logo">INTERIO</div>
+  <p>서울특별시 강남구 테헤란로 123 인테리오빌딩 4층<br>
+  Tel. 02-1234-5678 &nbsp;|&nbsp; info@interio.co.kr<br><br>
+  &copy; 2026 INTERIO. All rights reserved.</p>
+</footer>
+
+<script>
+/* ── Portfolio Data ── */
+const projects = [
+  { img: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=600&q=80', title: '모던 화이트 거실', cat: 'living', label: '거실' },
+  { img: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80', title: '미니멀 주방', cat: 'kitchen', label: '주방' },
+  { img: 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=600&q=80', title: '편안한 내추럴 침실', cat: 'bedroom', label: '침실' },
+  { img: 'https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=600&q=80', title: '럭셔리 욕실', cat: 'bathroom', label: '욕실' },
+  { img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80', title: '크리에이티브 오피스', cat: 'office', label: '사무실' },
+  { img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=80', title: '스칸디나비안 거실', cat: 'living', label: '거실' },
+  { img: 'https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=600&q=80', title: '아일랜드 주방', cat: 'kitchen', label: '주방' },
+  { img: 'https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?w=600&q=80', title: '호텔식 침실', cat: 'bedroom', label: '침실' },
+  { img: 'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=600&q=80', title: '모던 세면대 욕실', cat: 'bathroom', label: '욕실' },
+  { img: 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=600&q=80', title: '코워킹 스페이스', cat: 'office', label: '사무실' },
+  { img: 'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?w=600&q=80', title: '따뜻한 우드 거실', cat: 'living', label: '거실' },
+  { img: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80', title: '프렌치 모던 침실', cat: 'bedroom', label: '침실' },
+];
+
+let currentFilter = 'all';
+let filteredProjects = [...projects];
+let lightboxIndex = 0;
+
+/* ── Render Gallery ── */
+function renderGallery() {
+  const grid = document.getElementById('galleryGrid');
+  filteredProjects = currentFilter === 'all' ? projects : projects.filter(p => p.cat === currentFilter);
+  grid.innerHTML = filteredProjects.map((p, i) => `
+    <div class="gallery-item" onclick="openLightbox(${i})">
+      <img src="${p.img}" alt="${p.title}" loading="lazy">
+      <div class="gallery-overlay">
+        <h3>${p.title}</h3>
+        <span>${p.label}</span>
+      </div>
+    </div>
+  `).join('');
+}
+renderGallery();
+
+/* ── Filters ── */
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelector('.filter-btn.active').classList.remove('active');
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    renderGallery();
+  });
+});
+
+/* ── Lightbox ── */
+function openLightbox(index) {
+  lightboxIndex = index;
+  const p = filteredProjects[index];
+  document.getElementById('lightboxImg').src = p.img.replace('w=600', 'w=1200');
+  document.getElementById('lightboxCaption').textContent = p.title;
+  document.getElementById('lightbox').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('active');
+  document.body.style.overflow = '';
+}
+function navigateLightbox(dir) {
+  lightboxIndex = (lightboxIndex + dir + filteredProjects.length) % filteredProjects.length;
+  const p = filteredProjects[lightboxIndex];
+  document.getElementById('lightboxImg').src = p.img.replace('w=600', 'w=1200');
+  document.getElementById('lightboxCaption').textContent = p.title;
+}
+document.getElementById('lightbox').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeLightbox();
+});
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lightbox').classList.contains('active')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') navigateLightbox(-1);
+  if (e.key === 'ArrowRight') navigateLightbox(1);
+});
+
+/* ── Wall Color Simulator ── */
+const colors = [
+  { name: '내추럴 베이지', hex: '#f5f0eb' },
+  { name: '웜 화이트', hex: '#faf8f5' },
+  { name: '소프트 그레이', hex: '#e8e6e3' },
+  { name: '세이지 그린', hex: '#d4ddd2' },
+  { name: '더스티 로즈', hex: '#e8d5d0' },
+  { name: '스카이 블루', hex: '#d4dfe8' },
+  { name: '라벤더', hex: '#ddd5e8' },
+  { name: '머스타드', hex: '#e8dcc0' },
+];
+
+const colorOptions = document.getElementById('colorOptions');
+colors.forEach((c, i) => {
+  const swatch = document.createElement('div');
+  swatch.className = 'color-swatch' + (i === 0 ? ' active' : '');
+  swatch.innerHTML = `<div class="dot" style="background:${c.hex}"></div><div class="label">${c.name}</div>`;
+  swatch.addEventListener('click', () => {
+    document.querySelector('.color-swatch.active').classList.remove('active');
+    swatch.classList.add('active');
+    document.getElementById('roomPreview').style.backgroundColor = c.hex;
+    document.getElementById('colorLabel').textContent = c.name;
+  });
+  colorOptions.appendChild(swatch);
+});
+
+/* ── Nav scroll effect ── */
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+/* ── Hamburger ── */
+document.getElementById('hamburger').addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('open');
+});
+document.querySelectorAll('.nav-links a').forEach(a => {
+  a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('open'));
+});
+
+/* ── Form Submit ── */
+function handleSubmit(e) {
+  e.preventDefault();
+  const name = document.getElementById('name').value;
+  alert(`${name}님, 상담 신청이 접수되었습니다!\n48시간 내 전문 디자이너가 연락드리겠습니다.`);
+  e.target.reset();
+}
+</script>
+</body>
+</html>
