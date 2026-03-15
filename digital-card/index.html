@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>디지털 명함 | Digital Card</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-card: #12121a;
+  --bg-section: #1a1a28;
+  --bg-hover: #22223a;
+  --accent: #6c5ce7;
+  --accent-light: #a29bfe;
+  --accent-glow: rgba(108, 92, 231, 0.3);
+  --text-primary: #f0f0f5;
+  --text-secondary: #a0a0b8;
+  --text-muted: #6b6b80;
+  --border: rgba(255, 255, 255, 0.06);
+  --border-accent: rgba(108, 92, 231, 0.3);
+  --gradient-1: linear-gradient(135deg, #6c5ce7, #a29bfe);
+  --gradient-2: linear-gradient(135deg, #6c5ce7 0%, #e056a0 100%);
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 40px rgba(108, 92, 231, 0.15);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-xs: 6px;
+}
+
+html { font-size: 16px; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px 16px 40px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Background ambient */
+body::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(ellipse at 30% 20%, rgba(108, 92, 231, 0.08) 0%, transparent 50%),
+              radial-gradient(ellipse at 70% 80%, rgba(224, 86, 160, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.card-wrapper {
+  width: 100%;
+  max-width: 390px;
+  position: relative;
+  z-index: 1;
+}
+
+/* === HERO SECTION === */
+.hero {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.hero-cover {
+  height: 120px;
+  background: var(--gradient-2);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-cover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.hero-avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  border: 4px solid var(--bg-card);
+  margin: -48px auto 0;
+  display: block;
+  position: relative;
+  z-index: 2;
+  background: var(--bg-section);
+  object-fit: cover;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.hero-avatar-placeholder {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  border: 4px solid var(--bg-card);
+  margin: -48px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  background: var(--gradient-1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.hero-info {
+  text-align: center;
+  padding: 16px 24px 24px;
+}
+
+.hero-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+
+.hero-title {
+  font-size: 0.875rem;
+  color: var(--accent-light);
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.hero-company {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.hero-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 6px 14px;
+  background: rgba(108, 92, 231, 0.12);
+  border-radius: 20px;
+  font-size: 0.75rem;
+  color: var(--accent-light);
+  font-weight: 500;
+}
+
+.hero-status::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #00d68f;
+  box-shadow: 0 0 6px rgba(0, 214, 143, 0.5);
+}
+
+/* === SECTION CARD === */
+.section {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 20px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-card);
+}
+
+.section-title {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+/* === CONTACT LIST === */
+.contact-list { list-style: none; }
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.contact-item:hover { background: var(--bg-hover); }
+
+.contact-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-xs);
+  background: var(--bg-section);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.contact-icon svg {
+  width: 18px;
+  height: 18px;
+  fill: var(--accent-light);
+}
+
+.contact-text { flex: 1; min-width: 0; }
+
+.contact-label {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.contact-value {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* === SNS GRID === */
+.sns-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.sns-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-section);
+  border: 1px solid var(--border);
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  transition: all 0.25s;
+}
+
+.sns-item:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-accent);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+
+.sns-item svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+  transition: fill 0.25s;
+}
+
+.sns-item:hover svg { fill: var(--accent-light); }
+
+/* === ABOUT === */
+.about-text {
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  word-break: keep-all;
+}
+
+/* === TIMELINE === */
+.timeline { list-style: none; }
+
+.timeline-item {
+  position: relative;
+  padding: 0 0 20px 28px;
+}
+
+.timeline-item:last-child { padding-bottom: 0; }
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  bottom: -6px;
+  width: 2px;
+  background: var(--border);
+}
+
+.timeline-item:last-child::before { display: none; }
+
+.timeline-item::after {
+  content: '';
+  position: absolute;
+  left: 1px;
+  top: 5px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg-card);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.timeline-period {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.timeline-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.timeline-sub {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+/* === SKILLS === */
+.skills-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skill-tag {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: var(--bg-section);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+
+.skill-tag:hover {
+  border-color: var(--border-accent);
+  color: var(--accent-light);
+  background: rgba(108, 92, 231, 0.08);
+}
+
+.skill-tag.primary {
+  background: rgba(108, 92, 231, 0.15);
+  border-color: var(--border-accent);
+  color: var(--accent-light);
+}
+
+/* === ACTION BUTTONS === */
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.btn svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.btn-primary {
+  background: var(--gradient-1);
+  color: #fff;
+  box-shadow: 0 4px 16px var(--accent-glow);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px var(--accent-glow);
+}
+
+.btn-secondary {
+  background: var(--bg-section);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-accent);
+  transform: translateY(-2px);
+}
+
+/* === FOOTER === */
+.footer {
+  text-align: center;
+  padding: 16px;
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+}
+
+/* === TOAST === */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--bg-section);
+  border: 1px solid var(--border-accent);
+  color: var(--text-primary);
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  z-index: 1000;
+  opacity: 0;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  white-space: nowrap;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* === RESPONSIVE === */
+@media (min-width: 480px) {
+  body { padding: 40px 24px 60px; }
+  .card-wrapper { max-width: 420px; }
+}
+
+@media (min-width: 768px) {
+  body { align-items: center; padding: 60px 24px; }
+  .card-wrapper { max-width: 440px; }
+  .hero-cover { height: 140px; }
+  .hero-avatar, .hero-avatar-placeholder {
+    width: 110px;
+    height: 110px;
+    margin-top: -55px;
+  }
+  .section { padding: 24px; }
+}
+
+/* === ANIMATION === */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card-wrapper > * {
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.card-wrapper > :nth-child(1) { animation-delay: 0s; }
+.card-wrapper > :nth-child(2) { animation-delay: 0.06s; }
+.card-wrapper > :nth-child(3) { animation-delay: 0.12s; }
+.card-wrapper > :nth-child(4) { animation-delay: 0.18s; }
+.card-wrapper > :nth-child(5) { animation-delay: 0.24s; }
+.card-wrapper > :nth-child(6) { animation-delay: 0.3s; }
+.card-wrapper > :nth-child(7) { animation-delay: 0.36s; }
+.card-wrapper > :nth-child(8) { animation-delay: 0.42s; }
+.card-wrapper > :nth-child(9) { animation-delay: 0.48s; }
+</style>
+</head>
+<body>
+
+<div class="card-wrapper">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-cover"></div>
+    <div class="hero-avatar-placeholder">JH</div>
+    <div class="hero-info">
+      <h1 class="hero-name">김정현</h1>
+      <p class="hero-title">프론트엔드 개발자</p>
+      <p class="hero-company">테크스타트 주식회사</p>
+      <span class="hero-status">협업 가능</span>
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="section">
+    <h2 class="section-title">연락처</h2>
+    <ul class="contact-list">
+      <li>
+        <a href="tel:010-1234-5678" class="contact-item">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24"><path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1.003 1.003 0 011.01-.24c1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.1.31.03.66-.25 1.01l-2.2 2.2z"/></svg>
+          </div>
+          <div class="contact-text">
+            <div class="contact-label">전화</div>
+            <div class="contact-value">010-1234-5678</div>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a href="mailto:junghyun.kim@techstart.co.kr" class="contact-item">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          </div>
+          <div class="contact-text">
+            <div class="contact-label">이메일</div>
+            <div class="contact-value">junghyun.kim@techstart.co.kr</div>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a href="https://maps.google.com/?q=서울시+강남구+테헤란로+123" target="_blank" class="contact-item">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>
+          </div>
+          <div class="contact-text">
+            <div class="contact-label">주소</div>
+            <div class="contact-value">서울시 강남구 테헤란로 123</div>
+          </div>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- SNS -->
+  <div class="section">
+    <h2 class="section-title">소셜 미디어</h2>
+    <div class="sns-grid">
+      <a href="https://github.com/" target="_blank" class="sns-item" aria-label="GitHub">
+        <svg viewBox="0 0 24 24"><path d="M12 2A10 10 0 002 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z"/></svg>
+        GitHub
+      </a>
+      <a href="https://linkedin.com/" target="_blank" class="sns-item" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14m-.5 15.5v-5.3a3.26 3.26 0 00-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 011.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 001.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 00-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+        LinkedIn
+      </a>
+      <a href="https://instagram.com/" target="_blank" class="sns-item" aria-label="Instagram">
+        <svg viewBox="0 0 24 24"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 01-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 017.8 2m-.2 2A3.6 3.6 0 004 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 003.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 110 2.5 1.25 1.25 0 010-2.5M12 7a5 5 0 110 10 5 5 0 010-10m0 2a3 3 0 100 6 3 3 0 000-6z"/></svg>
+        Instagram
+      </a>
+      <a href="https://twitter.com/" target="_blank" class="sns-item" aria-label="X (Twitter)">
+        <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        X
+      </a>
+      <a href="https://youtube.com/" target="_blank" class="sns-item" aria-label="YouTube">
+        <svg viewBox="0 0 24 24"><path d="M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z"/></svg>
+        YouTube
+      </a>
+      <a href="https://blog.naver.com/" target="_blank" class="sns-item" aria-label="블로그">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm1 4v2h14V8H5zm0 4v2h10v-2H5zm0 4v1h7v-1H5z"/></svg>
+        블로그
+      </a>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="section">
+    <h2 class="section-title">자기소개</h2>
+    <p class="about-text">
+      사용자 경험을 최우선으로 생각하는 프론트엔드 개발자입니다.
+      React, Vue.js 등 모던 프레임워크를 활용하여 직관적이고
+      성능 최적화된 웹 서비스를 만들고 있습니다.
+      디자인 시스템 구축과 접근성 개선에 깊은 관심을 가지고 있으며,
+      팀과의 원활한 소통을 통해 더 나은 제품을 만들어가는 것을
+      즐깁니다.
+    </p>
+  </div>
+
+  <!-- CAREER -->
+  <div class="section">
+    <h2 class="section-title">경력</h2>
+    <ul class="timeline">
+      <li class="timeline-item">
+        <div class="timeline-period">2022.03 — 현재</div>
+        <div class="timeline-title">테크스타트 주식회사</div>
+        <div class="timeline-sub">프론트엔드 개발팀 선임</div>
+      </li>
+      <li class="timeline-item">
+        <div class="timeline-period">2019.06 — 2022.02</div>
+        <div class="timeline-title">디지웹 솔루션즈</div>
+        <div class="timeline-sub">웹 개발자</div>
+      </li>
+      <li class="timeline-item">
+        <div class="timeline-period">2018.01 — 2019.05</div>
+        <div class="timeline-title">스타트업 허브</div>
+        <div class="timeline-sub">주니어 개발자</div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- EDUCATION -->
+  <div class="section">
+    <h2 class="section-title">학력</h2>
+    <ul class="timeline">
+      <li class="timeline-item">
+        <div class="timeline-period">2014.03 — 2018.02</div>
+        <div class="timeline-title">한국대학교</div>
+        <div class="timeline-sub">컴퓨터공학과 학사</div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- SKILLS -->
+  <div class="section">
+    <h2 class="section-title">기술 스택</h2>
+    <div class="skills-wrap">
+      <span class="skill-tag primary">React</span>
+      <span class="skill-tag primary">TypeScript</span>
+      <span class="skill-tag primary">Vue.js</span>
+      <span class="skill-tag">Next.js</span>
+      <span class="skill-tag">JavaScript</span>
+      <span class="skill-tag">HTML/CSS</span>
+      <span class="skill-tag">Tailwind CSS</span>
+      <span class="skill-tag">Node.js</span>
+      <span class="skill-tag">Git</span>
+      <span class="skill-tag">Figma</span>
+      <span class="skill-tag">REST API</span>
+      <span class="skill-tag">GraphQL</span>
+    </div>
+  </div>
+
+  <!-- ACTION BUTTONS -->
+  <div class="actions">
+    <button class="btn btn-primary" onclick="downloadVCard()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+      연락처 저장
+    </button>
+    <button class="btn btn-secondary" onclick="shareCard()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+      명함 공유
+    </button>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    &copy; 2026 김정현 &middot; Digital Card
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// === vCard Download ===
+function downloadVCard() {
+  const vcard = [
+    'BEGIN:VCARD',
+    'VERSION:3.0',
+    'FN:김정현',
+    'N:김;정현;;;',
+    'ORG:테크스타트 주식회사',
+    'TITLE:프론트엔드 개발자',
+    'TEL;TYPE=CELL:010-1234-5678',
+    'EMAIL:junghyun.kim@techstart.co.kr',
+    'ADR;TYPE=WORK:;;테헤란로 123;서울시;강남구;;대한민국',
+    'URL:https://github.com/',
+    'NOTE:프론트엔드 개발자 | React, Vue.js, TypeScript',
+    'END:VCARD'
+  ].join('\r\n');
+
+  const blob = new Blob([vcard], { type: 'text/vcard;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = '김정현_명함.vcf';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('연락처가 다운로드되었습니다');
+}
+
+// === Web Share API ===
+function shareCard() {
+  const shareData = {
+    title: '김정현 | 프론트엔드 개발자',
+    text: '김정현의 디지털 명함입니다. 테크스타트 주식회사 프론트엔드 개발팀 선임.',
+    url: window.location.href
+  };
+
+  if (navigator.share) {
+    navigator.share(shareData).catch(() => {
+      fallbackShare();
+    });
+  } else {
+    fallbackShare();
+  }
+}
+
+function fallbackShare() {
+  const url = window.location.href;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(() => {
+      showToast('링크가 클립보드에 복사되었습니다');
+    }).catch(() => {
+      showToast('공유 기능을 사용할 수 없습니다');
+    });
+  } else {
+    // Legacy fallback
+    const input = document.createElement('input');
+    input.value = url;
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand('copy');
+    document.body.removeChild(input);
+    showToast('링크가 클립보드에 복사되었습니다');
+  }
+}
+
+// === Toast ===
+let toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
+}
+</script>
+
+</body>
+</html>

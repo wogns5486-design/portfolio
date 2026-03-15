@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>습관 추적기 | Habit Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --green-50: #f0fdf4;
+  --green-100: #dcfce7;
+  --green-200: #bbf7d0;
+  --green-300: #86efac;
+  --green-400: #4ade80;
+  --green-500: #22c55e;
+  --green-600: #16a34a;
+  --green-700: #15803d;
+  --green-800: #166534;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --white: #ffffff;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.04);
+  --radius: 12px;
+  --radius-lg: 16px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--gray-50);
+  color: var(--gray-800);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 16px 80px;
+}
+
+/* Header */
+header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding: 32px 0 24px;
+}
+
+header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--green-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+header h1 span { font-size: 1.6rem; }
+
+header p {
+  color: var(--gray-500);
+  font-size: 0.95rem;
+  margin-top: 6px;
+}
+
+.date-display {
+  font-size: 0.9rem;
+  color: var(--gray-500);
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+/* Cards */
+.card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--gray-100);
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--gray-800);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Stats summary */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 18px 14px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-100);
+}
+
+.stat-card .stat-icon { font-size: 1.4rem; margin-bottom: 4px; }
+.stat-card .stat-value { font-size: 1.5rem; font-weight: 800; color: var(--green-600); }
+.stat-card .stat-label { font-size: 0.75rem; color: var(--gray-500); font-weight: 500; margin-top: 2px; }
+
+/* Add habit form */
+.add-btn {
+  background: var(--green-500);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  padding: 12px 24px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: inherit;
+  transition: background 0.2s, transform 0.1s;
+  width: 100%;
+  justify-content: center;
+}
+
+.add-btn:hover { background: var(--green-600); }
+.add-btn:active { transform: scale(0.98); }
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  backdrop-filter: blur(4px);
+}
+
+.modal-overlay.active { display: flex; }
+
+.modal {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp 0.25s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: var(--gray-800);
+}
+
+.form-group { margin-bottom: 16px; }
+
+.form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gray-600);
+  margin-bottom: 6px;
+}
+
+.form-group input, .form-group select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: var(--gray-800);
+  background: var(--gray-50);
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.form-group input:focus, .form-group select:focus {
+  border-color: var(--green-400);
+  background: var(--white);
+}
+
+.icon-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.icon-picker button {
+  width: 42px;
+  height: 42px;
+  border: 2px solid var(--gray-200);
+  border-radius: 10px;
+  background: var(--gray-50);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-picker button:hover { border-color: var(--green-300); background: var(--green-50); }
+.icon-picker button.selected { border-color: var(--green-500); background: var(--green-100); }
+
+.color-picker {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.color-picker button {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+  outline-offset: 2px;
+}
+
+.color-picker button:hover { transform: scale(1.15); }
+.color-picker button.selected { border-color: var(--gray-700); box-shadow: 0 0 0 2px var(--white); }
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.modal-actions button {
+  flex: 1;
+  padding: 11px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-cancel {
+  background: var(--gray-100);
+  color: var(--gray-600);
+}
+
+.btn-cancel:hover { background: var(--gray-200); }
+
+.btn-save {
+  background: var(--green-500);
+  color: white;
+}
+
+.btn-save:hover { background: var(--green-600); }
+
+/* Today checklist */
+.checklist { display: flex; flex-direction: column; gap: 10px; }
+
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  background: var(--gray-50);
+  border: 1.5px solid var(--gray-100);
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.checklist-item:hover { border-color: var(--gray-200); background: var(--white); }
+
+.checklist-item.checked {
+  background: var(--green-50);
+  border-color: var(--green-200);
+}
+
+.check-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2.5px solid var(--gray-300);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  font-size: 0.85rem;
+  color: transparent;
+}
+
+.checklist-item.checked .check-circle {
+  border-color: var(--green-500);
+  background: var(--green-500);
+  color: white;
+}
+
+.checklist-info { flex: 1; min-width: 0; }
+
+.checklist-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.checklist-item.checked .checklist-name { text-decoration: line-through; color: var(--gray-400); }
+
+.checklist-meta {
+  font-size: 0.78rem;
+  color: var(--gray-400);
+  margin-top: 2px;
+}
+
+.streak-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.habit-delete {
+  background: none;
+  border: none;
+  color: var(--gray-300);
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 4px;
+  border-radius: 6px;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.habit-delete:hover { color: #ef4444; background: #fef2f2; }
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--gray-400);
+}
+
+.empty-state .empty-icon { font-size: 3rem; margin-bottom: 12px; }
+.empty-state p { font-size: 0.95rem; }
+
+/* Heatmap */
+.heatmap-container { overflow-x: auto; padding-bottom: 8px; }
+
+.heatmap-wrapper {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.heatmap-habit {
+  min-width: 200px;
+  flex: 1;
+}
+
+.heatmap-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.heatmap-day-label {
+  font-size: 0.65rem;
+  color: var(--gray-400);
+  text-align: center;
+  font-weight: 500;
+  padding: 2px 0;
+}
+
+.heatmap-cell {
+  aspect-ratio: 1;
+  border-radius: 3px;
+  min-width: 18px;
+  position: relative;
+}
+
+.heatmap-cell[title] { cursor: default; }
+
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: flex-end;
+  margin-top: 10px;
+  font-size: 0.7rem;
+  color: var(--gray-400);
+}
+
+.heatmap-legend .cell {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+}
+
+/* Progress bars */
+.progress-list { display: flex; flex-direction: column; gap: 14px; }
+
+.progress-item {}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.progress-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.progress-pct {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.progress-bar-bg {
+  height: 10px;
+  background: var(--gray-100);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.5s ease;
+  min-width: 0;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+  background: var(--gray-100);
+  border-radius: 10px;
+  padding: 4px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gray-500);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.tab-btn.active {
+  background: var(--white);
+  color: var(--green-700);
+  box-shadow: var(--shadow-sm);
+}
+
+.tab-btn:hover:not(.active) { color: var(--gray-700); }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* Responsive */
+@media (max-width: 640px) {
+  .container { padding: 16px 12px 80px; }
+  header h1 { font-size: 1.5rem; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .card { padding: 18px; }
+  .heatmap-wrapper { flex-direction: column; }
+  .heatmap-habit { min-width: unset; }
+  .modal { padding: 20px; margin: 12px; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1><span>🌱</span> 습관 추적기</h1>
+    <p>매일의 작은 습관이 큰 변화를 만듭니다</p>
+    <div class="date-display" id="dateDisplay"></div>
+  </header>
+
+  <!-- Stats -->
+  <div class="stats-grid" id="statsGrid">
+    <div class="stat-card">
+      <div class="stat-icon">📋</div>
+      <div class="stat-value" id="statTotal">0</div>
+      <div class="stat-label">총 습관 수</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">✅</div>
+      <div class="stat-value" id="statChecks">0</div>
+      <div class="stat-label">총 체크 수</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">📊</div>
+      <div class="stat-value" id="statRate">0%</div>
+      <div class="stat-label">평균 달성률</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🔥</div>
+      <div class="stat-value" id="statStreak">0</div>
+      <div class="stat-label">최장 스트릭</div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="today">오늘 체크</button>
+    <button class="tab-btn" data-tab="heatmap">주간 히트맵</button>
+    <button class="tab-btn" data-tab="progress">달성률</button>
+  </div>
+
+  <!-- Today Tab -->
+  <div class="tab-content active" id="tab-today">
+    <div class="card">
+      <div class="card-title">📝 오늘의 체크리스트</div>
+      <div class="checklist" id="checklist"></div>
+    </div>
+    <button class="add-btn" id="addHabitBtn">➕ 새 습관 추가</button>
+  </div>
+
+  <!-- Heatmap Tab -->
+  <div class="tab-content" id="tab-heatmap">
+    <div class="card">
+      <div class="card-title">🟩 주간 히트맵 (최근 7주)</div>
+      <div class="heatmap-container" id="heatmapContainer"></div>
+      <div class="heatmap-legend">
+        <span>적음</span>
+        <div class="cell" style="background: var(--gray-100)"></div>
+        <div class="cell" style="background: #bbf7d0"></div>
+        <div class="cell" style="background: #4ade80"></div>
+        <div class="cell" style="background: #16a34a"></div>
+        <div class="cell" style="background: #166534"></div>
+        <span>많음</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress Tab -->
+  <div class="tab-content" id="tab-progress">
+    <div class="card">
+      <div class="card-title">📈 습관별 달성률 (최근 30일)</div>
+      <div class="progress-list" id="progressList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2 id="modalTitle">새 습관 추가</h2>
+    <div class="form-group">
+      <label>습관 이름</label>
+      <input type="text" id="habitName" placeholder="예: 물 2L 마시기" maxlength="30">
+    </div>
+    <div class="form-group">
+      <label>아이콘</label>
+      <div class="icon-picker" id="iconPicker"></div>
+    </div>
+    <div class="form-group">
+      <label>색상</label>
+      <div class="color-picker" id="colorPicker"></div>
+    </div>
+    <div class="form-group">
+      <label>주간 목표 빈도</label>
+      <select id="habitFreq">
+        <option value="7">매일 (7일)</option>
+        <option value="6">주 6일</option>
+        <option value="5">주 5일</option>
+        <option value="4">주 4일</option>
+        <option value="3">주 3일</option>
+        <option value="2">주 2일</option>
+        <option value="1">주 1일</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="btnCancel">취소</button>
+      <button class="btn-save" id="btnSave">저장</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ICONS = ['💧','🏃','📖','🧘','💪','🎯','✍️','🥗','💤','🎵','🧹','💊','🌅','📱','🚶','🧠','🍎','🪥','📝','🙏'];
+const COLORS = ['#22c55e','#16a34a','#15803d','#3b82f6','#8b5cf6','#ec4899','#f59e0b','#ef4444','#06b6d4','#6366f1'];
+
+let habits = JSON.parse(localStorage.getItem('ht_habits') || '[]');
+let logs = JSON.parse(localStorage.getItem('ht_logs') || '{}');
+let selectedIcon = ICONS[0];
+let selectedColor = COLORS[0];
+let editingId = null;
+
+function todayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function dateStr(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function save() {
+  localStorage.setItem('ht_habits', JSON.stringify(habits));
+  localStorage.setItem('ht_logs', JSON.stringify(logs));
+}
+
+function getLog(habitId, date) {
+  return logs[habitId] && logs[habitId][date];
+}
+
+function setLog(habitId, date, val) {
+  if (!logs[habitId]) logs[habitId] = {};
+  if (val) logs[habitId][date] = true;
+  else delete logs[habitId][date];
+  save();
+}
+
+function getStreak(habitId) {
+  let streak = 0;
+  const d = new Date();
+  const today = todayStr();
+  const checked = getLog(habitId, today);
+  if (!checked) {
+    d.setDate(d.getDate() - 1);
+  }
+  while (true) {
+    const ds = dateStr(d);
+    if (getLog(habitId, ds)) {
+      streak++;
+      d.setDate(d.getDate() - 1);
+    } else break;
+  }
+  return streak;
+}
+
+function getMaxStreak(habitId) {
+  const dates = logs[habitId] ? Object.keys(logs[habitId]).sort() : [];
+  if (!dates.length) return 0;
+  let max = 1, cur = 1;
+  for (let i = 1; i < dates.length; i++) {
+    const prev = new Date(dates[i-1]);
+    const curr = new Date(dates[i]);
+    const diff = (curr - prev) / (1000*60*60*24);
+    if (diff === 1) { cur++; max = Math.max(max, cur); }
+    else cur = 1;
+  }
+  return Math.max(max, cur);
+}
+
+function getRate30(habitId) {
+  const habit = habits.find(h => h.id === habitId);
+  if (!habit) return 0;
+  const today = new Date();
+  let total = 0, checked = 0;
+  for (let i = 0; i < 30; i++) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const ds = dateStr(d);
+    // Only count days after habit was created
+    if (ds >= habit.created) {
+      total++;
+      if (getLog(habitId, ds)) checked++;
+    }
+  }
+  if (total === 0) return 0;
+  // Adjust for frequency goal
+  const expectedDays = Math.min(total, Math.round(total * habit.freq / 7));
+  if (expectedDays === 0) return 0;
+  return Math.min(100, Math.round((checked / expectedDays) * 100));
+}
+
+function getTotalChecks(habitId) {
+  return logs[habitId] ? Object.keys(logs[habitId]).length : 0;
+}
+
+// Display date
+function showDate() {
+  const d = new Date();
+  const days = ['일','월','화','수','목','금','토'];
+  document.getElementById('dateDisplay').textContent =
+    `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 (${days[d.getDay()]})`;
+}
+
+// Tabs
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    if (btn.dataset.tab === 'heatmap') renderHeatmap();
+    if (btn.dataset.tab === 'progress') renderProgress();
+  });
+});
+
+// Render checklist
+function renderChecklist() {
+  const el = document.getElementById('checklist');
+  if (!habits.length) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">🌿</div><p>아직 등록된 습관이 없어요.<br>아래 버튼으로 새 습관을 추가해보세요!</p></div>';
+    return;
+  }
+  const today = todayStr();
+  el.innerHTML = habits.map(h => {
+    const checked = getLog(h.id, today);
+    const streak = getStreak(h.id);
+    return `
+      <div class="checklist-item ${checked ? 'checked' : ''}" data-id="${h.id}">
+        <div class="check-circle" style="${checked ? `background:${h.color};border-color:${h.color}` : `border-color:${h.color}40`}">✓</div>
+        <div class="checklist-info">
+          <div class="checklist-name">${h.icon} ${h.name}</div>
+          <div class="checklist-meta">주 ${h.freq}일 목표 · 체크 ${getTotalChecks(h.id)}회</div>
+        </div>
+        ${streak > 0 ? `<div class="streak-badge" style="background:${h.color}18;color:${h.color}">🔥 ${streak}일</div>` : ''}
+        <button class="habit-delete" data-id="${h.id}" title="삭제">✕</button>
+      </div>`;
+  }).join('');
+
+  // Check toggle
+  el.querySelectorAll('.checklist-item').forEach(item => {
+    item.addEventListener('click', (e) => {
+      if (e.target.closest('.habit-delete')) return;
+      const id = item.dataset.id;
+      const checked = getLog(id, today);
+      setLog(id, today, !checked);
+      render();
+    });
+  });
+
+  // Delete
+  el.querySelectorAll('.habit-delete').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const id = btn.dataset.id;
+      const h = habits.find(x => x.id === id);
+      if (confirm(`"${h.name}" 습관을 삭제할까요?`)) {
+        habits = habits.filter(x => x.id !== id);
+        delete logs[id];
+        save();
+        render();
+      }
+    });
+  });
+}
+
+// Render heatmap
+function renderHeatmap() {
+  const container = document.getElementById('heatmapContainer');
+  if (!habits.length) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">📅</div><p>습관을 추가하면 히트맵이 표시됩니다.</p></div>';
+    return;
+  }
+
+  const weeks = 7;
+  const today = new Date();
+  const dayLabels = ['월','화','수','목','금','토','일'];
+
+  // Collect last 7 weeks of dates
+  const dates = [];
+  const startDate = new Date(today);
+  const todayDow = (today.getDay() + 6) % 7; // Mon=0
+  startDate.setDate(startDate.getDate() - todayDow - (weeks - 1) * 7);
+
+  for (let i = 0; i < weeks * 7; i++) {
+    const d = new Date(startDate);
+    d.setDate(d.getDate() + i);
+    if (d <= today) dates.push(dateStr(d));
+    else dates.push(null);
+  }
+
+  container.innerHTML = '<div class="heatmap-wrapper">' + habits.map(h => {
+    const cells = dates.map((ds, i) => {
+      if (!ds) return `<div class="heatmap-cell" style="background:transparent"></div>`;
+      const checked = getLog(h.id, ds);
+      const level = checked ? 3 : 0;
+      const bg = checked ? h.color : 'var(--gray-100)';
+      const opacity = checked ? 1 : 1;
+      const d = new Date(ds);
+      const label = `${d.getMonth()+1}/${d.getDate()} ${checked ? '✓' : ''}`;
+      return `<div class="heatmap-cell" style="background:${bg};opacity:${opacity}" title="${label}"></div>`;
+    });
+
+    const dayLabelCells = dayLabels.map(l => `<div class="heatmap-day-label">${l}</div>`).join('');
+
+    // Restructure: 7 columns (Mon-Sun), N rows (weeks)
+    let gridCells = '';
+    for (let row = 0; row < 7; row++) {
+      for (let col = 0; col < weeks; col++) {
+        gridCells += cells[col * 7 + row] || '';
+      }
+    }
+
+    return `
+      <div class="heatmap-habit">
+        <div class="heatmap-label" style="color:${h.color}">${h.icon} ${h.name}</div>
+        <div class="heatmap-grid" style="grid-template-columns:repeat(${weeks},1fr)">
+          ${gridCells}
+        </div>
+      </div>`;
+  }).join('') + '</div>';
+}
+
+// Render progress
+function renderProgress() {
+  const el = document.getElementById('progressList');
+  if (!habits.length) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">📊</div><p>습관을 추가하면 달성률이 표시됩니다.</p></div>';
+    return;
+  }
+  el.innerHTML = habits.map(h => {
+    const rate = getRate30(h.id);
+    return `
+      <div class="progress-item">
+        <div class="progress-header">
+          <div class="progress-name">${h.icon} ${h.name}</div>
+          <div class="progress-pct" style="color:${h.color}">${rate}%</div>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" style="width:${rate}%;background:${h.color}"></div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// Stats
+function renderStats() {
+  document.getElementById('statTotal').textContent = habits.length;
+  let totalChecks = 0;
+  habits.forEach(h => { totalChecks += getTotalChecks(h.id); });
+  document.getElementById('statChecks').textContent = totalChecks;
+
+  if (habits.length) {
+    const avgRate = Math.round(habits.reduce((s, h) => s + getRate30(h.id), 0) / habits.length);
+    document.getElementById('statRate').textContent = avgRate + '%';
+    const maxS = Math.max(...habits.map(h => getMaxStreak(h.id)));
+    document.getElementById('statStreak').textContent = maxS;
+  } else {
+    document.getElementById('statRate').textContent = '0%';
+    document.getElementById('statStreak').textContent = '0';
+  }
+}
+
+// Modal
+const modal = document.getElementById('modalOverlay');
+
+function openModal() {
+  editingId = null;
+  document.getElementById('modalTitle').textContent = '새 습관 추가';
+  document.getElementById('habitName').value = '';
+  document.getElementById('habitFreq').value = '7';
+  selectedIcon = ICONS[0];
+  selectedColor = COLORS[0];
+  renderIconPicker();
+  renderColorPicker();
+  modal.classList.add('active');
+  setTimeout(() => document.getElementById('habitName').focus(), 100);
+}
+
+function closeModal() {
+  modal.classList.remove('active');
+}
+
+document.getElementById('addHabitBtn').addEventListener('click', openModal);
+document.getElementById('btnCancel').addEventListener('click', closeModal);
+modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+function renderIconPicker() {
+  const el = document.getElementById('iconPicker');
+  el.innerHTML = ICONS.map(icon =>
+    `<button type="button" class="${icon === selectedIcon ? 'selected' : ''}" data-icon="${icon}">${icon}</button>`
+  ).join('');
+  el.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedIcon = btn.dataset.icon;
+      renderIconPicker();
+    });
+  });
+}
+
+function renderColorPicker() {
+  const el = document.getElementById('colorPicker');
+  el.innerHTML = COLORS.map(c =>
+    `<button type="button" class="${c === selectedColor ? 'selected' : ''}" data-color="${c}" style="background:${c}"></button>`
+  ).join('');
+  el.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedColor = btn.dataset.color;
+      renderColorPicker();
+    });
+  });
+}
+
+document.getElementById('btnSave').addEventListener('click', () => {
+  const name = document.getElementById('habitName').value.trim();
+  if (!name) { document.getElementById('habitName').focus(); return; }
+  const freq = parseInt(document.getElementById('habitFreq').value);
+
+  if (editingId) {
+    const h = habits.find(x => x.id === editingId);
+    if (h) { h.name = name; h.icon = selectedIcon; h.color = selectedColor; h.freq = freq; }
+  } else {
+    habits.push({
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      name, icon: selectedIcon, color: selectedColor, freq,
+      created: todayStr()
+    });
+  }
+  save();
+  closeModal();
+  render();
+});
+
+// Keyboard
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Enter' && modal.classList.contains('active')) {
+    document.getElementById('btnSave').click();
+  }
+});
+
+function render() {
+  showDate();
+  renderChecklist();
+  renderStats();
+  // Render active tab if needed
+  const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
+  if (activeTab === 'heatmap') renderHeatmap();
+  if (activeTab === 'progress') renderProgress();
+}
+
+render();
+renderIconPicker();
+renderColorPicker();
+</script>
+</body>
+</html>
