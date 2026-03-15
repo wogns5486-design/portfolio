@@ -456,8 +456,8 @@
       const desc = document.getElementById('projectDesc').value;
       const ref = document.getElementById('refSite').value || '없음';
 
-      const subject = encodeURIComponent('[ONESTEP 문의] ' + name + ' - ' + type);
-      const body = encodeURIComponent(
+      const subject = '[ONESTEP 문의] ' + name + ' - ' + type;
+      const bodyText =
         '=== ONESTEP 프로젝트 문의 ===\n\n' +
         '■ 이름/회사: ' + name + '\n' +
         '■ 연락처: ' + contact + '\n' +
@@ -467,14 +467,32 @@
         '■ 참고 사이트: ' + ref + '\n\n' +
         '■ 프로젝트 설명:\n' + desc + '\n\n' +
         '---\n' +
-        'ONESTEP 포트폴리오에서 전송됨'
-      );
+        'ONESTEP 포트폴리오에서 전송됨';
 
-      window.location.href = 'mailto:wogns5486@gmail.com?subject=' + subject + '&body=' + body;
+      // 1순위: Gmail 작성 창 새 탭으로 열기
+      const gmailUrl = 'https://mail.google.com/mail/?view=cm&to=wogns5486@gmail.com'
+        + '&su=' + encodeURIComponent(subject)
+        + '&body=' + encodeURIComponent(bodyText);
 
+      const newWindow = window.open(gmailUrl, '_blank');
+
+      // Gmail 창이 안 열리면 (팝업 차단 등) 클립보드 복사로 대체
+      if (!newWindow || newWindow.closed) {
+        navigator.clipboard.writeText(
+          '받는 사람: wogns5486@gmail.com\n제목: ' + subject + '\n\n' + bodyText
+        ).then(() => {
+          showToast('문의 내용이 클립보드에 복사되었습니다! wogns5486@gmail.com으로 보내주세요.');
+        });
+      } else {
+        showToast('Gmail 작성 창이 열렸습니다. 전송 버튼을 눌러주세요!');
+      }
+    }
+
+    function showToast(msg) {
       const toast = document.getElementById('toast');
+      toast.textContent = msg;
       toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 3000);
+      setTimeout(() => toast.classList.remove('show'), 4000);
     }
   </script>
 </body>
