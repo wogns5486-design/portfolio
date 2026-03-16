@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>POPUP MARBLE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <div id="board-wrapper">
+      <div id="board"></div>
+
+      <!-- 보드 중앙 -->
+      <div id="board-center">
+        <div id="center-logo">
+          <span class="logo-pop">POPUP</span>
+          <span class="logo-marble">MARBLE</span>
+        </div>
+
+        <div id="dice-area">
+          <div id="dice-container">
+            <div class="dice-3d" id="dice1"><div class="dice-cube"></div></div>
+            <div class="dice-3d" id="dice2"><div class="dice-cube"></div></div>
+          </div>
+          <div id="dice-result" aria-live="assertive"></div>
+        </div>
+
+        <button id="roll-btn" aria-label="주사위 굴리기">
+          <span class="btn-icon">🎲</span>
+          <span>주사위 굴리기</span>
+        </button>
+
+        <div id="info-bar">
+          <div class="info-item">
+            <div class="info-val" id="current-pos">출발</div>
+            <div class="info-label">현재 위치</div>
+          </div>
+          <div class="info-divider"></div>
+          <div class="info-item">
+            <div class="info-val" id="move-count">0</div>
+            <div class="info-label">턴</div>
+          </div>
+          <div class="info-divider"></div>
+          <div class="info-item">
+            <div class="info-val" id="points">0</div>
+            <div class="info-label">포인트</div>
+          </div>
+          <div class="info-divider"></div>
+          <div class="info-item">
+            <button id="sound-toggle-btn" style="background:none;border:none;cursor:pointer;font-size:1.4rem;padding:2px 4px;line-height:1;">🔊</button>
+            <div class="info-label">소리</div>
+          </div>
+        </div>
+
+        <div id="event-log">
+          <div id="event-card" class="event-card" role="status" aria-live="polite">
+            <p id="event-text">주사위를 굴려 게임을 시작하세요!</p>
+          </div>
+        </div>
+
+        <button id="reset-btn" aria-label="다시 시작">↻ 다시 시작</button>
+      </div>
+    </div>
+
+    <!-- 파티클 컨테이너 -->
+    <div id="particles"></div>
+  </div>
+
+  <!-- 인트로 모달 -->
+  <div id="intro-modal">
+    <div class="modal-content">
+      <div id="intro-logo">
+        <span class="logo-pop" id="intro-logo-top"></span>
+        <span class="logo-marble" id="intro-logo-bottom"></span>
+      </div>
+      <p class="intro-subtitle">세계 여행 보드게임</p>
+      <ul class="intro-rules">
+        <li>🎲 주사위를 굴려 전 세계 도시를 여행하세요</li>
+        <li>🔑 황금열쇠와 ❓ 찬스 칸에서 포인트가 달라집니다</li>
+        <li>🚀 출발 칸을 통과할 때마다 보너스 50점 획득!</li>
+        <li>🏆 한 바퀴를 돌아 출발 칸에 도착하면 게임 완료</li>
+      </ul>
+      <button id="intro-start-btn">게임 시작</button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
