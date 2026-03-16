@@ -382,6 +382,34 @@
         0 0 80px rgba(245,158,11,0.08);
     }
 
+    /* Wishket 수주 프로젝트 — Orange accent */
+    .project-card[data-category="wishket"] {
+      border-color: rgba(251,146,60,0.25);
+      background: linear-gradient(135deg, var(--surface) 0%, rgba(251,146,60,0.04) 100%);
+      box-shadow: 0 0 20px rgba(251,146,60,0.1), 0 0 60px rgba(251,146,60,0.03);
+    }
+
+    .project-card[data-category="wishket"]:hover {
+      border-color: rgba(251,146,60,0.5);
+      box-shadow:
+        0 24px 48px rgba(0,0,0,0.3),
+        0 0 30px rgba(251,146,60,0.15),
+        0 0 80px rgba(251,146,60,0.06);
+    }
+
+    .badge-wishket {
+      display: inline-block;
+      padding: 3px 10px;
+      background: rgba(251,146,60,0.12);
+      border: 1px solid rgba(251,146,60,0.3);
+      border-radius: 100px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #fb923c;
+      letter-spacing: 0.5px;
+      margin-left: 8px;
+    }
+
     /* Von Restorff: First LIVE card is featured (2-column span) */
     .project-card.featured {
       grid-column: span 2;
@@ -1657,6 +1685,7 @@
         <button class="filter-btn" data-filter="landing">랜딩페이지</button>
         <button class="filter-btn" data-filter="app">앱·SaaS</button>
         <button class="filter-btn" data-filter="tool">도구·게임</button>
+        <button class="filter-btn" data-filter="wishket">수주 프로젝트</button>
       </div>
 
       <div class="projects-grid">
@@ -3248,6 +3277,171 @@
           </div>
           <div class="project-info"><div class="project-tag">Whiteboard / Drawing</div><h3>화이트보드</h3><p>Canvas 자유 그리기, 10색 펜, 도형(사각/원/선), 텍스트, Undo, PNG 다운로드.</p><div class="project-link">자세히 보기 <span>→</span></div><div class="project-techs"><span class="project-tech">HTML</span><span class="project-tech">CSS</span><span class="project-tech">JavaScript</span><span class="project-tech">Canvas</span></div></div>
         </a>
+
+        <!-- ============================================
+             위시켓 수주 프로젝트
+             ============================================ -->
+
+        <!-- Wishket 1: 부루마블 웹 게임 -->
+        <div class="project-card" data-category="wishket">
+          <div class="project-thumb" style="background:linear-gradient(135deg,#1a1a2e,#2d1b69);display:flex;align-items:center;justify-content:center;">
+            <div style="text-align:center;"><div style="font-size:2.2rem;margin-bottom:6px;">🎲</div><div style="font-size:0.9rem;font-weight:700;color:#c084fc;letter-spacing:1px;">부루마블</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.6);margin-top:4px;">팝업스토어 이벤트 게임</div></div>
+          </div>
+          <div class="project-info">
+            <div class="project-tag">Web Game / Event</div><span class="badge-wishket">수주</span>
+            <h3>팝업스토어 부루마블 게임</h3>
+            <p>팝업스토어 이벤트용 웹 보드게임. 주사위·말 이동·이벤트 칸·보상 시스템 구현.</p>
+            <div class="project-techs">
+              <span class="project-tech">HTML</span>
+              <span class="project-tech">CSS</span>
+              <span class="project-tech">JavaScript</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wishket 2: QR 품질 신고 시스템 -->
+        <div class="project-card" data-category="wishket">
+          <div class="project-thumb" style="background:linear-gradient(135deg,#0f172a,#1e293b);display:flex;align-items:center;justify-content:center;">
+            <div style="text-align:center;"><div style="font-size:2.2rem;margin-bottom:6px;">📱</div><div style="font-size:0.9rem;font-weight:700;color:#38bdf8;letter-spacing:1px;">QR 품질관리</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.6);margin-top:4px;">제조업 불량 신고 시스템</div></div>
+          </div>
+          <div class="project-info">
+            <div class="project-tag">Quality Management / Manufacturing</div><span class="badge-wishket">수주</span>
+            <h3>QR 기반 품질 신고 시스템</h3>
+            <p>QR코드 스캔으로 제품 불량 즉시 신고. 관리자 대시보드, 통계 차트, 엑셀 보고서 다운로드.</p>
+            <div class="project-techs">
+              <span class="project-tech">Next.js</span>
+              <span class="project-tech">React</span>
+              <span class="project-tech">PostgreSQL</span>
+              <span class="project-tech">Prisma</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wishket 3: CoinBack 수수료 환급 플랫폼 -->
+        <div class="project-card" data-category="wishket">
+          <div class="project-thumb" style="background:linear-gradient(135deg,#0a0a0a,#1a1a2e);display:flex;align-items:center;justify-content:center;">
+            <div style="text-align:center;"><div style="font-size:2.2rem;margin-bottom:6px;">💰</div><div style="font-size:0.9rem;font-weight:700;color:#facc15;letter-spacing:1px;">CoinBack</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.6);margin-top:4px;">거래소 수수료 환급 비교</div></div>
+          </div>
+          <div class="project-info">
+            <div class="project-tag">Crypto / Fintech Platform</div><span class="badge-wishket">수주</span>
+            <h3>CoinBack — 수수료 환급 플랫폼</h3>
+            <p>가상화폐 거래소별 수수료 환급률 비교, 실시간 예상 환급액 계산, 환급 신청~정산 원스톱 처리.</p>
+            <div class="project-techs">
+              <span class="project-tech">Next.js</span>
+              <span class="project-tech">TypeScript</span>
+              <span class="project-tech">Supabase</span>
+              <span class="project-tech">Zustand</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wishket 4: B2B 현장 관리 솔루션 -->
+        <div class="project-card" data-category="wishket">
+          <div class="project-thumb" style="background:linear-gradient(135deg,#14532d,#1a2e05);display:flex;align-items:center;justify-content:center;">
+            <div style="text-align:center;"><div style="font-size:2.2rem;margin-bottom:6px;">🏗️</div><div style="font-size:0.9rem;font-weight:700;color:#4ade80;letter-spacing:1px;">현장관리</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.6);margin-top:4px;">B2B 안전점검 솔루션</div></div>
+          </div>
+          <div class="project-info">
+            <div class="project-tag">B2B SaaS / Field Management</div><span class="badge-wishket">수주</span>
+            <h3>B2B 현장 관리 솔루션 MVP</h3>
+            <p>건설·제조 현장 안전점검 디지털화. 관리자 대시보드, 모바일 점검 폼, 사진 업로드, CSV 내보내기.</p>
+            <div class="project-techs">
+              <span class="project-tech">React</span>
+              <span class="project-tech">Hono</span>
+              <span class="project-tech">Cloudflare Workers</span>
+              <span class="project-tech">D1</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wishket 5: 차익거래 모니터링 -->
+        <div class="project-card" data-category="wishket">
+          <div class="project-thumb" style="background:linear-gradient(135deg,#0a0a0a,#1c1917);display:flex;align-items:center;justify-content:center;">
+            <div style="text-align:center;"><div style="font-size:2.2rem;margin-bottom:6px;">📊</div><div style="font-size:0.9rem;font-weight:700;color:#f59e0b;letter-spacing:1px;">Arbitrage</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.6);margin-top:4px;">실시간 차익거래 모니터</div></div>
+          </div>
+          <div class="project-info">
+            <div class="project-tag">Crypto / Real-time Dashboard</div><span class="badge-wishket">수주</span>
+            <h3>암호화폐 차익거래 모니터링</h3>
+            <p>5개 거래소 WebSocket 실시간 시세 수집, 환율 자동 변환, 스프레드 계산, 텔레그램 알림.</p>
+            <div class="project-techs">
+              <span class="project-tech">Python</span>
+              <span class="project-tech">FastAPI</span>
+              <span class="project-tech">WebSocket</span>
+              <span class="project-tech">SSE</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wishket 6: 법무법인 웹사이트 -->
+        <div class="project-card" data-category="wishket">
+          <div class="project-thumb" style="background:linear-gradient(135deg,#0B1223,#1a2744);display:flex;align-items:center;justify-content:center;">
+            <div style="text-align:center;"><div style="font-size:2.2rem;margin-bottom:6px;">⚖️</div><div style="font-size:0.9rem;font-weight:700;color:#d4a054;letter-spacing:1px;">법무법인</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.6);margin-top:4px;">법률사무소 홈페이지</div></div>
+          </div>
+          <div class="project-info">
+            <div class="project-tag">Law Firm / Corporate Website</div><span class="badge-wishket">수주</span>
+            <h3>법무법인 법승 웹사이트</h3>
+            <p>성범죄·마약 전문 법률사무소. 변호사 소개, 성공사례, 전문분야, 무료 상담 신청 폼 구현.</p>
+            <div class="project-techs">
+              <span class="project-tech">Next.js</span>
+              <span class="project-tech">TypeScript</span>
+              <span class="project-tech">Tailwind</span>
+              <span class="project-tech">Framer Motion</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wishket 7: OMS-ERP 자동화 -->
+        <div class="project-card" data-category="wishket">
+          <div class="project-thumb" style="background:linear-gradient(135deg,#1e293b,#334155);display:flex;align-items:center;justify-content:center;">
+            <div style="text-align:center;"><div style="font-size:2.2rem;margin-bottom:6px;">📋</div><div style="font-size:0.9rem;font-weight:700;color:#60a5fa;letter-spacing:1px;">OMS-ERP</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.6);margin-top:4px;">주문 변환 · 송장 자동화</div></div>
+          </div>
+          <div class="project-info">
+            <div class="project-tag">ERP Automation / Logistics</div><span class="badge-wishket">수주</span>
+            <h3>OMS-ERP 통합 자동화 시스템</h3>
+            <p>OMS 엑셀→이카운트 ERP 자동 변환, 프랜차이즈 양식 자동 감지, 로젠택배 송장 일괄 발행.</p>
+            <div class="project-techs">
+              <span class="project-tech">React</span>
+              <span class="project-tech">Node.js</span>
+              <span class="project-tech">SheetJS</span>
+              <span class="project-tech">Recharts</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wishket 8: 쿠팡 파트너스 주문 매칭 -->
+        <div class="project-card" data-category="wishket">
+          <div class="project-thumb" style="background:linear-gradient(135deg,#18181b,#27272a);display:flex;align-items:center;justify-content:center;">
+            <div style="text-align:center;"><div style="font-size:2.2rem;margin-bottom:6px;">🛒</div><div style="font-size:0.9rem;font-weight:700;color:#f97316;letter-spacing:1px;">CoupangMatch</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.6);margin-top:4px;">실시간 주문 매칭 엔진</div></div>
+          </div>
+          <div class="project-info">
+            <div class="project-tag">E-Commerce / Matching Engine</div><span class="badge-wishket">수주</span>
+            <h3>쿠팡 파트너스 주문 매칭</h3>
+            <p>딥링크 추적, 실시간 구매 매칭(10초 이내), 포인트 정산, 룰 엔진 기반 어뷰징 방어.</p>
+            <div class="project-techs">
+              <span class="project-tech">NestJS</span>
+              <span class="project-tech">React</span>
+              <span class="project-tech">PostgreSQL</span>
+              <span class="project-tech">Redis</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wishket 9: 부동산 분양 홍보 웹사이트 -->
+        <div class="project-card" data-category="wishket">
+          <div class="project-thumb" style="background:linear-gradient(135deg,#1a1a2e,#2a1f0e);display:flex;align-items:center;justify-content:center;">
+            <div style="text-align:center;"><div style="font-size:2.2rem;margin-bottom:6px;">🏢</div><div style="font-size:0.9rem;font-weight:700;color:#fbbf24;letter-spacing:1px;">분양 홍보</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.6);margin-top:4px;">프리미엄 랜딩 x2</div></div>
+          </div>
+          <div class="project-info">
+            <div class="project-tag">Real Estate / Landing Page x2</div><span class="badge-wishket">수주</span>
+            <h3>부동산 분양 현장 홍보 웹사이트</h3>
+            <p>2개 분양 현장(다크/라이트 테마). 풀페이지 원스크롤, 평면도 탭, 관심고객 등록, 관리자 페이지.</p>
+            <div class="project-techs">
+              <span class="project-tech">Next.js</span>
+              <span class="project-tech">TypeScript</span>
+              <span class="project-tech">Tailwind</span>
+              <span class="project-tech">Zod</span>
+            </div>
+          </div>
+        </div>
 
       </div>
     </div>
