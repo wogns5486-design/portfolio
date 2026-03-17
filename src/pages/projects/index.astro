@@ -187,14 +187,17 @@ const usePlaceholders = sorted.length === 0;
           </a>
         )) : sorted.map((p) => (
           <a
-            href={`/projects/${p.slug}`}
+            href={`/projects/${p.id}`}
             data-category={p.data.category}
             data-title={p.data.titleKo}
             data-techs={p.data.techs.join(' ')}
             class="project-card group bg-surface border border-border-light rounded-card overflow-hidden transition-all hover:-translate-y-1.5 hover:border-primary/25 hover:shadow-[0_12px_40px_rgba(0,0,0,0.3)]"
           >
             <!-- Thumbnail -->
-            <div class="relative h-44 bg-gradient-to-br from-primary/20 to-primary-deep/30 flex items-center justify-center text-5xl">
+            <div class="relative h-44 bg-gradient-to-br from-primary/20 to-primary-deep/30 overflow-hidden">
+              <img src={`/screenshots/thumbs/${p.id}.webp`} alt={p.data.titleKo} class="w-full h-full object-cover object-top" loading="lazy"
+                onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+              <div class="hidden items-center justify-center absolute inset-0 text-5xl">🚀</div>
               {p.data.category === 'live' && (
                 <span class="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface/80 backdrop-blur-sm border border-live/30 text-live text-[0.65rem] font-bold tracking-wide">
                   <span class="w-1.5 h-1.5 rounded-full bg-live animate-pulse"></span>
@@ -206,7 +209,6 @@ const usePlaceholders = sorted.length === 0;
                   수주
                 </span>
               )}
-              <span class="text-4xl">🚀</span>
             </div>
 
             <!-- Content -->

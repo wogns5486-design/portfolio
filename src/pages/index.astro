@@ -4,12 +4,18 @@ import { getCollection } from 'astro:content';
 
 const allProjects = await getCollection('projects');
 const featured = allProjects.filter(p => p.data.featured).sort((a, b) => a.data.order - b.data.order);
-const showcase = allProjects.filter(p => !p.data.featured).sort((a, b) => a.data.order - b.data.order).slice(0, 6);
+const wishket = allProjects.filter(p => p.data.category === 'wishket').sort((a, b) => a.data.order - b.data.order);
+const showcase = allProjects.filter(p => !p.data.featured && p.data.category !== 'wishket').sort((a, b) => a.data.order - b.data.order).slice(0, 6);
+
+// Helper: get screenshot path or null
+function getThumb(slug: string) {
+  return `/screenshots/thumbs/${slug}.webp`;
+}
 const blogs = (await getCollection('blog')).sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()).slice(0, 3);
 const testimonials = (await getCollection('testimonials')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).slice(0, 3);
 ---
 
-<PageLayout title="ONESTEP — 웹·앱 개발, 합리적인 가격으로">
+<PageLayout title="ONESTEP — 한 사람의 가능성을 100배로">
   <!-- Hero -->
   <section class="relative min-h-[auto] flex items-center justify-center px-7 pt-[100px] pb-10 overflow-hidden text-center">
     <!-- Background orbs -->
@@ -17,18 +23,18 @@ const testimonials = (await getCollection('testimonials')).sort((a, b) => b.data
     <div data-parallax="0.15" class="absolute -bottom-[150px] left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-[radial-gradient(circle,rgba(99,102,241,0.20),transparent_60%)] pointer-events-none"></div>
 
     <div class="relative z-10 max-w-[800px] mx-auto w-full">
-      <p class="hero-label text-xs tracking-[4px] text-primary uppercase mb-6 font-semibold">ONESTEP PORTFOLIO</p>
+      <p class="hero-label text-xs tracking-[4px] text-primary uppercase mb-6 font-semibold">AI-POWERED DEVELOPMENT</p>
       <h1 class="hero-title text-[clamp(2.6rem,6vw,4rem)] font-black leading-[1.15] mb-5 tracking-tight gradient-text break-keep">
-        웹·앱 개발,<br />합리적인 가격으로
+        한 사람의 가능성을,<br />100배로 만듭니다
       </h1>
-      <p class="hero-desc text-[1.05rem] text-text-sub max-w-[560px] mx-auto mb-10 break-keep leading-relaxed">
-        시장 평균보다 30% 합리적인 가격, 타협 없는 퀄리티.<br />기획부터 배포까지 한 번에.
+      <p class="hero-desc text-[1.05rem] text-text-sub max-w-[600px] mx-auto mb-10 break-keep leading-relaxed">
+        20개 이상의 전문 AI 에이전트가 기획부터 배포, QA, 보안 검토까지.<br />시장 평균 30% 합리적인 가격으로 타협 없는 퀄리티를 제공합니다.
       </p>
       <div class="hero-tags flex flex-wrap justify-center gap-3 mb-10">
-        <span class="px-4 py-2 rounded-full border border-border-light text-sm text-text-sub">&#10003; 평균 30% 저렴</span>
-        <span class="px-4 py-2 rounded-full border border-border-light text-sm text-text-sub">&#10003; 기능 무제한</span>
-        <span class="px-4 py-2 rounded-full border border-border-light text-sm text-text-sub">&#10003; 기획→배포 올인원</span>
-        <span class="px-4 py-2 rounded-full border border-border-light text-sm text-text-sub">&#10003; LIVE 서비스 3개 운영 중</span>
+        <span class="px-4 py-2 rounded-full border border-primary/20 bg-primary/5 text-sm text-primary font-medium">&#10003; AI 에이전트 팀</span>
+        <span class="px-4 py-2 rounded-full border border-border-light text-sm text-text-sub">&#10003; 풀스택 개발</span>
+        <span class="px-4 py-2 rounded-full border border-border-light text-sm text-text-sub">&#10003; 보안·QA 내장</span>
+        <span class="px-4 py-2 rounded-full border border-live-border bg-live/5 text-sm text-live font-medium">&#10003; LIVE 서비스 3개</span>
       </div>
       <a
         href="/contact"
@@ -75,12 +81,13 @@ const testimonials = (await getCollection('testimonials')).sort((a, b) => b.data
       <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
         {featured.map(project => (
           <a href={`/projects/${project.id}`} class="group bg-surface border border-live-border rounded-card overflow-hidden transition-all hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(52,211,153,0.15)]">
-            <div class="h-40 bg-gradient-to-br from-bg-deep to-surface flex items-center justify-center relative">
-              <div class="text-center">
-                <div class="text-3xl mb-2">🟢</div>
-                <div class="text-sm font-bold text-live tracking-wider">{project.data.title}</div>
+            <div class="h-44 bg-gradient-to-br from-bg-deep to-surface relative overflow-hidden">
+              <img src={getThumb(project.id)} alt={project.data.titleKo} class="w-full h-full object-cover object-top" loading="lazy"
+                onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+              <div class="hidden items-center justify-center absolute inset-0 text-center">
+                <div><div class="text-3xl mb-2">🟢</div><div class="text-sm font-bold text-live tracking-wider">{project.data.title}</div></div>
               </div>
-              <span class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-live/10 border border-live-border text-[0.65rem] font-bold text-live flex items-center gap-1">
+              <span class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-live/10 border border-live-border text-[0.65rem] font-bold text-live flex items-center gap-1 backdrop-blur-sm">
                 <span class="w-1.5 h-1.5 bg-live rounded-full animate-pulse"></span> LIVE
               </span>
             </div>
@@ -88,6 +95,45 @@ const testimonials = (await getCollection('testimonials')).sort((a, b) => b.data
               <h3 class="text-base font-bold text-text-main mb-1.5 group-hover:text-live transition-colors">{project.data.titleKo}</h3>
               <p class="text-xs text-text-sub leading-relaxed mb-3">{project.data.description}</p>
               <div class="flex flex-wrap gap-1.5">
+                {project.data.techs.slice(0, 4).map(tech => (
+                  <span class="px-2 py-1 rounded-full bg-surface-light text-[0.65rem] text-text-muted border border-border-light">{tech}</span>
+                ))}
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- 수주 프로젝트 (Wishket) -->
+  <section class="py-16 px-7">
+    <div class="max-w-content mx-auto">
+      <div class="mb-10">
+        <p class="text-[0.72rem] tracking-[3px] text-primary uppercase mb-2.5 font-semibold">Client Work</p>
+        <h2 class="text-[clamp(1.8rem,3.5vw,2.4rem)] font-extrabold tracking-tight">수주 프로젝트</h2>
+        <p class="text-sm text-text-sub mt-2">위시켓을 통해 실제 클라이언트와 진행한 {wishket.length}건의 프로젝트입니다.</p>
+      </div>
+      <div data-stagger-parent class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+        {wishket.map(project => (
+          <a href={`/projects/${project.id}`} class="group bg-surface border border-gold-border rounded-card overflow-hidden transition-all hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(245,158,11,0.12)]">
+            <div class="h-40 bg-gradient-to-br from-bg-deep to-surface-light relative overflow-hidden">
+              <img src={getThumb(project.id)} alt={project.data.titleKo} class="w-full h-full object-cover object-top" loading="lazy"
+                onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+              <div class="hidden items-center justify-center absolute inset-0 text-center">
+                <div><div class="text-2xl mb-1.5">💼</div><div class="text-[0.7rem] font-semibold text-text-muted tracking-wider">{project.data.tag}</div></div>
+              </div>
+              <span class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-[rgba(245,158,11,0.1)] border border-gold-border text-[0.65rem] font-bold text-yellow-400 backdrop-blur-sm">
+                수주
+              </span>
+            </div>
+            <div class="p-5">
+              <div class="text-[0.65rem] text-yellow-400 font-medium mb-1">{project.data.tag}</div>
+              <h3 class="text-sm font-bold text-text-main mb-1.5 group-hover:text-yellow-400 transition-colors">{project.data.titleKo}</h3>
+              <p class="text-xs text-text-sub leading-relaxed line-clamp-2">{project.data.description}</p>
+              <div class="flex flex-wrap gap-1.5 mt-3">
                 {project.data.techs.slice(0, 4).map(tech => (
                   <span class="px-2 py-1 rounded-full bg-surface-light text-[0.65rem] text-text-muted border border-border-light">{tech}</span>
                 ))}
@@ -124,6 +170,108 @@ const testimonials = (await getCollection('testimonials')).sort((a, b) => b.data
             </div>
           </div>
         ))}
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- AI Agent Team -->
+  <section class="py-16 px-7">
+    <div class="max-w-content mx-auto">
+      <div class="mb-4 text-center">
+        <p class="text-[0.72rem] tracking-[3px] text-primary uppercase mb-2.5 font-semibold">Our Team</p>
+        <h2 class="text-[clamp(1.8rem,3.5vw,2.4rem)] font-extrabold tracking-tight">AI 에이전트 팀</h2>
+        <p class="text-sm text-text-sub mt-3 max-w-[520px] mx-auto leading-relaxed">각 분야 전문 에이전트가 프로젝트의 모든 단계를 담당합니다.</p>
+      </div>
+
+      <!-- Agent count badge -->
+      <div class="flex justify-center mb-10">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
+          <span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+          <span class="text-xs font-semibold text-primary">20+ 에이전트 활성</span>
+        </div>
+      </div>
+
+      <div data-stagger-parent class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {[
+          {
+            icon: '🧠',
+            dept: '전략기획실',
+            role: '사업 방향, 아키텍처 설계',
+            agents: ['Planner', 'Analyst', 'Architect', 'Critic'],
+            color: 'primary',
+          },
+          {
+            icon: '💻',
+            dept: '개발팀',
+            role: '코드 작성, 디버깅, 배포',
+            agents: ['Executor', 'Debugger', 'Git Master'],
+            color: 'primary',
+          },
+          {
+            icon: '✅',
+            dept: 'QA팀',
+            role: '테스트, 코드 리뷰, 검수',
+            agents: ['Verifier', 'Code Reviewer', 'QA Tester'],
+            color: 'primary',
+          },
+          {
+            icon: '🛡️',
+            dept: '보안팀',
+            role: '취약점 검사, 보안 감사',
+            agents: ['Security Reviewer'],
+            color: 'primary',
+          },
+          {
+            icon: '🎨',
+            dept: '크리에이티브팀',
+            role: 'UI/UX, 문서, 콘텐츠',
+            agents: ['Designer', 'Writer'],
+            color: 'primary',
+          },
+          {
+            icon: '🔬',
+            dept: '리서치팀',
+            role: '정보수집, 트렌드 분석',
+            agents: ['Scientist', 'Document Specialist'],
+            color: 'primary',
+          },
+        ].map(item => (
+          <div class="bg-surface border border-border-light rounded-card p-6 transition-all hover:-translate-y-1 hover:border-primary/20 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)] relative overflow-hidden group">
+            <div class="absolute inset-0 bg-gradient-to-br from-primary/[0.04] to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div class="relative">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="text-2xl">{item.icon}</div>
+                <div>
+                  <h3 class="text-base font-bold text-text-main">{item.dept}</h3>
+                  <p class="text-xs text-text-muted">{item.role}</p>
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-1.5">
+                {item.agents.map(agent => (
+                  <span class="px-2.5 py-1 rounded-full bg-primary/10 border border-primary/15 text-[0.65rem] text-primary font-medium">
+                    {agent}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Process flow -->
+      <div class="mt-10 bg-surface border border-border-light rounded-card p-6 md:p-8">
+        <p class="text-xs font-semibold text-primary tracking-wider uppercase mb-4 text-center">AI-Powered Workflow</p>
+        <div class="flex flex-wrap items-center justify-center gap-2 md:gap-3 text-sm">
+          {['기획', '디자인', '개발', 'QA', '보안 검토', '배포'].map((step, i) => (
+            <>
+              <span class="px-3 py-1.5 rounded-lg bg-surface-light border border-border-light text-text-sub text-xs font-medium">{step}</span>
+              {i < 5 && <span class="text-primary text-xs">→</span>}
+            </>
+          ))}
+        </div>
+        <p class="text-center text-xs text-text-muted mt-4">모든 단계에 전문 AI 에이전트가 투입됩니다</p>
       </div>
     </div>
   </section>
@@ -202,10 +350,11 @@ const testimonials = (await getCollection('testimonials')).sort((a, b) => b.data
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
         {showcase.map(project => (
           <a href={`/projects/${project.id}`} class="group bg-surface border border-border-light rounded-card overflow-hidden transition-all hover:-translate-y-1 hover:border-primary/20 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
-            <div class="h-36 bg-gradient-to-br from-bg-deep to-surface-light flex items-center justify-center">
-              <div class="text-center">
-                <div class="text-2xl mb-1.5">💻</div>
-                <div class="text-[0.7rem] font-semibold text-text-muted tracking-wider">{project.data.tag}</div>
+            <div class="h-36 bg-gradient-to-br from-bg-deep to-surface-light relative overflow-hidden">
+              <img src={getThumb(project.id)} alt={project.data.titleKo} class="w-full h-full object-cover object-top" loading="lazy"
+                onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+              <div class="hidden items-center justify-center absolute inset-0 text-center">
+                <div><div class="text-2xl mb-1.5">💻</div><div class="text-[0.7rem] font-semibold text-text-muted tracking-wider">{project.data.tag}</div></div>
               </div>
             </div>
             <div class="p-5">

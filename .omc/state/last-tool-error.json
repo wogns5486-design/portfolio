@@ -1,7 +1,7 @@
 {
-  "tool_name": "Agent",
-  "tool_input_preview": "{\"description\":\"Browser QA - PC and mobile check\",\"prompt\":\"\\n# Browser QA 검수: ONESTEP 포트폴리오\\n\\n## 대상\\n로컬 개발 서버: http://localhost:4321\\n\\n## 검수할 페이지\\n1. **메인 페이지**: http://localhost:4321/\\n2. **프로젝트 목...",
-  "error": "Agent type 'browser-qa' not found. Available agents: general-purpose, statusline-setup, Explore, Plan, claude-code-guide, oh-my-claudecode:analyst, oh-my-claudecode:architect, oh-my-claudecode:debugger, oh-my-claudecode:designer, oh-my-claudecode:code-simplifier, oh-my-claudecode:critic, oh-my-claudecode:code-reviewer, oh-my-claudecode:document-specialist, oh-my-claudecode:executor, oh-my-claudecode:explore, oh-my-claudecode:git-master, oh-my-claudecode:planner, oh-my-claudecode:qa-tester, oh-my...",
-  "timestamp": "2026-03-17T11:53:02.585Z",
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"cd \\\"C:/Users/H/Hproject/portfolio\\\" && npx wrangler pages deploy dist --project-name=portfolio-2p4 2>&1\",\"timeout\":300000,\"description\":\"Deploy dist/ to Cloudflare Pages via Wrangler\"}",
+  "error": "Exit code 1\n\n ⛅️ wrangler 4.74.0\n───────────────────\n\u001b[33m▲ \u001b[43;33m[\u001b[43;30mWARNING\u001b[43;33m]\u001b[0m \u001b[1mWarning: Your working directory is a git repo and has uncommitted changes\u001b[0m\n\n  To silence this warning, pass in --commit-dirty=true\n\n\n\n\u001b[31mX \u001b[41;31m[\u001b[41;97mERROR\u001b[41;31m]\u001b[0m \u001b[1mA request to the Cloudflare API (/accounts/79e902f33446b8d95813b5532e460792/pages/projects/portfolio-2p4) failed.\u001b[0m\n\n  Project not found. The specified project name does not match any of your existing projects. [...",
+  "timestamp": "2026-03-17T12:12:17.510Z",
   "retry_count": 1
 }
