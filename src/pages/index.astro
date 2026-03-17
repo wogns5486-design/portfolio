@@ -7,9 +7,12 @@ const featured = allProjects.filter(p => p.data.featured).sort((a, b) => a.data.
 const wishket = allProjects.filter(p => p.data.category === 'wishket').sort((a, b) => a.data.order - b.data.order);
 const showcase = allProjects.filter(p => !p.data.featured && p.data.category !== 'wishket').sort((a, b) => a.data.order - b.data.order).slice(0, 6);
 
-// Helper: get screenshot path or null
-function getThumb(slug: string) {
-  return `/screenshots/thumbs/${slug}.webp`;
+// Helper: get screenshot path (strip .md extension from id)
+function getSlug(id: string) {
+  return id.replace(/\.md$/, '');
+}
+function getThumb(id: string) {
+  return `/screenshots/thumbs/${getSlug(id)}.webp`;
 }
 const blogs = (await getCollection('blog')).sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()).slice(0, 3);
 const testimonials = (await getCollection('testimonials')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).slice(0, 3);
@@ -80,7 +83,7 @@ const testimonials = (await getCollection('testimonials')).sort((a, b) => b.data
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
         {featured.map(project => (
-          <a href={`/projects/${project.id}`} class="group bg-surface border border-live-border rounded-card overflow-hidden transition-all hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(52,211,153,0.15)]">
+          <a href={`/projects/${getSlug(project.id)}`} class="group bg-surface border border-live-border rounded-card overflow-hidden transition-all hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(52,211,153,0.15)]">
             <div class="h-44 bg-gradient-to-br from-bg-deep to-surface relative overflow-hidden">
               <img src={getThumb(project.id)} alt={project.data.titleKo} class="w-full h-full object-cover object-top" loading="lazy"
                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
@@ -118,7 +121,7 @@ const testimonials = (await getCollection('testimonials')).sort((a, b) => b.data
       </div>
       <div data-stagger-parent class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
         {wishket.map(project => (
-          <a href={`/projects/${project.id}`} class="group bg-surface border border-gold-border rounded-card overflow-hidden transition-all hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(245,158,11,0.12)]">
+          <a href={`/projects/${getSlug(project.id)}`} class="group bg-surface border border-gold-border rounded-card overflow-hidden transition-all hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(245,158,11,0.12)]">
             <div class="h-40 bg-gradient-to-br from-bg-deep to-surface-light relative overflow-hidden">
               <img src={getThumb(project.id)} alt={project.data.titleKo} class="w-full h-full object-cover object-top" loading="lazy"
                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
@@ -329,7 +332,7 @@ const testimonials = (await getCollection('testimonials')).sort((a, b) => b.data
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
         {showcase.map(project => (
-          <a href={`/projects/${project.id}`} class="group bg-surface border border-border-light rounded-card overflow-hidden transition-all hover:-translate-y-1 hover:border-primary/20 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
+          <a href={`/projects/${getSlug(project.id)}`} class="group bg-surface border border-border-light rounded-card overflow-hidden transition-all hover:-translate-y-1 hover:border-primary/20 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
             <div class="h-36 bg-gradient-to-br from-bg-deep to-surface-light relative overflow-hidden">
               <img src={getThumb(project.id)} alt={project.data.titleKo} class="w-full h-full object-cover object-top" loading="lazy"
                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
@@ -402,7 +405,7 @@ const testimonials = (await getCollection('testimonials')).sort((a, b) => b.data
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
           {blogs.map(post => (
-            <a href={`/blog/${post.id}`} class="group bg-surface border border-border-light rounded-card p-6 transition-all hover:-translate-y-1 hover:border-primary/20 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
+            <a href={`/blog/${getSlug(post.id)}`} class="group bg-surface border border-border-light rounded-card p-6 transition-all hover:-translate-y-1 hover:border-primary/20 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
               <div class="text-xs text-text-muted mb-3">
                 {post.data.pubDate.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
               </div>

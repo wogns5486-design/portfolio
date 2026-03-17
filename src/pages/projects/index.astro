@@ -187,7 +187,7 @@ const usePlaceholders = sorted.length === 0;
           </a>
         )) : sorted.map((p) => (
           <a
-            href={`/projects/${p.id}`}
+            href={`/projects/${p.id.replace(/\.md$/, '')}`}
             data-category={p.data.category}
             data-title={p.data.titleKo}
             data-techs={p.data.techs.join(' ')}
@@ -195,7 +195,7 @@ const usePlaceholders = sorted.length === 0;
           >
             <!-- Thumbnail -->
             <div class="relative h-44 bg-gradient-to-br from-primary/20 to-primary-deep/30 overflow-hidden">
-              <img src={`/screenshots/thumbs/${p.id}.webp`} alt={p.data.titleKo} class="w-full h-full object-cover object-top" loading="lazy"
+              <img src={`/screenshots/thumbs/${p.id.replace(/\.md$/, '')}.webp`} alt={p.data.titleKo} class="w-full h-full object-cover object-top" loading="lazy"
                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
               <div class="hidden items-center justify-center absolute inset-0 text-5xl">🚀</div>
               {p.data.category === 'live' && (
