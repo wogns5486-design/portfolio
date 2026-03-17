@@ -93,9 +93,10 @@ const testimonials = (await getCollection('testimonials')).sort((a, b) => b.data
         <p class="text-[0.72rem] tracking-[3px] text-primary uppercase mb-2.5 font-semibold">Featured</p>
         <h2 class="text-[clamp(1.8rem,3.5vw,2.4rem)] font-extrabold tracking-tight">LIVE 서비스</h2>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {featured.map(project => (
-          <a href={`/projects/${getSlug(project.id)}`} class="project-card group bg-surface border border-live-border rounded-card overflow-hidden transition-all hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(52,211,153,0.15)]">
+      <!-- Carousel: desktop = 3-col grid, mobile = horizontal scroll-snap -->
+      <div class="live-carousel" id="live-carousel">
+        {featured.map((project) => (
+          <a href={`/projects/${getSlug(project.id)}`} class="live-carousel-item project-card group bg-surface border border-live-border rounded-card overflow-hidden transition-all hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(52,211,153,0.15)]">
             <div class="h-44 bg-gradient-to-br from-bg-deep to-surface relative overflow-hidden">
               <img src={getThumb(project.id)} alt={project.data.titleKo} class="w-full h-full object-cover object-top" loading="lazy"
                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
@@ -118,8 +119,92 @@ const testimonials = (await getCollection('testimonials')).sort((a, b) => b.data
           </a>
         ))}
       </div>
+      <!-- Indicator dots (mobile only) -->
+      <div class="live-dots" id="live-dots" aria-hidden="true">
+        {featured.map((_, idx) => (
+          <button class={`live-dot${idx === 0 ? ' live-dot-active' : ''}`} data-dot={idx} aria-label={`슬라이드 ${idx + 1}`}></button>
+        ))}
+      </div>
     </div>
   </section>
+
+  <style>
+    /* LIVE Carousel — desktop: 3-col grid */
+    .live-carousel {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+    .live-dots { display: none; }
+
+    /* LIVE Carousel — mobile: horizontal scroll-snap */
+    @media (max-width: 767px) {
+      .live-carousel {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 1rem;
+        padding-bottom: 0.25rem;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      .live-carousel::-webkit-scrollbar { display: none; }
+      .live-carousel-item {
+        scroll-snap-align: start;
+        min-width: 85vw;
+        flex-shrink: 0;
+      }
+      .live-dots {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+      .live-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: rgba(99, 102, 241, 0.22);
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        cursor: pointer;
+        transition: background 0.25s ease, transform 0.25s ease;
+        padding: 0;
+      }
+      .live-dot-active {
+        background: #6366F1;
+        transform: scale(1.4);
+      }
+    }
+  </style>
+
+  <script is:inline>
+    function initLiveCarousel() {
+      var carousel = document.getElementById('live-carousel');
+      var dotsEl = document.getElementById('live-dots');
+      if (!carousel || !dotsEl) return;
+      var dots = dotsEl.querySelectorAll('.live-dot');
+      var items = carousel.querySelectorAll('.live-carousel-item');
+      if (!items.length || !dots.length) return;
+
+      function updateDots() {
+        if (!items[0]) return;
+        var itemW = items[0].offsetWidth + 16;
+        var idx = Math.min(Math.round(carousel.scrollLeft / itemW), items.length - 1);
+        dots.forEach(function(d, i) {
+          d.classList.toggle('live-dot-active', i === idx);
+        });
+      }
+      carousel.addEventListener('scroll', updateDots, { passive: true });
+      dots.forEach(function(dot, i) {
+        dot.addEventListener('click', function() {
+          if (items[i]) carousel.scrollTo({ left: items[i].offsetLeft, behavior: 'smooth' });
+        });
+      });
+      updateDots();
+    }
+    initLiveCarousel();
+    document.addEventListener('astro:page-load', initLiveCarousel);
+  </script>
 
   <div class="section-divider"></div>
 
