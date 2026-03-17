@@ -1,0 +1,97 @@
+---
+import PageLayout from './PageLayout.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  pubDate: Date;
+  tags?: string[];
+  ogImage?: string;
+}
+
+const { title, description, pubDate, tags = [], ogImage } = Astro.props;
+
+const formattedDate = pubDate.toLocaleDateString('ko-KR', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<PageLayout title={`${title} — ONESTEP 블로그`} description={description} ogImage={ogImage}>
+
+  <!-- Back link -->
+  <section class="px-7 pt-10 pb-0">
+    <div class="max-w-[720px] mx-auto">
+      <a href="/blog" class="inline-flex items-center gap-2 text-sm text-text-muted hover:text-primary transition-colors">
+        <span>←</span> 블로그 목록
+      </a>
+    </div>
+  </section>
+
+  <!-- Post header -->
+  <section class="relative px-7 pt-8 pb-10 overflow-hidden">
+    <div class="absolute -top-[80px] left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-[radial-gradient(circle,rgba(99,102,241,0.15),transparent_65%)] pointer-events-none"></div>
+    <div class="relative z-10 max-w-[720px] mx-auto">
+      <!-- Tags -->
+      {tags.length > 0 && (
+        <div class="flex flex-wrap gap-2 mb-5">
+          {tags.map(tag => (
+            <span class="px-3 py-0.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-medium">{tag}</span>
+          ))}
+        </div>
+      )}
+
+      <h1 class="text-[clamp(1.6rem,4vw,2.4rem)] font-black tracking-tight text-text-main mb-4 break-keep leading-tight">
+        {title}
+      </h1>
+
+      {description && (
+        <p class="text-text-sub text-[0.95rem] leading-relaxed mb-5 break-keep">{description}</p>
+      )}
+
+      <!-- Meta -->
+      <div class="flex items-center gap-4 text-xs text-text-muted border-t border-border-light pt-5">
+        <span>{formattedDate}</span>
+        <span class="w-1 h-1 rounded-full bg-border-light"></span>
+        <span>ONESTEP</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Content -->
+  <section class="px-7 pb-16">
+    <div class="max-w-[720px] mx-auto prose prose-invert max-w-none
+      prose-headings:text-text-main prose-headings:font-bold prose-headings:tracking-tight
+      prose-h2:text-xl prose-h2:mt-10 prose-h2:mb-4
+      prose-h3:text-base prose-h3:mt-8 prose-h3:mb-3
+      prose-p:text-text-sub prose-p:leading-relaxed prose-p:text-[0.95rem]
+      prose-a:text-primary prose-a:no-underline hover:prose-a:underline
+      prose-strong:text-text-main
+      prose-code:text-primary prose-code:bg-surface prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-xs prose-code:before:content-none prose-code:after:content-none
+      prose-pre:bg-surface prose-pre:border prose-pre:border-border-light prose-pre:rounded-card
+      prose-ul:text-text-sub prose-ol:text-text-sub
+      prose-li:marker:text-primary
+      prose-blockquote:border-primary prose-blockquote:text-text-muted
+      prose-hr:border-border-light
+    ">
+      <slot />
+    </div>
+  </section>
+
+  <!-- Back to blog CTA -->
+  <section class="px-7 pb-16">
+    <div class="max-w-[720px] mx-auto">
+      <div class="section-divider mb-8"></div>
+      <div class="flex items-center justify-between">
+        <a href="/blog" class="inline-flex items-center gap-2 text-sm text-text-muted hover:text-primary transition-colors">
+          <span>←</span> 블로그로 돌아가기
+        </a>
+        <a href="/contact" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-primary-deep to-primary text-white text-xs font-bold transition-all hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(99,102,241,0.4)]">
+          프로젝트 문의 →
+        </a>
+      </div>
+    </div>
+  </section>
+
+</PageLayout>

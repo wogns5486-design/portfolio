@@ -1,0 +1,200 @@
+---
+import PageLayout from '@layouts/PageLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { data } = project;
+const { Content } = await project.render();
+
+// Get related projects (same category, excluding current)
+const allProjects = await getCollection('projects');
+const sorted = allProjects.sort((a, b) => a.data.order - b.data.order);
+const related = sorted.filter(p => p.data.category === data.category && p.slug !== project.slug).slice(0, 3);
+
+// Prev/Next navigation
+const currentIndex = sorted.findIndex(p => p.slug === project.slug);
+const prevProject = currentIndex > 0 ? sorted[currentIndex - 1] : null;
+const nextProject = currentIndex < sorted.length - 1 ? sorted[currentIndex + 1] : null;
+
+// Category badge styling
+const categoryBadge = (() => {
+  if (data.category === 'live') return { label: 'LIVE', cls: 'border-live/40 text-live bg-live/10' };
+  if (data.category === 'wishket') return { label: '수주', cls: 'border-amber-400/40 text-amber-400 bg-amber-400/10' };
+  return { label: data.tag, cls: 'border-primary/40 text-primary bg-primary/10' };
+})();
+
+const hasCaseStudy = data.challenge || data.solution || data.result;
+const actionUrl = data.demoUrl || data.liveUrl;
+---
+
+<PageLayout title={`${data.titleKo} — ONESTEP`} description={data.description}>
+
+  <!-- Back link -->
+  <section class="px-7 pt-10 pb-0">
+    <div class="max-w-content mx-auto">
+      <a href="/projects" class="inline-flex items-center gap-2 text-sm text-text-muted hover:text-primary transition-colors">
+        <span>←</span> 프로젝트 목록
+      </a>
+    </div>
+  </section>
+
+  <!-- Header -->
+  <section class="relative px-7 pt-8 pb-10 overflow-hidden">
+    <div class="absolute -top-[100px] left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-[radial-gradient(circle,rgba(99,102,241,0.18),transparent_65%)] pointer-events-none"></div>
+    <div class="relative z-10 max-w-content mx-auto">
+      <span class="inline-block text-[0.68rem] font-semibold tracking-[3px] uppercase text-primary mb-4">{data.tag}</span>
+      <h1 class="text-[clamp(1.8rem,4vw,2.8rem)] font-black tracking-tight text-text-main mb-4 break-keep leading-tight">
+        {data.titleKo}
+      </h1>
+      <p class="text-text-sub text-[0.95rem] leading-relaxed max-w-[600px] break-keep mb-6">{data.description}</p>
+
+      <!-- Badge row -->
+      <div class="flex flex-wrap items-center gap-2">
+        <span class:list={['px-3 py-1 rounded-full text-xs font-bold border', categoryBadge.cls]}>
+          {data.category === 'live' && <span class="inline-block w-1.5 h-1.5 rounded-full bg-live animate-pulse mr-1.5"></span>}
+          {categoryBadge.label}
+        </span>
+        {data.techs.map(t => (
+          <span class="px-2.5 py-0.5 rounded-full bg-surface border border-border-light text-[0.7rem] text-text-muted">{t}</span>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Main visual + Action buttons -->
+  <section class="px-7 pb-10">
+    <div class="max-w-content mx-auto">
+
+      <!-- Visual -->
+      {data.screenshot ? (
+        <div class="rounded-card overflow-hidden border border-border-light mb-8">
+          <img src={data.screenshot} alt={data.titleKo} class="w-full object-cover" loading="lazy" />
+        </div>
+      ) : (
+        <div class="rounded-card h-[200px] bg-gradient-to-br from-primary/20 to-primary-deep/30 flex items-center justify-center mb-8 border border-border-light">
+          <span class="text-6xl">🚀</span>
+        </div>
+      )}
+
+      <!-- Action buttons -->
+      <div class="flex flex-wrap gap-3">
+        {actionUrl && (
+          <a
+            href={actionUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-primary-deep to-primary text-white text-sm font-bold transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(99,102,241,0.4)] shadow-[0_4px_20px_rgba(99,102,241,0.25)]"
+          >
+            데모 보기 <span>↗</span>
+          </a>
+        )}
+        <a
+          href="/contact"
+          class="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-primary/40 text-primary text-sm font-semibold transition-all hover:bg-primary/10 hover:-translate-y-0.5"
+        >
+          문의하기 <span>→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Case study -->
+  {hasCaseStudy && (
+    <section class="px-7 py-10">
+      <div class="section-divider mb-10"></div>
+      <div class="max-w-content mx-auto">
+        <p class="text-[0.72rem] tracking-[4px] text-primary uppercase mb-3 font-semibold">CASE STUDY</p>
+        <h2 class="text-xl font-extrabold text-text-main mb-8">프로젝트 스토리</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {data.challenge && (
+            <div class="bg-surface border border-border-light rounded-card p-6">
+              <p class="text-xs font-bold tracking-widest text-primary uppercase mb-3">과제</p>
+              <p class="text-text-sub text-sm leading-relaxed break-keep">{data.challenge}</p>
+            </div>
+          )}
+          {data.solution && (
+            <div class="bg-surface border border-border-light rounded-card p-6">
+              <p class="text-xs font-bold tracking-widest text-primary uppercase mb-3">해결</p>
+              <p class="text-text-sub text-sm leading-relaxed break-keep">{data.solution}</p>
+            </div>
+          )}
+          {data.result && (
+            <div class="bg-surface border border-primary/20 rounded-card p-6 shadow-[0_0_20px_rgba(99,102,241,0.08)]">
+              <p class="text-xs font-bold tracking-widest text-live uppercase mb-3">성과</p>
+              <p class="text-text-sub text-sm leading-relaxed break-keep">{data.result}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Body content -->
+  <section class="px-7 py-10">
+    <div class="max-w-[720px] mx-auto prose prose-invert prose-sm max-w-none
+      prose-headings:text-text-main prose-headings:font-bold
+      prose-p:text-text-sub prose-p:leading-relaxed
+      prose-a:text-primary prose-a:no-underline hover:prose-a:underline
+      prose-strong:text-text-main
+      prose-code:text-primary prose-code:bg-surface prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-xs
+      prose-pre:bg-surface prose-pre:border prose-pre:border-border-light prose-pre:rounded-card
+      prose-ul:text-text-sub prose-ol:text-text-sub
+      prose-li:marker:text-primary
+      prose-hr:border-border-light
+    ">
+      <Content />
+    </div>
+  </section>
+
+  <!-- Related projects -->
+  {related.length > 0 && (
+    <section class="px-7 py-12">
+      <div class="section-divider mb-10"></div>
+      <div class="max-w-content mx-auto">
+        <p class="text-[0.72rem] tracking-[4px] text-primary uppercase mb-3 font-semibold">RELATED</p>
+        <h2 class="text-xl font-extrabold text-text-main mb-8">관련 프로젝트</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+          {related.map(p => (
+            <a
+              href={`/projects/${p.slug}`}
+              class="group bg-surface border border-border-light rounded-card p-5 transition-all hover:-translate-y-1 hover:border-primary/25 hover:shadow-[0_8px_30px_rgba(0,0,0,0.25)]"
+            >
+              <span class="inline-block text-[0.65rem] font-semibold tracking-wider text-primary uppercase mb-2">{p.data.tag}</span>
+              <h3 class="text-sm font-bold text-text-main mb-2 leading-snug group-hover:text-primary transition-colors">{p.data.titleKo}</h3>
+              <p class="text-xs text-text-muted line-clamp-2 leading-relaxed">{p.data.description}</p>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Prev / Next -->
+  <section class="px-7 py-10">
+    <div class="section-divider mb-10"></div>
+    <div class="max-w-content mx-auto grid grid-cols-2 gap-4">
+      {prevProject ? (
+        <a href={`/projects/${prevProject.slug}`} class="group bg-surface border border-border-light rounded-card p-5 transition-all hover:border-primary/25 hover:-translate-y-0.5">
+          <p class="text-[0.65rem] text-text-muted uppercase tracking-wider mb-1">← 이전 프로젝트</p>
+          <p class="text-sm font-semibold text-text-main group-hover:text-primary transition-colors line-clamp-1">{prevProject.data.titleKo}</p>
+        </a>
+      ) : <div></div>}
+
+      {nextProject ? (
+        <a href={`/projects/${nextProject.slug}`} class="group bg-surface border border-border-light rounded-card p-5 text-right transition-all hover:border-primary/25 hover:-translate-y-0.5">
+          <p class="text-[0.65rem] text-text-muted uppercase tracking-wider mb-1">다음 프로젝트 →</p>
+          <p class="text-sm font-semibold text-text-main group-hover:text-primary transition-colors line-clamp-1">{nextProject.data.titleKo}</p>
+        </a>
+      ) : <div></div>}
+    </div>
+  </section>
+
+</PageLayout>

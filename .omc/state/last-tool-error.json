@@ -1,7 +1,7 @@
 {
-  "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"cd C:/Users/H/port1 && export PATH=\\\"$PATH:/c/Program Files/GitHub CLI\\\" && gh run watch --exit-status\",\"timeout\":180000,\"description\":\"Watch deployment status\"}",
-  "error": "Exit code 1\nrun ID required when not running interactively\n\nUsage:  gh run watch <run-id> [flags]\n\nFlags:\n      --compact        Show only relevant/failed steps\n      --exit-status    Exit with non-zero status if run fails\n  -i, --interval int   Refresh interval in seconds (default 3)",
-  "timestamp": "2026-03-14T19:19:03.170Z",
+  "tool_name": "Agent",
+  "tool_input_preview": "{\"description\":\"Browser QA - PC and mobile check\",\"prompt\":\"\\n# Browser QA 검수: ONESTEP 포트폴리오\\n\\n## 대상\\n로컬 개발 서버: http://localhost:4321\\n\\n## 검수할 페이지\\n1. **메인 페이지**: http://localhost:4321/\\n2. **프로젝트 목...",
+  "error": "Agent type 'browser-qa' not found. Available agents: general-purpose, statusline-setup, Explore, Plan, claude-code-guide, oh-my-claudecode:analyst, oh-my-claudecode:architect, oh-my-claudecode:debugger, oh-my-claudecode:designer, oh-my-claudecode:code-simplifier, oh-my-claudecode:critic, oh-my-claudecode:code-reviewer, oh-my-claudecode:document-specialist, oh-my-claudecode:executor, oh-my-claudecode:explore, oh-my-claudecode:git-master, oh-my-claudecode:planner, oh-my-claudecode:qa-tester, oh-my...",
+  "timestamp": "2026-03-17T11:53:02.585Z",
   "retry_count": 1
 }

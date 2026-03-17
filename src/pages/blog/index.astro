@@ -1,0 +1,86 @@
+---
+import PageLayout from '@layouts/PageLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog');
+const sorted = allPosts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+---
+
+<PageLayout title="블로그 — ONESTEP" description="개발 프로세스, 프로젝트 인사이트, 기술 이야기를 공유합니다.">
+
+  <!-- Page Header -->
+  <section class="relative pt-16 pb-10 px-7 text-center overflow-hidden">
+    <div class="absolute -top-[150px] left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-[radial-gradient(circle,rgba(99,102,241,0.18),transparent_65%)] pointer-events-none"></div>
+    <div class="relative z-10 max-w-content mx-auto">
+      <p class="text-[0.72rem] tracking-[4px] text-primary uppercase mb-3 font-semibold">BLOG</p>
+      <h1 class="text-[clamp(2rem,5vw,3rem)] font-black tracking-tight mb-4">블로그</h1>
+      <p class="text-text-sub text-[0.95rem] leading-relaxed break-keep">
+        개발 프로세스, 프로젝트 인사이트, 기술 이야기를 공유합니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- Posts grid -->
+  <section class="px-7 py-12">
+    <div class="max-w-content mx-auto">
+
+      {sorted.length === 0 ? (
+        <div class="text-center py-24">
+          <p class="text-4xl mb-4">✍️</p>
+          <p class="text-text-sub text-sm">아직 작성된 글이 없습니다. 곧 업데이트됩니다.</p>
+        </div>
+      ) : (
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {sorted.map(post => {
+            const formattedDate = post.data.pubDate.toLocaleDateString('ko-KR', {
+              year: 'numeric', month: 'long', day: 'numeric',
+            });
+            return (
+              <article class="group bg-surface border border-border-light rounded-card p-7 transition-all hover:-translate-y-1.5 hover:border-primary/25 hover:shadow-[0_12px_40px_rgba(0,0,0,0.3)]">
+                <!-- Tags -->
+                {post.data.tags.length > 0 && (
+                  <div class="flex flex-wrap gap-1.5 mb-4">
+                    {post.data.tags.map(tag => (
+                      <span class="px-2.5 py-0.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-[0.65rem] font-medium">{tag}</span>
+                    ))}
+                  </div>
+                )}
+
+                <h2 class="text-base font-bold text-text-main mb-2 leading-snug group-hover:text-primary transition-colors break-keep">
+                  {post.data.title}
+                </h2>
+                <p class="text-xs text-text-sub leading-relaxed mb-5 line-clamp-2 break-keep">{post.data.description}</p>
+
+                <div class="flex items-center justify-between">
+                  <span class="text-xs text-text-muted">{formattedDate}</span>
+                  <a
+                    href={`/blog/${post.slug}`}
+                    class="inline-flex items-center gap-1 text-xs text-primary font-semibold group-hover:gap-2 transition-all"
+                  >
+                    읽기 <span>→</span>
+                  </a>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="relative py-20 px-7 text-center overflow-hidden">
+    <div class="absolute -top-[60px] left-1/2 -translate-x-1/2 w-[400px] h-[250px] bg-[radial-gradient(circle,rgba(99,102,241,0.15),transparent_60%)] pointer-events-none"></div>
+    <div class="relative z-10 max-w-[520px] mx-auto">
+      <h2 class="text-[clamp(1.4rem,3vw,2rem)] font-extrabold mb-4 break-keep">프로젝트를 시작할 준비가 됐나요?</h2>
+      <p class="text-text-sub mb-8 break-keep text-sm leading-relaxed">기획부터 배포까지 한 번에 해결합니다.</p>
+      <a
+        href="/contact"
+        class="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full bg-gradient-to-r from-primary-deep to-primary text-white font-bold transition-all hover:-translate-y-1 hover:shadow-[0_8px_40px_rgba(99,102,241,0.45)] shadow-[0_4px_24px_rgba(99,102,241,0.3)] text-sm"
+      >
+        문의하기 <span>→</span>
+      </a>
+    </div>
+  </section>
+
+</PageLayout>

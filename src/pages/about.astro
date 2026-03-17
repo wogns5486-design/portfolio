@@ -1,0 +1,274 @@
+---
+import PageLayout from '@layouts/PageLayout.astro';
+---
+
+<PageLayout title="ONESTEP 소개 — 웹·앱 개발 스튜디오" description="102개 프로젝트, 3개 LIVE 서비스. 기획부터 배포까지 한 번에 해결하는 ONESTEP의 이야기.">
+
+  <!-- Hero -->
+  <section class="relative min-h-[70vh] flex items-center justify-center px-7 pt-[80px] pb-16 text-center overflow-hidden">
+    <div class="absolute -top-[200px] left-1/2 -translate-x-1/2 w-[900px] h-[800px] bg-[radial-gradient(circle,rgba(99,102,241,0.22),rgba(129,140,248,0.08)_45%,transparent_70%)] pointer-events-none"></div>
+    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[radial-gradient(ellipse,rgba(99,102,241,0.10),transparent_60%)] pointer-events-none"></div>
+
+    <div class="relative z-10 max-w-[760px] mx-auto">
+      <p class="text-[0.72rem] tracking-[4px] text-primary uppercase mb-5 font-semibold">ABOUT ONESTEP</p>
+      <h1 class="text-[clamp(2.4rem,6vw,3.8rem)] font-black leading-[1.1] tracking-tight mb-6 break-keep">
+        하나의 팀으로,<br />
+        <span class="gradient-text">처음부터 끝까지</span>
+      </h1>
+      <p class="text-text-sub text-[1rem] leading-relaxed max-w-[560px] mx-auto break-keep">
+        ONESTEP은 기획, 디자인, 개발, 배포를 혼자 책임지는 1인 풀스택 스튜디오입니다.
+        여러 업체에 나눠 맡길 때 생기는 비효율과 오해를 없앴습니다.
+      </p>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Stats -->
+  <section class="py-16 px-7">
+    <div class="max-w-content mx-auto">
+      <div class="mb-10 text-center">
+        <p class="text-[0.72rem] tracking-[3px] text-primary uppercase mb-2.5 font-semibold">Numbers</p>
+        <h2 class="text-[clamp(1.8rem,3.5vw,2.4rem)] font-extrabold tracking-tight">숫자로 보는 ONESTEP</h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        {[
+          {
+            value: '102+',
+            label: '프로젝트',
+            sub: '다양한 산업군 경험',
+            icon: '📦',
+          },
+          {
+            value: '11건',
+            label: '위시켓 수주',
+            sub: '검증된 외부 수주 실적',
+            icon: '🏆',
+          },
+          {
+            value: '3개',
+            label: 'LIVE 서비스',
+            sub: '실제 운영 중인 서비스',
+            icon: '🟢',
+          },
+        ].map(stat => (
+          <div class="bg-surface border border-border-light rounded-card p-8 text-center transition-all hover:-translate-y-1 hover:border-primary/20 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)] relative overflow-hidden group">
+            <div class="absolute inset-0 bg-gradient-to-br from-primary/[0.04] to-transparent pointer-events-none"></div>
+            <div class="relative">
+              <div class="text-3xl mb-3">{stat.icon}</div>
+              <div class="text-[2.4rem] font-black leading-none gradient-text mb-2">{stat.value}</div>
+              <div class="text-[0.95rem] font-semibold text-text-main mb-1">{stat.label}</div>
+              <div class="text-[0.78rem] text-text-muted">{stat.sub}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Story -->
+  <section class="py-16 px-7">
+    <div class="max-w-content mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <p class="text-[0.72rem] tracking-[3px] text-primary uppercase mb-3 font-semibold">Our Story</p>
+          <h2 class="text-[clamp(1.8rem,3.5vw,2.4rem)] font-extrabold tracking-tight mb-6 break-keep">
+            "합리적인 가격에<br />타협 없는 퀄리티"
+          </h2>
+          <div class="space-y-4 text-text-sub text-[0.9rem] leading-relaxed">
+            <p class="break-keep">
+              ONESTEP은 한 가지 질문에서 시작했습니다.
+              <em class="text-text-main not-italic font-medium">"왜 좋은 개발은 비싸야만 할까?"</em>
+            </p>
+            <p class="break-keep">
+              AI를 활용한 효율적인 개발 프로세스와 불필요한 중간 비용 제거로, 시장 평균보다
+              <strong class="text-primary">30% 저렴</strong>한 가격을 실현했습니다.
+              저렴하다고 품질을 타협한 적은 없습니다.
+            </p>
+            <p class="break-keep">
+              102개 프로젝트를 직접 기획부터 배포까지 책임지며 쌓은 노하우가 있습니다.
+              랜딩페이지 하나부터 SaaS 플랫폼까지, 규모에 상관없이 같은 기준으로 만듭니다.
+            </p>
+          </div>
+        </div>
+
+        <!-- Timeline cards -->
+        <div class="space-y-4">
+          {[
+            { year: '2022', label: '첫 프로젝트', desc: '소규모 쇼핑몰 개발을 시작으로 실전 경험 축적' },
+            { year: '2023', label: '위시켓 진출', desc: '외부 플랫폼에서 11건 수주. 다양한 클라이언트 경험' },
+            { year: '2024', label: 'LIVE 서비스 런칭', desc: '3개의 자체 서비스를 직접 기획·개발·운영' },
+            { year: '2025', label: '100개 돌파', desc: '102개 프로젝트 완성. AI 활용으로 생산성 2배 향상' },
+          ].map(item => (
+            <div class="flex gap-4 bg-surface border border-border-light rounded-[14px] p-5 transition-all hover:border-primary/20 hover:-translate-y-0.5">
+              <div class="shrink-0 w-14 text-center">
+                <span class="text-xs font-bold text-primary">{item.year}</span>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-text-main mb-0.5">{item.label}</p>
+                <p class="text-xs text-text-sub leading-relaxed">{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Vision & Mission -->
+  <section class="py-16 px-7">
+    <div class="max-w-content mx-auto">
+      <div class="mb-10 text-center">
+        <p class="text-[0.72rem] tracking-[3px] text-primary uppercase mb-2.5 font-semibold">Vision & Mission</p>
+        <h2 class="text-[clamp(1.8rem,3.5vw,2.4rem)] font-extrabold tracking-tight">우리가 추구하는 것</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Vision -->
+        <div class="bg-surface border border-border-light rounded-card p-8 relative overflow-hidden group hover:-translate-y-1 transition-all hover:border-primary/20 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/10 to-transparent rounded-bl-[100px] pointer-events-none"></div>
+          <div class="relative">
+            <div class="text-2xl mb-4">🔭</div>
+            <p class="text-xs font-bold text-primary tracking-wider uppercase mb-3">Vision</p>
+            <h3 class="text-xl font-bold text-text-main mb-3 break-keep leading-snug">
+              누구나 좋은 제품을<br />만들 수 있는 세상
+            </h3>
+            <p class="text-sm text-text-sub leading-relaxed break-keep">
+              예산이 적어도, 팀이 없어도 아이디어가 실제 제품이 될 수 있어야 합니다.
+              ONESTEP은 그 간격을 줄이는 파트너입니다.
+            </p>
+          </div>
+        </div>
+
+        <!-- Mission -->
+        <div class="bg-surface border border-border-light rounded-card p-8 relative overflow-hidden group hover:-translate-y-1 transition-all hover:border-primary/20 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/10 to-transparent rounded-bl-[100px] pointer-events-none"></div>
+          <div class="relative">
+            <div class="text-2xl mb-4">🎯</div>
+            <p class="text-xs font-bold text-primary tracking-wider uppercase mb-3">Mission</p>
+            <h3 class="text-xl font-bold text-text-main mb-3 break-keep leading-snug">
+              빠르고 정확하게,<br />합리적으로
+            </h3>
+            <p class="text-sm text-text-sub leading-relaxed break-keep">
+              빠른 납기, 명확한 커뮤니케이션, 합리적인 가격.
+              세 가지를 동시에 지키는 것이 ONESTEP의 기준입니다.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Work Methodology -->
+  <section class="py-16 px-7">
+    <div class="max-w-content mx-auto">
+      <div class="mb-10">
+        <p class="text-[0.72rem] tracking-[3px] text-primary uppercase mb-2.5 font-semibold">How We Work</p>
+        <h2 class="text-[clamp(1.8rem,3.5vw,2.4rem)] font-extrabold tracking-tight">작업 방식</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {[
+          {
+            icon: '🤖',
+            title: 'AI 활용 개발',
+            desc: 'Claude, GPT, Cursor 등 최신 AI 툴을 적극 활용합니다. 반복 작업을 자동화하고, 개발 속도를 2배 이상 높여 비용을 절감합니다.',
+          },
+          {
+            icon: '💬',
+            title: '투명한 커뮤니케이션',
+            desc: '진행 단계마다 공유합니다. 피그마 시안, 개발 진행 상황, 배포 결과까지 클라이언트가 항상 현황을 파악할 수 있습니다.',
+          },
+          {
+            icon: '📐',
+            title: '디테일 우선',
+            desc: '반응형, 접근성, 로딩 속도, SEO까지 기본으로 챙깁니다. 눈에 보이지 않는 부분이 제품의 완성도를 결정한다고 믿습니다.',
+          },
+          {
+            icon: '🔄',
+            title: '무제한 수정',
+            desc: '핵심 기능 범위 내에서 수정은 무제한입니다. 클라이언트가 만족할 때까지 함께 다듬습니다.',
+          },
+        ].map(item => (
+          <div class="bg-surface border border-border-light rounded-card p-7 transition-all hover:-translate-y-1 hover:border-primary/20 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)] relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-primary/[0.03] to-transparent pointer-events-none"></div>
+            <div class="relative">
+              <div class="text-2xl mb-4">{item.icon}</div>
+              <h3 class="text-base font-bold text-text-main mb-2">{item.title}</h3>
+              <p class="text-sm text-text-sub leading-relaxed break-keep">{item.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Tech Stack -->
+  <section class="py-16 px-7">
+    <div class="max-w-content mx-auto">
+      <div class="mb-10">
+        <p class="text-[0.72rem] tracking-[3px] text-primary uppercase mb-2.5 font-semibold">Tech Stack</p>
+        <h2 class="text-[clamp(1.8rem,3.5vw,2.4rem)] font-extrabold tracking-tight">사용 기술</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {[
+          { category: 'Frontend', techs: ['React', 'Next.js', 'Astro', 'TypeScript', 'Tailwind CSS'] },
+          { category: 'Backend', techs: ['Node.js', 'NestJS', 'FastAPI', 'Supabase', 'PostgreSQL'] },
+          { category: 'DevOps & AI', techs: ['Cloudflare Pages', 'Vercel', 'Docker', 'Claude AI', 'GitHub Actions'] },
+        ].map(group => (
+          <div class="bg-surface border border-border-light rounded-card p-6">
+            <h3 class="text-sm font-semibold text-primary mb-4">{group.category}</h3>
+            <div class="flex flex-wrap gap-2">
+              {group.techs.map(tech => (
+                <span class="px-3 py-1.5 rounded-full bg-surface-light text-xs text-text-sub font-medium border border-border-light">
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- CTA -->
+  <section class="relative py-24 px-7 text-center overflow-hidden">
+    <div class="absolute -top-[100px] left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-[radial-gradient(circle,rgba(99,102,241,0.25),transparent_60%)] pointer-events-none"></div>
+    <div class="relative z-10 max-w-[600px] mx-auto">
+      <p class="text-[0.72rem] tracking-[4px] text-primary uppercase mb-5 font-semibold">Let's Work Together</p>
+      <h2 class="text-[clamp(1.8rem,3.5vw,2.4rem)] font-extrabold mb-4 break-keep">
+        프로젝트, 지금 시작하세요
+      </h2>
+      <p class="text-text-sub mb-8 break-keep leading-relaxed text-[0.95rem]">
+        아이디어만 있으면 충분합니다.<br />
+        기획부터 배포까지, ONESTEP이 함께합니다.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a
+          href="/contact"
+          class="inline-flex items-center gap-2.5 px-9 py-4 rounded-full bg-gradient-to-r from-primary-deep to-primary text-white font-bold transition-all hover:-translate-y-1 hover:scale-[1.03] hover:shadow-[0_8px_40px_rgba(99,102,241,0.45)] shadow-[0_4px_24px_rgba(99,102,241,0.3)]"
+        >
+          프로젝트 문의하기 →
+        </a>
+        <a
+          href="/projects"
+          class="inline-flex items-center gap-2.5 px-9 py-4 rounded-full border border-border-light text-text-sub font-semibold transition-all hover:border-primary/30 hover:text-text-main hover:-translate-y-0.5"
+        >
+          포트폴리오 보기
+        </a>
+      </div>
+    </div>
+  </section>
+
+</PageLayout>

@@ -1,0 +1,54 @@
+【카테고리】 프로젝트 후기
+【제목】 LIVE 서비스 3개 + 24개 프로젝트, 직접 확인해보세요
+
+안녕하세요, ONESTEP입니다.
+지금까지 만든 프로젝트들을 소개합니다.
+
+
+■ LIVE 서비스 (실제 운영 중)
+
+1. DriveX — 운전 보상 앱
+마일리지, 미션, 수면보상, 랭킹 등 20개+ 기능.
+React + Node.js + MongoDB + Cloudflare
+
+2. VideoForge — AI 유튜브 자동화
+텍스트만 입력하면 영상 자동 제작 + 유튜브 업로드.
+Python + Flask + AI API + Railway
+
+3. SignTrack — AI 브랜드 음악 생성
+장르, 무드 선택하면 30초 내 음악 생성.
+React + Supabase + Stripe
+
+
+■ 포트폴리오 프로젝트 (24개)
+
+다양한 분야의 프로젝트를 만들었습니다:
+
+- 홈페이지 / 랜딩페이지 (카페, 치과, 인테리어, 개인 브랜딩)
+- 쇼핑몰 (패션 브랜드, 상품 상세 페이지)
+- 웹앱 (관리자 대시보드, 예약 시스템, 칸반 보드)
+- AI (챗봇 인터페이스)
+- 금융 (암호화폐 트레이딩 대시보드)
+- SNS (인스타그램 클론)
+- 도구 (대출 계산기, 타이핑 게임, 링크트리)
+- 시스템 (로그인/결제, 생산성 앱)
+
+
+■ 기술 스택
+
+Frontend: HTML, CSS, JavaScript, React, Next.js, TypeScript
+Backend: Node.js, Express, Python, Flask
+Database: MongoDB, PostgreSQL, Firebase
+Deploy: Cloudflare, Vercel, Railway
+
+
+■ 포트폴리오 사이트
+
+모든 프로젝트를 직접 클릭해서 확인할 수 있습니다.
+각 프로젝트는 실제로 동작하는 데모입니다.
+
+━━━━━━━━━━━━━━━━━━
+📌 포트폴리오: https://portfolio-2p4.pages.dev/
+📌 크몽: https://kmong.com [서비스 URL]
+📌 문의: wogns5486@gmail.com
+━━━━━━━━━━━━━━━━━━

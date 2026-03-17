@@ -1,0 +1,405 @@
+---
+import PageLayout from '@layouts/PageLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allProjects = await getCollection('projects');
+const featured = allProjects.filter(p => p.data.featured).sort((a, b) => a.data.order - b.data.order);
+const showcase = allProjects.filter(p => !p.data.featured).sort((a, b) => a.data.order - b.data.order).slice(0, 6);
+const blogs = (await getCollection('blog')).sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()).slice(0, 3);
+const testimonials = (await getCollection('testimonials')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).slice(0, 3);
+---
+
+<PageLayout title="ONESTEP — 웹·앱 개발, 합리적인 가격으로">
+  <!-- Hero -->
+  <section class="relative min-h-[auto] flex items-center justify-center px-7 pt-[100px] pb-10 overflow-hidden text-center">
+    <!-- Background orbs -->
+    <div data-parallax="0.3" class="absolute -top-[200px] left-1/2 -translate-x-1/2 w-[900px] h-[900px] bg-[radial-gradient(circle,rgba(99,102,241,0.28),rgba(129,140,248,0.12)_40%,transparent_70%)] pointer-events-none"></div>
+    <div data-parallax="0.15" class="absolute -bottom-[150px] left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-[radial-gradient(circle,rgba(99,102,241,0.20),transparent_60%)] pointer-events-none"></div>
+
+    <div class="relative z-10 max-w-[800px] mx-auto w-full">
+      <p class="hero-label text-xs tracking-[4px] text-primary uppercase mb-6 font-semibold">ONESTEP PORTFOLIO</p>
+      <h1 class="hero-title text-[clamp(2.6rem,6vw,4rem)] font-black leading-[1.15] mb-5 tracking-tight gradient-text break-keep">
+        웹·앱 개발,<br />합리적인 가격으로
+      </h1>
+      <p class="hero-desc text-[1.05rem] text-text-sub max-w-[560px] mx-auto mb-10 break-keep leading-relaxed">
+        시장 평균보다 30% 합리적인 가격, 타협 없는 퀄리티.<br />기획부터 배포까지 한 번에.
+      </p>
+      <div class="hero-tags flex flex-wrap justify-center gap-3 mb-10">
+        <span class="px-4 py-2 rounded-full border border-border-light text-sm text-text-sub">&#10003; 평균 30% 저렴</span>
+        <span class="px-4 py-2 rounded-full border border-border-light text-sm text-text-sub">&#10003; 기능 무제한</span>
+        <span class="px-4 py-2 rounded-full border border-border-light text-sm text-text-sub">&#10003; 기획→배포 올인원</span>
+        <span class="px-4 py-2 rounded-full border border-border-light text-sm text-text-sub">&#10003; LIVE 서비스 3개 운영 중</span>
+      </div>
+      <a
+        href="/contact"
+        class="hero-cta inline-flex items-center gap-2.5 px-10 py-4 rounded-full bg-gradient-to-r from-primary-deep to-primary text-white font-bold transition-all hover:-translate-y-1 hover:scale-[1.03] hover:shadow-[0_8px_40px_rgba(99,102,241,0.45)] shadow-[0_4px_24px_rgba(99,102,241,0.3)]"
+      >
+        프로젝트 문의하기 <span class="transition-transform group-hover:translate-x-1">→</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Stats Bar -->
+  <section class="px-7 pb-12 relative z-10">
+    <div class="max-w-content mx-auto grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div class="bg-surface border border-border-light rounded-card p-8 text-center transition-all hover:-translate-y-1 hover:border-primary/20 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
+        <div class="text-[2.8rem] font-black leading-none gradient-text mb-2" data-count="102">0</div>
+        <div class="text-[0.95rem] font-semibold text-text-main mb-0.5">프로젝트</div>
+        <div class="text-[0.78rem] text-text-muted">위시켓 수주 11건 포함</div>
+      </div>
+      <div class="bg-surface border border-border-light rounded-card p-8 text-center transition-all hover:-translate-y-1 hover:border-primary/20 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
+        <div class="text-[2.8rem] font-black leading-none gradient-text mb-2" data-count-text="Full">F</div>
+        <div class="text-[0.95rem] font-semibold text-text-main mb-0.5">기획~배포 올인원</div>
+        <div class="text-[0.78rem] text-text-muted">풀 커스텀 개발</div>
+      </div>
+      <div class="bg-surface border border-border-light rounded-card p-8 text-center transition-all hover:-translate-y-1 hover:border-primary/20 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
+        <div class="text-[2.8rem] font-black leading-none gradient-text mb-2">
+          <span class="inline-block w-2 h-2 bg-live rounded-full mr-1.5 align-middle animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.4)]"></span>
+          <span data-count="3">0</span>
+        </div>
+        <div class="text-[0.95rem] font-semibold text-text-main mb-0.5">LIVE 서비스</div>
+        <div class="text-[0.78rem] text-text-muted">실제 운영 중</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Featured Projects (LIVE) -->
+  <section class="py-16 px-7">
+    <div class="max-w-content mx-auto">
+      <div class="mb-10">
+        <p class="text-[0.72rem] tracking-[3px] text-primary uppercase mb-2.5 font-semibold">Featured</p>
+        <h2 class="text-[clamp(1.8rem,3.5vw,2.4rem)] font-extrabold tracking-tight">LIVE 서비스</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {featured.map(project => (
+          <a href={`/projects/${project.id}`} class="group bg-surface border border-live-border rounded-card overflow-hidden transition-all hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(52,211,153,0.15)]">
+            <div class="h-40 bg-gradient-to-br from-bg-deep to-surface flex items-center justify-center relative">
+              <div class="text-center">
+                <div class="text-3xl mb-2">🟢</div>
+                <div class="text-sm font-bold text-live tracking-wider">{project.data.title}</div>
+              </div>
+              <span class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-live/10 border border-live-border text-[0.65rem] font-bold text-live flex items-center gap-1">
+                <span class="w-1.5 h-1.5 bg-live rounded-full animate-pulse"></span> LIVE
+              </span>
+            </div>
+            <div class="p-5">
+              <h3 class="text-base font-bold text-text-main mb-1.5 group-hover:text-live transition-colors">{project.data.titleKo}</h3>
+              <p class="text-xs text-text-sub leading-relaxed mb-3">{project.data.description}</p>
+              <div class="flex flex-wrap gap-1.5">
+                {project.data.techs.slice(0, 4).map(tech => (
+                  <span class="px-2 py-1 rounded-full bg-surface-light text-[0.65rem] text-text-muted border border-border-light">{tech}</span>
+                ))}
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Why ONESTEP -->
+  <section class="py-16 px-7">
+    <div class="max-w-content mx-auto">
+      <div class="mb-10">
+        <p class="text-[0.72rem] tracking-[3px] text-primary uppercase mb-2.5 font-semibold">Why ONESTEP</p>
+        <h2 class="text-[clamp(1.8rem,3.5vw,2.4rem)] font-extrabold tracking-tight">왜 ONESTEP인가요?</h2>
+      </div>
+      <div data-stagger-parent class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {[
+          { icon: '💰', title: '시장 평균 30% 저렴', desc: 'AI를 활용한 효율적인 개발 프로세스로 시장 평균보다 30% 합리적인 가격을 제공합니다.' },
+          { icon: '🚀', title: '기획→배포 올인원', desc: '기획, 디자인, 개발, 배포까지. 여러 업체에 나눠 맡길 필요 없이 한 번에 해결합니다.' },
+          { icon: '✅', title: '102개 프로젝트 검증', desc: '100개가 넘는 프로젝트 경험. 다양한 산업군과 기술 스택에 대한 깊은 이해를 보유합니다.' },
+          { icon: '⚡', title: '빠른 소통 & 대응', desc: '실시간 진행상황 공유, 빠른 피드백 반영. 프로젝트 진행이 막힘없이 흘러갑니다.' },
+        ].map(item => (
+          <div class="bg-surface border border-border-light rounded-card p-8 transition-all hover:-translate-y-1 hover:border-primary/20 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)] relative overflow-hidden group">
+            <div class="absolute inset-0 bg-gradient-to-br from-primary/[0.03] to-transparent pointer-events-none"></div>
+            <div class="relative">
+              <div class="text-2xl mb-4">{item.icon}</div>
+              <h3 class="text-lg font-bold text-text-main mb-2">{item.title}</h3>
+              <p class="text-sm text-text-sub leading-relaxed">{item.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Tech Stack -->
+  <section class="py-16 px-7">
+    <div class="max-w-content mx-auto">
+      <div class="mb-10">
+        <p class="text-[0.72rem] tracking-[3px] text-primary uppercase mb-2.5 font-semibold">Tech Stack</p>
+        <h2 class="text-[clamp(1.8rem,3.5vw,2.4rem)] font-extrabold tracking-tight">사용 기술</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {[
+          { category: 'Frontend', techs: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'HTML/CSS', 'JavaScript'] },
+          { category: 'Backend', techs: ['Node.js', 'NestJS', 'FastAPI', 'Python', 'PostgreSQL', 'MongoDB'] },
+          { category: 'DevOps & Tools', techs: ['Cloudflare Pages', 'Docker', 'GitHub Actions', 'Figma', 'Vercel', 'Railway'] },
+        ].map(group => (
+          <div class="bg-surface border border-border-light rounded-card p-6">
+            <h3 class="text-sm font-semibold text-primary mb-4">{group.category}</h3>
+            <div class="flex flex-wrap gap-2">
+              {group.techs.map(tech => (
+                <span class="px-3 py-1.5 rounded-full bg-surface-light text-xs text-text-sub font-medium border border-border-light">
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Process -->
+  <section class="py-16 px-7">
+    <div class="max-w-content mx-auto">
+      <div class="mb-10">
+        <p class="text-[0.72rem] tracking-[3px] text-primary uppercase mb-2.5 font-semibold">Process</p>
+        <h2 class="text-[clamp(1.8rem,3.5vw,2.4rem)] font-extrabold tracking-tight">작업 프로세스</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+        {[
+          { step: '01', title: '기획', desc: '요구사항 분석, 사이트맵, 와이어프레임 설계', icon: '📋' },
+          { step: '02', title: '디자인', desc: 'UI/UX 디자인, 프로토타입, 클라이언트 피드백 반영', icon: '🎨' },
+          { step: '03', title: '개발', desc: '프론트엔드·백엔드 구현, 반응형, 테스트', icon: '💻' },
+          { step: '04', title: '배포', desc: '서버 배포, 도메인 연결, 모니터링 설정', icon: '🚀' },
+        ].map(item => (
+          <div class="bg-surface border border-border-light rounded-card p-6 text-center transition-all hover:-translate-y-1 hover:border-primary/20 relative overflow-hidden">
+            <div class="text-2xl mb-3">{item.icon}</div>
+            <div class="text-xs font-bold text-primary mb-2">{item.step}</div>
+            <h3 class="text-base font-bold text-text-main mb-2">{item.title}</h3>
+            <p class="text-xs text-text-sub leading-relaxed">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Projects Showcase -->
+  <section class="py-16 px-7">
+    <div class="max-w-content mx-auto">
+      <div class="flex items-end justify-between mb-10">
+        <div>
+          <p class="text-[0.72rem] tracking-[3px] text-primary uppercase mb-2.5 font-semibold">Projects</p>
+          <h2 class="text-[clamp(1.8rem,3.5vw,2.4rem)] font-extrabold tracking-tight">프로젝트</h2>
+        </div>
+        <a href="/projects" class="text-sm text-primary hover:text-accent-hover transition-colors font-medium">
+          전체 보기 ({allProjects.length}개) →
+        </a>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+        {showcase.map(project => (
+          <a href={`/projects/${project.id}`} class="group bg-surface border border-border-light rounded-card overflow-hidden transition-all hover:-translate-y-1 hover:border-primary/20 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
+            <div class="h-36 bg-gradient-to-br from-bg-deep to-surface-light flex items-center justify-center">
+              <div class="text-center">
+                <div class="text-2xl mb-1.5">💻</div>
+                <div class="text-[0.7rem] font-semibold text-text-muted tracking-wider">{project.data.tag}</div>
+              </div>
+            </div>
+            <div class="p-5">
+              <div class="text-[0.65rem] text-primary font-medium mb-1">{project.data.tag}</div>
+              <h3 class="text-sm font-bold text-text-main mb-1.5 group-hover:text-primary transition-colors">{project.data.titleKo}</h3>
+              <p class="text-xs text-text-sub leading-relaxed line-clamp-2">{project.data.description}</p>
+              <div class="flex flex-wrap gap-1.5 mt-3">
+                {project.data.techs.slice(0, 3).map(tech => (
+                  <span class="px-2 py-1 rounded-full bg-surface-light text-[0.65rem] text-text-muted border border-border-light">{tech}</span>
+                ))}
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Testimonials -->
+  {testimonials.length > 0 && (
+    <section class="py-16 px-7">
+      <div class="max-w-content mx-auto">
+        <div class="flex items-end justify-between mb-10">
+          <div>
+            <p class="text-[0.72rem] tracking-[3px] text-primary uppercase mb-2.5 font-semibold">Testimonials</p>
+            <h2 class="text-[clamp(1.8rem,3.5vw,2.4rem)] font-extrabold tracking-tight">고객 후기</h2>
+          </div>
+          <a href="/testimonials" class="text-sm text-primary hover:text-accent-hover transition-colors font-medium">전체 보기 →</a>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {testimonials.map(t => (
+            <div class="bg-surface border border-border-light rounded-card p-6 transition-all hover:-translate-y-1 hover:border-primary/20">
+              <div class="text-yellow-400 text-sm mb-3">{'★'.repeat(t.data.rating)}{'☆'.repeat(5 - t.data.rating)}</div>
+              <p class="text-sm text-text-sub leading-relaxed mb-4 italic">"{t.body}"</p>
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full bg-primary-deep/30 flex items-center justify-center text-xs font-bold text-primary">
+                  {t.data.client.charAt(0)}
+                </div>
+                <div>
+                  <div class="text-sm font-semibold text-text-main">{t.data.client}</div>
+                  <div class="text-xs text-text-muted">{t.data.company} · {t.data.project}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <div class="section-divider"></div>
+
+  <!-- Blog Preview -->
+  {blogs.length > 0 && (
+    <section class="py-16 px-7">
+      <div class="max-w-content mx-auto">
+        <div class="flex items-end justify-between mb-10">
+          <div>
+            <p class="text-[0.72rem] tracking-[3px] text-primary uppercase mb-2.5 font-semibold">Blog</p>
+            <h2 class="text-[clamp(1.8rem,3.5vw,2.4rem)] font-extrabold tracking-tight">인사이트</h2>
+          </div>
+          <a href="/blog" class="text-sm text-primary hover:text-accent-hover transition-colors font-medium">전체 보기 →</a>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {blogs.map(post => (
+            <a href={`/blog/${post.id}`} class="group bg-surface border border-border-light rounded-card p-6 transition-all hover:-translate-y-1 hover:border-primary/20 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
+              <div class="text-xs text-text-muted mb-3">
+                {post.data.pubDate.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
+              </div>
+              <h3 class="text-base font-bold text-text-main mb-2 group-hover:text-primary transition-colors">{post.data.title}</h3>
+              <p class="text-xs text-text-sub leading-relaxed line-clamp-3">{post.data.description}</p>
+              <div class="flex flex-wrap gap-1.5 mt-3">
+                {post.data.tags.map(tag => (
+                  <span class="px-2 py-1 rounded-full bg-surface-light text-[0.6rem] text-text-muted">{tag}</span>
+                ))}
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <div class="section-divider"></div>
+
+  <!-- CTA -->
+  <section class="relative py-24 px-7 text-center overflow-hidden">
+    <div class="absolute -top-[100px] left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-[radial-gradient(circle,rgba(99,102,241,0.25),transparent_60%)] pointer-events-none"></div>
+    <div class="relative z-10 max-w-[600px] mx-auto">
+      <h2 class="text-[clamp(1.8rem,3.5vw,2.4rem)] font-extrabold mb-4 break-keep">프로젝트, 지금 시작하세요</h2>
+      <p class="text-text-sub mb-8 break-keep leading-relaxed">
+        아이디어만 있으면 충분합니다.<br />기획부터 배포까지, ONESTEP이 함께합니다.
+      </p>
+      <a
+        href="/contact"
+        class="inline-flex items-center gap-2.5 px-10 py-4 rounded-full bg-gradient-to-r from-primary-deep to-primary text-white font-bold transition-all hover:-translate-y-1 hover:scale-[1.03] hover:shadow-[0_8px_40px_rgba(99,102,241,0.45)] shadow-[0_4px_24px_rgba(99,102,241,0.3)]"
+      >
+        프로젝트 문의하기 <span>→</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- GSAP Animations -->
+  <script>
+    import { gsap } from 'gsap';
+    import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    function init() {
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Mark body as JS-ready so CSS can hide elements for animation
+      if (!prefersReducedMotion) {
+        document.documentElement.classList.add('gsap-ready');
+      }
+
+      // Count-up (works regardless of motion preference)
+      document.querySelectorAll<HTMLElement>('[data-count]').forEach(el => {
+        const target = parseInt(el.dataset.count!);
+        const obj = { val: 0 };
+        gsap.to(obj, {
+          val: target,
+          duration: 1.5,
+          ease: 'power2.out',
+          scrollTrigger: { trigger: el, start: 'top 90%' },
+          onUpdate: () => { el.textContent = String(Math.round(obj.val)); },
+        });
+      });
+
+      // Text type animation
+      document.querySelectorAll<HTMLElement>('[data-count-text]').forEach(el => {
+        const text = el.dataset.countText!;
+        ScrollTrigger.create({
+          trigger: el,
+          start: 'top 90%',
+          onEnter: () => {
+            let i = 0;
+            el.textContent = '';
+            const interval = setInterval(() => {
+              el.textContent = text.slice(0, i + 1);
+              i++;
+              if (i >= text.length) clearInterval(interval);
+            }, 120);
+          },
+          once: true,
+        });
+      });
+
+      if (prefersReducedMotion) return;
+
+      // Hero entrance (CSS sets initial hidden state via .gsap-ready)
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      tl.to('.hero-label', { y: 0, opacity: 1, duration: 0.6 })
+        .to('.hero-title', { y: 0, opacity: 1, duration: 0.8 }, '-=0.3')
+        .to('.hero-desc', { y: 0, opacity: 1, duration: 0.6 }, '-=0.4')
+        .to('.hero-tags', { y: 0, opacity: 1, duration: 0.5 }, '-=0.3')
+        .to('.hero-cta', { y: 0, opacity: 1, duration: 0.5 }, '-=0.2');
+
+      // Section reveal
+      gsap.utils.toArray<HTMLElement>('[data-reveal]').forEach(el => {
+        gsap.to(el, {
+          scrollTrigger: { trigger: el, start: 'top 85%' },
+          y: 0, opacity: 1, duration: 0.7, ease: 'power2.out',
+        });
+      });
+
+      // Stagger children
+      gsap.utils.toArray<HTMLElement>('[data-stagger-parent]').forEach(parent => {
+        gsap.to(parent.children, {
+          scrollTrigger: { trigger: parent, start: 'top 85%' },
+          y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: 'power2.out',
+        });
+      });
+
+      // Parallax orbs (desktop only)
+      if (window.innerWidth >= 768) {
+        gsap.utils.toArray<HTMLElement>('[data-parallax]').forEach(el => {
+          const speed = parseFloat(el.dataset.parallax || '0.3');
+          gsap.to(el, {
+            y: () => -window.scrollY * speed,
+            ease: 'none',
+            scrollTrigger: { start: 'top top', end: 'bottom bottom', scrub: 1 },
+          });
+        });
+      }
+    }
+
+    init();
+    document.addEventListener('astro:after-swap', () => {
+      ScrollTrigger.getAll().forEach(t => t.kill());
+      init();
+    });
+  </script>
+</PageLayout>

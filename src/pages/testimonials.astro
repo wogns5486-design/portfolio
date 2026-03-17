@@ -1,0 +1,89 @@
+---
+import PageLayout from '@layouts/PageLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allTestimonials = await getCollection('testimonials');
+const sorted = allTestimonials.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<PageLayout title="고객 후기 — ONESTEP" description="ONESTEP과 함께한 클라이언트들의 실제 후기입니다.">
+
+  <!-- Page Header -->
+  <section class="relative pt-16 pb-10 px-7 text-center overflow-hidden">
+    <div class="absolute -top-[150px] left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-[radial-gradient(circle,rgba(99,102,241,0.18),transparent_65%)] pointer-events-none"></div>
+    <div class="relative z-10 max-w-content mx-auto">
+      <p class="text-[0.72rem] tracking-[4px] text-primary uppercase mb-3 font-semibold">TESTIMONIALS</p>
+      <h1 class="text-[clamp(2rem,5vw,3rem)] font-black tracking-tight mb-4">고객 후기</h1>
+      <p class="text-text-sub text-[0.95rem] leading-relaxed break-keep">
+        ONESTEP과 함께한 클라이언트들의 실제 후기입니다.
+      </p>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Testimonials -->
+  <section class="px-7 py-14">
+    <div class="max-w-content mx-auto">
+
+      {sorted.length === 0 ? (
+        <div class="text-center py-24">
+          <p class="text-4xl mb-4">💬</p>
+          <p class="text-text-sub text-sm">아직 등록된 후기가 없습니다. 첫 번째 후기를 남겨주세요!</p>
+          <a href="/contact" class="inline-flex items-center gap-2 mt-6 px-6 py-2.5 rounded-full bg-gradient-to-r from-primary-deep to-primary text-white text-sm font-bold transition-all hover:-translate-y-0.5 hover:shadow-[0_6px_24px_rgba(99,102,241,0.4)]">
+            문의하기 →
+          </a>
+        </div>
+      ) : (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {sorted.map(async (t) => {
+            const { Content } = await t.render();
+            const formattedDate = t.data.date.toLocaleDateString('ko-KR', {
+              year: 'numeric', month: 'long',
+            });
+            const stars = '★'.repeat(t.data.rating) + '☆'.repeat(5 - t.data.rating);
+            return (
+              <div class="bg-surface border border-border-light rounded-card p-7 flex flex-col gap-4 hover:border-primary/20 hover:shadow-[0_8px_30px_rgba(0,0,0,0.2)] transition-all">
+                <!-- Stars -->
+                <div class="text-amber-400 text-lg tracking-wider">{stars}</div>
+
+                <!-- Review body -->
+                <div class="text-text-sub text-sm leading-relaxed break-keep flex-1 prose prose-invert prose-sm max-w-none prose-p:text-text-sub prose-p:leading-relaxed prose-p:text-sm">
+                  <Content />
+                </div>
+
+                <!-- Client info -->
+                <div class="border-t border-border-light pt-4 mt-2">
+                  <p class="text-text-main text-sm font-semibold">{t.data.client}</p>
+                  {t.data.company && (
+                    <p class="text-text-muted text-xs mt-0.5">{t.data.company}</p>
+                  )}
+                  <div class="flex items-center justify-between mt-2">
+                    <span class="text-[0.65rem] text-primary font-medium bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20">{t.data.project}</span>
+                    <span class="text-xs text-text-muted">{formattedDate}</span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="relative py-20 px-7 text-center overflow-hidden">
+    <div class="absolute -top-[60px] left-1/2 -translate-x-1/2 w-[400px] h-[250px] bg-[radial-gradient(circle,rgba(99,102,241,0.15),transparent_60%)] pointer-events-none"></div>
+    <div class="relative z-10 max-w-[520px] mx-auto">
+      <h2 class="text-[clamp(1.4rem,3vw,2rem)] font-extrabold mb-4 break-keep">당신의 프로젝트도 성공 사례가 될 수 있습니다</h2>
+      <p class="text-text-sub mb-8 break-keep text-sm leading-relaxed">지금 바로 문의해 주세요. 기획부터 배포까지 함께합니다.</p>
+      <a
+        href="/contact"
+        class="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full bg-gradient-to-r from-primary-deep to-primary text-white font-bold transition-all hover:-translate-y-1 hover:shadow-[0_8px_40px_rgba(99,102,241,0.45)] shadow-[0_4px_24px_rgba(99,102,241,0.3)] text-sm"
+      >
+        프로젝트 문의하기 <span>→</span>
+      </a>
+    </div>
+  </section>
+
+</PageLayout>

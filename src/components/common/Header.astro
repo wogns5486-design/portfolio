@@ -1,0 +1,110 @@
+---
+const navItems = [
+  { label: 'Projects', href: '/projects' },
+  { label: 'About', href: '/about' },
+  { label: 'Blog', href: '/blog' },
+  { label: 'Contact', href: '/contact' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header id="site-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+  <div class="max-w-content mx-auto px-7 h-16 flex items-center justify-between">
+    <!-- Logo -->
+    <a href="/" class="text-lg font-bold tracking-tight text-text-main hover:text-primary transition-colors">
+      ONESTEP
+    </a>
+
+    <!-- Desktop Nav -->
+    <nav class="hidden md:flex items-center gap-8">
+      {navItems.map(item => (
+        <a
+          href={item.href}
+          class:list={[
+            'text-sm font-medium transition-colors',
+            currentPath.startsWith(item.href)
+              ? 'text-primary'
+              : 'text-text-sub hover:text-text-main',
+          ]}
+        >
+          {item.label}
+        </a>
+      ))}
+      <a
+        href="/contact"
+        class="px-5 py-2 rounded-full bg-gradient-to-r from-primary-deep to-primary text-white text-sm font-semibold transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary-deep/30"
+      >
+        문의하기
+      </a>
+    </nav>
+
+    <!-- Mobile Hamburger -->
+    <button
+      id="mobile-menu-btn"
+      class="md:hidden flex flex-col gap-1.5 p-2"
+      aria-label="메뉴 열기"
+    >
+      <span class="block w-5 h-0.5 bg-text-main transition-all origin-center" id="bar1"></span>
+      <span class="block w-5 h-0.5 bg-text-main transition-all" id="bar2"></span>
+      <span class="block w-5 h-0.5 bg-text-main transition-all origin-center" id="bar3"></span>
+    </button>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="md:hidden hidden absolute top-16 left-0 right-0 bg-bg-deep/95 backdrop-blur-xl border-b border-border-light">
+    <nav class="max-w-content mx-auto px-7 py-6 flex flex-col gap-4">
+      {navItems.map(item => (
+        <a
+          href={item.href}
+          class:list={[
+            'text-base font-medium py-2 transition-colors',
+            currentPath.startsWith(item.href)
+              ? 'text-primary'
+              : 'text-text-sub hover:text-text-main',
+          ]}
+        >
+          {item.label}
+        </a>
+      ))}
+      <a
+        href="/contact"
+        class="mt-2 px-5 py-3 rounded-full bg-gradient-to-r from-primary-deep to-primary text-white text-sm font-semibold text-center"
+      >
+        프로젝트 문의하기
+      </a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.getElementById('site-header')!;
+  const btn = document.getElementById('mobile-menu-btn')!;
+  const menu = document.getElementById('mobile-menu')!;
+  const bar1 = document.getElementById('bar1')!;
+  const bar2 = document.getElementById('bar2')!;
+  const bar3 = document.getElementById('bar3')!;
+
+  let isOpen = false;
+
+  // Scroll effect
+  let lastScroll = 0;
+  window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    if (scrollY > 50) {
+      header.classList.add('bg-bg-deep/80', 'backdrop-blur-xl', 'border-b', 'border-border-light');
+    } else {
+      header.classList.remove('bg-bg-deep/80', 'backdrop-blur-xl', 'border-b', 'border-border-light');
+    }
+    lastScroll = scrollY;
+  }, { passive: true });
+
+  // Mobile toggle
+  btn.addEventListener('click', () => {
+    isOpen = !isOpen;
+    menu.classList.toggle('hidden', !isOpen);
+    bar1.style.transform = isOpen ? 'rotate(45deg) translate(2px, 6px)' : '';
+    bar2.style.opacity = isOpen ? '0' : '1';
+    bar3.style.transform = isOpen ? 'rotate(-45deg) translate(2px, -6px)' : '';
+  });
+</script>

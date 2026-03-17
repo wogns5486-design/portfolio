@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg: #0B1120;
+    --bg-deep: #070D1A;
+    --surface: #111827;
+    --surface-light: #1E293B;
+    --border: rgba(148,163,184,0.08);
+    --border-light: rgba(148,163,184,0.12);
+    --text: #F1F5F9;
+    --text-sub: #94A3B8;
+    --text-muted: #64748B;
+    --primary: #818CF8;
+    --primary-deep: #6366F1;
+    --accent: #6366F1;
+    --accent-hover: #818CF8;
+    --live: #34D399;
+    --live-bg: rgba(52,211,153,0.1);
+    --live-border: rgba(52,211,153,0.25);
+    --gold-glow: rgba(245,158,11,0.15);
+    --gold-border: rgba(245,158,11,0.3);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-image:
+      radial-gradient(circle, rgba(148,163,184,0.10) 1px, transparent 1px),
+      radial-gradient(ellipse at 20% 50%, rgba(99,102,241,0.04) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(129,140,248,0.03) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 100%, rgba(99,102,241,0.03) 0%, transparent 40%);
+    background-size: 24px 24px, 100% 100%, 100% 100%, 100% 100%;
+    background-attachment: fixed;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  ::selection {
+    background: rgba(99,102,241,0.3);
+    color: #fff;
+  }
+}
+
+@layer components {
+  .section-divider {
+    height: 1px;
+    max-width: 1080px;
+    margin: 0 auto;
+    background: linear-gradient(90deg, transparent, var(--border-light), transparent);
+  }
+}
+
+@layer components {
+  /* GSAP animation: content visible by default, hidden only when JS loaded */
+  .gsap-ready [data-stagger-parent] > *,
+  .gsap-ready [data-reveal] {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  .gsap-ready .hero-label,
+  .gsap-ready .hero-title,
+  .gsap-ready .hero-desc,
+  .gsap-ready .hero-tags,
+  .gsap-ready .hero-cta {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+}
+
+@layer utilities {
+  .gradient-text {
+    background: linear-gradient(135deg, #fff 0%, var(--primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-text-accent {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}

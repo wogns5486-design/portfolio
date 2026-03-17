@@ -1,0 +1,251 @@
+---
+import PageLayout from '@layouts/PageLayout.astro';
+---
+
+<PageLayout title="프로젝트 문의 — ONESTEP" description="아이디어만 있으면 충분합니다. ONESTEP에 프로젝트를 문의해 주세요.">
+  <section class="min-h-screen px-7 py-16">
+    <div class="max-w-[640px] mx-auto">
+
+      <!-- Back link -->
+      <a href="/" class="inline-flex items-center gap-2 text-text-muted text-sm hover:text-primary transition-colors mb-10">
+        ← 포트폴리오로 돌아가기
+      </a>
+
+      <!-- Header -->
+      <div class="text-center mb-12">
+        <p class="text-[0.72rem] tracking-[4px] text-primary uppercase mb-3 font-semibold">ONESTEP</p>
+        <h1 class="text-[clamp(1.8rem,4vw,2.4rem)] font-black tracking-tight mb-3">프로젝트 문의하기</h1>
+        <p class="text-text-sub text-[0.95rem] leading-relaxed break-keep">
+          아래 양식을 작성해 주시면 24시간 내에 답변 드리겠습니다.<br />
+          간단한 아이디어라도 괜찮아요.
+        </p>
+
+        <!-- Contact info -->
+        <div class="flex flex-wrap justify-center gap-5 mt-6">
+          <div class="flex items-center gap-2 text-sm text-text-muted">
+            <span>📧</span>
+            <button
+              id="copyEmailBtn"
+              class="text-text-sub font-medium hover:text-primary transition-colors"
+              title="클릭하여 복사"
+            >
+              wogns5486@gmail.com
+            </button>
+          </div>
+          <div class="flex items-center gap-2 text-sm text-text-muted">
+            <span>📱</span>
+            <span class="text-text-sub font-medium">010-2656-9757</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form card -->
+      <form
+        id="contactForm"
+        action="https://formspree.io/f/placeholder"
+        method="POST"
+        class="bg-surface border border-border-light rounded-[20px] p-10 max-sm:p-6"
+      >
+        <!-- Name + Contact row -->
+        <div class="grid grid-cols-2 max-sm:grid-cols-1 gap-4 mb-5">
+          <div>
+            <label class="block text-xs font-semibold text-text-sub mb-2" for="clientName">
+              이름 / 회사명 <span class="text-red-400">*</span>
+            </label>
+            <input
+              type="text"
+              id="clientName"
+              name="name"
+              placeholder="홍길동 / 주식회사 OO"
+              required
+              class="w-full px-4 py-3 rounded-[10px] bg-surface-light border border-border-light text-text-main text-sm placeholder:text-text-muted outline-none focus:border-primary/60 focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1)] transition-all"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-text-sub mb-2" for="clientContact">
+              연락처 <span class="text-red-400">*</span>
+            </label>
+            <input
+              type="text"
+              id="clientContact"
+              name="contact"
+              placeholder="이메일 또는 전화번호"
+              required
+              class="w-full px-4 py-3 rounded-[10px] bg-surface-light border border-border-light text-text-main text-sm placeholder:text-text-muted outline-none focus:border-primary/60 focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1)] transition-all"
+            />
+          </div>
+        </div>
+
+        <!-- Project type -->
+        <div class="mb-5">
+          <label class="block text-xs font-semibold text-text-sub mb-2" for="projectType">프로젝트 유형</label>
+          <div class="relative">
+            <select
+              id="projectType"
+              name="project_type"
+              class="w-full px-4 py-3 rounded-[10px] bg-surface-light border border-border-light text-text-main text-sm outline-none focus:border-primary/60 focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1)] transition-all appearance-none cursor-pointer pr-10"
+            >
+              <option value="" class="bg-surface">선택해 주세요</option>
+              <option value="랜딩페이지" class="bg-surface">랜딩페이지 / 홈페이지</option>
+              <option value="쇼핑몰" class="bg-surface">쇼핑몰</option>
+              <option value="웹앱" class="bg-surface">웹앱 / SaaS</option>
+              <option value="모바일앱" class="bg-surface">모바일 앱</option>
+              <option value="대시보드" class="bg-surface">관리자 대시보드</option>
+              <option value="기타" class="bg-surface">기타</option>
+            </select>
+            <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Budget chips -->
+        <div class="mb-5">
+          <label class="block text-xs font-semibold text-text-sub mb-3" id="budgetLabel">예상 예산</label>
+          <div class="flex flex-wrap gap-2" role="radiogroup" aria-labelledby="budgetLabel">
+            {['30만원 이하', '30~50만원', '50~100만원', '100만원 이상', '협의'].map(val => (
+              <label class="budget-chip px-4 py-2 rounded-full bg-surface-light border border-border-light text-xs text-text-sub cursor-pointer transition-all hover:border-primary/30 hover:text-text-main select-none">
+                <input type="radio" name="budget" value={val} class="sr-only" />
+                {val}
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="mb-5">
+          <label class="block text-xs font-semibold text-text-sub mb-2" for="timeline">희망 완성 시기</label>
+          <div class="relative">
+            <select
+              id="timeline"
+              name="timeline"
+              class="w-full px-4 py-3 rounded-[10px] bg-surface-light border border-border-light text-text-main text-sm outline-none focus:border-primary/60 focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1)] transition-all appearance-none cursor-pointer pr-10"
+            >
+              <option value="" class="bg-surface">선택해 주세요</option>
+              <option value="1주 이내" class="bg-surface">1주 이내</option>
+              <option value="2주 이내" class="bg-surface">2주 이내</option>
+              <option value="1개월 이내" class="bg-surface">1개월 이내</option>
+              <option value="여유있음" class="bg-surface">여유있게</option>
+            </select>
+            <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-5">
+          <label class="block text-xs font-semibold text-text-sub mb-2" for="projectDesc">
+            프로젝트 설명 <span class="text-red-400">*</span>
+          </label>
+          <textarea
+            id="projectDesc"
+            name="description"
+            rows="5"
+            required
+            placeholder={"어떤 사이트/앱을 만들고 싶으신지 자유롭게 적어주세요.\n\n예시: 카페 홈페이지를 만들고 싶어요. 메뉴판, 예약 기능, 지도가 필요합니다."}
+            class="w-full px-4 py-3 rounded-[10px] bg-surface-light border border-border-light text-text-main text-sm placeholder:text-text-muted outline-none focus:border-primary/60 focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1)] transition-all resize-y leading-relaxed"
+          ></textarea>
+        </div>
+
+        <!-- Reference site -->
+        <div class="mb-8">
+          <label class="block text-xs font-semibold text-text-sub mb-2" for="refSite">참고 사이트 (선택)</label>
+          <input
+            type="url"
+            id="refSite"
+            name="reference_site"
+            placeholder="https://example.com"
+            class="w-full px-4 py-3 rounded-[10px] bg-surface-light border border-border-light text-text-main text-sm placeholder:text-text-muted outline-none focus:border-primary/60 focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1)] transition-all"
+          />
+        </div>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          class="relative w-full py-4 rounded-[12px] bg-gradient-to-r from-primary-deep to-primary text-white font-bold text-[0.95rem] shadow-[0_4px_24px_rgba(99,102,241,0.3)] hover:-translate-y-0.5 hover:shadow-[0_8px_36px_rgba(99,102,241,0.45)] transition-all overflow-hidden group"
+        >
+          <span class="relative z-10">문의 보내기 →</span>
+          <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-500"></div>
+        </button>
+      </form>
+
+      <!-- Footer note -->
+      <p class="text-center text-xs text-text-muted mt-8">© 2025 ONESTEP. 빠르고 정확하게, 합리적으로.</p>
+    </div>
+  </section>
+
+  <!-- Toast -->
+  <div
+    id="toast"
+    class="fixed bottom-10 left-1/2 -translate-x-1/2 translate-y-5 opacity-0 pointer-events-none z-50 bg-surface-light border border-live/40 text-text-main text-sm font-semibold px-7 py-3.5 rounded-[12px] shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-all duration-300"
+  ></div>
+
+  <script>
+    // Budget chip selection
+    document.querySelectorAll<HTMLLabelElement>('.budget-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.budget-chip').forEach(c => {
+          c.classList.remove('bg-gradient-to-r', 'from-primary-deep', 'to-primary', 'text-white', 'border-primary');
+          c.classList.add('bg-surface-light', 'border-border-light', 'text-text-sub');
+        });
+        chip.classList.add('bg-gradient-to-r', 'from-primary-deep', 'to-primary', 'text-white', 'border-primary');
+        chip.classList.remove('bg-surface-light', 'border-border-light', 'text-text-sub');
+      });
+    });
+
+    // Copy email
+    document.getElementById('copyEmailBtn')?.addEventListener('click', () => {
+      navigator.clipboard.writeText('wogns5486@gmail.com').then(() => {
+        showToast('이메일이 복사되었습니다!');
+      });
+    });
+
+    // Form submit — open Gmail compose
+    document.getElementById('contactForm')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const name = (document.getElementById('clientName') as HTMLInputElement).value;
+      const contact = (document.getElementById('clientContact') as HTMLInputElement).value;
+      const type = (document.getElementById('projectType') as HTMLSelectElement).value || '미선택';
+      const budget = (document.querySelector('input[name="budget"]:checked') as HTMLInputElement | null)?.value ?? '미선택';
+      const timeline = (document.getElementById('timeline') as HTMLSelectElement).value || '미선택';
+      const desc = (document.getElementById('projectDesc') as HTMLTextAreaElement).value;
+      const ref = (document.getElementById('refSite') as HTMLInputElement).value || '없음';
+
+      const subject = `[ONESTEP 문의] ${name} - ${type}`;
+      const body =
+        `=== ONESTEP 프로젝트 문의 ===\n\n` +
+        `■ 이름/회사: ${name}\n` +
+        `■ 연락처: ${contact}\n` +
+        `■ 프로젝트 유형: ${type}\n` +
+        `■ 예상 예산: ${budget}\n` +
+        `■ 희망 완성 시기: ${timeline}\n` +
+        `■ 참고 사이트: ${ref}\n\n` +
+        `■ 프로젝트 설명:\n${desc}\n\n` +
+        `---\nONESTEP 포트폴리오에서 전송됨`;
+
+      const gmailUrl = `https://mail.google.com/mail/?view=cm&to=wogns5486@gmail.com&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      const win = window.open(gmailUrl, '_blank');
+
+      if (!win || win.closed) {
+        navigator.clipboard.writeText(`받는 사람: wogns5486@gmail.com\n제목: ${subject}\n\n${body}`).then(() => {
+          showToast('문의 내용이 클립보드에 복사되었습니다!');
+        });
+      } else {
+        showToast('Gmail 작성 창이 열렸습니다. 전송 버튼을 눌러주세요!');
+      }
+    });
+
+    function showToast(msg: string) {
+      const t = document.getElementById('toast')!;
+      t.textContent = msg;
+      t.classList.remove('opacity-0', 'translate-y-5');
+      t.classList.add('opacity-100', 'translate-y-0');
+      setTimeout(() => {
+        t.classList.add('opacity-0', 'translate-y-5');
+        t.classList.remove('opacity-100', 'translate-y-0');
+      }, 4000);
+    }
+  </script>
+</PageLayout>

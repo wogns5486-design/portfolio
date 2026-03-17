@@ -1,0 +1,444 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1773526839291,
+  "projectRoot": "C:\\Users\\H\\port1",
+  "techStack": {
+    "languages": [],
+    "frameworks": [],
+    "packageManager": null,
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [],
+    "gitBranches": null
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "cafe-landing": {
+      "path": "cafe-landing",
+      "purpose": null,
+      "fileCount": 4,
+      "lastAccessed": 1773526839258,
+      "keyFiles": [
+        "favicon.svg",
+        "index.html",
+        "script.js",
+        "style.css"
+      ]
+    },
+    "clinic": {
+      "path": "clinic",
+      "purpose": null,
+      "fileCount": 4,
+      "lastAccessed": 1773526839259,
+      "keyFiles": [
+        "favicon.svg",
+        "index.html",
+        "script.js",
+        "style.css"
+      ]
+    },
+    "dashboard": {
+      "path": "dashboard",
+      "purpose": null,
+      "fileCount": 4,
+      "lastAccessed": 1773526839259,
+      "keyFiles": [
+        "favicon.svg",
+        "index.html",
+        "script.js",
+        "style.css"
+      ]
+    },
+    "food-order": {
+      "path": "food-order",
+      "purpose": null,
+      "fileCount": 4,
+      "lastAccessed": 1773526839259,
+      "keyFiles": [
+        "favicon.svg",
+        "index.html",
+        "script.js",
+        "style.css"
+      ]
+    },
+    "personal-brand": {
+      "path": "personal-brand",
+      "purpose": null,
+      "fileCount": 4,
+      "lastAccessed": 1773526839260,
+      "keyFiles": [
+        "favicon.svg",
+        "index.html",
+        "script.js",
+        "style.css"
+      ]
+    },
+    "realestate": {
+      "path": "realestate",
+      "purpose": null,
+      "fileCount": 4,
+      "lastAccessed": 1773526839260,
+      "keyFiles": [
+        "favicon.svg",
+        "index.html",
+        "script.js",
+        "style.css"
+      ]
+    },
+    "saas-landing": {
+      "path": "saas-landing",
+      "purpose": null,
+      "fileCount": 4,
+      "lastAccessed": 1773526839261,
+      "keyFiles": [
+        "favicon.svg",
+        "index.html",
+        "script.js",
+        "style.css"
+      ]
+    },
+    "shop-landing": {
+      "path": "shop-landing",
+      "purpose": null,
+      "fileCount": 4,
+      "lastAccessed": 1773526839261,
+      "keyFiles": [
+        "favicon.svg",
+        "index.html",
+        "script.js",
+        "style.css"
+      ]
+    },
+    "wedding": {
+      "path": "wedding",
+      "purpose": null,
+      "fileCount": 4,
+      "lastAccessed": 1773526839261,
+      "keyFiles": [
+        "favicon.svg",
+        "index.html",
+        "script.js",
+        "style.css"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "index.html",
+      "accessCount": 303,
+      "lastAccessed": 1773746902200,
+      "type": "file"
+    },
+    {
+      "path": "contact.html",
+      "accessCount": 22,
+      "lastAccessed": 1773746873918,
+      "type": "file"
+    },
+    {
+      "path": "productivity-app\\index.html",
+      "accessCount": 13,
+      "lastAccessed": 1773529397377,
+      "type": "file"
+    },
+    {
+      "path": "auth-pay\\index.html",
+      "accessCount": 13,
+      "lastAccessed": 1773529416585,
+      "type": "file"
+    },
+    {
+      "path": "youtube-auto\\index.html",
+      "accessCount": 12,
+      "lastAccessed": 1773529436870,
+      "type": "file"
+    },
+    {
+      "path": "calculator\\index.html",
+      "accessCount": 7,
+      "lastAccessed": 1773529362571,
+      "type": "file"
+    },
+    {
+      "path": "linktree\\index.html",
+      "accessCount": 7,
+      "lastAccessed": 1773529362929,
+      "type": "file"
+    },
+    {
+      "path": "typing-game\\index.html",
+      "accessCount": 7,
+      "lastAccessed": 1773529366328,
+      "type": "file"
+    },
+    {
+      "path": "dashboard\\script.js",
+      "accessCount": 6,
+      "lastAccessed": 1773529140845,
+      "type": "file"
+    },
+    {
+      "path": "food-order\\script.js",
+      "accessCount": 6,
+      "lastAccessed": 1773529415836,
+      "type": "file"
+    },
+    {
+      "path": "",
+      "accessCount": 5,
+      "lastAccessed": 1773746868812,
+      "type": "directory"
+    },
+    {
+      "path": "personal-brand\\index.html",
+      "accessCount": 4,
+      "lastAccessed": 1773529415048,
+      "type": "file"
+    },
+    {
+      "path": "wedding\\index.html",
+      "accessCount": 4,
+      "lastAccessed": 1773529417199,
+      "type": "file"
+    },
+    {
+      "path": "capture-kmong-service.js",
+      "accessCount": 4,
+      "lastAccessed": 1773659364677,
+      "type": "file"
+    },
+    {
+      "path": "realestate\\script.js",
+      "accessCount": 3,
+      "lastAccessed": 1773529405778,
+      "type": "file"
+    },
+    {
+      "path": "clinic\\script.js",
+      "accessCount": 3,
+      "lastAccessed": 1773529412341,
+      "type": "file"
+    },
+    {
+      "path": "realestate\\index.html",
+      "accessCount": 2,
+      "lastAccessed": 1773529378748,
+      "type": "file"
+    },
+    {
+      "path": "clinic\\index.html",
+      "accessCount": 2,
+      "lastAccessed": 1773529379096,
+      "type": "file"
+    },
+    {
+      "path": "personal-brand\\script.js",
+      "accessCount": 2,
+      "lastAccessed": 1773529380629,
+      "type": "file"
+    },
+    {
+      "path": "capture-kmong.js",
+      "accessCount": 2,
+      "lastAccessed": 1773659364404,
+      "type": "file"
+    },
+    {
+      "path": "saas-landing\\index.html",
+      "accessCount": 1,
+      "lastAccessed": 1773529114697,
+      "type": "file"
+    },
+    {
+      "path": "cafe-landing\\index.html",
+      "accessCount": 1,
+      "lastAccessed": 1773529114723,
+      "type": "file"
+    },
+    {
+      "path": "dashboard\\index.html",
+      "accessCount": 1,
+      "lastAccessed": 1773529114960,
+      "type": "file"
+    },
+    {
+      "path": "shop-landing\\index.html",
+      "accessCount": 1,
+      "lastAccessed": 1773529117148,
+      "type": "file"
+    },
+    {
+      "path": "saas-landing\\script.js",
+      "accessCount": 1,
+      "lastAccessed": 1773529118928,
+      "type": "file"
+    },
+    {
+      "path": "cafe-landing\\script.js",
+      "accessCount": 1,
+      "lastAccessed": 1773529119385,
+      "type": "file"
+    },
+    {
+      "path": "food-order\\index.html",
+      "accessCount": 1,
+      "lastAccessed": 1773529119584,
+      "type": "file"
+    },
+    {
+      "path": "shop-landing\\script.js",
+      "accessCount": 1,
+      "lastAccessed": 1773529129283,
+      "type": "file"
+    },
+    {
+      "path": "wedding\\script.js",
+      "accessCount": 1,
+      "lastAccessed": 1773529129433,
+      "type": "file"
+    },
+    {
+      "path": "personal-brand\\style.css",
+      "accessCount": 1,
+      "lastAccessed": 1773529368889,
+      "type": "directory"
+    },
+    {
+      "path": "shot\\image copy.png",
+      "accessCount": 1,
+      "lastAccessed": 1773531926991,
+      "type": "file"
+    },
+    {
+      "path": "shot\\image copy 3.png",
+      "accessCount": 1,
+      "lastAccessed": 1773549592130,
+      "type": "file"
+    },
+    {
+      "path": "shot\\image copy 4.png",
+      "accessCount": 1,
+      "lastAccessed": 1773550702455,
+      "type": "file"
+    },
+    {
+      "path": "shot\\image copy 5.png",
+      "accessCount": 1,
+      "lastAccessed": 1773551680018,
+      "type": "file"
+    },
+    {
+      "path": "shot\\image copy 6.png",
+      "accessCount": 1,
+      "lastAccessed": 1773557163222,
+      "type": "file"
+    },
+    {
+      "path": "shot\\image copy 8.png",
+      "accessCount": 1,
+      "lastAccessed": 1773560799635,
+      "type": "file"
+    },
+    {
+      "path": "shot\\image copy 7.png",
+      "accessCount": 1,
+      "lastAccessed": 1773560799879,
+      "type": "file"
+    },
+    {
+      "path": "KMONG_GUIDE.md",
+      "accessCount": 1,
+      "lastAccessed": 1773561246841,
+      "type": "file"
+    },
+    {
+      "path": "kmong-images\\00_main_square.png",
+      "accessCount": 1,
+      "lastAccessed": 1773561388423,
+      "type": "file"
+    },
+    {
+      "path": "kmong-images\\09_mobile_hero.png",
+      "accessCount": 1,
+      "lastAccessed": 1773561388448,
+      "type": "file"
+    },
+    {
+      "path": "kmong-images\\01_hero_stats.png",
+      "accessCount": 1,
+      "lastAccessed": 1773561389018,
+      "type": "file"
+    },
+    {
+      "path": "kmong-images\\05_live_projects.png",
+      "accessCount": 1,
+      "lastAccessed": 1773561389644,
+      "type": "file"
+    },
+    {
+      "path": "shot\\image copy 9.png",
+      "accessCount": 1,
+      "lastAccessed": 1773561484440,
+      "type": "file"
+    },
+    {
+      "path": "shot\\image copy 10.png",
+      "accessCount": 1,
+      "lastAccessed": 1773561849514,
+      "type": "file"
+    },
+    {
+      "path": "shot\\image copy 11.png",
+      "accessCount": 1,
+      "lastAccessed": 1773562205156,
+      "type": "file"
+    },
+    {
+      "path": "kmong-images\\크몽_서비스_등록_내용.txt",
+      "accessCount": 1,
+      "lastAccessed": 1773562421708,
+      "type": "file"
+    },
+    {
+      "path": "kmong-images\\service\\main_652x488.png",
+      "accessCount": 1,
+      "lastAccessed": 1773562793157,
+      "type": "file"
+    },
+    {
+      "path": "kmong-images\\service\\detail_04_live.png",
+      "accessCount": 1,
+      "lastAccessed": 1773562794454,
+      "type": "file"
+    },
+    {
+      "path": "kmong-images\\service\\detail_09_mobile.png",
+      "accessCount": 1,
+      "lastAccessed": 1773562795055,
+      "type": "file"
+    },
+    {
+      "path": "kmong-design.html",
+      "accessCount": 1,
+      "lastAccessed": 1773564515158,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}

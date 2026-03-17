@@ -1,0 +1,8 @@
+{"t":0,"agent":"afaa638","agent_type":"analyst","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"afaa638","agent_type":"analyst","event":"agent_stop","success":true,"duration_ms":219258}
+{"t":0,"agent":"a55cbbf","agent_type":"executor","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"a608bbb","agent_type":"executor","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"ad40e2d","agent_type":"executor","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"a608bbb","agent_type":"executor","event":"agent_stop","success":true,"duration_ms":70143}
+{"t":0,"agent":"a55cbbf","agent_type":"executor","event":"agent_stop","success":true,"duration_ms":122149}
+{"t":0,"agent":"ad40e2d","agent_type":"executor","event":"agent_stop","success":true,"duration_ms":118855}
