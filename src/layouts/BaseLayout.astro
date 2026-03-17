@@ -50,5 +50,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 </head>
 <body>
   <slot />
+
+  <!-- Cloudflare Web Analytics -->
+  <!-- 토큰은 Cloudflare 대시보드에서 발급 -->
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": ""}' is:inline></script>
 </body>
 </html>
