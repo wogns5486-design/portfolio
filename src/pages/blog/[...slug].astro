@@ -21,6 +21,7 @@ const { Content } = await post.render();
   pubDate={data.pubDate}
   tags={data.tags}
   ogImage={data.ogImage}
+  rawContent={post.body}
 >
   <Content />
 </BlogLayout>

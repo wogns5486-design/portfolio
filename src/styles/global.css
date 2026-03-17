@@ -98,3 +98,109 @@
     background-clip: text;
   }
 }
+
+/* ── Scroll Progress Bar ── */
+#scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, #6366F1, #818CF8);
+  z-index: 9999;
+  pointer-events: none;
+  transition: width 0.05s linear;
+}
+
+/* ── Hero Floating Orbs ── */
+@keyframes float-orb {
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  25%       { transform: translateY(-18px) translateX(8px); }
+  50%       { transform: translateY(-10px) translateX(-6px); }
+  75%       { transform: translateY(-22px) translateX(4px); }
+}
+
+@keyframes float-orb-alt {
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  33%       { transform: translateY(-14px) translateX(-10px); }
+  66%       { transform: translateY(-24px) translateX(6px); }
+}
+
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.hero-orb:nth-child(1) {
+  width: 10px; height: 10px;
+  top: 18%; left: 12%;
+  background: rgba(129, 140, 248, 0.55);
+  box-shadow: 0 0 12px rgba(129, 140, 248, 0.4);
+  animation: float-orb 6s ease-in-out infinite;
+}
+.hero-orb:nth-child(2) {
+  width: 7px; height: 7px;
+  top: 30%; left: 80%;
+  background: rgba(99, 102, 241, 0.45);
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.35);
+  animation: float-orb-alt 8s ease-in-out infinite 1s;
+}
+.hero-orb:nth-child(3) {
+  width: 12px; height: 12px;
+  top: 65%; left: 8%;
+  background: rgba(129, 140, 248, 0.40);
+  box-shadow: 0 0 14px rgba(129, 140, 248, 0.3);
+  animation: float-orb 9s ease-in-out infinite 2s;
+}
+.hero-orb:nth-child(4) {
+  width: 8px; height: 8px;
+  top: 72%; left: 88%;
+  background: rgba(99, 102, 241, 0.50);
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.35);
+  animation: float-orb-alt 7s ease-in-out infinite 0.5s;
+}
+.hero-orb:nth-child(5) {
+  width: 6px; height: 6px;
+  top: 45%; left: 92%;
+  background: rgba(129, 140, 248, 0.45);
+  box-shadow: 0 0 8px rgba(129, 140, 248, 0.3);
+  animation: float-orb 11s ease-in-out infinite 3s;
+}
+.hero-orb:nth-child(6) {
+  width: 9px; height: 9px;
+  top: 20%; left: 55%;
+  background: rgba(99, 102, 241, 0.35);
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.25);
+  animation: float-orb-alt 10s ease-in-out infinite 1.5s;
+}
+
+@media (max-width: 768px) {
+  .hero-orb:nth-child(n+4) { display: none; }
+}
+
+/* ── 3D Tilt Card ── */
+.project-card {
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* ── View Transitions: fade + slide-up ── */
+::view-transition-old(root) {
+  animation: 0.25s ease both vt-fade-out;
+}
+
+::view-transition-new(root) {
+  animation: 0.25s ease both vt-fade-in;
+}
+
+@keyframes vt-fade-out {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-8px); }
+}
+
+@keyframes vt-fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

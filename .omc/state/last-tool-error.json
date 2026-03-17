@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"cd \\\"C:/Users/H/Hproject/portfolio\\\" && npx wrangler pages deploy dist --project-name=portfolio-2p4 2>&1\",\"timeout\":300000,\"description\":\"Deploy dist/ to Cloudflare Pages via Wrangler\"}",
-  "error": "Exit code 1\n\n ⛅️ wrangler 4.74.0\n───────────────────\n\u001b[33m▲ \u001b[43;33m[\u001b[43;30mWARNING\u001b[43;33m]\u001b[0m \u001b[1mWarning: Your working directory is a git repo and has uncommitted changes\u001b[0m\n\n  To silence this warning, pass in --commit-dirty=true\n\n\n\n\u001b[31mX \u001b[41;31m[\u001b[41;97mERROR\u001b[41;31m]\u001b[0m \u001b[1mA request to the Cloudflare API (/accounts/79e902f33446b8d95813b5532e460792/pages/projects/portfolio-2p4) failed.\u001b[0m\n\n  Project not found. The specified project name does not match any of your existing projects. [...",
-  "timestamp": "2026-03-17T12:12:17.510Z",
-  "retry_count": 1
+  "tool_input_preview": "{\"command\":\"cd \\\"C:/Users/H/Hproject\\\" && node --no-experimental-strip-types -e \\\"\\nconst fs = require('fs');\\nconst pdf = require('pdf-parse');\\nconst buf = fs.readFileSync('C:/Users/H/Hproject/원스텝AI...",
+  "error": "Exit code 1\n[eval]:5\r\npdf(buf).then(data => {\r\n^\r\n\r\nTypeError: pdf is not a function\r\n    at [eval]:5:1\r\n    at runScriptInThisContext (node:internal/vm:219:10)\r\n    at node:internal/process/execution:451:12\r\n    at [eval]-wrapper:6:24\r\n    at runScriptInContext (node:internal/process/execution:449:60)\r\n    at evalFunction (node:internal/process/execution:92:30)\r\n    at evalScript (node:internal/process/execution:104:3)\r\n    at node:internal/main/eval_string:71:3\r\n\r\nNode.js v24.14.0",
+  "timestamp": "2026-03-17T15:24:11.933Z",
+  "retry_count": 5
 }

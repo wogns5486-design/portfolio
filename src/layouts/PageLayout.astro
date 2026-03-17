@@ -10,6 +10,7 @@ interface Props {
 }
 
 const { title, description, ogImage } = Astro.props;
+const isContactPage = Astro.url.pathname === '/contact' || Astro.url.pathname === '/contact/';
 ---
 
 <BaseLayout title={title} description={description} ogImage={ogImage}>
@@ -18,4 +19,68 @@ const { title, description, ogImage } = Astro.props;
     <slot />
   </main>
   <Footer />
+
+  <!-- Back to Top button -->
+  <button
+    id="back-to-top"
+    aria-label="맨 위로 이동"
+    class="fixed bottom-24 right-6 z-50 w-10 h-10 rounded-full bg-surface border border-border-light text-text-muted flex items-center justify-center shadow-lg transition-all duration-300 hover:border-primary/40 hover:text-primary hover:shadow-[0_4px_20px_rgba(99,102,241,0.25)] opacity-0 pointer-events-none translate-y-2"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 15l-6-6-6 6"/>
+    </svg>
+  </button>
+
+  <!-- Floating contact button (hidden on contact page) -->
+  {!isContactPage && (
+    <a
+      id="floating-contact"
+      href="/contact"
+      aria-label="문의하기"
+      class="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full bg-[#6366F1] text-white text-sm font-semibold shadow-[0_4px_20px_rgba(99,102,241,0.45)] transition-all duration-300 hover:scale-110 hover:shadow-[0_8px_32px_rgba(99,102,241,0.6)] floating-pulse"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+        <polyline points="22,6 12,13 2,6"/>
+      </svg>
+      문의
+    </a>
+  )}
 </BaseLayout>
+
+<style>
+  @keyframes floating-pulse {
+    0%, 100% { box-shadow: 0 4px 20px rgba(99, 102, 241, 0.45); }
+    50% { box-shadow: 0 4px 32px rgba(99, 102, 241, 0.75); }
+  }
+  .floating-pulse {
+    animation: floating-pulse 2.5s ease-in-out infinite;
+  }
+  .floating-pulse:hover {
+    animation: none;
+  }
+</style>
+
+<script is:inline>
+  document.addEventListener('astro:page-load', () => {
+    const backToTop = document.getElementById('back-to-top');
+    if (!backToTop) return;
+
+    const onScroll = () => {
+      if (window.scrollY > 300) {
+        backToTop.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-2');
+        backToTop.classList.add('opacity-100', 'translate-y-0');
+      } else {
+        backToTop.classList.add('opacity-0', 'pointer-events-none', 'translate-y-2');
+        backToTop.classList.remove('opacity-100', 'translate-y-0');
+      }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+</script>

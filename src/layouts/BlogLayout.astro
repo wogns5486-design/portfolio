@@ -7,15 +7,20 @@ interface Props {
   pubDate: Date;
   tags?: string[];
   ogImage?: string;
+  rawContent?: string;
 }
 
-const { title, description, pubDate, tags = [], ogImage } = Astro.props;
+const { title, description, pubDate, tags = [], ogImage, rawContent = '' } = Astro.props;
 
 const formattedDate = pubDate.toLocaleDateString('ko-KR', {
   year: 'numeric',
   month: 'long',
   day: 'numeric',
 });
+
+// Reading time: 400 chars/min for Korean
+const charCount = rawContent.replace(/\s+/g, '').length;
+const readingMinutes = Math.max(1, Math.round(charCount / 400));
 ---
 
 <PageLayout title={`${title} — ONESTEP 블로그`} description={description} ogImage={ogImage}>
@@ -55,13 +60,51 @@ const formattedDate = pubDate.toLocaleDateString('ko-KR', {
         <span>{formattedDate}</span>
         <span class="w-1 h-1 rounded-full bg-border-light"></span>
         <span>ONESTEP</span>
+        <span class="w-1 h-1 rounded-full bg-border-light"></span>
+        <!-- Reading time -->
+        <span class="inline-flex items-center gap-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+          약 {readingMinutes}분 읽기
+        </span>
       </div>
+    </div>
+  </section>
+
+  <!-- TOC (mobile toggle + desktop inline) -->
+  <section class="px-7 pb-4" id="toc-section">
+    <div class="max-w-[720px] mx-auto">
+      <!-- Mobile toggle button -->
+      <button
+        id="toc-toggle"
+        class="md:hidden flex items-center gap-2 text-xs text-text-muted hover:text-primary transition-colors mb-2 w-full"
+        aria-expanded="false"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="18" y2="18"/>
+        </svg>
+        <span>목차</span>
+        <svg id="toc-chevron" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="ml-auto transition-transform duration-200">
+          <path d="M6 9l6 6 6-6"/>
+        </svg>
+      </button>
+      <!-- TOC container (hidden by default on mobile, visible on md+) -->
+      <nav
+        id="toc-nav"
+        aria-label="목차"
+        class="hidden md:block bg-surface border border-border-light rounded-xl p-4 text-xs"
+      >
+        <p class="text-[0.65rem] font-semibold tracking-[3px] text-primary uppercase mb-3">목차</p>
+        <ul id="toc-list" class="flex flex-col gap-1.5"></ul>
+      </nav>
     </div>
   </section>
 
   <!-- Content -->
   <section class="px-7 pb-16">
-    <div class="max-w-[720px] mx-auto blog-content">
+    <div class="max-w-[720px] mx-auto blog-content" id="blog-content">
       <slot />
     </div>
   </section>
@@ -82,6 +125,95 @@ const formattedDate = pubDate.toLocaleDateString('ko-KR', {
   </section>
 
 </PageLayout>
+
+<script is:inline>
+  document.addEventListener('astro:page-load', () => {
+    const content = document.getElementById('blog-content');
+    const tocList = document.getElementById('toc-list');
+    const tocNav = document.getElementById('toc-nav');
+    const tocSection = document.getElementById('toc-section');
+    const tocToggle = document.getElementById('toc-toggle');
+    const tocChevron = document.getElementById('toc-chevron');
+
+    if (!content || !tocList) return;
+
+    // Collect h2 and h3 headings, assign ids if missing
+    const headings = Array.from(content.querySelectorAll('h2, h3'));
+    if (headings.length === 0) {
+      if (tocSection) tocSection.style.display = 'none';
+      return;
+    }
+
+    headings.forEach((heading, i) => {
+      if (!heading.id) {
+        heading.id = 'heading-' + i;
+      }
+      const isH3 = heading.tagName === 'H3';
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = '#' + heading.id;
+      a.textContent = heading.textContent || '';
+      a.dataset.headingId = heading.id;
+      a.className = [
+        'block py-0.5 transition-colors duration-150',
+        isH3 ? 'pl-3 text-text-muted hover:text-primary' : 'text-text-sub hover:text-primary font-medium',
+      ].join(' ');
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      li.appendChild(a);
+      tocList.appendChild(li);
+    });
+
+    // IntersectionObserver for active highlight
+    const links = tocList.querySelectorAll('a[data-heading-id]');
+    const setActive = (id) => {
+      links.forEach((link) => {
+        const isActive = link.dataset.headingId === id;
+        link.classList.toggle('text-primary', isActive);
+        link.classList.toggle('font-semibold', isActive);
+        if (isActive) {
+          link.classList.remove('text-text-sub', 'text-text-muted');
+        } else {
+          const isH3 = link.classList.contains('pl-3');
+          link.classList.add(isH3 ? 'text-text-muted' : 'text-text-sub');
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActive(entry.target.id);
+            break;
+          }
+        }
+      },
+      { rootMargin: '-10% 0px -80% 0px', threshold: 0 }
+    );
+    headings.forEach((h) => observer.observe(h));
+
+    // Mobile toggle
+    if (tocToggle && tocNav && tocChevron) {
+      tocToggle.addEventListener('click', () => {
+        const isOpen = tocNav.classList.contains('block');
+        if (isOpen) {
+          tocNav.classList.remove('block');
+          tocNav.classList.add('hidden');
+          tocChevron.style.transform = '';
+          tocToggle.setAttribute('aria-expanded', 'false');
+        } else {
+          tocNav.classList.remove('hidden');
+          tocNav.classList.add('block');
+          tocChevron.style.transform = 'rotate(180deg)';
+          tocToggle.setAttribute('aria-expanded', 'true');
+        }
+      });
+    }
+  });
+</script>
 
 <style is:global>
   .blog-content {
