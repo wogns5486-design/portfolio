@@ -5,77 +5,20 @@ import { getCollection } from 'astro:content';
 const allProjects = await getCollection('projects');
 const sorted = allProjects.sort((a, b) => a.data.order - b.data.order);
 
-// Placeholder cards shown when no MD files exist yet
-const placeholders = [
-  {
-    slug: '#',
-    emoji: '🚀',
-    gradient: 'from-indigo-500/30 to-purple-600/30',
-    tag: 'LIVE',
-    category: 'live',
-    title: '프리랜서 매칭 플랫폼',
-    titleKo: '프리랜서 매칭 플랫폼',
-    description: '클라이언트와 개발자를 연결하는 실시간 매칭 서비스. 채팅, 견적, 계약까지 한 번에.',
-    techs: ['Next.js', 'TypeScript', 'Supabase'],
-  },
-  {
-    slug: '#',
-    emoji: '🏪',
-    gradient: 'from-emerald-500/30 to-teal-600/30',
-    tag: '수주',
-    category: 'wishket',
-    title: '소상공인 예약 시스템',
-    titleKo: '소상공인 예약 시스템',
-    description: '카페·미용실 등 소상공인을 위한 온라인 예약 관리 솔루션.',
-    techs: ['React', 'Node.js', 'PostgreSQL'],
-  },
-  {
-    slug: '#',
-    emoji: '📊',
-    gradient: 'from-blue-500/30 to-cyan-600/30',
-    tag: '랜딩페이지',
-    category: 'landing',
-    title: 'SaaS 제품 랜딩페이지',
-    titleKo: 'SaaS 제품 랜딩페이지',
-    description: '전환율 최적화 설계, A/B 테스트 적용. CTR 32% 향상 달성.',
-    techs: ['Astro', 'Tailwind CSS'],
-  },
-  {
-    slug: '#',
-    emoji: '📱',
-    gradient: 'from-pink-500/30 to-rose-600/30',
-    tag: '앱/SaaS',
-    category: 'app',
-    title: '모바일 앱 대시보드',
-    titleKo: '모바일 앱 대시보드',
-    description: '크로스플랫폼 React Native 앱, 실시간 데이터 시각화 대시보드.',
-    techs: ['React Native', 'FastAPI', 'MongoDB'],
-  },
-  {
-    slug: '#',
-    emoji: '🎮',
-    gradient: 'from-amber-500/30 to-orange-600/30',
-    tag: '도구/게임',
-    category: 'tool',
-    title: '미니 게임 웹앱',
-    titleKo: '미니 게임 웹앱',
-    description: '브라우저 기반 퍼즐 게임. Canvas API와 물리 엔진 적용.',
-    techs: ['Vanilla JS', 'Canvas API'],
-  },
-  {
-    slug: '#',
-    emoji: '🛒',
-    gradient: 'from-violet-500/30 to-fuchsia-600/30',
-    tag: '수주',
-    category: 'wishket',
-    title: '이커머스 쇼핑몰',
-    titleKo: '이커머스 쇼핑몰',
-    description: '결제 연동, 재고 관리, 관리자 대시보드가 포함된 풀스택 쇼핑몰.',
-    techs: ['Next.js', 'NestJS', 'Stripe'],
-  },
-];
+// Category filtering at build time
+const live = sorted.filter(p => p.data.category === 'live');
+const wishket = sorted.filter(p => p.data.category === 'wishket');
+const landing = sorted.filter(p => p.data.category === 'landing');
+const app = sorted.filter(p => p.data.category === 'app');
+const tool = sorted.filter(p => p.data.category === 'tool');
 
-const usePlaceholders = sorted.length === 0;
+const tabs = [
+  { key: 'live', label: 'LIVE', items: live },
+  { key: 'wishket', label: '수주', items: wishket },
+  { key: 'landing', label: '랜딩페이지', items: landing },
+  { key: 'app', label: '앱/SaaS', items: app },
+  { key: 'tool', label: '도구/게임', items: tool },
+];
 ---
 
 <PageLayout title="프로젝트 — ONESTEP">
@@ -86,40 +29,40 @@ const usePlaceholders = sorted.length === 0;
       <p class="text-[0.72rem] tracking-[4px] text-primary uppercase mb-3 font-semibold">PROJECTS</p>
       <h1 class="text-[clamp(2rem,5vw,3rem)] font-black tracking-tight mb-4">프로젝트</h1>
       <p class="text-text-sub text-[0.95rem] leading-relaxed break-keep">
-        111개 프로젝트의 경험이 담긴 포트폴리오입니다.<br class="hidden sm:block" />
-        위시켓 수주 11건, LIVE 서비스 3개 운영 중.
+        {sorted.length}개 프로젝트의 경험이 담긴 포트폴리오입니다.<br class="hidden sm:block" />
+        위시켓 수주 {wishket.length}건, LIVE 서비스 {live.length}개 운영 중.
       </p>
     </div>
   </section>
 
-  <!-- Filter + Search -->
-  <section class="px-7 pb-10 sticky top-16 z-20 bg-[#0B1120]/90 backdrop-blur-md border-b border-border-light">
-    <div class="max-w-content mx-auto py-4 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-      <!-- Category pills -->
-      <div class="flex flex-wrap gap-2" id="categoryFilters">
-        {[
-          { key: 'all', label: '전체' },
-          { key: 'live', label: 'LIVE' },
-          { key: 'wishket', label: '수주 프로젝트' },
-          { key: 'landing', label: '랜딩페이지' },
-          { key: 'app', label: '앱/SaaS' },
-          { key: 'tool', label: '도구/게임' },
-        ].map(({ key, label }) => (
+  <!-- Tab Bar + Search -->
+  <section class="sticky top-16 z-20 bg-[#0B1120]/90 backdrop-blur-md border-b border-border-light">
+    <div class="max-w-content mx-auto px-7 pt-4">
+      <!-- Tabs -->
+      <div class="flex gap-1 overflow-x-auto pb-0 -mb-px scrollbar-hide" id="tabBar">
+        {tabs.map(({ key, label, items }) => (
           <button
-            data-category={key}
+            data-tab-btn={key}
             class:list={[
-              'category-btn px-4 py-1.5 rounded-full text-sm font-medium transition-all border',
-              key === 'all'
-                ? 'bg-gradient-to-r from-primary-deep to-primary text-white border-primary shadow-[0_2px_12px_rgba(99,102,241,0.35)]'
-                : 'bg-surface border-border-light text-text-sub hover:border-primary/30 hover:text-text-main',
+              'tab-btn flex-shrink-0 px-4 py-2.5 rounded-t-lg text-sm font-medium transition-all relative whitespace-nowrap',
+              key === 'live'
+                ? 'bg-gradient-to-r from-primary-deep to-primary text-white'
+                : 'bg-surface text-text-sub hover:text-text-main',
             ]}
           >
-            {label}
+            {label} <span class="tab-count ml-1 opacity-70">{items.length}</span>
           </button>
         ))}
       </div>
+      <!-- Active tab indicator line -->
+      <div class="h-0.5 bg-primary" id="tabIndicator" style="width:0;transition:all 0.2s ease"></div>
+    </div>
 
-      <!-- Search -->
+    <!-- Search + Count -->
+    <div class="max-w-content mx-auto px-7 py-3 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+      <p class="text-xs text-text-muted" id="projectCount">
+        {live.length}개 프로젝트
+      </p>
       <div class="relative w-full sm:w-[240px]">
         <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -132,103 +75,59 @@ const usePlaceholders = sorted.length === 0;
         />
       </div>
     </div>
-
-    <!-- Count -->
-    <div class="max-w-content mx-auto pb-2">
-      <p class="text-xs text-text-muted" id="projectCount">
-        총 {usePlaceholders ? placeholders.length : sorted.length}개 프로젝트
-      </p>
-    </div>
   </section>
 
-  <!-- Grid -->
+  <!-- Tab Contents -->
   <section class="px-7 py-12">
     <div class="max-w-content mx-auto">
-      <div id="projectGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {tabs.map(({ key, items }) => (
+        <div class="tab-content" data-tab={key} style={key === 'live' ? '' : 'display:none'}>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {items.map((p) => (
+              <a
+                href={`/projects/${p.id.replace(/\.md$/, '')}`}
+                data-category={p.data.category}
+                data-title={p.data.titleKo}
+                data-techs={p.data.techs.join(' ')}
+                class="project-card group bg-surface border border-border-light rounded-card overflow-hidden transition-all hover:-translate-y-1.5 hover:border-primary/25 hover:shadow-[0_12px_40px_rgba(0,0,0,0.3)]"
+              >
+                <!-- Thumbnail -->
+                <div class="relative h-44 bg-gradient-to-br from-primary/20 to-primary-deep/30 overflow-hidden">
+                  <img src={`/screenshots/thumbs/${p.id.replace(/\.md$/, '')}.webp`} alt={p.data.titleKo} class="w-full h-full object-cover object-top" loading="lazy"
+                    onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+                  <div class="hidden items-center justify-center absolute inset-0 text-5xl">🚀</div>
+                  {p.data.category === 'live' && (
+                    <span class="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface/80 backdrop-blur-sm border border-live/30 text-live text-[0.65rem] font-bold tracking-wide">
+                      <span class="w-1.5 h-1.5 rounded-full bg-live animate-pulse"></span>
+                      LIVE
+                    </span>
+                  )}
+                  {p.data.category === 'wishket' && (
+                    <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-surface/80 backdrop-blur-sm border border-amber-400/30 text-amber-400 text-[0.65rem] font-bold tracking-wide">
+                      수주
+                    </span>
+                  )}
+                </div>
 
-        {usePlaceholders ? placeholders.map((p) => (
-          <a
-            href={p.slug}
-            data-category={p.category}
-            data-title={p.titleKo}
-            data-techs={p.techs.join(' ')}
-            class="project-card group bg-surface border border-border-light rounded-card overflow-hidden transition-all hover:-translate-y-1.5 hover:border-primary/25 hover:shadow-[0_12px_40px_rgba(0,0,0,0.3)]"
-          >
-            <!-- Thumbnail -->
-            <div class:list={['relative h-44 bg-gradient-to-br flex items-center justify-center text-5xl', p.gradient]}>
-              {p.tag === 'LIVE' && (
-                <span class="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface/80 backdrop-blur-sm border border-live/30 text-live text-[0.65rem] font-bold tracking-wide">
-                  <span class="w-1.5 h-1.5 rounded-full bg-live animate-pulse"></span>
-                  LIVE
-                </span>
-              )}
-              {p.tag === '수주' && (
-                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-surface/80 backdrop-blur-sm border border-amber-400/30 text-amber-400 text-[0.65rem] font-bold tracking-wide">
-                  수주
-                </span>
-              )}
-              <span>{p.emoji}</span>
-            </div>
-
-            <!-- Content -->
-            <div class="p-5">
-              <span class="inline-block text-[0.68rem] font-semibold text-primary tracking-wider uppercase mb-2">{p.tag}</span>
-              <h3 class="text-base font-bold text-text-main mb-1.5 leading-snug group-hover:text-primary transition-colors">{p.titleKo}</h3>
-              <p class="text-xs text-text-sub leading-relaxed mb-4 line-clamp-2">{p.description}</p>
-              <div class="flex flex-wrap gap-1.5 mb-4">
-                {p.techs.map(t => (
-                  <span class="px-2.5 py-0.5 rounded-full bg-surface-light text-[0.7rem] text-text-muted border border-border-light">{t}</span>
-                ))}
-              </div>
-              <span class="inline-flex items-center gap-1 text-xs text-primary font-semibold group-hover:gap-2 transition-all">
-                자세히 보기 <span>→</span>
-              </span>
-            </div>
-          </a>
-        )) : sorted.map((p) => (
-          <a
-            href={`/projects/${p.id.replace(/\.md$/, '')}`}
-            data-category={p.data.category}
-            data-title={p.data.titleKo}
-            data-techs={p.data.techs.join(' ')}
-            class="project-card group bg-surface border border-border-light rounded-card overflow-hidden transition-all hover:-translate-y-1.5 hover:border-primary/25 hover:shadow-[0_12px_40px_rgba(0,0,0,0.3)]"
-          >
-            <!-- Thumbnail -->
-            <div class="relative h-44 bg-gradient-to-br from-primary/20 to-primary-deep/30 overflow-hidden">
-              <img src={`/screenshots/thumbs/${p.id.replace(/\.md$/, '')}.webp`} alt={p.data.titleKo} class="w-full h-full object-cover object-top" loading="lazy"
-                onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
-              <div class="hidden items-center justify-center absolute inset-0 text-5xl">🚀</div>
-              {p.data.category === 'live' && (
-                <span class="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface/80 backdrop-blur-sm border border-live/30 text-live text-[0.65rem] font-bold tracking-wide">
-                  <span class="w-1.5 h-1.5 rounded-full bg-live animate-pulse"></span>
-                  LIVE
-                </span>
-              )}
-              {p.data.category === 'wishket' && (
-                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-surface/80 backdrop-blur-sm border border-amber-400/30 text-amber-400 text-[0.65rem] font-bold tracking-wide">
-                  수주
-                </span>
-              )}
-            </div>
-
-            <!-- Content -->
-            <div class="p-5">
-              <span class="inline-block text-[0.68rem] font-semibold text-primary tracking-wider uppercase mb-2">{p.data.tag}</span>
-              <h3 class="text-base font-bold text-text-main mb-1.5 leading-snug group-hover:text-primary transition-colors">{p.data.titleKo}</h3>
-              <p class="text-xs text-text-sub leading-relaxed mb-4 line-clamp-2">{p.data.description}</p>
-              <div class="flex flex-wrap gap-1.5 mb-4">
-                {p.data.techs.map(t => (
-                  <span class="px-2.5 py-0.5 rounded-full bg-surface-light text-[0.7rem] text-text-muted border border-border-light">{t}</span>
-                ))}
-              </div>
-              <span class="inline-flex items-center gap-1 text-xs text-primary font-semibold group-hover:gap-2 transition-all">
-                자세히 보기 <span>→</span>
-              </span>
-            </div>
-          </a>
-        ))}
-
-      </div>
+                <!-- Content -->
+                <div class="p-5">
+                  <span class="inline-block text-[0.68rem] font-semibold text-primary tracking-wider uppercase mb-2">{p.data.tag}</span>
+                  <h3 class="text-base font-bold text-text-main mb-1.5 leading-snug group-hover:text-primary transition-colors">{p.data.titleKo}</h3>
+                  <p class="text-xs text-text-sub leading-relaxed mb-4 line-clamp-2">{p.data.description}</p>
+                  <div class="flex flex-wrap gap-1.5 mb-4">
+                    {p.data.techs.map(t => (
+                      <span class="px-2.5 py-0.5 rounded-full bg-surface-light text-[0.7rem] text-text-muted border border-border-light">{t}</span>
+                    ))}
+                  </div>
+                  <span class="inline-flex items-center gap-1 text-xs text-primary font-semibold group-hover:gap-2 transition-all">
+                    자세히 보기 <span>→</span>
+                  </span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
 
       <!-- Empty state -->
       <div id="emptyState" class="hidden text-center py-24">
@@ -255,69 +154,145 @@ const usePlaceholders = sorted.length === 0;
     </div>
   </section>
 
+  <!-- Scrollbar hide utility -->
+  <style>
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .tab-content.fade-in { animation: tabFadeIn 0.2s ease forwards; }
+    @keyframes tabFadeIn { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+
   <script is:inline>
-    const ACTIVE_CLS = ['bg-gradient-to-r', 'from-primary-deep', 'to-primary', 'text-white', 'border-primary', 'shadow-[0_2px_12px_rgba(99,102,241,0.35)]'];
-    const INACTIVE_CLS = ['bg-surface', 'border-border-light', 'text-text-sub'];
-    const BASE_CLS = 'category-btn px-4 py-1.5 rounded-full text-sm font-medium transition-all border';
+    var TAB_ACTIVE_CLS = ['bg-gradient-to-r', 'from-primary-deep', 'to-primary', 'text-white'];
+    var TAB_INACTIVE_CLS = ['bg-surface', 'text-text-sub'];
 
-    function initProjectFilters() {
-      const cards = Array.from(document.querySelectorAll('.project-card'));
-      const countEl = document.getElementById('projectCount');
-      const emptyEl = document.getElementById('emptyState');
-      const searchInput = document.getElementById('searchInput');
-      if (!cards.length || !countEl) return;
+    function initProjectTabs() {
+      var tabBtns = Array.from(document.querySelectorAll('[data-tab-btn]'));
+      var tabContents = Array.from(document.querySelectorAll('.tab-content'));
+      var countEl = document.getElementById('projectCount');
+      var emptyEl = document.getElementById('emptyState');
+      var searchInput = document.getElementById('searchInput');
+      var indicator = document.getElementById('tabIndicator');
+      if (!tabBtns.length) return;
 
-      let activeCategory = 'all';
-      let searchQuery = '';
+      var activeTab = 'live';
+      var searchQuery = '';
 
-      function applyFilters() {
-        let visible = 0;
-        cards.forEach(function(card) {
-          const cat = card.dataset.category || '';
-          const title = (card.dataset.title || '').toLowerCase();
-          const techs = (card.dataset.techs || '').toLowerCase();
-          const q = searchQuery.toLowerCase();
+      function updateIndicator() {
+        var activeBtn = document.querySelector('[data-tab-btn="' + activeTab + '"]');
+        if (activeBtn && indicator) {
+          indicator.style.width = activeBtn.offsetWidth + 'px';
+          indicator.style.marginLeft = activeBtn.offsetLeft + 'px';
+        }
+      }
 
-          const matchCat = activeCategory === 'all' || cat === activeCategory;
-          const matchSearch = q === '' || title.includes(q) || techs.includes(q);
-
-          if (matchCat && matchSearch) {
-            card.style.display = '';
-            visible++;
-          } else {
-            card.style.display = 'none';
-          }
+      function updateTabStyles() {
+        tabBtns.forEach(function(btn) {
+          var isActive = btn.dataset.tabBtn === activeTab;
+          TAB_ACTIVE_CLS.concat(TAB_INACTIVE_CLS).forEach(function(c) { btn.classList.remove(c); });
+          var cls = isActive ? TAB_ACTIVE_CLS : TAB_INACTIVE_CLS;
+          cls.forEach(function(c) { btn.classList.add(c); });
         });
-        countEl.textContent = '\uCD1D ' + visible + '\uAC1C \uD504\uB85C\uC81D\uD2B8';
+        updateIndicator();
+      }
+
+      function applySearch() {
+        var activeContent = document.querySelector('.tab-content[data-tab="' + activeTab + '"]');
+        if (!activeContent) return;
+        var cards = Array.from(activeContent.querySelectorAll('.project-card'));
+        var q = searchQuery.toLowerCase();
+        var visible = 0;
+        cards.forEach(function(card) {
+          var title = (card.dataset.title || '').toLowerCase();
+          var techs = (card.dataset.techs || '').toLowerCase();
+          var match = q === '' || title.includes(q) || techs.includes(q);
+          card.style.display = match ? '' : 'none';
+          if (match) visible++;
+        });
+
+        // Update count in tab button
+        var tabBtn = document.querySelector('[data-tab-btn="' + activeTab + '"]');
+        if (tabBtn) {
+          var countSpan = tabBtn.querySelector('.tab-count');
+          if (countSpan) countSpan.textContent = visible;
+        }
+
+        if (countEl) countEl.textContent = visible + '\uAC1C \uD504\uB85C\uC81D\uD2B8';
         if (emptyEl) emptyEl.classList.toggle('hidden', visible > 0);
       }
 
-      document.querySelectorAll('.category-btn').forEach(function(btn) {
+      function switchTab(tabKey) {
+        activeTab = tabKey;
+        tabContents.forEach(function(tc) {
+          if (tc.dataset.tab === tabKey) {
+            tc.style.display = '';
+            tc.classList.remove('fade-in');
+            // Force reflow for animation restart
+            void tc.offsetWidth;
+            tc.classList.add('fade-in');
+          } else {
+            tc.style.display = 'none';
+            tc.classList.remove('fade-in');
+          }
+        });
+        updateTabStyles();
+        applySearch();
+      }
+
+      // Tab click handlers
+      tabBtns.forEach(function(btn) {
         btn.addEventListener('click', function() {
-          activeCategory = btn.dataset.category || 'all';
-          document.querySelectorAll('.category-btn').forEach(function(b) {
-            var isActive = b.dataset.category === activeCategory;
-            b.className = BASE_CLS;
-            if (isActive) {
-              ACTIVE_CLS.forEach(function(c) { b.classList.add(c); });
-            } else {
-              INACTIVE_CLS.forEach(function(c) { b.classList.add(c); });
-            }
-          });
-          applyFilters();
+          switchTab(btn.dataset.tabBtn);
         });
       });
 
+      // Search handler
       if (searchInput) {
         searchInput.addEventListener('input', function(e) {
           searchQuery = e.target.value;
-          applyFilters();
+          applySearch();
         });
       }
+
+      // Touch swipe support
+      var contentArea = document.querySelector('.tab-content[data-tab="' + activeTab + '"]');
+      if (contentArea) {
+        var tabKeys = tabBtns.map(function(b) { return b.dataset.tabBtn; });
+        var touchStartX = 0;
+        var touchStartY = 0;
+        var swiping = false;
+
+        document.addEventListener('touchstart', function(e) {
+          touchStartX = e.touches[0].clientX;
+          touchStartY = e.touches[0].clientY;
+          swiping = true;
+        }, { passive: true });
+
+        document.addEventListener('touchend', function(e) {
+          if (!swiping) return;
+          swiping = false;
+          var dx = e.changedTouches[0].clientX - touchStartX;
+          var dy = e.changedTouches[0].clientY - touchStartY;
+          // Only trigger if horizontal swipe is dominant and > 60px
+          if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx)) return;
+          var idx = tabKeys.indexOf(activeTab);
+          if (dx < 0 && idx < tabKeys.length - 1) {
+            switchTab(tabKeys[idx + 1]);
+          } else if (dx > 0 && idx > 0) {
+            switchTab(tabKeys[idx - 1]);
+          }
+          // Scroll active tab button into view
+          var activeBtn = document.querySelector('[data-tab-btn="' + activeTab + '"]');
+          if (activeBtn) activeBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }, { passive: true });
+      }
+
+      // Initial state
+      updateTabStyles();
+      applySearch();
     }
 
-    // Run on initial load and View Transitions navigation
-    initProjectFilters();
-    document.addEventListener('astro:page-load', initProjectFilters);
+    initProjectTabs();
+    document.addEventListener('astro:page-load', initProjectTabs);
   </script>
 </PageLayout>
